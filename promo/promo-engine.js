@@ -29,46 +29,47 @@ class PromoTimelineEngine {
   }
 
   cacheElements() {
+    const get = (id) => this.svg.querySelector("#" + id) || document.getElementById(id);
     this.el = {
       // Scenes
-      scene1: this.svg.getElementById("scene-1"),
-      scene2: this.svg.getElementById("scene-2"),
-      scene3: this.svg.getElementById("scene-3"),
-      scene4: this.svg.getElementById("scene-4"),
+      scene1: get("scene-1"),
+      scene2: get("scene-2"),
+      scene3: get("scene-3"),
+      scene4: get("scene-4"),
       
       // Global titles
-      mainTitle: this.svg.getElementById("main-title"),
-      subTitle: this.svg.getElementById("sub-title"),
+      mainTitle: get("main-title"),
+      subTitle: get("sub-title"),
 
       // Scene 1 Elements
-      s1Curve: this.svg.getElementById("s1-curve"),
-      s1Handles: this.svg.getElementById("s1-handles"),
-      s1Warning: this.svg.getElementById("s1-warning"),
-      s1Prompt: this.svg.getElementById("s1-prompt"),
-      s1Cursor: this.svg.getElementById("s1-cursor"),
+      s1Curve: get("s1-curve"),
+      s1Handles: get("s1-handles"),
+      s1Warning: get("s1-warning"),
+      s1Prompt: get("s1-prompt"),
+      s1Cursor: get("s1-cursor"),
 
       // Scene 2 Elements
-      s2Bus: this.svg.getElementById("s2-bus"),
-      s2Node1: this.svg.getElementById("s2-node-1"),
-      s2Node2: this.svg.getElementById("s2-node-2"),
-      s2Node3: this.svg.getElementById("s2-node-3"),
-      s2Stamp: this.svg.getElementById("s2-stamp"),
+      s2Bus: get("s2-bus"),
+      s2Node1: get("s2-node-1"),
+      s2Node2: get("s2-node-2"),
+      s2Node3: get("s2-node-3"),
+      s2Stamp: get("s2-stamp"),
 
       // Scene 3 Elements
-      s3Stage: this.svg.getElementById("s3-center-stage"),
-      s3TrimPath: this.svg.getElementById("s3-trim-path"),
-      s3Circle: this.svg.getElementById("s3-spring-circle"),
-      s3Particles: this.svg.getElementById("s3-particles"),
-      s3FeatureText: this.svg.getElementById("s3-feature-text"),
-      s3FpsVal: this.svg.getElementById("s3-fps-val"),
+      s3Stage: get("s3-center-stage"),
+      s3TrimPath: get("s3-trim-path"),
+      s3Circle: get("s3-spring-circle"),
+      s3Particles: get("s3-particles"),
+      s3FeatureText: get("s3-feature-text"),
+      s3FpsVal: get("s3-fps-val"),
 
       // Scene 4 Elements
-      s4LogoGroup: this.svg.getElementById("s4-logo-group"),
-      s4LogoStroke: this.svg.getElementById("s4-logo-stroke"),
-      s4LogoFill: this.svg.getElementById("s4-logo-fill"),
-      s4Wordmark: this.svg.getElementById("s4-wordmark"),
-      s4Tagline: this.svg.getElementById("s4-tagline"),
-      s4Divider: this.svg.getElementById("s4-divider")
+      s4LogoGroup: get("s4-logo-group"),
+      s4LogoStroke: get("s4-logo-stroke"),
+      s4LogoFill: get("s4-logo-fill"),
+      s4Wordmark: get("s4-wordmark"),
+      s4Tagline: get("s4-tagline"),
+      s4Divider: get("s4-divider")
     };
 
     // Initialize Trim Path Dasharrays

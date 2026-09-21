@@ -309,13 +309,13 @@
         const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
         const secs = String(totalSec % 60).padStart(2, '0');
         const millis = String(Math.floor(ms % 1000)).padStart(3, '0');
-        return ;
+        return mins + ':' + secs + '.' + millis;
       }
 
       engine.on('update', (timeMs) => {
         const pct = (timeMs / engine.durationMs) * 100;
-        progressEl.style.width = ;
-        handleEl.style.left = ;
+        progressEl.style.width = pct + '%';
+        handleEl.style.left = pct + '%';
         tcCurrent.textContent = formatTime(timeMs);
 
         if (engine.isPlaying) {
