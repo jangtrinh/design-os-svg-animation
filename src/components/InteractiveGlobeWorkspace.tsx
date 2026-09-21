@@ -3,7 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
+import { X, ArrowRight } from "lucide-react";
 
 const TOKENS = {
   bgLight: "#FAF9F5",
@@ -440,9 +440,10 @@ export const InteractiveGlobeWorkspace: React.FC<InteractiveGlobeWorkspaceProps>
           {onNextScene && (
             <button
               onClick={onNextScene}
-              className="w-full py-2 bg-[#27272A] hover:bg-[#3F3F46] text-[12px] text-[#A1A1AA] hover:text-white rounded-lg transition-colors cursor-pointer"
+              className="w-full py-2 bg-[#27272A] hover:bg-[#3F3F46] text-[12px] text-[#A1A1AA] hover:text-white rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-1.5"
             >
-              Continue to Scene 3 →
+              <span>Continue to Scene 3</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           )}
         </div>

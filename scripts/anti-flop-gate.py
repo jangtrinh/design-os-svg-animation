@@ -62,11 +62,12 @@ def test_gate_1_phosphor_icons():
 
     assert not missing_defs and not missing_uses, "All required Phosphor symbols must be defined and instantiated!"
 
-    # --- IMMUTABLE HARDRULE: ZERO RAW EMOJIS IN UI CODE ---
+    # --- IMMUTABLE HARDRULE: ZERO RAW EMOJIS OR PSEUDO-ICONS IN UI CODE ---
     emoji_pattern = re.compile(
         r"[\U00010000-\U0010ffff\u2600-\u27bf\u2300-\u23ff\u2b50\u2b55\u203c\u2049\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe]",
         flags=re.UNICODE
     )
+    pseudo_icon_pattern = re.compile(r"[←→↻⤓↗▾≡▷‹›]")
 
     scanned_targets = [
         ROOT_DIR / "promo/claude-design-promo.html",
@@ -79,21 +80,21 @@ def test_gate_1_phosphor_icons():
         if target.is_dir():
             for p in target.rglob("*.tsx"):
                 txt = p.read_text(encoding="utf-8")
-                matches = emoji_pattern.findall(txt)
+                matches = emoji_pattern.findall(txt) + pseudo_icon_pattern.findall(txt)
                 if matches:
                     emoji_violations[str(p.relative_to(ROOT_DIR))] = list(set(matches))
         elif target.exists():
             txt = target.read_text(encoding="utf-8")
-            matches = emoji_pattern.findall(txt)
+            matches = emoji_pattern.findall(txt) + pseudo_icon_pattern.findall(txt)
             if matches:
                 emoji_violations[str(target.relative_to(ROOT_DIR))] = list(set(matches))
 
     if emoji_violations:
-        print(f"❌ FORBIDDEN RAW EMOJIS DETECTED: {emoji_violations}")
-        print("   Hardrule: All UI elements must use Phosphor (@phosphor-icons/core) or Lucide (lucide-react). Emojis are strictly banned.")
+        print(f"❌ FORBIDDEN RAW EMOJIS OR PSEUDO-ICON CHARACTERS DETECTED: {emoji_violations}")
+        print("   Hardrule: All UI elements must use Phosphor (@phosphor-icons/core) or Lucide (lucide-react). Emojis and text pseudo-icons are strictly banned.")
         sys.exit(1)
 
-    print("✅ HARDRULE VERIFIED: 0 raw emojis detected across UI code; 100% official vector icon system.")
+    print("✅ HARDRULE VERIFIED: 0 raw emojis or text pseudo-icons detected; 100% official vector icon system.")
     print("✅ GATE 1 PASSED: 100% verified official Phosphor / Lucide vector icon system.")
 
 
