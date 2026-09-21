@@ -1,0 +1,13 @@
+{
+  "id": "svg-morph-topology",
+  "topic": "geometry",
+  "status": "documented",
+  "statement": "Native SVG d interpolation requires identical command structure; equal point count alone is insufficient.",
+  "sourceUrl": "https://www.w3.org/TR/SVG/paths.html",
+  "section": "Path data animation",
+  "checkedAt": "2026-09-21",
+  "reviewAfterDays": 180,
+  "scope": "SVG specification; not a tested browser capability",
+  "evidence": [],
+  "contradictions": []
+}

@@ -1,0 +1,13 @@
+{
+  "id": "flubber-compound-paths",
+  "topic": "geometry",
+  "status": "documented",
+  "statement": "flubber.interpolate ignores all but the first outer shape when a string includes holes or multiple shapes.",
+  "sourceUrl": "https://github.com/veltman/flubber",
+  "section": "API interpolate",
+  "checkedAt": "2026-09-21",
+  "reviewAfterDays": 90,
+  "scope": "Upstream README; pinned 0.4.2 behavior requires local experiment",
+  "evidence": [],
+  "contradictions": []
+}

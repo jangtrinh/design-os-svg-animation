@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Animated Notification Bell">
+  <title>Notification Bell</title>
+  <!-- Bell Body -->
+  <path id="bell-body" fill="#F59E0B" d="M24 6c-6.627 0-12 5.373-12 12v8l-4 6h32l-4-6v-8c0-6.627-5.373-12-12-12zm-3-3h6v3h-6z"/>
+  <!-- Bell Clapper -->
+  <circle id="bell-clapper" cx="24" cy="38" r="4" fill="#D97706"/>
+</svg>

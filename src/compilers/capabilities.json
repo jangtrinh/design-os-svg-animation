@@ -1,0 +1,26 @@
+{
+  "status": "design-only",
+  "backends": {
+    "gsap": {
+      "implementation": "not-implemented",
+      "output": "scoped JS module + SVG"
+    },
+    "css": {
+      "implementation": "not-implemented",
+      "output": "SVG + CSS"
+    },
+    "waapi": {
+      "implementation": "not-implemented",
+      "output": "scoped JS module + SVG"
+    },
+    "lottie-svg": {
+      "implementation": "not-implemented",
+      "output": "Lottie JSON + SVG player wrapper"
+    },
+    "smil": {
+      "implementation": "not-implemented",
+      "output": "animated SVG + optional host controller"
+    }
+  },
+  "policy": "Unsupported features fail explicitly; never silently drop tracks."
+}

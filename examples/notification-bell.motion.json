@@ -1,0 +1,65 @@
+{
+  "version": "1.0.0",
+  "metadata": {
+    "name": "notification-bell-ring",
+    "viewBox": [0, 0, 48, 48],
+    "frameRate": 60
+  },
+  "timeline": {
+    "durationMs": 800,
+    "loop": true,
+    "direction": "normal"
+  },
+  "tracks": [
+    {
+      "targetSelector": "#bell-body",
+      "transformOrigin": "24px 8px",
+      "properties": [
+        {
+          "type": "transform",
+          "transformType": "rotate",
+          "durationMs": 800,
+          "easing": {
+            "type": "cubic-bezier",
+            "points": [0.34, 1.56, 0.64, 1]
+          },
+          "keyframes": [
+            { "timePercent": 0.0, "value": 0 },
+            { "timePercent": 0.2, "value": 14 },
+            { "timePercent": 0.4, "value": -12 },
+            { "timePercent": 0.6, "value": 8 },
+            { "timePercent": 0.8, "value": -3 },
+            { "timePercent": 1.0, "value": 0 }
+          ]
+        }
+      ]
+    },
+    {
+      "targetSelector": "#bell-clapper",
+      "transformOrigin": "24px 38px",
+      "properties": [
+        {
+          "type": "transform",
+          "transformType": "translate",
+          "delayMs": 50,
+          "durationMs": 750,
+          "easing": {
+            "type": "cubic-bezier",
+            "points": [0.34, 1.56, 0.64, 1]
+          },
+          "keyframes": [
+            { "timePercent": 0.0, "value": [0, 0] },
+            { "timePercent": 0.25, "value": [-4, 0] },
+            { "timePercent": 0.5, "value": [4, 0] },
+            { "timePercent": 0.75, "value": [-2, 0] },
+            { "timePercent": 1.0, "value": [0, 0] }
+          ]
+        }
+      ]
+    }
+  ],
+  "reducedMotionFallback": {
+    "type": "fade",
+    "durationMs": 200
+  }
+}

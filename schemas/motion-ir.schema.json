@@ -1,0 +1,700 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:design-os-svg-animation:motion-ir:0.1.0",
+  "type": "object",
+  "properties": {
+    "version": {
+      "const": "0.1.0"
+    },
+    "scene": {
+      "type": "object",
+      "properties": {
+        "viewBox": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            {
+              "type": "number",
+              "exclusiveMinimum": 0
+            }
+          ],
+          "items": false,
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "nodes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/node"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "viewBox",
+        "nodes"
+      ],
+      "additionalProperties": false
+    },
+    "timeline": {
+      "type": "object",
+      "properties": {
+        "durationMs": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "iterations": {
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "const": "infinite"
+            }
+          ]
+        },
+        "direction": {
+          "enum": [
+            "normal",
+            "reverse",
+            "alternate",
+            "alternate-reverse"
+          ]
+        },
+        "fill": {
+          "enum": [
+            "none",
+            "forwards",
+            "backwards",
+            "both"
+          ]
+        }
+      },
+      "required": [
+        "durationMs",
+        "iterations",
+        "direction",
+        "fill"
+      ],
+      "additionalProperties": false
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/track"
+      },
+      "minItems": 1
+    },
+    "accessibility": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reducedMotion": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "const": "static"
+            },
+            "atMs": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "mode",
+            "atMs"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "label",
+        "reducedMotion"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "version",
+    "scene",
+    "timeline",
+    "tracks",
+    "accessibility"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "vec2": {
+      "type": "array",
+      "prefixItems": [
+        {
+          "type": "number"
+        },
+        {
+          "type": "number"
+        }
+      ],
+      "items": false,
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "color": {
+      "type": "array",
+      "items": {
+        "type": "number",
+        "minimum": 0,
+        "maximum": 1
+      },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "vertex": {
+      "type": "object",
+      "properties": {
+        "p": {
+          "$ref": "#/$defs/vec2"
+        },
+        "in": {
+          "$ref": "#/$defs/vec2"
+        },
+        "out": {
+          "$ref": "#/$defs/vec2"
+        }
+      },
+      "required": [
+        "p",
+        "in",
+        "out"
+      ],
+      "additionalProperties": false
+    },
+    "contour": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "closed": {
+          "type": "boolean"
+        },
+        "vertices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/vertex"
+          },
+          "minItems": 2
+        }
+      },
+      "required": [
+        "id",
+        "closed",
+        "vertices"
+      ],
+      "additionalProperties": false
+    },
+    "path": {
+      "type": "object",
+      "properties": {
+        "fillRule": {
+          "enum": [
+            "nonzero",
+            "evenodd"
+          ]
+        },
+        "contours": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/contour"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "fillRule",
+        "contours"
+      ],
+      "additionalProperties": false
+    },
+    "ease": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "linear",
+                "hold"
+              ]
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "cubic-bezier"
+            },
+            "x1": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "y1": {
+              "type": "number"
+            },
+            "x2": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "y2": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "kind",
+            "x1",
+            "y1",
+            "x2",
+            "y2"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "track": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "opacity"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "translate"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "$ref": "#/$defs/vec2"
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "scale"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "$ref": "#/$defs/vec2"
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "rotate"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "type": "number"
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "fill"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "$ref": "#/$defs/color"
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "path"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "$ref": "#/$defs/path"
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "targetId": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            "property": {
+              "const": "trim"
+            },
+            "keyframes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "timeMs": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "value": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "ease": {
+                    "$ref": "#/$defs/ease"
+                  }
+                },
+                "required": [
+                  "timeMs",
+                  "value",
+                  "ease"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 2
+            }
+          },
+          "required": [
+            "id",
+            "targetId",
+            "property",
+            "keyframes"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "node": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        },
+        "parentId": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/path"
+        },
+        "transform": {
+          "type": "object",
+          "properties": {
+            "translate": {
+              "$ref": "#/$defs/vec2"
+            },
+            "scale": {
+              "$ref": "#/$defs/vec2"
+            },
+            "rotate": {
+              "type": "number"
+            },
+            "pivot": {
+              "$ref": "#/$defs/vec2"
+            }
+          },
+          "required": [
+            "translate",
+            "scale",
+            "rotate",
+            "pivot"
+          ],
+          "additionalProperties": false
+        },
+        "style": {
+          "type": "object",
+          "properties": {
+            "fill": {
+              "$ref": "#/$defs/color"
+            },
+            "opacity": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "fill",
+            "opacity"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "parentId",
+        "path",
+        "transform",
+        "style"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "geometry",
+    "modules": [
+      "svg-ast",
+      "coordinate-spaces",
+      "bezier",
+      "topology",
+      "morph-correspondence",
+      "typography"
+    ]
+  },
+  {
+    "id": "motion",
+    "modules": [
+      "timeline",
+      "easing",
+      "spring",
+      "choreography",
+      "constraints"
+    ]
+  },
+  {
+    "id": "backends",
+    "modules": [
+      "gsap",
+      "css",
+      "waapi",
+      "lottie-svg",
+      "smil",
+      "capability-matrix"
+    ]
+  },
+  {
+    "id": "verification",
+    "modules": [
+      "visual-diff",
+      "geometry-error",
+      "performance",
+      "accessibility",
+      "security"
+    ]
+  },
+  {
+    "id": "research",
+    "modules": [
+      "sources",
+      "claims",
+      "experiments",
+      "promotion",
+      "deprecation"
+    ]
+  }
+]

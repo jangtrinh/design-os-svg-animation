@@ -1,0 +1,37 @@
+[
+  {
+    "id": "backend-opacity-parity",
+    "priority": 1,
+    "question": "Do five pinned backends agree at boundaries and midpoints?",
+    "status": "pending",
+    "experiment": "One generated scene; fixed-time capture at 0,250,500,750,1000 ms."
+  },
+  {
+    "id": "compound-morph",
+    "priority": 2,
+    "question": "Which morph adapter preserves a donut hole and contour identity?",
+    "status": "pending",
+    "experiment": "Compare flubber, polymorph-js and canonical cubic subdivision; report topology and visual error."
+  },
+  {
+    "id": "spring-bake",
+    "priority": 3,
+    "question": "What sampling budget preserves spring trajectory at 30/60/120 Hz?",
+    "status": "pending",
+    "experiment": "Compare baked curve to analytic solution including critical damping and overshoot."
+  },
+  {
+    "id": "svg-origin",
+    "priority": 4,
+    "question": "Do nested transforms and nonzero viewBox origins agree?",
+    "status": "pending",
+    "experiment": "Compare matrices and rendered points in Chromium, Firefox and WebKit."
+  },
+  {
+    "id": "font-outline",
+    "priority": 5,
+    "question": "Which shaping cases fail with the pinned opentype.js version?",
+    "status": "pending",
+    "experiment": "Licensed font fixture; Vietnamese combining marks and complex-script shaping."
+  }
+]
