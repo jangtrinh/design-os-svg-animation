@@ -11,7 +11,8 @@
     "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples"
   },
   "dependencies": {
-    "flubber": "^0.4.4",
+    "ajv": "^8.17.1",
+    "flubber": "^0.4.2",
     "gsap": "^3.12.5",
     "paper": "^0.12.17",
     "svgo": "^3.3.2"
