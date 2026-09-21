@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design OS SVG Animation — Official 22s Promo</title>
+  <link rel="stylesheet" href="promo.css">
+</head>
+<body>
+
+  <div class="player-wrapper">
+    <!-- 16:9 Stage Viewport -->
+    <div class="video-viewport" id="viewport">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-label="Design OS SVG Animation 22-Second Promo Composition">
+  <title>Design OS SVG Animation Promo Master Composition</title>
+  <defs>
+    <!-- Background Grid Pattern -->
+    <pattern id="grid-pattern" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#18181b" stroke-width="1" />
+    </pattern>
+
+    <!-- Gradients -->
+    <linearGradient id="blue-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+
+    <linearGradient id="red-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F87171" />
+      <stop offset="100%" stop-color="#DC2626" />
+    </linearGradient>
+
+    <linearGradient id="cyan-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+
+    <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Dark Canvas Background -->
+  <rect width="1920" height="1080" fill="#080808" />
+  <rect id="bg-grid" width="1920" height="1080" fill="url(#grid-pattern)" opacity="0.6" />
+
+  <!-- ================================================================= -->
+  <!-- SCENE 1: BROKEN AI ANIMATION (0s - 4s)                            -->
+  <!-- ================================================================= -->
+  <g id="scene-1" class="promo-scene">
+    <!-- Center Abstract Ribbon / Broken Path -->
+    <path id="s1-curve" fill="none" stroke="url(#red-gradient)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"
+          d="M 660 540 C 720 380, 840 700, 960 540 C 1080 380, 1200 680, 1260 540" />
+
+    <!-- Bézier Handles & Control Nodes (Broken) -->
+    <g id="s1-handles" opacity="0.8">
+      <!-- Handle Lines -->
+      <line id="s1-h1" x1="660" y1="540" x2="720" y2="380" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 4" />
+      <line id="s1-h2" x1="960" y1="540" x2="840" y2="700" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 4" />
+      <line id="s1-h3" x1="960" y1="540" x2="1080" y2="380" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 4" />
+      <line id="s1-h4" x1="1260" y1="540" x2="1200" y2="680" stroke="#EF4444" stroke-width="2" stroke-dasharray="4 4" />
+      <!-- Anchor & Control Points -->
+      <circle cx="660" cy="540" r="7" fill="#F87171" />
+      <circle cx="720" cy="380" r="5" fill="#EF4444" />
+      <circle cx="960" cy="540" r="7" fill="#F87171" />
+      <circle cx="840" cy="700" r="5" fill="#EF4444" />
+      <circle cx="1080" cy="380" r="5" fill="#EF4444" />
+      <circle cx="1260" cy="540" r="7" fill="#F87171" />
+      <circle cx="1200" cy="680" r="5" fill="#EF4444" />
+    </g>
+
+    <!-- Error Warning Badge -->
+    <g id="s1-warning" transform="translate(960, 720)">
+      <rect x="-160" y="-22" width="320" height="44" rx="22" fill="#271111" stroke="#EF4444" stroke-width="2" />
+      <text x="0" y="6" fill="#F87171" font-family="-apple-system, monospace" font-size="14" font-weight="700" letter-spacing="2" text-anchor="middle">
+        ⚠️ PATH TOPOLOGY MISMATCH
+      </text>
+    </g>
+
+    <!-- AI Prompt Command Bubble -->
+    <g id="s1-prompt" transform="translate(960, 360)">
+      <rect x="-140" y="-20" width="280" height="40" rx="8" fill="#18181b" stroke="#3f3f46" stroke-width="1.5" />
+      <text x="-120" y="5" fill="#a1a1aa" font-family="-apple-system, monospace" font-size="14">&gt; animate this shape</text>
+      <rect id="s1-cursor" x="42" y="-10" width="8" height="20" fill="#3B82F6" />
+    </g>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- SCENE 2: DETERMINISTIC PIPELINE (4s - 10s)                       -->
+  <!-- ================================================================= -->
+  <g id="scene-2" class="promo-scene" opacity="0">
+    <!-- Connecting Horizontal Pipeline Bus -->
+    <line id="s2-bus" x1="300" y1="540" x2="1620" y2="540" stroke="#3B82F6" stroke-width="4" stroke-linecap="round" />
+
+    <!-- Node 1: AI INTENT -->
+    <g id="s2-node-1" transform="translate(500, 540)">
+      <rect x="-140" y="-80" width="280" height="160" rx="16" fill="#0f172a" stroke="#38BDF8" stroke-width="2" />
+      <text x="0" y="-35" fill="#38BDF8" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" letter-spacing="2" text-anchor="middle">STAGE 01</text>
+      <text x="0" y="-5" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="18" font-weight="700" text-anchor="middle">AI INTENT</text>
+      <text x="0" y="25" fill="#94A3B8" font-family="-apple-system, monospace" font-size="12" text-anchor="middle">Morph circle → bolt</text>
+      <text x="0" y="45" fill="#64748B" font-family="-apple-system, monospace" font-size="11" text-anchor="middle">duration: 800ms | spring</text>
+      <circle cx="0" cy="80" r="6" fill="#38BDF8" />
+    </g>
+
+    <!-- Node 2: MOTION IR -->
+    <g id="s2-node-2" transform="translate(960, 540)">
+      <rect x="-140" y="-80" width="280" height="160" rx="16" fill="#0f172a" stroke="#60A5FA" stroke-width="2" filter="url(#glow-blue)" />
+      <text x="0" y="-35" fill="#60A5FA" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" letter-spacing="2" text-anchor="middle">STAGE 02</text>
+      <text x="0" y="-5" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="18" font-weight="700" text-anchor="middle">MOTION IR</text>
+      <text x="0" y="25" fill="#94A3B8" font-family="-apple-system, monospace" font-size="12" text-anchor="middle">Topology: 8 → 16 anchors</text>
+      <text x="0" y="45" fill="#34D399" font-family="-apple-system, monospace" font-size="11" text-anchor="middle">Matched 16:16 ✓</text>
+      <circle cx="0" cy="80" r="6" fill="#60A5FA" />
+    </g>
+
+    <!-- Node 3: GEOMETRY ENGINE -->
+    <g id="s2-node-3" transform="translate(1420, 540)">
+      <rect x="-140" y="-80" width="280" height="160" rx="16" fill="#0f172a" stroke="#818CF8" stroke-width="2" />
+      <text x="0" y="-35" fill="#818CF8" font-family="-apple-system, sans-serif" font-size="13" font-weight="800" letter-spacing="2" text-anchor="middle">STAGE 03</text>
+      <text x="0" y="-5" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="18" font-weight="700" text-anchor="middle">GEOMETRY ENGINE</text>
+      <text x="0" y="25" fill="#94A3B8" font-family="-apple-system, monospace" font-size="12" text-anchor="middle">Flatten Transforms</text>
+      <text x="0" y="45" fill="#64748B" font-family="-apple-system, monospace" font-size="11" text-anchor="middle">Winding: Synchronized</text>
+      <circle cx="0" cy="80" r="6" fill="#818CF8" />
+    </g>
+
+    <!-- Success Stamp -->
+    <g id="s2-stamp" transform="translate(960, 750)">
+      <rect x="-130" y="-22" width="260" height="44" rx="22" fill="#064E3B" stroke="#10B981" stroke-width="2" />
+      <text x="0" y="6" fill="#6EE7B7" font-family="-apple-system, monospace" font-size="14" font-weight="800" letter-spacing="2" text-anchor="middle">
+        DETERMINISTIC ✓
+      </text>
+    </g>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- SCENE 3: MOTION SUPERPOWERS (10s - 18s)                          -->
+  <!-- ================================================================= -->
+  <g id="scene-3" class="promo-scene" opacity="0">
+    <!-- Central Stage Area -->
+    <g id="s3-center-stage" transform="translate(960, 500)">
+      <!-- Trim Path Vector Orbit -->
+      <path id="s3-trim-path" fill="none" stroke="url(#blue-gradient)" stroke-width="6" stroke-linecap="round"
+            d="M 0 -160 A 160 160 0 1 1 -0.01 -160 M 0 -100 A 100 100 0 1 0 0.01 -100 M -120 0 L 120 0 M 0 -120 L 0 120" />
+
+      <!-- Spring Physics Circle -->
+      <circle id="s3-spring-circle" cx="0" cy="0" r="70" fill="url(#cyan-gradient)" opacity="0.9" />
+
+      <!-- Morph Target Shapes (Hidden by default, used for morph transition) -->
+      <path id="s3-morph-star" opacity="0" fill="#3B82F6" d="M 0 -80 L 24 -24 L 80 0 L 24 24 L 0 80 L -24 24 L -80 0 L -24 -24 Z" />
+    </g>
+
+    <!-- Explosion GPU Particles (20 items) -->
+    <g id="s3-particles" transform="translate(960, 500)">
+      <circle class="gpu-part p1" cx="-120" cy="-80" r="8" fill="#60A5FA" />
+      <rect class="gpu-part p2" x="100" y="-120" width="14" height="14" rx="3" fill="#38BDF8" />
+      <circle class="gpu-part p3" cx="160" cy="60" r="10" fill="#818CF8" />
+      <rect class="gpu-part p4" x="-140" y="100" width="16" height="16" rx="4" fill="#34D399" />
+      <circle class="gpu-part p5" cx="0" cy="-180" r="9" fill="#60A5FA" />
+      <rect class="gpu-part p6" x="180" y="-40" width="12" height="12" rx="3" fill="#F472B6" />
+      <circle class="gpu-part p7" cx="-200" cy="-30" r="11" fill="#38BDF8" />
+      <rect class="gpu-part p8" x="-60" y="180" width="15" height="15" rx="3" fill="#818CF8" />
+      <circle class="gpu-part p9" cx="130" cy="150" r="8" fill="#34D399" />
+      <rect class="gpu-part p10" x="-180" y="-140" width="14" height="14" rx="3" fill="#60A5FA" />
+      <circle class="gpu-part p11" cx="220" cy="80" r="7" fill="#F472B6" />
+      <rect class="gpu-part p12" x="70" y="-200" width="13" height="13" rx="3" fill="#38BDF8" />
+      <circle class="gpu-part p13" cx="-80" cy="-170" r="9" fill="#818CF8" />
+      <rect class="gpu-part p14" x="-220" y="70" width="14" height="14" rx="3" fill="#60A5FA" />
+      <circle class="gpu-part p15" cx="50" cy="190" r="8" fill="#34D399" />
+      <rect class="gpu-part p16" x="200" y="-140" width="15" height="15" rx="4" fill="#818CF8" />
+      <circle class="gpu-part p17" cx="-160" cy="160" r="10" fill="#F472B6" />
+      <rect class="gpu-part p18" x="170" y="120" width="12" height="12" rx="3" fill="#38BDF8" />
+      <circle class="gpu-part p19" cx="0" cy="210" r="9" fill="#60A5FA" />
+      <rect class="gpu-part p20" x="-230" y="-80" width="14" height="14" rx="3" fill="#34D399" />
+    </g>
+
+    <!-- Superpower Badge -->
+    <g id="s3-badge" transform="translate(960, 780)">
+      <rect x="-180" y="-24" width="360" height="48" rx="24" fill="#1e1b4b" stroke="#6366F1" stroke-width="2" />
+      <text id="s3-feature-text" x="0" y="6" fill="#A5B4FC" font-family="-apple-system, sans-serif" font-size="15" font-weight="800" letter-spacing="3" text-anchor="middle">
+        LOTTIE TRIM PATH
+      </text>
+    </g>
+
+    <!-- Performance Counter HUD -->
+    <g id="s3-fps-hud" transform="translate(1650, 120)">
+      <rect x="-100" y="-35" width="200" height="70" rx="12" fill="#18181b" stroke="#27272a" stroke-width="1.5" />
+      <text id="s3-fps-val" x="-20" y="8" fill="#10B981" font-family="-apple-system, monospace" font-size="32" font-weight="800">120</text>
+      <text x="40" y="-5" fill="#71717a" font-family="-apple-system, sans-serif" font-size="12" font-weight="700">FPS</text>
+      <text x="40" y="15" fill="#10B981" font-family="-apple-system, sans-serif" font-size="10" font-weight="800">LOCKED</text>
+    </g>
+  </g>
+
+  <!-- ================================================================= -->
+  <!-- SCENE 4: BRAND REVEAL & CALL TO ACTION (18s - 22s)               -->
+  <!-- ================================================================= -->
+  <g id="scene-4" class="promo-scene" opacity="0">
+    <!-- Brand Logo Symbol Construction -->
+    <g id="s4-logo-group" transform="translate(960, 420)">
+      <!-- Animated Construction Path (Trim Path) -->
+      <path id="s4-logo-stroke" fill="none" stroke="url(#blue-gradient)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"
+            d="M 0 -80 L 70 -40 L 70 40 L 0 80 L -70 40 L -70 -40 Z M 0 -80 L 0 80 M -70 -40 L 70 40 M -70 40 L 70 -40" />
+      
+      <!-- Solid Fill Layer (Fades in) -->
+      <polygon id="s4-logo-fill" points="0,-75 65,-37 65,37 0,75 -65,37 -65,-37" fill="url(#blue-gradient)" opacity="0.25" />
+      <circle cx="0" cy="0" r="16" fill="#60A5FA" />
+    </g>
+
+    <!-- Typography / Wordmark -->
+    <g id="s4-wordmark" transform="translate(960, 600)">
+      <text x="0" y="0" fill="#FFFFFF" font-family="-apple-system, sans-serif" font-size="44" font-weight="900" letter-spacing="8" text-anchor="middle">
+        DESIGN OS
+      </text>
+      <text x="0" y="44" fill="#60A5FA" font-family="-apple-system, sans-serif" font-size="20" font-weight="700" letter-spacing="12" text-anchor="middle">
+        SVG ANIMATION
+      </text>
+    </g>
+
+    <!-- Tagline & Base Divider -->
+    <g id="s4-tagline" transform="translate(960, 720)">
+      <line id="s4-divider" x1="-180" y1="-25" x2="180" y2="-25" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" />
+      <text x="0" y="10" fill="#94A3B8" font-family="-apple-system, sans-serif" font-size="18" font-weight="500" letter-spacing="3" text-anchor="middle">
+        Intent in. Perfect motion out.
+      </text>
+    </g>
+  </g>
+
+  <!-- Global Header Title Overlay (Contextual per scene) -->
+  <g id="promo-titles" transform="translate(960, 160)">
+    <text id="main-title" x="0" y="0" fill="#F8FAFC" font-family="-apple-system, sans-serif" font-size="38" font-weight="900" letter-spacing="3" text-anchor="middle">
+      AI CAN DRAW. BUT CAN IT MOVE?
+    </text>
+    <text id="sub-title" x="0" y="40" fill="#64748B" font-family="-apple-system, sans-serif" font-size="18" font-weight="600" letter-spacing="2" text-anchor="middle">
+      Raw SVG animation breaks without deterministic engineering.
+    </text>
+  </g>
+</svg>
+
+    </div>
+
+    <!-- Controls Bar -->
+    <div class="controls-bar">
+      <!-- Scrubber Track with Scene Markers -->
+      <div class="timeline-container">
+        <div class="scrubber-track" id="scrubber">
+          <div class="scene-marker" style="left: 0%;" data-label="S1: BROKEN (0s)"></div>
+          <div class="scene-marker" style="left: 18.18%;" data-label="S2: PIPELINE (4s)"></div>
+          <div class="scene-marker" style="left: 45.45%;" data-label="S3: SUPERPOWERS (10s)"></div>
+          <div class="scene-marker" style="left: 81.81%;" data-label="S4: REVEAL (18s)"></div>
+
+          <div class="scrubber-progress" id="progress"></div>
+          <div class="scrubber-handle" id="handle"></div>
+        </div>
+      </div>
+
+      <!-- Action Buttons & Metadata -->
+      <div class="actions-row">
+        <div class="left-actions">
+          <button class="btn btn-primary" id="btn-play">
+            <span id="play-icon">▶</span> <span id="play-text">Play</span>
+          </button>
+          <button class="btn" id="btn-restart">↺ Replay</button>
+
+          <!-- Scene Quick Jumps -->
+          <button class="btn btn-scene" data-time="0">Scene 1</button>
+          <button class="btn btn-scene" data-time="4000">Scene 2</button>
+          <button class="btn btn-scene" data-time="10000">Scene 3</button>
+          <button class="btn btn-scene" data-time="18000">Scene 4</button>
+        </div>
+
+        <div class="meta-hud">
+          <div class="timecode-display">
+            <span class="current" id="tc-current">00:00:000</span> / <span id="tc-total">00:22:000</span>
+          </div>
+          <div class="badge-live">VIRTUAL CLOCK (HYPERFRAMES)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="promo-engine.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const svgElem = document.querySelector('.video-viewport svg');
+      const engine = new PromoTimelineEngine(svgElem);
+
+      const btnPlay = document.getElementById('btn-play');
+      const btnRestart = document.getElementById('btn-restart');
+      const playIcon = document.getElementById('play-icon');
+      const playText = document.getElementById('play-text');
+      const progressEl = document.getElementById('progress');
+      const handleEl = document.getElementById('handle');
+      const scrubberEl = document.getElementById('scrubber');
+      const tcCurrent = document.getElementById('tc-current');
+
+      function formatTime(ms) {
+        const totalSec = Math.floor(ms / 1000);
+        const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+        const secs = String(totalSec % 60).padStart(2, '0');
+        const millis = String(Math.floor(ms % 1000)).padStart(3, '0');
+        return ;
+      }
+
+      engine.on('update', (timeMs) => {
+        const pct = (timeMs / engine.durationMs) * 100;
+        progressEl.style.width = ;
+        handleEl.style.left = ;
+        tcCurrent.textContent = formatTime(timeMs);
+
+        if (engine.isPlaying) {
+          playIcon.textContent = '❚❚';
+          playText.textContent = 'Pause';
+        } else {
+          playIcon.textContent = '▶';
+          playText.textContent = 'Play';
+        }
+      });
+
+      engine.on('ended', () => {
+        playIcon.textContent = '▶';
+        playText.textContent = 'Play';
+      });
+
+      btnPlay.addEventListener('click', () => engine.togglePlay());
+      btnRestart.addEventListener('click', () => {
+        engine.seek(0);
+        engine.play();
+      });
+
+      // Quick Scene Buttons
+      document.querySelectorAll('.btn-scene').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = parseInt(btn.getAttribute('data-time'), 10);
+          engine.seek(t);
+        });
+      });
+
+      // Scrubber Interaction
+      let isDragging = false;
+      function handleScrub(e) {
+        const rect = scrubberEl.getBoundingClientRect();
+        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        engine.seek(pos * engine.durationMs);
+      }
+
+      scrubberEl.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        handleScrub(e);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (isDragging) handleScrub(e);
+      });
+      window.addEventListener('mouseup', () => {
+        isDragging = false;
+      });
+
+      // Keyboard Shortcuts: Space = toggle play, Arrows = scrub 500ms
+      window.addEventListener('keydown', (e) => {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          engine.togglePlay();
+        } else if (e.code === 'ArrowRight') {
+          engine.seek(engine.currentTimeMs + 500);
+        } else if (e.code === 'ArrowLeft') {
+          engine.seek(engine.currentTimeMs - 500);
+        }
+      });
+
+      // Initial Render at 0ms
+      engine.seek(0);
+    });
+  </script>
+</body>
+</html>
