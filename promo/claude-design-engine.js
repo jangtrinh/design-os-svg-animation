@@ -66,6 +66,8 @@
   const s3DarkToggleRow = document.getElementById('s3-dark-toggle-row');
   const s3IosSwitch = document.getElementById('s3-ios-switch');
   const s3PinBox = document.getElementById('s3-pin-box');
+  const s3EnsoCircle = document.getElementById('s3-enso-circle');
+  const s3EnsoGlow = document.getElementById('s3-enso-glow');
 
   // Scene 4 Elements
   const s4RetreatWindow = document.getElementById('s4-retreat-window');
@@ -75,18 +77,48 @@
   const s4SwapComment = document.getElementById('s4-swap-comment');
   const s4RetreatTitle = document.getElementById('s4-retreat-title');
   const s4KnobsBtn = document.getElementById('s4-knobs-btn');
+  const s4KnobTickPopover = document.getElementById('s4-knob-tick-popover');
+  const s4KnobPointer = document.getElementById('s4-knob-pointer');
+  const s4KnobReadout = document.getElementById('s4-knob-readout');
   const s4ChartCommentBox = document.getElementById('s4-chart-comment-box');
   const s4MorphBarsG = document.getElementById('s4-morph-bars-g');
   const s4MorphLinePath = document.getElementById('s4-morph-line-path');
+  const s4MorphAreaPath = document.getElementById('s4-morph-area-path');
 
   // Scene 5 Elements
   const s5ExportMenu = document.getElementById('s5-export-menu');
   const s5CliModal = document.getElementById('s5-cli-modal');
   const s5BtnCopy = document.getElementById('s5-btn-copy');
+  const s5CopyRipple = document.getElementById('s5-copy-ripple');
   const s5MontageGrid = document.getElementById('s5-montage-grid');
   const s5FinaleOutro = document.getElementById('s5-finale-outro');
   const s5GlobeCanvas = document.getElementById('s5-globe-canvas');
   const s5GlobeCtx = s5GlobeCanvas ? s5GlobeCanvas.getContext('2d') : null;
+
+  // --- KINEMATIC EASING & CURSOR INTERPOLATION HELPERS ---
+  function easeOutCubic(x) {
+    return 1 - Math.pow(1 - x, 3);
+  }
+  function easeInOutCubic(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+  }
+  function interpolateCursor(startX, startY, endX, endY, progress, curvature = 0) {
+    const p = Math.max(0, Math.min(1, progress));
+    const easeP = easeOutCubic(p);
+    let x = startX + (endX - startX) * easeP;
+    let y = startY + (endY - startY) * easeP;
+    if (curvature !== 0) {
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      const nx = -dy / dist;
+      const ny = dx / dist;
+      const curveAmount = Math.sin(p * Math.PI) * curvature;
+      x += nx * curveAmount;
+      y += ny * curveAmount;
+    }
+    return { x, y };
+  }
 
   // --- 3D CONTINENT POLYGONS (Simplified Global Landmasses) ---
   const CONTINENTS = [
@@ -172,6 +204,27 @@
     { label: 'Apr', val: 320 }
   ];
 
+  // Catmull-Rom to Cubic Bezier curve builder for broadcast spline rendering
+  function buildSplinePath(points) {
+    if (!points || points.length === 0) return '';
+    if (points.length === 1) return `M ${points[0].x},${points[0].y}`;
+    let d = `M ${points[0].x.toFixed(1)},${points[0].y.toFixed(1)}`;
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[Math.max(i - 1, 0)];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[Math.min(i + 2, points.length - 1)];
+
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+      d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
   function initDeckChart() {
     if (!s4MorphBarsG) return;
     s4MorphBarsG.innerHTML = '';
@@ -190,9 +243,17 @@
       s4MorphBarsG.appendChild(rect);
     });
 
-    const pts = CHART_DATA.map((d, i) => `${50 + i * 48 + 14},${230 - (d.val / 320) * 160}`).join(' L ');
+    const points = CHART_DATA.map((d, i) => ({
+      x: 50 + i * 48 + 14,
+      y: 230 - (d.val / 320) * 160
+    }));
+    const splineD = buildSplinePath(points);
     if (s4MorphLinePath) {
-      s4MorphLinePath.setAttribute('d', `M ${pts}`);
+      s4MorphLinePath.setAttribute('d', splineD);
+    }
+    if (s4MorphAreaPath) {
+      const areaD = `${splineD} L ${points[points.length - 1].x},230 L ${points[0].x},230 Z`;
+      s4MorphAreaPath.setAttribute('d', areaD);
     }
   }
   initDeckChart();
@@ -243,12 +304,28 @@
     ctx.fillStyle = sphereGrad;
     ctx.fill();
 
-    // Atmosphere Rim Glow
+    // Atmosphere Rim Glow & Fresnel Corona Bloom
     ctx.save();
+    const coronaGrad = ctx.createRadialGradient(
+      CenterX, CenterY, R * 0.96,
+      CenterX, CenterY, R * 1.07
+    );
+    coronaGrad.addColorStop(0, 'rgba(52, 211, 153, 0.0)');
+    coronaGrad.addColorStop(0.5, 'rgba(52, 211, 153, 0.08)');
+    coronaGrad.addColorStop(0.85, 'rgba(16, 185, 129, 0.22)');
+    coronaGrad.addColorStop(1, 'rgba(52, 211, 153, 0.0)');
+
     ctx.beginPath();
-    ctx.arc(CenterX, CenterY, R + 3, 0, Math.PI * 2);
-    ctx.strokeStyle = `rgba(52, 211, 153, 0.18)`;
-    ctx.lineWidth = 6;
+    ctx.arc(CenterX, CenterY, R * 1.07, 0, Math.PI * 2);
+    ctx.fillStyle = coronaGrad;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(CenterX, CenterY, R + 2, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgba(52, 211, 153, 0.32)`;
+    ctx.lineWidth = 3;
+    ctx.shadowColor = '#34D399';
+    ctx.shadowBlur = 12;
     ctx.stroke();
     ctx.restore();
 
@@ -369,26 +446,32 @@
         }
         ctx.stroke();
 
-        // Pulsing Light Pulse along arc
+        // Traveling Light Pulse Packets along Great-Circle Arc (Comet Head + Tails)
         const pulseFrac = ((currentTime * 0.45 + (i * 0.15)) % 1.0);
-        const pulseLat = c1.lat + (c2.lat - c1.lat) * pulseFrac;
-        const pulseLng = c1.lng + (c2.lng - c1.lng) * pulseFrac;
-        const pulseElev = R * (1 + 0.16 * Math.sin(pulseFrac * Math.PI));
-        const pulsePt = project(pulseLat, pulseLng, pulseElev);
-        if (pulsePt.visible) {
-          ctx.beginPath();
-          ctx.arc(pulsePt.x, pulsePt.y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = '#FFFFFF';
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = '#34D399';
-          ctx.fill();
+        for (let s = 0; s < 3; s++) {
+          const tOffset = pulseFrac - s * 0.024;
+          if (tOffset >= 0 && tOffset <= 1) {
+            const pLat = c1.lat + (c2.lat - c1.lat) * tOffset;
+            const pLng = c1.lng + (c2.lng - c1.lng) * tOffset;
+            const pElev = R * (1 + 0.16 * Math.sin(tOffset * Math.PI));
+            const pPt = project(pLat, pLng, pElev);
+            if (pPt.visible) {
+              ctx.beginPath();
+              const dotR = s === 0 ? 2.8 : s === 1 ? 2.0 : 1.4;
+              ctx.arc(pPt.x, pPt.y, dotR, 0, Math.PI * 2);
+              ctx.fillStyle = s === 0 ? '#FFFFFF' : s === 1 ? '#A7F3D0' : 'rgba(52, 211, 153, 0.65)';
+              ctx.shadowBlur = s === 0 ? 12 : 6;
+              ctx.shadowColor = '#34D399';
+              ctx.fill();
+            }
+          }
         }
       }
     });
     ctx.restore();
 
     // 5. City Node Dots & Labels
-    CITIES.forEach(c => {
+    CITIES.forEach((c, idx) => {
       const pt = project(c.lat, c.lng, R);
       if (pt.visible) {
         // Glowing dot
@@ -398,6 +481,16 @@
         ctx.shadowColor = '#10B981';
         ctx.shadowBlur = 8;
         ctx.fill();
+
+        // Subtle dynamic ping ring
+        const pingT = (currentTime * 0.6 + idx * 0.2) % 1.0;
+        if (pingT < 0.75) {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 3.5 + pingT * 10, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(52, 211, 153, ${0.4 * (1 - pingT / 0.75)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
 
         // Subtle label
         if (showLabels && pt.z > 30) {
@@ -421,13 +514,16 @@
     if (t < 12.0) {
       setActiveScene('s1', 'Scene 1: Initial Prompt');
 
-      // Cursor position
+      // Cursor position with natural kinematic curvature & spring easing
       if (t < 1.5) {
-        // Cursor moving toward centered [Design] button
         const p = Math.min(1, t / 1.5);
-        const curX = 640 + (1 - p) * 120;
-        const curY = 360 + (1 - p) * 140;
-        virtualCursor.style.transform = `translate3d(${curX}px, ${curY}px, 0)`;
+        const cur = interpolateCursor(760, 500, 640, 360, p, 24);
+        virtualCursor.style.transform = `translate3d(${cur.x.toFixed(1)}px, ${cur.y.toFixed(1)}px, 0)`;
+        if (t >= 1.35) {
+          s1Pill.style.transform = 'scale(0.96)';
+        } else {
+          s1Pill.style.transform = 'scale(1)';
+        }
         s1Pill.classList.remove('hidden');
         s1Expanded.classList.add('hidden');
         s1MorphPill.classList.add('hidden');
@@ -459,10 +555,11 @@
           s1Attachments.classList.add('hidden');
         }
 
-        // Move cursor to Send button
+        // Move cursor to Send button with natural arc trajectory
         if (t >= 5.8) {
           const sendP = Math.min(1, (t - 5.8) / 0.8);
-          virtualCursor.style.transform = `translate3d(${640 + sendP * 240}px, ${360 + sendP * 40}px, 0)`;
+          const cur = interpolateCursor(640, 360, 880, 400, sendP, -16);
+          virtualCursor.style.transform = `translate3d(${cur.x.toFixed(1)}px, ${cur.y.toFixed(1)}px, 0)`;
           s1SendBtn.style.transform = t > 6.4 ? 'scale(0.92)' : 'scale(1)';
         } else {
           virtualCursor.style.transform = `translate3d(640px, 360px, 0)`;
@@ -522,11 +619,12 @@
         s2TweaksPopover.classList.add('hidden');
         s2TweaksDrawer.classList.remove('hidden');
 
-        // Automate drawer sliders
+        // Automate drawer sliders with smooth camera damping
         if (t >= 19.0 && t < 23.0) {
           const p = (t - 19.0) / 4.0;
-          globeRadius = 380 + p * 60; // zoom into 440
-          tilt = 0.22 + p * 0.15;     // tilt to South America
+          const easeP = easeInOutCubic(p);
+          globeRadius = 380 + easeP * 60; // zoom into 440 with smooth damping
+          tilt = 0.22 + easeP * 0.15;     // tilt to South America
           document.getElementById('tweak-val-size').textContent = Math.floor(globeRadius);
           document.getElementById('slider-tweak-size').value = globeRadius;
           document.getElementById('tweak-val-tilt').textContent = `${Math.floor(tilt * 57)}°`;
@@ -572,6 +670,21 @@
           s3ViewJourney.classList.add('hidden');
           s3ViewPlayer.classList.remove('hidden');
           s3SwatchMoss.classList.add('active');
+
+          // Enso breathing ring stroke animation & radial gradient sync
+          if (s3EnsoCircle) {
+            const breathCycle = (t % 4.0) / 4.0;
+            const breathWave = 0.5 - 0.5 * Math.cos(breathCycle * Math.PI * 2);
+            const dashOffset = 140 - breathWave * 45;
+            s3EnsoCircle.setAttribute('stroke-dashoffset', dashOffset.toFixed(1));
+          }
+          const ensoTimeEl = document.getElementById('s3-enso-time');
+          if (ensoTimeEl) {
+            const remSec = Math.max(0, Math.floor(1036 - (t - 34.0) * 1.5));
+            const m = Math.floor(remSec / 60);
+            const s = remSec % 60;
+            ensoTimeEl.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+          }
         } else {
           s3PhoneDevice.classList.remove('moss-active');
           s3ViewJourney.classList.remove('hidden');
@@ -637,15 +750,20 @@
           s4PhotoTag.textContent = '🌲 Big Sur Redwood Path';
         }
 
-        // 51.5s: Knobs headline font resize
+        // 51.5s: Knobs headline font resize with tactile dial feedback
         if (t >= 51.5) {
           s4KnobsBtn.classList.add('highlight');
+          if (s4KnobTickPopover) s4KnobTickPopover.classList.remove('hidden');
           const p = Math.min(1, (t - 51.5) / 2.0);
-          const fontSize = Math.floor(34 - p * 10); // 34px -> 24px
+          const easeP = easeInOutCubic(p);
+          const fontSize = Math.floor(34 - easeP * 10); // 34px -> 24px
           s4RetreatTitle.style.fontSize = `${fontSize}px`;
+          if (s4KnobPointer) s4KnobPointer.style.transform = `rotate(${-easeP * 60}deg)`;
+          if (s4KnobReadout) s4KnobReadout.textContent = `${fontSize}px`;
           virtualCursor.style.transform = `translate3d(1060px, 95px, 0)`;
         } else {
           s4KnobsBtn.classList.remove('highlight');
+          if (s4KnobTickPopover) s4KnobTickPopover.classList.add('hidden');
           s4RetreatTitle.style.fontSize = '32px';
         }
       }
@@ -653,6 +771,7 @@
       else {
         s4RetreatWindow.classList.add('hidden');
         s4DeckWindow.classList.remove('hidden');
+        if (s4KnobTickPopover) s4KnobTickPopover.classList.add('hidden');
 
         // 56.5s: Comment "Make this a line graph instead?"
         if (t >= 56.5 && t < 58.5) {
@@ -662,26 +781,31 @@
           s4ChartCommentBox.classList.add('hidden');
         }
 
-        // 58.5s: Smooth Bar-to-Line Spline Morphing
+        // 58.5s: Smooth Bar-to-Line Spline Morphing with glowing gradient fill
         if (t >= 58.5) {
           const morphP = Math.min(1, (t - 58.5) / 2.3);
-          s4MorphLinePath.style.opacity = morphP;
+          const easeP = easeInOutCubic(morphP);
+          s4MorphLinePath.style.opacity = easeP;
+          if (s4MorphAreaPath) {
+            s4MorphAreaPath.style.opacity = easeP * 0.9;
+          }
 
           CHART_DATA.forEach((d, idx) => {
             const bar = document.getElementById(`deck-bar-${idx}`);
             if (bar) {
               const fullH = (d.val / 320) * 160;
-              const curH = fullH * (1 - morphP) + 6 * morphP;
-              const curW = 28 * (1 - morphP) + 6 * morphP;
+              const curH = fullH * (1 - easeP) + 6 * easeP;
+              const curW = 28 * (1 - easeP) + 6 * easeP;
               const curX = (50 + idx * 48) + (28 - curW) / 2;
               bar.setAttribute('height', curH);
               bar.setAttribute('width', curW);
               bar.setAttribute('x', curX);
-              bar.setAttribute('fill', morphP > 0.5 ? '#2563EB' : '#5B6D82');
+              bar.setAttribute('fill', easeP > 0.5 ? '#2563EB' : '#5B6D82');
             }
           });
         } else {
           s4MorphLinePath.style.opacity = 0;
+          if (s4MorphAreaPath) s4MorphAreaPath.style.opacity = 0;
           initDeckChart();
         }
       }
@@ -692,6 +816,7 @@
     // ==========================================================
     else {
       setActiveScene('s5', 'Scene 5: Export & CLI Handoff');
+      if (s4KnobTickPopover) s4KnobTickPopover.classList.add('hidden');
 
       // Draw background globe for Scene 5
       if (s5GlobeCtx) {
@@ -710,19 +835,26 @@
         s5ExportMenu.classList.remove('active');
       }
 
-      // 01:07 - 01:13: CLI Modal appears
+      // 01:07 - 01:13: CLI Modal appears with active copy ripple wave
       if (t >= 67.0 && t < 73.0) {
         s5CliModal.classList.remove('hidden');
 
         if (t >= 70.0) {
-          s5BtnCopy.textContent = 'Copied! ✓';
-          s5BtnCopy.style.background = '#059669';
+          const copyLabel = s5BtnCopy.querySelector('.copy-btn-label');
+          if (copyLabel) copyLabel.textContent = 'Copied! ✓';
+          else s5BtnCopy.textContent = 'Copied! ✓';
+          s5BtnCopy.classList.add('copied');
+          if (s5CopyRipple) s5CopyRipple.classList.add('active');
         } else {
-          s5BtnCopy.textContent = 'Copy command';
-          s5BtnCopy.style.background = '#27272A';
+          const copyLabel = s5BtnCopy.querySelector('.copy-btn-label');
+          if (copyLabel) copyLabel.textContent = 'Copy command';
+          else s5BtnCopy.textContent = 'Copy command';
+          s5BtnCopy.classList.remove('copied');
+          if (s5CopyRipple) s5CopyRipple.classList.remove('active');
         }
       } else {
         s5CliModal.classList.add('hidden');
+        if (s5CopyRipple) s5CopyRipple.classList.remove('active');
       }
 
       // 01:13 - 01:16: 16-Project Grand Zoomout Montage
@@ -801,6 +933,12 @@
       updateTimeline(currentTime);
     });
   });
+
+  // --- DETERMINISTIC VIRTUAL CLOCK INTERFACE ---
+  window.__seekToTime = function(sec) {
+    currentTime = Math.max(0, Math.min(TOTAL_DURATION, parseFloat(sec) || 0));
+    updateTimeline(currentTime);
+  };
 
   // Initial update
   updateTimeline(currentTime);

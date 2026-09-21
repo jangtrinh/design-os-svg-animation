@@ -108,16 +108,48 @@ export const ExportHandoffModal: React.FC<ExportHandoffModalProps> = ({
             </div>
 
             {/* Terminal Command Box */}
-            <div className="bg-[#0A0A0C] border border-[#27272A] rounded-xl p-3.5 mb-5 flex items-center justify-between font-mono text-[13px]">
-              <div className="flex items-center gap-2 overflow-x-auto text-[#34D399] pr-3">
-                <span className="text-[#A1A1AA] select-none">$</span>
-                <span className="whitespace-nowrap">{CLI_COMMAND}</span>
+            <div className="bg-[#0A0A0C] border border-[#27272A] rounded-xl p-3.5 mb-5 flex items-center justify-between font-mono text-[13px] relative overflow-hidden shadow-inner">
+              {/* Active Copy Ripple Wave */}
+              <motion.div
+                initial={false}
+                animate={{
+                  scale: copied ? 35 : 0,
+                  opacity: copied ? [0.6, 0.2, 0] : 0,
+                }}
+                transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute right-12 top-1/2 w-4 h-4 -translate-y-1/2 rounded-full pointer-events-none"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(52, 211, 153, 0.4) 0%, rgba(52, 211, 153, 0.15) 50%, transparent 70%)",
+                }}
+              />
+
+              {/* Syntax Token Spans */}
+              <div className="flex items-center gap-2 overflow-x-auto pr-3 z-10 select-all">
+                <span className="text-[#71717A] font-semibold select-none">$</span>
+                <span className="whitespace-nowrap flex items-center gap-1.5">
+                  <span className="text-[#D96B43] font-semibold">claude</span>
+                  <span className="text-[#60A5FA] font-medium">code</span>
+                  <span className="text-[#C084FC] font-medium">handoff</span>
+                  <span className="text-[#F4F4F5] flex items-center">
+                    <span className="text-[#71717A]">https://</span>
+                    <span className="text-[#34D399] font-medium">claude.ai</span>
+                    <span className="text-[#FBBF24]">/design/p/hemlark-retreat-26</span>
+                  </span>
+                </span>
               </div>
+
+              {/* Copy Button with Copied State */}
               <button
                 onClick={handleCopy}
-                className="px-3 py-1.5 bg-[#27272A] hover:bg-[#3F3F46] text-[#F4F4F5] text-[12px] rounded-lg transition-colors cursor-pointer shrink-0"
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] rounded-lg transition-all duration-200 cursor-pointer shrink-0 z-10 ${
+                  copied
+                    ? "bg-[#059669] text-white border border-[#10B981] shadow-[0_0_12px_rgba(16,185,129,0.5)]"
+                    : "bg-[#27272A] hover:bg-[#3F3F46] text-[#F4F4F5] border border-[#3F3F46]"
+                }`}
               >
-                {copied ? "Copied! ✓" : "Copy command"}
+                <span>{copied ? "✓" : "📋"}</span>
+                <span>{copied ? "Copied!" : "Copy command"}</span>
               </button>
             </div>
 

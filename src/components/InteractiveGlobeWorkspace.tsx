@@ -79,9 +79,36 @@ export interface GlobeTweaks {
   tilt: number;
 }
 
+// Atmospheric Rim Lighting Shader (NASA/Apple Limb & Fresnel Glow)
+const AtmosphereShader = {
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec3 vViewVec;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+      vViewVec = normalize(-mvPos.xyz);
+      gl_Position = projectionMatrix * mvPos;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vNormal;
+    varying vec3 vViewVec;
+    uniform vec3 uColor;
+    uniform float uIntensity;
+    void main() {
+      float fresnel = dot(vNormal, vViewVec);
+      fresnel = clamp(1.0 - fresnel, 0.0, 1.0);
+      float glow = pow(fresnel, 2.8) * uIntensity;
+      gl_FragColor = vec4(uColor, glow);
+    }
+  `,
+};
+
 const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
   const globeGroupRef = useRef<THREE.Group>(null);
   const pingRingsRef = useRef<THREE.Group>(null);
+  const packetGroupRef = useRef<THREE.Group>(null);
 
   const cityPositions = useMemo(() => {
     return MOCK_CITIES.map((c) => ({
@@ -90,18 +117,24 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
     }));
   }, []);
 
-  const arcCurves = useMemo(() => {
+  const rawCurves = useMemo(() => {
     const cityMap = new Map(cityPositions.map((c) => [c.id, c.pos]));
-    return MOCK_CONNECTIONS.map(([src, dst], idx) => {
+    return MOCK_CONNECTIONS.map(([src, dst]) => {
       const p1 = cityMap.get(src)!;
       const p2 = cityMap.get(dst)!;
       const dist = p1.distanceTo(p2);
       const mid = p1.clone().add(p2).multiplyScalar(0.5);
       const control = mid.normalize().multiplyScalar(GLOBE_RADIUS * 1.2 + dist * 0.1);
-      const curve = new THREE.QuadraticBezierCurve3(p1, control, p2);
-      return { id: `${src}-${dst}-${idx}`, points: curve.getPoints(40) };
+      return new THREE.QuadraticBezierCurve3(p1, control, p2);
     });
   }, [cityPositions]);
+
+  const arcCurves = useMemo(() => {
+    return rawCurves.map((curve, idx) => ({
+      id: `arc-${idx}`,
+      points: curve.getPoints(40),
+    }));
+  }, [rawCurves]);
 
   const gridGeometries = useMemo(() => {
     const lines: THREE.Vector3[][] = [];
@@ -135,6 +168,20 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
         if (mat) mat.opacity = opacity;
       });
     }
+    // Animate traveling light pulse packets along great-circle arcs
+    if (packetGroupRef.current) {
+      const time = state.clock.getElapsedTime();
+      packetGroupRef.current.children.forEach((child, idx) => {
+        const curve = rawCurves[idx % rawCurves.length];
+        if (curve) {
+          const tProgress = ((time * 0.35 + idx * 0.12) % 1.0);
+          const pt = curve.getPoint(tProgress);
+          child.position.copy(pt);
+          const scale = 1.0 + Math.sin(tProgress * Math.PI) * 0.5;
+          child.scale.set(scale, scale, scale);
+        }
+      });
+    }
   });
 
   const cityScale = (tweaks.citySize / 4) * 0.038;
@@ -142,12 +189,30 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
 
   return (
     <group ref={globeGroupRef}>
+      {/* 1. Core Globe Sphere */}
       <mesh>
         <sphereGeometry args={[GLOBE_RADIUS, 64, 64]} />
         <meshStandardMaterial
           color={tweaks.theme === "dark" ? "#0A0A0C" : "#F0EFEA"}
           roughness={0.8}
           metalness={0.2}
+        />
+      </mesh>
+
+      {/* 2. Atmospheric Rim Lighting / Fresnel Glow Halo Mesh */}
+      <mesh>
+        <sphereGeometry args={[GLOBE_RADIUS * 1.045, 64, 64]} />
+        <shaderMaterial
+          vertexShader={AtmosphereShader.vertexShader}
+          fragmentShader={AtmosphereShader.fragmentShader}
+          uniforms={{
+            uColor: { value: new THREE.Color(TOKENS.emeraldGlow) },
+            uIntensity: { value: tweaks.theme === "dark" ? 0.75 : 0.4 },
+          }}
+          transparent
+          blending={THREE.AdditiveBlending}
+          side={THREE.BackSide}
+          depthWrite={false}
         />
       </mesh>
 
@@ -172,6 +237,7 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
         </group>
       )}
 
+      {/* 3. Glowing Great-Circle Arcs */}
       <group>
         {arcCurves.map(({ id, points }) => (
           <line key={id}>
@@ -192,6 +258,28 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
         ))}
       </group>
 
+      {/* 4. Traveling Light Pulse Packets along Great-Circle Arcs */}
+      <group ref={packetGroupRef}>
+        {rawCurves.map((_, idx) => (
+          <group key={`packet-${idx}`}>
+            <mesh>
+              <sphereGeometry args={[0.028, 12, 12]} />
+              <meshBasicMaterial color="#FFFFFF" />
+            </mesh>
+            <mesh>
+              <sphereGeometry args={[0.055, 12, 12]} />
+              <meshBasicMaterial
+                color={TOKENS.emeraldGlow}
+                transparent
+                opacity={0.65}
+                depthWrite={false}
+              />
+            </mesh>
+          </group>
+        ))}
+      </group>
+
+      {/* 5. City Nodes */}
       <group>
         {cityPositions.map((city) => (
           <group key={city.id} position={city.pos}>
@@ -212,6 +300,7 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
         ))}
       </group>
 
+      {/* 6. City Pulse Ping Rings */}
       <group ref={pingRingsRef}>
         {cityPositions.map((city) => (
           <mesh
@@ -232,6 +321,21 @@ const GlobeScene: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
       </group>
     </group>
   );
+};
+
+// Smooth Camera Lerp Damping Rig
+const CameraRig: React.FC<{ tweaks: GlobeTweaks }> = ({ tweaks }) => {
+  useFrame((state, delta) => {
+    const baseDist = tweaks.breakpoint === "mobile" ? 6.8 : tweaks.breakpoint === "tablet" ? 6.0 : 5.4;
+    const targetY = ((tweaks.tilt * Math.PI) / 180) * 1.25;
+    const targetZ = baseDist;
+    const targetPos = new THREE.Vector3(0, targetY, targetZ);
+    // Framerate-independent exponential decay damping
+    const damping = 1 - Math.exp(-7 * delta);
+    state.camera.position.lerp(targetPos, damping);
+    state.camera.lookAt(0, 0, 0);
+  });
+  return null;
 };
 
 export interface InteractiveGlobeWorkspaceProps {
@@ -431,6 +535,7 @@ export const InteractiveGlobeWorkspace: React.FC<InteractiveGlobeWorkspaceProps>
           <ambientLight intensity={0.8} />
           <pointLight position={[10, 10, 10]} intensity={1.2} />
           <pointLight position={[-10, -10, -10]} intensity={0.4} />
+          <CameraRig tweaks={tweaks} />
           <GlobeScene tweaks={tweaks} />
           <OrbitControls enablePan={false} minDistance={3.5} maxDistance={8.5} rotateSpeed={0.6} zoomSpeed={0.8} />
         </Canvas>

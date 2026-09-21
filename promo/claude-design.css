@@ -397,16 +397,18 @@ body.clean-export .video-stage {
 .s1-caret {
   display: inline-block;
   width: 2px;
-  height: 18px;
-  background: #18181B;
+  height: 20px;
+  background: var(--coral-claude);
+  border-radius: 1px;
   vertical-align: middle;
   margin-left: 2px;
-  animation: blink 0.8s infinite;
+  box-shadow: 0 0 8px rgba(217, 119, 87, 0.65);
+  animation: s1CaretBreathe 0.85s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+@keyframes s1CaretBreathe {
+  0%, 100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.12; transform: scaleY(0.88); }
 }
 
 .s1-bottom-bar {
@@ -492,14 +494,26 @@ body.clean-export .video-stage {
 }
 
 .s1-claude-star-spin {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   color: var(--coral-claude);
-  animation: spin 1.5s linear infinite;
+  transform-origin: center center;
+  animation: s1StarSpinGlow 2.4s ease-in-out infinite;
 }
 
-@keyframes spin {
-  100% { transform: rotate(360deg); }
+@keyframes s1StarSpinGlow {
+  0% {
+    transform: rotate(0deg) scale(1);
+    filter: drop-shadow(0 0 8px rgba(217, 119, 87, 0.55)) drop-shadow(0 0 16px rgba(217, 119, 87, 0.3));
+  }
+  50% {
+    transform: rotate(180deg) scale(1.07);
+    filter: drop-shadow(0 0 18px rgba(217, 119, 87, 0.95)) drop-shadow(0 0 32px rgba(217, 119, 87, 0.5));
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    filter: drop-shadow(0 0 8px rgba(217, 119, 87, 0.55)) drop-shadow(0 0 16px rgba(217, 119, 87, 0.3));
+  }
 }
 
 .s1-status-label {
@@ -703,6 +717,81 @@ body.clean-export .video-stage {
 .tool-btn.highlight {
   background: #F4F4F5;
   border-color: #E5E3DC;
+}
+
+/* Tactile Dial Knob Tick Feedback Popover */
+.knob-tick-popover {
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(24, 24, 27, 0.94);
+  backdrop-filter: blur(12px);
+  border: 1px solid #3F3F46;
+  border-radius: 12px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  z-index: 50;
+  animation: knobFadeIn 0.22s var(--ease-spring) forwards;
+}
+
+@keyframes knobFadeIn {
+  from { opacity: 0; transform: translate(-50%, -6px) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
+.knob-dial-ring {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #18181B;
+  border: 1.5px solid #52525B;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.knob-dial-pointer {
+  position: absolute;
+  width: 2px;
+  height: 12px;
+  background: var(--coral-claude);
+  border-radius: 1px;
+  top: 3px;
+  transform-origin: bottom center;
+  transform: rotate(0deg);
+  transition: transform 0.1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 6px rgba(217, 119, 87, 0.7);
+}
+
+.knob-tick-dots {
+  position: absolute;
+  inset: -4px;
+  pointer-events: none;
+}
+
+.tick-dot {
+  position: absolute;
+  left: calc(50% - 1px);
+  top: 0;
+  width: 2px;
+  height: 3px;
+  background: #71717A;
+  border-radius: 1px;
+  transform-origin: center 20px;
+}
+
+.knob-dial-readout {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #F4F4F5;
+  letter-spacing: -0.02em;
 }
 
 .zoom-dropdown {
@@ -1139,13 +1228,25 @@ body.clean-export .video-stage {
   background: #FFFFFF;
   border-radius: 44px;
   border: 6px solid #1C1C1E;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+  box-shadow: 0 25px 65px rgba(0,0,0,0.32), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
   position: relative;
   transition: background 0.6s ease;
+}
+
+.phone-specular-glare {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.06) 35%, rgba(255,255,255,0) 65%);
+  pointer-events: none;
+  z-index: 25;
+  border-radius: 38px 38px 0 0;
 }
 
 .phone-frame.moss-active {
@@ -1796,32 +1897,106 @@ body.clean-export .video-stage {
 .cli-command-row {
   background: #09090B;
   border: 1px solid #27272A;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-family: monospace;
-  font-size: 12px;
+  gap: 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 13px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cli-ripple-wave {
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.45) 0%, rgba(52, 211, 153, 0.18) 45%, transparent 70%);
+  transform: translate(50%, -50%) scale(0);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease-out;
+}
+
+.cli-ripple-wave.active {
+  transform: translate(50%, -50%) scale(45);
+  opacity: 1;
 }
 
 .prompt-sym {
   color: #71717A;
+  font-weight: 600;
+  user-select: none;
 }
 
-.cmd-text {
+.cmd-tokens {
   flex: 1;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.token-bin {
+  color: var(--coral-claude);
+  font-weight: 600;
+}
+
+.token-sub {
+  color: #60A5FA;
+  font-weight: 500;
+}
+
+.token-act {
+  color: #C084FC;
+  font-weight: 500;
+}
+
+.token-url {
+  color: #F4F4F5;
+}
+
+.token-proto {
+  color: #71717A;
+}
+
+.token-host {
   color: #34D399;
+}
+
+.token-path {
+  color: #FBBF24;
 }
 
 .btn-copy-cli {
   background: #27272A;
-  border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
+  border: 1px solid #3F3F46;
+  border-radius: 7px;
+  padding: 5px 12px;
   color: white;
   font-size: 11px;
+  font-weight: 500;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 2;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-cli:hover {
+  background: #3F3F46;
+}
+
+.btn-copy-cli.copied {
+  background: #059669;
+  border-color: #10B981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.5);
 }
 
 /* 16-Project Montage Zoomout */

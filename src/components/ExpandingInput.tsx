@@ -176,7 +176,11 @@ export const ExpandingInput: React.FC<ExpandingInputProps> = ({
                 <p className="text-[15px] leading-relaxed text-[#18181B] font-normal select-none">
                   {displayedText}
                   {!isTypingComplete && (
-                    <span className="inline-block w-1.5 h-4 ml-0.5 bg-[#D96B43] animate-pulse align-middle" />
+                    <motion.span
+                      animate={{ opacity: [1, 0.15, 1], scaleY: [1, 0.9, 1] }}
+                      transition={{ repeat: Infinity, duration: 0.85, ease: "easeInOut" }}
+                      className="inline-block w-[2px] h-[18px] ml-1 bg-[#D96B43] rounded-full shadow-[0_0_8px_rgba(217,107,67,0.7)] align-middle"
+                    />
                   )}
                 </p>
               )}
@@ -188,7 +192,7 @@ export const ExpandingInput: React.FC<ExpandingInputProps> = ({
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
                 onClick={handleSend}
-                className="w-9 h-9 rounded-full bg-[#D96B43] flex items-center justify-center text-white shadow-sm hover:shadow-md cursor-pointer transition-transform"
+                className="w-9 h-9 rounded-full bg-[#D96B43] flex items-center justify-center text-white shadow-[0_1px_2px_rgba(0,0,0,0.1),0_4px_12px_rgba(217,107,67,0.4)] hover:shadow-[0_2px_6px_rgba(0,0,0,0.15),0_8px_20px_rgba(217,107,67,0.5)] cursor-pointer transition-all"
                 title="Send Prompt"
               >
                 <svg
@@ -208,7 +212,7 @@ export const ExpandingInput: React.FC<ExpandingInputProps> = ({
           </motion.div>
         )}
 
-        {/* State 2: Claude Multi-Wing Red-Orange Star Spinner */}
+        {/* State 2: Claude Multi-Wing Red-Orange Star Spinner with Breathing Glow */}
         {state === 2 && (
           <motion.div
             key="spinner-loading"
@@ -219,11 +223,23 @@ export const ExpandingInput: React.FC<ExpandingInputProps> = ({
             className="flex items-center justify-center p-8"
           >
             <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-              className="w-14 h-14 flex items-center justify-center text-[#D96B43]"
+              animate={{
+                rotate: 360,
+                scale: [1, 1.06, 1],
+                filter: [
+                  "drop-shadow(0 0 8px rgba(217, 107, 67, 0.55)) drop-shadow(0 0 16px rgba(217, 107, 67, 0.25))",
+                  "drop-shadow(0 0 18px rgba(217, 107, 67, 0.95)) drop-shadow(0 0 32px rgba(217, 107, 67, 0.45))",
+                  "drop-shadow(0 0 8px rgba(217, 107, 67, 0.55)) drop-shadow(0 0 16px rgba(217, 107, 67, 0.25))",
+                ],
+              }}
+              transition={{
+                rotate: { repeat: Infinity, duration: 1.8, ease: "linear" },
+                scale: { repeat: Infinity, duration: 2.2, ease: "easeInOut" },
+                filter: { repeat: Infinity, duration: 2.2, ease: "easeInOut" },
+              }}
+              className="w-16 h-16 flex items-center justify-center text-[#D96B43]"
             >
-              <svg className="w-12 h-12" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-14 h-14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C12.5523 2 13 2.44772 13 3V8.17157L16.6569 4.51472C17.0474 4.12419 17.6805 4.12419 18.0711 4.51472C18.4616 4.90524 18.4616 5.53841 18.0711 5.92893L14.4142 9.58579H19.5858C20.1381 9.58579 20.5858 10.0335 20.5858 10.5858C20.5858 11.1381 20.1381 11.5858 19.5858 11.5858H14.4142L18.0711 15.2426C18.4616 15.6332 18.4616 16.2663 18.0711 16.6569C17.6805 17.0474 17.0474 17.0474 16.6569 16.6569L13 13V18.1716C13 18.7239 12.5523 19.1716 12 19.1716C11.4477 19.1716 11 18.7239 11 18.1716V13L7.34315 16.6569C6.95262 17.0474 6.31946 17.0474 5.92893 16.6569C5.53841 16.2663 5.53841 15.6332 5.92893 15.2426L9.58579 11.5858H4.41421C3.86193 11.5858 3.41421 11.1381 3.41421 10.5858C3.41421 10.0335 3.86193 9.58579 4.41421 9.58579H9.58579L5.92893 5.92893C5.53841 5.53841 5.53841 4.90524 5.92893 4.51472L11 8.17157V3C11 2.44772 11 2 12 2Z" />
               </svg>
             </motion.div>

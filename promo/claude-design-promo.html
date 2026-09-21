@@ -530,6 +530,9 @@
             <div class="canvas-pane bg-cream-canvas" id="s3-canvas-pane">
               <!-- iOS Mobile Mockup -->
               <div class="phone-frame" id="s3-phone-device">
+                <!-- Tactile Specular Gloss Highlight -->
+                <div class="phone-specular-glare"></div>
+
                 <!-- Status Bar & Dynamic Island -->
                 <div class="phone-top-bar">
                   <span class="phone-time">9:41</span>
@@ -585,9 +588,17 @@
                   </div>
 
                   <div class="enso-circle-wrap">
+                    <div class="enso-breath-glow" id="s3-enso-glow"></div>
                     <svg class="enso-svg" viewBox="0 0 160 160">
+                      <defs>
+                        <linearGradient id="s3-enso-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                          <stop offset="0%" stop-color="#A3E635"/>
+                          <stop offset="50%" stop-color="#5E7461"/>
+                          <stop offset="100%" stop-color="#34D399"/>
+                        </linearGradient>
+                      </defs>
                       <circle cx="80" cy="80" r="68" stroke="rgba(0,0,0,0.08)" stroke-width="4" fill="none"/>
-                      <circle cx="80" cy="80" r="68" stroke="#5E7461" stroke-width="4" fill="none" stroke-dasharray="427" stroke-dashoffset="140" stroke-linecap="round"/>
+                      <circle id="s3-enso-circle" cx="80" cy="80" r="68" stroke="url(#s3-enso-grad)" stroke-width="5" fill="none" stroke-dasharray="427" stroke-dashoffset="140" stroke-linecap="round"/>
                     </svg>
                     <div class="enso-content">
                       <span class="enso-time" id="s3-enso-time">12:44</span>
@@ -696,7 +707,23 @@
               <button class="tool-btn">Tweaks</button>
               <button class="tool-btn">💬 Comment</button>
               <button class="tool-btn">Aa Edit text</button>
-              <button class="tool-btn highlight" id="s4-knobs-btn">🎛 Knobs</button>
+              <div class="knob-tool-wrapper" style="position: relative; display: inline-flex;">
+                <button class="tool-btn highlight" id="s4-knobs-btn">🎛 Knobs</button>
+                <!-- Tactile Dial Knob Tick Popover -->
+                <div id="s4-knob-tick-popover" class="knob-tick-popover hidden">
+                  <div class="knob-dial-ring">
+                    <div class="knob-dial-pointer" id="s4-knob-pointer"></div>
+                    <div class="knob-tick-dots">
+                      <span class="tick-dot" style="transform: rotate(-60deg)"></span>
+                      <span class="tick-dot" style="transform: rotate(-30deg)"></span>
+                      <span class="tick-dot" style="transform: rotate(0deg)"></span>
+                      <span class="tick-dot" style="transform: rotate(30deg)"></span>
+                      <span class="tick-dot" style="transform: rotate(60deg)"></span>
+                    </div>
+                  </div>
+                  <div class="knob-dial-readout" id="s4-knob-readout">34px</div>
+                </div>
+              </div>
               <button class="tool-btn">✎ Draw</button>
               <div class="zoom-dropdown">100% ▾</div>
             </div>
@@ -828,6 +855,17 @@
                 <!-- Slide 2: Chart Slide (Bars morph to Line Spline) -->
                 <div class="slide-card white-bg selected-slide">
                   <svg id="s4-spline-chart" viewBox="0 0 460 280" class="morph-svg-chart">
+                    <defs>
+                      <linearGradient id="s4-chart-glow-grad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#2563EB" stop-opacity="0.38"/>
+                        <stop offset="55%" stop-color="#2563EB" stop-opacity="0.10"/>
+                        <stop offset="100%" stop-color="#2563EB" stop-opacity="0.0"/>
+                      </linearGradient>
+                      <filter id="s4-spline-glow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#2563EB" flood-opacity="0.45"/>
+                      </filter>
+                    </defs>
+
                     <!-- Grid Lines -->
                     <line x1="40" y1="50" x2="420" y2="50" stroke="#E5E5E5" stroke-dasharray="3"/>
                     <line x1="40" y1="110" x2="420" y2="110" stroke="#E5E5E5" stroke-dasharray="3"/>
@@ -847,8 +885,11 @@
                     <!-- Morphing Bars Group -->
                     <g id="s4-morph-bars-g"></g>
 
+                    <!-- Morphing Glowing Gradient Area Fill -->
+                    <path id="s4-morph-area-path" d="" fill="url(#s4-chart-glow-grad)" opacity="0"/>
+
                     <!-- Morphing Continuous Line Path -->
-                    <path id="s4-morph-line-path" d="" fill="none" stroke="#2563EB" stroke-width="3" opacity="0"/>
+                    <path id="s4-morph-line-path" d="" fill="none" stroke="#2563EB" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#s4-spline-glow)" opacity="0"/>
                   </svg>
 
                   <!-- Chart Comment Box (Make this a line graph instead?) -->
@@ -915,10 +956,19 @@
                 <p>Run this command to import project files directly into your local workspace</p>
               </div>
             </div>
-            <div class="cli-command-row">
+            <div class="cli-command-row" id="s5-cli-command-row">
+              <div class="cli-ripple-wave" id="s5-copy-ripple"></div>
               <span class="prompt-sym">$</span>
-              <span class="cmd-text">claude code handoff https://claude.ai/design/p/hemlark-retreat-26</span>
-              <button class="btn-copy-cli" id="s5-btn-copy">Copy command</button>
+              <span class="cmd-tokens">
+                <span class="token-bin">claude</span>
+                <span class="token-sub">code</span>
+                <span class="token-act">handoff</span>
+                <span class="token-url"><span class="token-proto">https://</span><span class="token-host">claude.ai</span><span class="token-path">/design/p/hemlark-retreat-26</span></span>
+              </span>
+              <button class="btn-copy-cli" id="s5-btn-copy">
+                <span class="copy-btn-icon">📋</span>
+                <span class="copy-btn-label">Copy command</span>
+              </button>
             </div>
           </div>
         </div>

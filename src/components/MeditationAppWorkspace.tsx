@@ -159,14 +159,17 @@ export const MeditationAppWorkspace: React.FC<MeditationAppWorkspaceProps> = ({
         <motion.div
           layout
           transition={{ duration: 0.5, ease: EASE_SPRING }}
-          className="w-[320px] h-[640px] rounded-[48px] border-[6px] border-[#27272A] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden flex flex-col justify-between p-6 relative transition-colors duration-500"
+          className="w-[320px] h-[640px] rounded-[48px] border-[6px] border-[#27272A] shadow-[0_1px_2px_rgba(0,0,0,0.1),0_20px_50px_-10px_rgba(0,0,0,0.4),inset_0_1px_1px_rgba(255,255,255,0.4),inset_0_-1px_2px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col justify-between p-6 relative transition-colors duration-500"
           style={{ backgroundColor: currentTheme.bg }}
         >
+          {/* Tactile Specular Gloss Sheen Reflection */}
+          <div className="pointer-events-none absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-br from-white/20 via-white/5 to-transparent rounded-t-[44px] z-20" />
+
           {/* Dynamic Island / Notch */}
-          <div className="w-24 h-5 bg-[#27272A] rounded-full mx-auto mb-2 shrink-0" />
+          <div className="w-24 h-5 bg-[#27272A] rounded-full mx-auto mb-2 shrink-0 z-30" />
 
           {/* Header Title */}
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex justify-between items-center mt-2 z-10">
             <div>
               <span className="text-[11px] font-semibold tracking-wider uppercase opacity-60" style={{ color: currentTheme.textMuted }}>
                 Session
@@ -182,27 +185,60 @@ export const MeditationAppWorkspace: React.FC<MeditationAppWorkspaceProps> = ({
             </div>
           </div>
 
-          {/* Central Animated Ripple Visualizer */}
+          {/* Central Enso Breathing Ring & Radial Gradient Pulse */}
           <div className="flex-1 flex flex-col items-center justify-center relative my-4">
+            {/* Luminous Radial Gradient Breath Pulse */}
             <motion.div
-              animate={{ scale: [1, 1.18, 1], opacity: [0.3, 0.6, 0.3] }}
+              animate={{
+                scale: [0.85, 1.25, 0.85],
+                opacity: [0.25, 0.65, 0.25],
+              }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute w-44 h-44 rounded-full border-2 border-dashed"
-              style={{ borderColor: currentTheme.accent }}
+              className="absolute w-48 h-48 rounded-full pointer-events-none"
+              style={{
+                background: `radial-gradient(circle, ${currentTheme.glow} 0%, ${currentTheme.accent}33 45%, transparent 70%)`,
+                filter: "blur(8px)",
+              }}
             />
-            <motion.div
-              animate={{ scale: [1, 1.08, 1] }}
-              transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-              className="w-32 h-32 rounded-full flex flex-col items-center justify-center shadow-lg transition-colors duration-500"
-              style={{ backgroundColor: currentTheme.card }}
-            >
-              <span className="text-[28px] font-mono font-bold tracking-tight" style={{ color: currentTheme.textPrimary }}>
-                {formatTime(secondsLeft)}
-              </span>
-              <span className="text-[10px] uppercase font-semibold tracking-wider mt-0.5" style={{ color: currentTheme.accent }}>
-                Breathing In
-              </span>
-            </motion.div>
+
+            {/* Enso Ring SVG with Gradient Stroke */}
+            <div className="relative w-40 h-40 flex items-center justify-center">
+              <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 160 160">
+                <defs>
+                  <linearGradient id="ensoReactGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor={currentTheme.glow} />
+                    <stop offset="100%" stopColor={currentTheme.accent} />
+                  </linearGradient>
+                </defs>
+                <circle cx="80" cy="80" r="68" stroke="currentColor" strokeWidth="4" fill="none" className="text-black/10 dark:text-white/10" />
+                <motion.circle
+                  cx="80"
+                  cy="80"
+                  r="68"
+                  stroke="url(#ensoReactGrad)"
+                  strokeWidth="5"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeDasharray="427"
+                  animate={{ strokeDashoffset: [160, 95, 160] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                />
+              </svg>
+
+              <motion.div
+                animate={{ scale: [1, 1.04, 1] }}
+                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+                className="w-28 h-28 rounded-full flex flex-col items-center justify-center shadow-lg transition-colors duration-500 z-10"
+                style={{ backgroundColor: currentTheme.card }}
+              >
+                <span className="text-[26px] font-mono font-bold tracking-tight" style={{ color: currentTheme.textPrimary }}>
+                  {formatTime(secondsLeft)}
+                </span>
+                <span className="text-[9px] uppercase font-semibold tracking-wider mt-0.5" style={{ color: currentTheme.accent }}>
+                  Breathing
+                </span>
+              </motion.div>
+            </div>
           </div>
 
           {/* Play/Pause & Soundscape Controls */}
