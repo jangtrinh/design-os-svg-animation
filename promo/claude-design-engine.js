@@ -643,7 +643,15 @@
         virtualCursor.style.transform = `translate3d(850px, 200px, 0)`;
       }
 
-      drawGlobe(globeCtx, 1280, 960, rotY, tilt, globeRadius, 720, 480, {
+      const gWidth = globeCanvas.clientWidth || 1310;
+      const gHeight = globeCanvas.clientHeight || 928;
+      if (globeCanvas.width !== gWidth || globeCanvas.height !== gHeight) {
+        globeCanvas.width = gWidth;
+        globeCanvas.height = gHeight;
+      }
+      const cx = gWidth * 0.58;
+      const cy = gHeight * 0.50;
+      drawGlobe(globeCtx, gWidth, gHeight, rotY, tilt, globeRadius, cx, cy, {
         arcWidth: 2.2,
         arcGlow: 88,
         showLabels: true
@@ -820,7 +828,15 @@
 
       // Draw background globe for Scene 5
       if (s5GlobeCtx) {
-        drawGlobe(s5GlobeCtx, 1280, 960, (t - 63.0) * 0.15, 0.22, 380, 720, 480, {
+        const s5Width = s5GlobeCanvas.clientWidth || 1690;
+        const s5Height = s5GlobeCanvas.clientHeight || 928;
+        if (s5GlobeCanvas.width !== s5Width || s5GlobeCanvas.height !== s5Height) {
+          s5GlobeCanvas.width = s5Width;
+          s5GlobeCanvas.height = s5Height;
+        }
+        const s5Cx = s5Width * 0.50;
+        const s5Cy = s5Height * 0.50;
+        drawGlobe(s5GlobeCtx, s5Width, s5Height, (t - 63.0) * 0.15, 0.22, 380, s5Cx, s5Cy, {
           arcWidth: 2.2,
           arcGlow: 85,
           showLabels: true
