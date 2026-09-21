@@ -39,6 +39,10 @@ export interface MotionIRDocument {
 export interface MotionTrack {
   targetSelector: string; // CSS selector inside SVG (e.g. "#bell-clapper", ".wing-left")
   transformOrigin?: [number, number] | string; // e.g. [50, 10] or "50% 10%"
+  stagger?: {
+    eachMs: number;
+    from?: "start" | "center" | "end";
+  };
   properties: MotionProperty[];
 }
 
@@ -46,7 +50,31 @@ export type MotionProperty =
   | TransformProperty
   | OpacityProperty
   | MorphProperty
-  | StrokeProperty;
+  | StrokeProperty
+  | TrimPathProperty
+  | MotionPathProperty;
+
+export interface TrimPathProperty extends BaseProperty {
+  type: "trim-path"; // Lottie-inspired stroke trimming
+  totalLength: number;
+  keyframes: {
+    timePercent: number;
+    startPercent: number; // 0 to 100%
+    endPercent: number;   // 0 to 100%
+    offsetAngle?: number; // 0 to 360 degrees
+  }[];
+}
+
+export interface MotionPathProperty extends BaseProperty {
+  type: "motion-path"; // GSAP-inspired path following
+  pathSelector: string; // ID or selector of guide SVG path
+  autoRotate?: boolean;
+  alignOrigin?: [number, number] | string;
+  keyframes: {
+    timePercent: number;
+    progressPercent: number; // 0 to 100% along the path
+  }[];
+}
 
 export interface BaseProperty {
   delayMs?: number;

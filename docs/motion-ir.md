@@ -2,6 +2,8 @@
 
 Trạng thái: đề xuất kiến trúc; schema 0.1.0 và validator scaffold đã có. Các compiler bên dưới là hợp đồng cần triển khai, chưa phải tính năng đã chạy. Chọn một IR semantic có capability negotiation; tránh IR là chuỗi GSAP và tránh ép toàn bộ hệ thống thành frame-by-frame ngay từ đầu.
 
+Lưu ý integration: [authoring spec v1.0](motion-ir-specification.md) xuất hiện từ phiên đồng thời. Schema 0.1.0 ở đây là đề xuất lớp normalized riêng, chưa có resolver; không tự thay authority của authoring spec. Xem [mapping hai lớp](architecture-supplement.md).
+
 ## Hai lớp biểu diễn
 
 ```text

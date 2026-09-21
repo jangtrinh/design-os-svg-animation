@@ -18,6 +18,17 @@ Hệ thống tri thức hoàn chỉnh được phân loại thành 7 Trụ cột
 
 ---
 
+## 🚀 Chuyên Khảo Kỹ Thuật Hấp Thụ Từ Các Engine Đỉnh Cao (Techniques Deep-Dive)
+
+| STT | Chuyên Khảo Kỹ Thuật | Kỹ Thuật Trọng Tâm Rút Tỉa | Tệp Tài Liệu |
+| :---: | :--- | :--- | :--- |
+| **T1** | **HyperFrames (HeyGen)** | Video-as-Code, Virtual Quantized Clock (\(t_k = k/\text{FPS}\)), Headless Frame Capture tất định. | [`techniques/01-hyperframes-deterministic-pipeline.md`](file:///Users/jang/Products/design-os-svg-animation/knowledge/techniques/01-hyperframes-deterministic-pipeline.md) |
+| **T2** | **Lottie Motion (Bodymovin)** | Trim Paths (`s`, `e`, `o`) cho hiệu ứng Stroke Line-Drawing, phân tách tiếp tuyến Spatial vs Temporal. | [`techniques/02-lottie-motion-vectors.md`](file:///Users/jang/Products/design-os-svg-animation/knowledge/techniques/02-lottie-motion-vectors.md) |
+| **T3** | **GSAP Choreography** | MorphSVG `shapeIndex` triệt tiêu xoắn vặn, DrawSVG, MotionPath bám đường dẫn, relative timeline sequencing (`<`, `+=0.2`). | [`techniques/03-gsap-advanced-choreography.md`](file:///Users/jang/Products/design-os-svg-animation/knowledge/techniques/03-gsap-advanced-choreography.md) |
+| **T4** | **Anime.js Lightweight Physics** | Function-based dynamic values, native Spring ODE solver giải nghiệm vi phân, modularity zero-dependency. | [`techniques/04-animejs-lightweight-physics.md`](file:///Users/jang/Products/design-os-svg-animation/knowledge/techniques/04-animejs-lightweight-physics.md) |
+
+---
+
 ## 🛡️ Thẩm Định Chất Lượng Bằng JEV System One
 Toàn bộ các tài liệu trong thư mục này được kiểm định định kỳ qua script:
 ```bash
@@ -27,3 +38,4 @@ Mục tiêu tiêu chuẩn:
 - **Engineering Rigor**: >= 2.5 / 3.0 (Production Grade).
 - **Physical/Geometric Grounding**: Probability >= 0.8.
 - **Cross-domain Compatibility**: Khớp nối hoàn hảo giữa các phân tầng.
+
