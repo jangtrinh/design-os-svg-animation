@@ -393,12 +393,20 @@
     </div>
   </section>
 
-  <!-- Engine Script -->
   <script src="saas-short-engine.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const svg = document.getElementById('saas-short-svg');
       const engine = new SaasShortEngine(svg);
+      window.__saasEngine = engine;
+      window.__seekToTime = (sec) => engine.seek(sec * 1000);
+
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('clean') === 'true') {
+        document.body.classList.add('clean-export');
+      }
+      const initialSec = parseFloat(urlParams.get('t') || '0');
+      const shouldAutoplay = urlParams.get('autoplay') === 'true';
 
       const btnPlay = document.getElementById('btn-play');
       const btnReplay = document.getElementById('btn-replay');
@@ -491,8 +499,11 @@
         }
       });
 
-      // Initial seek to 0ms
-      engine.seek(0);
+      // Initial seek
+      engine.seek(initialSec * 1000);
+      if (shouldAutoplay) {
+        engine.play();
+      }
     });
   </script>
 </body>

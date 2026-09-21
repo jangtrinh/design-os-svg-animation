@@ -4,6 +4,15 @@
 
 ---
 
+## 📺 Visual Showcase & 5s Demos
+
+| Example 1: Claude Design 3D Globe & Tweaks (16:9) | Example 2: SaaS 9:16 Vector Motion Short |
+| :---: | :---: |
+| ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) |
+| *Orthographic 3D Globe with glowing arcs & live Tweaks panel* | *Shared-element morph, Phosphor icons & kinetic typography* |
+
+---
+
 ## 🤖 AI Agent Quick Reference & Ingestion Guide
 
 If you are an AI coding agent reading this codebase, follow these rules and directives strictly:

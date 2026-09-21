@@ -316,8 +316,25 @@ body {
   .phone-mockup-wrapper {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
   }
-  #s2-cursor {
-    opacity: 1 !important;
-  }
+}
+
+/* Clean Headless Export Mode */
+body.clean-export {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: #09090b !important;
+  overflow: hidden !important;
+}
+
+body.clean-export .nav-header,
+body.clean-export .controls-card {
+  display: none !important;
+}
+
+body.clean-export .phone-mockup-wrapper {
+  box-shadow: none !important;
+  border: none !important;
+  border-radius: 0 !important;
+  margin: 0 auto !important;
 }
 
