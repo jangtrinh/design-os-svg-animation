@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Design — Official Product Promo Video (00:00 – 01:22)</title>
+  <link rel="stylesheet" href="claude-design.css">
+</head>
+<body>
+
+  <!-- Top Floating Playback Toolbar & Scrubber -->
+  <header class="video-toolbar">
+    <div class="brand-badge">
+      <svg class="claude-star-icon" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C12.5523 2 13 2.44772 13 3V8.17157L16.6569 4.51472C17.0474 4.12419 17.6805 4.12419 18.0711 4.51472C18.4616 4.90524 18.4616 5.53841 18.0711 5.92893L14.4142 9.58579H19.5858C20.1381 9.58579 20.5858 10.0335 20.5858 10.5858C20.5858 11.1381 20.1381 11.5858 19.5858 11.5858H14.4142L18.0711 15.2426C18.4616 15.6332 18.4616 16.2663 18.0711 16.6569C17.6805 17.0474 17.0474 17.0474 16.6569 16.6569L13 13V18.1716C13 18.7239 12.5523 19.1716 12 19.1716C11.4477 19.1716 11 18.7239 11 18.1716V13L7.34315 16.6569C6.95262 17.0474 6.31946 17.0474 6.31946 17.0474 5.92893 16.6569C5.53841 16.2663 5.53841 15.6332 5.92893 15.2426L9.58579 11.5858H4.41421C3.86193 11.5858 3.41421 11.1381 3.41421 10.5858C3.41421 10.0335 3.86193 9.58579 4.41421 9.58579H9.58579L5.92893 5.92893C5.53841 5.53841 5.53841 4.90524 5.92893 4.51472L11 8.17157V3C11 2.44772 11.4477 2 12 2Z" />
+      </svg>
+      <span class="brand-title">Claude Design</span>
+      <span class="brand-tag">01:22 Master Promo · 99% Match</span>
+    </div>
+
+    <!-- Play / Pause & Scrubber -->
+    <div class="playback-controls">
+      <button id="btn-play-pause" class="btn-ctrl" title="Play/Pause (Space)">
+        <span id="play-icon">▶</span>
+      </button>
+
+      <div class="timeline-container">
+        <input type="range" id="video-scrubber" min="0" max="82" step="0.1" value="0">
+        <div class="timeline-labels">
+          <span class="time-display" id="timecode">00:00 / 01:22</span>
+          <span class="scene-indicator" id="scene-name">Scene 1: Initial Prompt</span>
+        </div>
+      </div>
+
+      <div class="speed-selector">
+        <button class="speed-btn active" data-speed="1">1x</button>
+        <button class="speed-btn" data-speed="2">2x</button>
+        <button class="speed-btn" data-speed="4">4x</button>
+      </div>
+
+      <button id="btn-record-video" class="btn-record" title="Record full video to file">
+        <span class="rec-dot"></span>
+        <span>Export Video</span>
+      </button>
+    </div>
+
+    <!-- Scene Jump Quick Nav -->
+    <div class="scene-jump-pills">
+      <button class="pill-btn active" data-seek="0">S1 (00:00)</button>
+      <button class="pill-btn" data-seek="12">S2 (00:12)</button>
+      <button class="pill-btn" data-seek="28">S3 (00:28)</button>
+      <button class="pill-btn" data-seek="47">S4 (00:47)</button>
+      <button class="pill-btn" data-seek="68">S5 (01:08)</button>
+    </div>
+  </header>
+
+  <!-- Master Video Viewport (1920 x 1080 16:9 Canvas Container) -->
+  <main class="video-stage-wrapper">
+    <div id="video-stage" class="video-stage">
+
+      <!-- Dynamic Mouse Cursor Overlay -->
+      <div id="virtual-cursor" class="virtual-cursor">
+        <svg class="cursor-arrow" viewBox="0 0 24 24">
+          <path d="M4 2L18 16L11 17L8 23L4 2Z" fill="#000000" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+        <div class="cursor-crosshair hidden">+</div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- SCENE 1: INITIAL PROMPT & MORPH (00:00 – 00:12)         -->
+      <!-- ======================================================== -->
+      <section id="scene-1" class="scene active">
+        <!-- Background Globe Layer (reveals during typing and spinning) -->
+        <canvas id="s1-bg-globe-canvas" class="s1-bg-globe" width="1920" height="1080"></canvas>
+
+        <div class="s1-center-container">
+          <!-- State 0: Initial Collapsed Pill Button -->
+          <div id="s1-pill-btn" class="s1-pill-btn">
+            <svg class="icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+              <circle cx="12" cy="6" r="1" fill="currentColor"/>
+              <circle cx="7.5" cy="10.5" r="1" fill="currentColor"/>
+              <circle cx="9" cy="15.5" r="1" fill="currentColor"/>
+              <circle cx="16.5" cy="10.5" r="1" fill="currentColor"/>
+            </svg>
+            <span class="pill-label">Design</span>
+          </div>
+
+          <!-- State 1: Expanded Input Prompt Card -->
+          <div id="s1-expanded-box" class="s1-expanded-box hidden">
+            <!-- Top Attachment Pills -->
+            <div id="s1-attachments" class="s1-attachments hidden">
+              <span class="s1-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="8" y1="13" x2="16" y2="13"/>
+                </svg>
+                flows.docx
+              </span>
+              <span class="s1-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="18" height="18" rx="2"/>
+                  <line x1="3" y1="9" x2="21" y2="9"/>
+                  <line x1="9" y1="21" x2="9" y2="9"/>
+                </svg>
+                cities.xlsx
+              </span>
+            </div>
+
+            <!-- Typing Prompt Area -->
+            <div class="s1-prompt-content">
+              <span id="s1-typed-text" class="s1-typed-text"></span>
+              <span id="s1-caret" class="s1-caret"></span>
+            </div>
+
+            <!-- Bottom Toolbar Row -->
+            <div class="s1-bottom-bar">
+              <div class="s1-left-tools">
+                <button class="s1-tool-sq" title="Settings">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                  </svg>
+                </button>
+                <button class="s1-tool-sq" title="Attach">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                  </svg>
+                </button>
+                <button class="s1-tool-sq" title="Pen">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+                    <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+                    <path d="M2 2l7.586 7.586"/>
+                    <circle cx="11" cy="11" r="2"/>
+                  </svg>
+                </button>
+                <button class="s1-import-btn">Import</button>
+              </div>
+
+              <button id="s1-send-btn" class="s1-send-pill">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z"/>
+                </svg>
+                <span>Send</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- State 2: Centered Morphing Pill (Designing... / Editing...) -->
+          <div id="s1-morph-pill" class="s1-morph-pill hidden">
+            <svg class="s1-claude-star-spin" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C12.5523 2 13 2.44772 13 3V8.17157L16.6569 4.51472C17.0474 4.12419 17.6805 4.12419 18.0711 4.51472C18.4616 4.90524 18.4616 5.53841 18.0711 5.92893L14.4142 9.58579H19.5858C20.1381 9.58579 20.5858 10.0335 20.5858 10.5858C20.5858 11.1381 20.1381 11.5858 19.5858 11.5858H14.4142L18.0711 15.2426C18.4616 15.6332 18.4616 16.2663 18.0711 16.6569C17.6805 17.0474 17.0474 17.0474 16.6569 16.6569L13 13V18.1716C13 18.7239 12.5523 19.1716 12 19.1716C11.4477 19.1716 11 18.7239 11 18.1716V13L7.34315 16.6569C6.95262 17.0474 6.31946 17.0474 6.31946 17.0474 5.92893 16.6569C5.53841 16.2663 5.53841 15.6332 5.92893 15.2426L9.58579 11.5858H4.41421C3.86193 11.5858 3.41421 11.1381 3.41421 10.5858C3.41421 10.0335 3.86193 9.58579 4.41421 9.58579H9.58579L5.92893 5.92893C5.53841 5.53841 5.53841 4.90524 5.92893 4.51472L11 8.17157V3C11 2.44772 11.4477 2 12 2Z" />
+            </svg>
+            <span id="s1-status-label" class="s1-status-label">Designing...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SCENE 2: FULL CLAUDE APP WORKSPACE & GLOBE (00:12–00:27) -->
+      <!-- ======================================================== -->
+      <section id="scene-2" class="scene">
+        <!-- Floating macOS Desktop Window Frame -->
+        <div class="app-window" id="globe-app-window">
+          <!-- Top Window Header Tabs -->
+          <div class="app-header-bar">
+            <div class="tab-group-left">
+              <div class="window-tab active">
+                <span>Help me design a...</span>
+              </div>
+              <div class="tab-divider"></div>
+              <span class="tab-sub-label">Project</span>
+              <div class="window-tab canvas-tab active">
+                <span>Interactive landing...</span>
+              </div>
+            </div>
+
+            <div class="header-actions-right">
+              <button class="btn-share">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                  <polyline points="16 6 12 2 8 6"/>
+                  <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+                <span>Share</span>
+              </button>
+              <button class="btn-export-pill" id="s2-export-btn">
+                <span>Export</span>
+              </button>
+              <div class="avatar-circle">CY</div>
+            </div>
+          </div>
+
+          <!-- Canvas Subheader / Toolbar -->
+          <div class="canvas-sub-bar">
+            <div class="nav-arrows">
+              <button class="icon-btn" title="Back">←</button>
+              <button class="icon-btn" title="Forward">→</button>
+              <button class="icon-btn" title="Refresh">↻</button>
+            </div>
+
+            <div class="canvas-tools-right">
+              <button class="tool-pill-coral" id="s2-tweaks-btn">Tweaks</button>
+              <div class="tool-sep"></div>
+              <button class="tool-btn" id="s2-comment-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                </svg>
+                <span>Comment</span>
+              </button>
+              <button class="tool-btn">
+                <span>Aa Edit text</span>
+              </button>
+              <button class="tool-btn">
+                <span>🎛 Knobs</span>
+              </button>
+              <button class="tool-btn">
+                <span>✎ Draw</span>
+              </button>
+              <div class="zoom-dropdown">100% ▾</div>
+              <button class="icon-btn">⛶</button>
+            </div>
+          </div>
+
+          <!-- Main Window Body (Sidebar + Canvas) -->
+          <div class="app-body">
+            <!-- Left Conversational Sidebar -->
+            <aside class="sidebar-pane">
+              <div class="sidebar-scroll">
+                <!-- User Prompt Bubble -->
+                <div class="chat-section">
+                  <div class="chat-sender">You</div>
+                  <div class="chat-bubble-user">
+                    Let&apos;s design a landing page that maps how culture flows between cities. Dark theme and an interactive globe with glowing arcs connecting them.
+                  </div>
+                </div>
+
+                <!-- Claude Response Stream -->
+                <div class="chat-section">
+                  <div class="chat-sender">Claude</div>
+                  
+                  <!-- Tool Pills -->
+                  <div class="tool-capsule">
+                    <span class="capsule-icon">📖</span>
+                    <span>Read, Write ×3</span>
+                  </div>
+                  <div class="tool-capsule">
+                    <span class="capsule-icon">⛉</span>
+                    <span>Plan</span>
+                  </div>
+                  <div class="tool-capsule">
+                    <span class="capsule-icon">📄</span>
+                    <span>write_file</span>
+                  </div>
+
+                  <!-- Progress Checklist Card -->
+                  <div class="progress-card">
+                    <div class="progress-header">
+                      <span>≡ Progress 5/5</span>
+                    </div>
+                    <ul class="progress-list">
+                      <li class="done"><span class="check-box">✓</span> Set up project structure</li>
+                      <li class="done"><span class="check-box">✓</span> Build interactive globe component</li>
+                      <li class="done"><span class="check-box">✓</span> Add city nodes and connection arcs</li>
+                      <li class="done"><span class="check-box">✓</span> Create page layout and typography</li>
+                      <li class="done"><span class="check-box">✓</span> Add atmospheric glow effects</li>
+                    </ul>
+                  </div>
+
+                  <!-- Generated Artifact Pills -->
+                  <div class="artifact-pill">
+                    <span class="pill-icon">🖼</span>
+                    <span>Globe.jsx</span>
+                  </div>
+                  <div class="artifact-pill">
+                    <span class="pill-icon">🖼</span>
+                    <span>GlobeArcs.jsx</span>
+                  </div>
+                  <div class="artifact-pill">
+                    <span class="pill-icon">⚡</span>
+                    <span>Verifier</span>
+                  </div>
+
+                  <!-- Summary Prose -->
+                  <div class="chat-prose">
+                    I&apos;ve built an interactive globe with 112 cities and 168 animated connection arcs across 6 continents. The page features:
+                    <ul>
+                      <li>Orthographic projection with drag-to-rotate</li>
+                      <li>Great-circle arcs with pulse animations</li>
+                      <li>City nodes with labels on the front hemisphere</li>
+                      <li>Atmospheric glow for depth</li>
+                      <li>&quot;Every place has a story&quot; headline with vertical stats</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Chat Input -->
+              <div class="sidebar-input-box">
+                <input type="text" placeholder="Describe what you want to create..." readonly>
+                <div class="sidebar-input-tools">
+                  <div class="input-icons-left">
+                    <span>⚙</span><span>⸬</span><span>📎</span><span>🖊</span>
+                    <button class="mini-import">Import</button>
+                  </div>
+                  <button class="mini-send">▷ Send</button>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Right Canvas Pane (Interactive Dark 3D Globe) -->
+            <div class="canvas-pane bg-dark-canvas" id="globe-canvas-wrapper">
+              <!-- Canvas Headline & Vertical Stats Overlay -->
+              <div class="globe-overlay-content">
+                <h1 class="canela-headline">
+                  Every place<br>
+                  has a <span class="emerald-word">story.</span>
+                </h1>
+                <p class="headline-sub">
+                  Discover how ideas, art, and culture flow between cities.<br>
+                  112 cities. 168 routes. One living map.
+                </p>
+
+                <div class="vertical-metrics">
+                  <div class="metric-block">
+                    <span class="metric-num">112</span>
+                    <span class="metric-lbl">CITIES</span>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-num">168</span>
+                    <span class="metric-lbl">ROUTES</span>
+                  </div>
+                  <div class="metric-block">
+                    <span class="metric-num">6</span>
+                    <span class="metric-lbl">CONTINENTS</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3D Globe Canvas Element -->
+              <canvas id="globe-canvas" width="1280" height="960"></canvas>
+
+              <div class="canvas-bottom-link">
+                <span>Explore the map →</span>
+              </div>
+
+              <!-- Floating Tweaks Prompt Popover (appears at 14s) -->
+              <div id="s2-tweaks-popover" class="tweaks-popover hidden">
+                <div class="popover-title">Ask Claude to add tweakable sliders or options</div>
+                <div class="popover-textarea">
+                  <span id="s2-popover-text"></span>
+                  <span class="s2-popover-caret"></span>
+                </div>
+                <div class="popover-actions">
+                  <button class="btn-cancel">Cancel</button>
+                  <button class="btn-send-coral" id="s2-popover-send">Send</button>
+                </div>
+              </div>
+
+              <!-- Floating Right Tweaks Control Drawer (slides in at 18s) -->
+              <aside id="s2-tweaks-drawer" class="tweaks-glass-panel hidden">
+                <div class="tweaks-section-checks">
+                  <label class="check-item"><input type="checkbox" checked> <span>Show cities</span></label>
+                  <label class="check-item"><input type="checkbox" checked> <span>City labels</span></label>
+                </div>
+
+                <div class="tweaks-group">
+                  <div class="group-hdr">GLOBE</div>
+                  <div class="tweak-slider-row">
+                    <span>Grid opacity</span>
+                    <span id="tweak-val-grid">0.10</span>
+                  </div>
+                  <input type="range" id="slider-tweak-grid" min="0" max="0.5" step="0.01" value="0.10">
+
+                  <div class="tweak-slider-row">
+                    <span>Grid density</span>
+                    <span id="tweak-val-density">10°</span>
+                  </div>
+                  <input type="range" id="slider-tweak-density" min="5" max="30" step="1" value="10">
+
+                  <div class="tweak-slider-row">
+                    <span>Country fill</span>
+                    <span id="tweak-val-country">0.07</span>
+                  </div>
+                  <input type="range" id="slider-tweak-country" min="0" max="0.2" step="0.01" value="0.07">
+
+                  <div class="tweak-slider-row">
+                    <span>Globe size</span>
+                    <span id="tweak-val-size">400</span>
+                  </div>
+                  <input type="range" id="slider-tweak-size" min="300" max="600" step="10" value="400">
+
+                  <div class="tweak-slider-row">
+                    <span>Rotation</span>
+                    <span id="tweak-val-rot">11°/s</span>
+                  </div>
+                  <input type="range" id="slider-tweak-rot" min="0" max="30" step="1" value="11">
+
+                  <div class="tweak-slider-row">
+                    <span>Tilt</span>
+                    <span id="tweak-val-tilt">21°</span>
+                  </div>
+                  <input type="range" id="slider-tweak-tilt" min="0" max="45" step="1" value="21">
+                </div>
+
+                <div class="tweaks-footer-checks">
+                  <label class="check-item"><input type="checkbox"> <span>Outer rings</span></label>
+                  <label class="check-item"><input type="checkbox"> <span>Back grid</span></label>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SCENE 3: MULTI-PROJECT PERSPECTIVE & MEDITATION (00:27)  -->
+      <!-- ======================================================== -->
+      <section id="scene-3" class="scene">
+        <!-- Bird-Eye Multi-Project Infinite Canvas Grid (00:27 – 00:30) -->
+        <div id="s3-infinite-grid" class="infinite-grid-layer hidden">
+          <div class="grid-card p-betelgeuse">
+            <div class="grid-card-hdr">Betelgeuse Astronomy</div>
+            <div class="grid-card-body dark"></div>
+          </div>
+          <div class="grid-card p-globe center-focus">
+            <div class="grid-card-hdr">Interactive landing...</div>
+            <div class="grid-card-body globe-preview"></div>
+          </div>
+          <div class="grid-card p-miller">
+            <div class="grid-card-hdr">Miller residence 3D</div>
+            <div class="grid-card-body villa-preview"></div>
+          </div>
+          <div class="grid-card p-pipeline">
+            <div class="grid-card-hdr">Proposal Pipeline</div>
+            <div class="grid-card-body"></div>
+          </div>
+          <div class="grid-card p-meditation">
+            <div class="grid-card-hdr">Meditation app.html</div>
+            <div class="grid-card-body med-preview"></div>
+          </div>
+        </div>
+
+        <!-- Zoomed-in Meditation App Workspace (00:30 – 00:44) -->
+        <div class="app-window" id="meditation-app-window">
+          <!-- Top Header -->
+          <div class="app-header-bar">
+            <div class="tab-group-left">
+              <div class="window-tab active">
+                <span>Let&apos;s prototype...</span>
+              </div>
+              <div class="tab-divider"></div>
+              <span class="tab-sub-label">Project</span>
+              <div class="window-tab canvas-tab active">
+                <span>Meditation app.html</span>
+              </div>
+            </div>
+
+            <div class="header-actions-right">
+              <button class="btn-share"><span>Share</span></button>
+              <button class="btn-export-pill"><span>Export</span></button>
+              <div class="avatar-circle">CY</div>
+            </div>
+          </div>
+
+          <!-- Canvas Subheader -->
+          <div class="canvas-sub-bar">
+            <div class="nav-arrows">
+              <button class="icon-btn">←</button>
+              <button class="icon-btn">→</button>
+              <button class="icon-btn">↻</button>
+            </div>
+            <div class="canvas-tools-right">
+              <button class="tool-btn active">Tweaks</button>
+              <button class="tool-btn" id="s3-comment-tool-btn">💬 Comment</button>
+              <button class="tool-btn">Aa Edit text</button>
+              <button class="tool-btn">🎛 Knobs</button>
+              <button class="tool-btn">✎ Draw</button>
+              <div class="zoom-dropdown">100% ▾</div>
+            </div>
+          </div>
+
+          <!-- App Body -->
+          <div class="app-body">
+            <!-- Left Sidebar -->
+            <aside class="sidebar-pane">
+              <div class="sidebar-scroll">
+                <div class="chat-section">
+                  <div class="chat-sender">You</div>
+                  <div class="chat-bubble-user">
+                    Prototype a serene mobile meditation app. It should have calming typography, subtle nature-inspired colors, and a clean layout.
+                  </div>
+                </div>
+
+                <div class="chat-section">
+                  <div class="chat-sender">Claude</div>
+                  <div class="tool-capsule"><span>📖 Read, Write ×3</span></div>
+                  <div class="tool-capsule"><span>⛉ Plan</span></div>
+                  <div class="tool-capsule"><span>📄 write_file</span></div>
+                  <div class="progress-card">
+                    <div class="progress-header"><span>≡ Progress 5/5</span></div>
+                    <ul class="progress-list">
+                      <li class="done"><span class="check-box">✓</span> Set up minimal theme system and palettes</li>
+                      <li class="done"><span class="check-box">✓</span> Build home screen with session cards</li>
+                      <li class="done"><span class="check-box">✓</span> Build meditation player with progress ring</li>
+                      <li class="done"><span class="check-box">✓</span> Build profile and stats screen</li>
+                      <li class="done"><span class="check-box">✓</span> Add glass tab bar and decorative elements</li>
+                    </ul>
+                  </div>
+                  <div class="artifact-pill"><span>🖼 player.jsx</span></div>
+                  <div class="artifact-pill"><span>🖼 profile.jsx</span></div>
+                  <div class="artifact-pill"><span>⚡ Verifier</span></div>
+                  <div class="chat-prose">
+                    I&apos;ve built a serene meditation app with 3 screens inside an iOS phone frame. The prototype features:
+                    <ul>
+                      <li>Japandi-inspired palette with warm gold accents on cream</li>
+                      <li>Home screen with session cards, daily intention, and category tiles</li>
+                      <li>Meditation player with an enso-style progress ring</li>
+                      <li>Profile screen with weekly stats and milestone tracking</li>
+                      <li>Custom frosted glass tab bar</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Center Canvas with iOS Device & Tweaks Card -->
+            <div class="canvas-pane bg-cream-canvas" id="s3-canvas-pane">
+              <!-- iOS Mobile Mockup -->
+              <div class="phone-frame" id="s3-phone-device">
+                <!-- Status Bar & Dynamic Island -->
+                <div class="phone-top-bar">
+                  <span class="phone-time">9:41</span>
+                  <div class="dynamic-island"></div>
+                  <div class="phone-icons">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.35 19H19.65l-.62-1.39C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9z"/></svg>
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+                  </div>
+                </div>
+
+                <!-- Screen View 1: Your Journey (Home) -->
+                <div class="phone-view" id="s3-view-journey">
+                  <div class="phone-screen-hdr">
+                    <h2>Your Journey</h2>
+                    <span class="month-sub">April 2026</span>
+                  </div>
+
+                  <div class="stat-tiles-row">
+                    <div class="stat-tile">
+                      <span class="stat-n">47</span>
+                      <span class="stat-l">SESSIONS</span>
+                    </div>
+                    <div class="stat-tile">
+                      <span class="stat-n">312</span>
+                      <span class="stat-l">MINUTES</span>
+                    </div>
+                    <div class="stat-tile">
+                      <span class="stat-n">12</span>
+                      <span class="stat-l">DAYS</span>
+                    </div>
+                  </div>
+
+                  <div class="weekly-chart-card">
+                    <div class="card-hdr-sm">This Week</div>
+                    <div class="mini-bars-wrap">
+                      <div class="mini-bar" style="height: 35%"><span>M</span></div>
+                      <div class="mini-bar" style="height: 50%"><span>T</span></div>
+                      <div class="mini-bar" style="height: 30%"><span>W</span></div>
+                      <div class="mini-bar tall" style="height: 90%"><span>T</span></div>
+                      <div class="mini-bar" style="height: 40%"><span>F</span></div>
+                      <div class="mini-bar" style="height: 25%"><span>S</span></div>
+                      <div class="mini-bar" style="height: 45%"><span>S</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Screen View 2: Player Screen (Forest Rain / Moss) -->
+                <div class="phone-view hidden" id="s3-view-player">
+                  <div class="player-top">
+                    <span class="back-sym">‹</span>
+                    <span class="np-title">NOW PLAYING</span>
+                    <span class="heart-sym">♡</span>
+                  </div>
+
+                  <div class="enso-circle-wrap">
+                    <svg class="enso-svg" viewBox="0 0 160 160">
+                      <circle cx="80" cy="80" r="68" stroke="rgba(0,0,0,0.08)" stroke-width="4" fill="none"/>
+                      <circle cx="80" cy="80" r="68" stroke="#5E7461" stroke-width="4" fill="none" stroke-dasharray="427" stroke-dashoffset="140" stroke-linecap="round"/>
+                    </svg>
+                    <div class="enso-content">
+                      <span class="enso-time" id="s3-enso-time">12:44</span>
+                      <span class="enso-rem">17:16 remaining</span>
+                    </div>
+                  </div>
+
+                  <div class="player-meta">
+                    <h3 class="track-name">Forest Rain</h3>
+                    <span class="track-type">🔊 Soundscape</span>
+                  </div>
+                </div>
+
+                <!-- Bottom Tab Bar on Phone -->
+                <div class="phone-nav-bar">
+                  <div class="p-nav-item"><span>Home</span></div>
+                  <div class="p-nav-item active" id="s3-p-nav-med"><span>Meditate</span></div>
+                  <div class="p-nav-item"><span>Profile</span></div>
+                </div>
+              </div>
+
+              <!-- Floating Right Tweaks Card -->
+              <aside class="floating-tweaks-card" id="s3-tweaks-card">
+                <div class="t-card-hdr">TWEAKS</div>
+
+                <!-- Dynamic Dark Mode Toggle added at 41s -->
+                <div id="s3-dark-toggle-row" class="dark-toggle-row hidden">
+                  <span>Dark mode</span>
+                  <div class="ios-switch" id="s3-ios-switch">
+                    <div class="switch-thumb"></div>
+                  </div>
+                </div>
+
+                <div class="t-card-section">
+                  <div class="t-sub-hdr">THEME</div>
+                  <div class="theme-swatch-list">
+                    <button class="swatch-btn stone" data-theme="stone">Stone</button>
+                    <button class="swatch-btn moss" id="s3-swatch-moss" data-theme="moss">Moss</button>
+                    <button class="swatch-btn mist" data-theme="mist">Mist</button>
+                    <button class="swatch-btn clay" data-theme="clay">Clay</button>
+                    <button class="swatch-btn dusk" data-theme="dusk">Dusk</button>
+                    <button class="swatch-btn sakura" data-theme="sakura">Sakura</button>
+                    <button class="swatch-btn ink" data-theme="ink">Ink</button>
+                  </div>
+                </div>
+
+                <div class="t-card-section">
+                  <div class="t-sub-hdr">TYPOGRAPHY</div>
+                  <div class="tweak-slider-row">
+                    <span>Heading size</span>
+                    <span>100%</span>
+                  </div>
+                  <input type="range" min="80" max="140" value="100">
+
+                  <div class="tweak-slider-row">
+                    <span>Body size</span>
+                    <span>100%</span>
+                  </div>
+                  <input type="range" min="80" max="140" value="100">
+                </div>
+              </aside>
+
+              <!-- Floating Canvas Comment Pin (appears at 38s) -->
+              <div id="s3-pin-box" class="comment-bubble-pin hidden">
+                <div class="comment-pin-hdr">Comment</div>
+                <div class="comment-pin-text">&quot;Add a dark mode toggle&quot;</div>
+                <div class="comment-pin-actions">
+                  <button class="btn-cancel-sm">Discard</button>
+                  <button class="btn-send-sm">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SCENE 4: INLINE EDITING & MORPHING CHARTS (00:44–01:03)  -->
+      <!-- ======================================================== -->
+      <section id="scene-4" class="scene">
+        <!-- Sub-scene 4A: Hemlark Retreat '26 (00:44 – 00:54) -->
+        <div class="app-window" id="s4-retreat-window">
+          <div class="app-header-bar">
+            <div class="tab-group-left">
+              <div class="window-tab active">
+                <span>Can you help me t...</span>
+              </div>
+              <div class="tab-divider"></div>
+              <span class="tab-sub-label">Project</span>
+              <div class="window-tab canvas-tab active">
+                <span>Company offsite.html...</span>
+              </div>
+            </div>
+            <div class="header-actions-right">
+              <button class="btn-share"><span>Share</span></button>
+              <button class="btn-export-pill"><span>Export</span></button>
+              <div class="avatar-circle">JM</div>
+            </div>
+          </div>
+
+          <div class="canvas-sub-bar">
+            <div class="nav-arrows">
+              <button class="icon-btn">←</button><button class="icon-btn">→</button><button class="icon-btn">↻</button>
+            </div>
+            <div class="canvas-tools-right">
+              <button class="tool-btn">Tweaks</button>
+              <button class="tool-btn">💬 Comment</button>
+              <button class="tool-btn">Aa Edit text</button>
+              <button class="tool-btn highlight" id="s4-knobs-btn">🎛 Knobs</button>
+              <button class="tool-btn">✎ Draw</button>
+              <div class="zoom-dropdown">100% ▾</div>
+            </div>
+          </div>
+
+          <div class="app-body">
+            <!-- Sidebar -->
+            <aside class="sidebar-pane">
+              <div class="sidebar-scroll">
+                <div class="chat-section">
+                  <div class="chat-sender">You</div>
+                  <div class="chat-bubble-user">
+                    Can you help me turn this document into a beautiful welcome guide we can print and hand out at the company retreat?
+                  </div>
+                </div>
+                <div class="chat-section">
+                  <div class="chat-sender">Claude</div>
+                  <div class="progress-card">
+                    <div class="progress-header"><span>≡ Progress 5/5</span></div>
+                    <ul class="progress-list">
+                      <li class="done"><span class="check-box">✓</span> Parse schedule, activities & logistics</li>
+                      <li class="done"><span class="check-box">✓</span> Design cover page and layout system</li>
+                      <li class="done"><span class="check-box">✓</span> Build schedule spread (Day 1 & 2)</li>
+                      <li class="done"><span class="check-box">✓</span> Create activities grid and area guide</li>
+                      <li class="done"><span class="check-box">✓</span> Add packing checklist and logistics</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            <!-- Canvas Spread -->
+            <div class="canvas-pane bg-light-spread">
+              <div class="spread-pages-row">
+                <!-- Cover Page -->
+                <div class="guide-page-cover">
+                  <div class="cover-hero-image" id="s4-cover-photo">
+                    <div class="photo-overlay-tag" id="s4-photo-tag">🌲 Big Sur Redwood Path</div>
+                    <!-- Photo Swap Comment Pin -->
+                    <div id="s4-swap-comment" class="photo-swap-pin hidden">
+                      <span>&quot;Swap this to the coastline photo&quot;</span>
+                    </div>
+                  </div>
+
+                  <div class="cover-content-col">
+                    <div class="brand-logo-row">
+                      <span>🌲 hemlark</span>
+                    </div>
+                    <div class="cover-titles">
+                      <span class="offsite-eyebrow">TEAM OFFSITE</span>
+                      <h1 class="retreat-h1" id="s4-retreat-title">
+                        Hemlark<br>
+                        <span class="coral-txt">Retreat &apos;26</span>
+                      </h1>
+                      <p class="retreat-p">
+                        Three days of workshops, hikes, and real talk — because the best ideas happen away from the screen.
+                      </p>
+                    </div>
+
+                    <div class="retreat-table">
+                      <div class="t-col"><span>DATES</span><strong>Oct 7 – 9, 2026</strong></div>
+                      <div class="t-col"><span>LOCATION</span><strong>Big Sur, CA</strong></div>
+                      <div class="t-col"><span>VENUE</span><strong>Fern Hollow Lodge</strong></div>
+                      <div class="t-col"><span>TEAM</span><strong>48 people</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Schedule Page (Partial) -->
+                <div class="guide-page-sched">
+                  <span class="day-tag">DAY 1 · WEDNESDAY, OCT 7</span>
+                  <h3>Arrival &amp; Getting Settled</h3>
+                  <div class="sched-list">
+                    <div class="sched-item"><strong>10:00 AM</strong><span>Shuttles Depart SFO</span></div>
+                    <div class="sched-item"><strong>12:30 PM</strong><span>Arrive + Check In</span></div>
+                    <div class="sched-item"><strong>2:30 PM</strong><span>Welcome + State of Hemlark</span></div>
+                    <div class="sched-item"><strong>7:00 PM</strong><span>Welcome Dinner</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-scene 4B: Feature Deck & Bar-to-Line Spline Morph (00:54 – 01:03) -->
+        <div class="app-window hidden" id="s4-deck-window">
+          <div class="app-header-bar">
+            <div class="tab-group-left">
+              <div class="window-tab active"><span>Turn these notes in...</span></div>
+              <div class="tab-divider"></div>
+              <span class="tab-sub-label">Project</span>
+              <div class="window-tab canvas-tab active"><span>Feature deck</span></div>
+            </div>
+            <div class="header-actions-right">
+              <button class="btn-share"><span>Share</span></button>
+              <button class="btn-export-pill"><span>Export</span></button>
+              <div class="avatar-circle">JY</div>
+            </div>
+          </div>
+
+          <div class="app-body">
+            <aside class="sidebar-pane">
+              <div class="sidebar-scroll">
+                <div class="chat-section">
+                  <div class="chat-sender">You</div>
+                  <div class="chat-bubble-user">Turn these notes into a branded deck<br>📄 launch.doc</div>
+                </div>
+                <div class="progress-card">
+                  <div class="progress-header"><span>≡ Progress 5/5</span></div>
+                  <ul class="progress-list">
+                    <li class="done"><span class="check-box">✓</span> Extract key metrics</li>
+                    <li class="done"><span class="check-box">✓</span> Build slide components</li>
+                    <li class="done"><span class="check-box">✓</span> Add data visualizations</li>
+                  </ul>
+                </div>
+              </div>
+            </aside>
+
+            <div class="canvas-pane bg-deck-canvas">
+              <div class="deck-slide-container">
+                <!-- Slide 1: Traction -->
+                <div class="slide-card slate-bg">
+                  <span class="slide-eyebrow">TRACTION</span>
+                  <div class="big-metric-stat">3,200+</div>
+                  <p class="slide-sub-txt">engineering teams onboarded since launch</p>
+                  <div class="growth-badge">78% GROWTH</div>
+                </div>
+
+                <!-- Slide 2: Chart Slide (Bars morph to Line Spline) -->
+                <div class="slide-card white-bg selected-slide">
+                  <svg id="s4-spline-chart" viewBox="0 0 460 280" class="morph-svg-chart">
+                    <!-- Grid Lines -->
+                    <line x1="40" y1="50" x2="420" y2="50" stroke="#E5E5E5" stroke-dasharray="3"/>
+                    <line x1="40" y1="110" x2="420" y2="110" stroke="#E5E5E5" stroke-dasharray="3"/>
+                    <line x1="40" y1="170" x2="420" y2="170" stroke="#E5E5E5" stroke-dasharray="3"/>
+                    <line x1="40" y1="230" x2="420" y2="230" stroke="#E5E5E5"/>
+
+                    <!-- X-Axis Labels -->
+                    <text x="60" y="248" class="chart-axis-txt">Sep</text>
+                    <text x="110" y="248" class="chart-axis-txt">Oct</text>
+                    <text x="160" y="248" class="chart-axis-txt">Nov</text>
+                    <text x="210" y="248" class="chart-axis-txt">Dec</text>
+                    <text x="260" y="248" class="chart-axis-txt">Jan</text>
+                    <text x="310" y="248" class="chart-axis-txt">Feb</text>
+                    <text x="360" y="248" class="chart-axis-txt">Mar</text>
+                    <text x="410" y="248" class="chart-axis-txt">Apr</text>
+
+                    <!-- Morphing Bars Group -->
+                    <g id="s4-morph-bars-g"></g>
+
+                    <!-- Morphing Continuous Line Path -->
+                    <path id="s4-morph-line-path" d="" fill="none" stroke="#2563EB" stroke-width="3" opacity="0"/>
+                  </svg>
+
+                  <!-- Chart Comment Box (Make this a line graph instead?) -->
+                  <div id="s4-chart-comment-box" class="comment-bubble-pin hidden">
+                    <div class="comment-pin-hdr">Comment</div>
+                    <div class="comment-pin-text">&quot;Make this a line graph instead?&quot;</div>
+                    <div class="comment-pin-actions">
+                      <button class="btn-cancel-sm">Discard</button>
+                      <button class="btn-send-sm">Send</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======================================================== -->
+      <!-- SCENE 5: EXPORT, CLI HANDOFF & OUTRO (01:03–01:22)       -->
+      <!-- ======================================================== -->
+      <section id="scene-5" class="scene">
+        <!-- Main Workspace Stage with Export Dropdown (01:03 – 01:13) -->
+        <div class="app-window" id="s5-export-window">
+          <div class="app-header-bar">
+            <div class="tab-group-left">
+              <div class="window-tab active"><span>Help me design a...</span></div>
+              <div class="tab-divider"></div>
+              <span class="tab-sub-label">Project</span>
+              <div class="window-tab canvas-tab active"><span>Interactive landing...</span></div>
+            </div>
+            <div class="header-actions-right">
+              <button class="btn-share"><span>Share</span></button>
+              <button class="btn-export-pill active" id="s5-export-trigger">
+                <span>Export</span>
+              </button>
+              <div class="avatar-circle">CY</div>
+
+              <!-- Export Dropdown Menu -->
+              <div id="s5-export-menu" class="export-dropdown-card">
+                <div class="export-item"><span class="item-icon">⤓</span> Download project as .zip</div>
+                <div class="export-item"><span class="item-icon">📄</span> Export as PDF</div>
+                <div class="export-item"><span class="item-icon">📄</span> Export as PPTX</div>
+                <div class="export-item"><span class="item-icon">↗</span> Send to Canva</div>
+                <div class="export-item"><span class="item-icon">📄</span> Export as standalone HTML</div>
+                <div class="export-item highlight" id="s5-menu-handoff"><span class="item-icon">&gt;_</span> Handoff to Claude Code</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Canvas Preview Behind Export -->
+          <div class="app-body">
+            <div class="canvas-pane bg-dark-canvas">
+              <canvas id="s5-globe-canvas" width="1280" height="960"></canvas>
+            </div>
+          </div>
+
+          <!-- Terminal CLI Handoff Modal (appears at 01:07) -->
+          <div id="s5-cli-modal" class="cli-handoff-modal hidden">
+            <div class="cli-modal-header">
+              <div class="cli-icon-bolt">⚡</div>
+              <div>
+                <h3>Handoff to Claude Code</h3>
+                <p>Run this command to import project files directly into your local workspace</p>
+              </div>
+            </div>
+            <div class="cli-command-row">
+              <span class="prompt-sym">$</span>
+              <span class="cmd-text">claude code handoff https://claude.ai/design/p/hemlark-retreat-26</span>
+              <button class="btn-copy-cli" id="s5-btn-copy">Copy command</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Infinite Canvas Grand Zoom-out Montage (01:13 – 01:16) -->
+        <div id="s5-montage-grid" class="montage-grid-overlay hidden">
+          <!-- 16 Real Project Cards Zooming Away -->
+          <div class="montage-card m1"><span>The Quiet Disappearance</span></div>
+          <div class="montage-card m2"><span>3D Terrain Generator</span></div>
+          <div class="montage-card m3"><span>Proposal Tracker</span></div>
+          <div class="montage-card m4"><span>Analytics Dashboard</span></div>
+          <div class="montage-card m5"><span>Finance Mobile App</span></div>
+          <div class="montage-card m6 center-hero"><span>Hemlark Retreat &apos;26</span></div>
+          <div class="montage-card m7 center-hero"><span>Every place has a story</span></div>
+          <div class="montage-card m8 center-hero"><span>Feature Deck</span></div>
+          <div class="montage-card m9"><span>Coffee Bag Packaging</span></div>
+          <div class="montage-card m10"><span>Miller Residence 3D</span></div>
+          <div class="montage-card m11"><span>Meditation App</span></div>
+          <div class="montage-card m12"><span>Lava Lamp 3D</span></div>
+          <div class="montage-card m13"><span>ACME Proposal Pipeline</span></div>
+          <div class="montage-card m14"><span>Egg Phone Aurora</span></div>
+          <div class="montage-card m15"><span>DNA Double Helix 3D</span></div>
+          <div class="montage-card m16"><span>Editorial Typography</span></div>
+        </div>
+
+        <!-- Finale Outro Screen (01:16 – 01:22) -->
+        <div id="s5-finale-outro" class="finale-screen hidden">
+          <div class="finale-lockup">
+            <svg class="finale-star-svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C12.5523 2 13 2.44772 13 3V8.17157L16.6569 4.51472C17.0474 4.12419 17.6805 4.12419 18.0711 4.51472C18.4616 4.90524 18.4616 5.53841 18.0711 5.92893L14.4142 9.58579H19.5858C20.1381 9.58579 20.5858 10.0335 20.5858 10.5858C20.5858 11.1381 20.1381 11.5858 19.5858 11.5858H14.4142L18.0711 15.2426C18.4616 15.6332 18.4616 16.2663 18.0711 16.6569C17.6805 17.0474 17.0474 17.0474 16.6569 16.6569L13 13V18.1716C13 18.7239 12.5523 19.1716 12 19.1716C11.4477 19.1716 11 18.7239 11 18.1716V13L7.34315 16.6569C6.95262 17.0474 6.31946 17.0474 6.31946 17.0474 5.92893 16.6569C5.53841 16.2663 5.53841 15.6332 5.92893 15.2426L9.58579 11.5858H4.41421C3.86193 11.5858 3.41421 11.1381 3.41421 10.5858C3.41421 10.0335 3.86193 9.58579 4.41421 9.58579H9.58579L5.92893 5.92893C5.53841 5.53841 5.53841 4.90524 5.92893 4.51472L11 8.17157V3C11 2.44772 11.4477 2 12 2Z" />
+            </svg>
+            <h1 class="finale-wordmark">Claude</h1>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script src="claude-design-engine.js"></script>
+</body>
+</html>

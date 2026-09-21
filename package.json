@@ -11,6 +11,7 @@
     "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples"
   },
   "dependencies": {
+    "@phosphor-icons/core": "^2.1.1",
     "ajv": "^8.17.1",
     "flubber": "^0.4.2",
     "gsap": "^3.12.5",
@@ -19,9 +20,9 @@
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "svgo": "4.0.0",
     "tsx": "^4.19.0",
-    "typescript": "^5.5.4",
-    "svgo": "4.0.0"
+    "typescript": "^5.5.4"
   },
   "keywords": [
     "svg",

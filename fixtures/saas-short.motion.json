@@ -1,0 +1,374 @@
+{
+  "version": "0.1.0",
+  "scene": {
+    "viewBox": [0, 0, 1080, 1920],
+    "nodes": [
+      {
+        "id": "s1_card",
+        "parentId": null,
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "c1",
+              "closed": true,
+              "vertices": [
+                { "p": [-330, -95], "in": [0, 0], "out": [0, 0] },
+                { "p": [330, -95], "in": [0, 0], "out": [0, 0] },
+                { "p": [330, 95], "in": [0, 0], "out": [0, 0] },
+                { "p": [-330, 95], "in": [0, 0], "out": [0, 0] }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [540, 960],
+          "scale": [1, 1],
+          "rotate": 0,
+          "pivot": [0, 0]
+        },
+        "style": {
+          "fill": [1, 1, 1, 1],
+          "opacity": 1
+        }
+      },
+      {
+        "id": "s1_check",
+        "parentId": "s1_card",
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "c2",
+              "closed": true,
+              "vertices": [
+                { "p": [-34, -34], "in": [0, 0], "out": [0, 0] },
+                { "p": [34, -34], "in": [0, 0], "out": [0, 0] },
+                { "p": [34, 34], "in": [0, 0], "out": [0, 0] },
+                { "p": [-34, 34], "in": [0, 0], "out": [0, 0] }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [245, 0],
+          "scale": [1, 1],
+          "rotate": 0,
+          "pivot": [0, 0]
+        },
+        "style": {
+          "fill": [0, 0, 0, 1],
+          "opacity": 0
+        }
+      },
+      {
+        "id": "s2_pill",
+        "parentId": null,
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "c3",
+              "closed": true,
+              "vertices": [
+                { "p": [-460, -65], "in": [0, 0], "out": [0, 0] },
+                { "p": [460, -65], "in": [0, 0], "out": [0, 0] },
+                { "p": [460, 65], "in": [0, 0], "out": [0, 0] },
+                { "p": [-460, 65], "in": [0, 0], "out": [0, 0] }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [540, 960],
+          "scale": [1, 1],
+          "rotate": 0,
+          "pivot": [0, 0]
+        },
+        "style": {
+          "fill": [1, 1, 1, 1],
+          "opacity": 0
+        }
+      },
+      {
+        "id": "s4_card1",
+        "parentId": null,
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "c4",
+              "closed": true,
+              "vertices": [
+                { "p": [-380, -80], "in": [0, 0], "out": [0, 0] },
+                { "p": [380, -80], "in": [0, 0], "out": [0, 0] },
+                { "p": [380, 80], "in": [0, 0], "out": [0, 0] },
+                { "p": [-380, 80], "in": [0, 0], "out": [0, 0] }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [540, 740],
+          "scale": [1, 1],
+          "rotate": 0,
+          "pivot": [0, 0]
+        },
+        "style": {
+          "fill": [1, 1, 1, 1],
+          "opacity": 0
+        }
+      },
+      {
+        "id": "s6_cta",
+        "parentId": null,
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "c5",
+              "closed": true,
+              "vertices": [
+                { "p": [-270, -68], "in": [0, 0], "out": [0, 0] },
+                { "p": [270, -68], "in": [0, 0], "out": [0, 0] },
+                { "p": [270, 68], "in": [0, 0], "out": [0, 0] },
+                { "p": [-270, 68], "in": [0, 0], "out": [0, 0] }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [540, 960],
+          "scale": [1, 1],
+          "rotate": 0,
+          "pivot": [0, 0]
+        },
+        "style": {
+          "fill": [1, 1, 1, 1],
+          "opacity": 0
+        }
+      }
+    ]
+  },
+  "timeline": {
+    "durationMs": 11500,
+    "iterations": 1,
+    "direction": "normal",
+    "fill": "both"
+  },
+  "tracks": [
+    {
+      "id": "t_s1_card_scale",
+      "targetId": "s1_card",
+      "property": "scale",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": [0, 0],
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 400,
+          "value": [1.06, 1.06],
+          "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 }
+        },
+        {
+          "timeMs": 600,
+          "value": [1, 1],
+          "ease": { "kind": "cubic-bezier", "x1": 0.25, "y1": 1, "x2": 0.5, "y2": 1 }
+        },
+        {
+          "timeMs": 1500,
+          "value": [1, 1],
+          "ease": { "kind": "hold" }
+        }
+      ]
+    },
+    {
+      "id": "t_s1_card_opacity",
+      "targetId": "s1_card",
+      "property": "opacity",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": 1,
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 1400,
+          "value": 1,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 1500,
+          "value": 0,
+          "ease": { "kind": "linear" }
+        }
+      ]
+    },
+    {
+      "id": "t_s1_check_scale",
+      "targetId": "s1_check",
+      "property": "scale",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": [0, 0],
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 700,
+          "value": [0, 0],
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 950,
+          "value": [1.18, 1.18],
+          "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 }
+        },
+        {
+          "timeMs": 1100,
+          "value": [1, 1],
+          "ease": { "kind": "cubic-bezier", "x1": 0.25, "y1": 1, "x2": 0.5, "y2": 1 }
+        }
+      ]
+    },
+    {
+      "id": "t_s2_pill_opacity",
+      "targetId": "s2_pill",
+      "property": "opacity",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": 0,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 1500,
+          "value": 1,
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 3400,
+          "value": 1,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 3500,
+          "value": 0,
+          "ease": { "kind": "linear" }
+        }
+      ]
+    },
+    {
+      "id": "t_s4_card1_translate",
+      "targetId": "s4_card1",
+      "property": "translate",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": [540, 860],
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 5500,
+          "value": [540, 860],
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 6050,
+          "value": [540, 740],
+          "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 }
+        }
+      ]
+    },
+    {
+      "id": "t_s4_card1_opacity",
+      "targetId": "s4_card1",
+      "property": "opacity",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": 0,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 5500,
+          "value": 0,
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 5800,
+          "value": 1,
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 7400,
+          "value": 1,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 7500,
+          "value": 0,
+          "ease": { "kind": "linear" }
+        }
+      ]
+    },
+    {
+      "id": "t_s6_cta_scale",
+      "targetId": "s6_cta",
+      "property": "scale",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": [0, 0],
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 10000,
+          "value": [0, 0],
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 10450,
+          "value": [1.12, 1.12],
+          "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 }
+        },
+        {
+          "timeMs": 10700,
+          "value": [1, 1],
+          "ease": { "kind": "cubic-bezier", "x1": 0.25, "y1": 1, "x2": 0.5, "y2": 1 }
+        }
+      ]
+    },
+    {
+      "id": "t_s6_cta_opacity",
+      "targetId": "s6_cta",
+      "property": "opacity",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": 0,
+          "ease": { "kind": "hold" }
+        },
+        {
+          "timeMs": 10000,
+          "value": 1,
+          "ease": { "kind": "linear" }
+        },
+        {
+          "timeMs": 11500,
+          "value": 1,
+          "ease": { "kind": "hold" }
+        }
+      ]
+    }
+  ],
+  "accessibility": {
+    "label": "11.5-second SaaS product demo mobile short recreation",
+    "reducedMotion": {
+      "mode": "static",
+      "atMs": 10500
+    }
+  }
+}

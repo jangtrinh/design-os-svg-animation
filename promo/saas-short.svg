@@ -1,0 +1,318 @@
+<svg id="saas-short-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1920" role="img" aria-label="11.5s SaaS UI Motion Recreation with Phosphor Icons">
+        <title>Design OS 11.5s SaaS Product Demo Short (Phosphor Icons Engine)</title>
+        <defs>
+          <!-- ========================================================= -->
+          <!-- OFFICIAL PHOSPHOR ICONS CORE SYMBOLS                      -->
+          <!-- ========================================================= -->
+          <symbol id="ph-check-bold" viewBox="0 0 256 256">
+            <path d="M232.49,80.49l-128,128a12,12,0,0,1-17,0l-56-56a12,12,0,1,1,17-17L96,183,215.51,63.51a12,12,0,0,1,17,17Z" />
+          </symbol>
+
+          <symbol id="ph-plus-bold" viewBox="0 0 256 256">
+            <path d="M228,128a12,12,0,0,1-12,12H140v76a12,12,0,0,1-24,0V140H40a12,12,0,0,1,0-24h76V40a12,12,0,0,1,24,0v76h76A12,12,0,0,1,228,128Z" />
+          </symbol>
+
+          <symbol id="ph-microphone-bold" viewBox="0 0 256 256">
+            <path d="M128,180a52.06,52.06,0,0,0,52-52V64A52,52,0,0,0,76,64v64A52.06,52.06,0,0,0,128,180ZM100,64a28,28,0,0,1,56,0v64a28,28,0,0,1-56,0Zm40,155.22V240a12,12,0,0,1-24,0V219.22A92.14,92.14,0,0,1,36,128a12,12,0,0,1,24,0,68,68,0,0,0,136,0,12,12,0,0,1,24,0A92.14,92.14,0,0,1,140,219.22Z" />
+          </symbol>
+
+          <symbol id="ph-waveform-bold" viewBox="0 0 256 256">
+            <path d="M60,96v64a12,12,0,0,1-24,0V96a12,12,0,0,1,24,0ZM88,20A12,12,0,0,0,76,32V224a12,12,0,0,0,24,0V32A12,12,0,0,0,88,20Zm40,32a12,12,0,0,0-12,12V192a12,12,0,0,0,24,0V64A12,12,0,0,0,128,52Zm40,32a12,12,0,0,0-12,12v64a12,12,0,0,0,24,0V96A12,12,0,0,0,168,84Zm40-16a12,12,0,0,0-12,12v96a12,12,0,0,0,24,0V80A12,12,0,0,0,208,68Z" />
+          </symbol>
+
+          <symbol id="ph-file-pdf-bold" viewBox="0 0 256 256">
+            <path d="M200,164v8h12a12,12,0,0,1,0,24H200v12a12,12,0,0,1-24,0V152a12,12,0,0,1,12-12h32a12,12,0,0,1,0,24ZM92,172a32,32,0,0,1-32,32H56v4a12,12,0,0,1-24,0V152a12,12,0,0,1,12-12H60A32,32,0,0,1,92,172Zm-24,0a8,8,0,0,0-8-8H56v16h4A8,8,0,0,0,68,172Zm100,8a40,40,0,0,1-40,40H112a12,12,0,0,1-12-12V152a12,12,0,0,1,12-12h16A40,40,0,0,1,168,180Zm-24,0a16,16,0,0,0-16-16h-4v32h4A16,16,0,0,0,144,180ZM36,108V40A20,20,0,0,1,56,20h96a12,12,0,0,1,8.49,3.52l56,56A12,12,0,0,1,220,88v20a12,12,0,0,1-24,0v-4H148a12,12,0,0,1-12-12V44H60v64a12,12,0,0,1-24,0ZM160,57V80h23Z" />
+          </symbol>
+
+          <symbol id="ph-grid-four-bold" viewBox="0 0 256 256">
+            <path d="M200,36H56A20,20,0,0,0,36,56V200a20,20,0,0,0,20,20H200a20,20,0,0,0,20-20V56A20,20,0,0,0,200,36Zm-4,80H140V60h56ZM116,60v56H60V60ZM60,140h56v56H60Zm80,56V140h56v56Z" />
+          </symbol>
+
+          <symbol id="ph-article-bold" viewBox="0 0 256 256">
+            <path d="M216,36H40A20,20,0,0,0,20,56V200a20,20,0,0,0,20,20H216a20,20,0,0,0,20-20V56A20,20,0,0,0,216,36Zm-4,160H44V60H212ZM68,92A12,12,0,0,1,80,80h96a12,12,0,0,1,0,24H80A12,12,0,0,1,68,92Zm0,36a12,12,0,0,1,12-12h96a12,12,0,0,1,0,24H80A12,12,0,0,1,68,128Zm0,36a12,12,0,0,1,12-12h96a12,12,0,0,1,0,24H80A12,12,0,0,1,68,164Z" />
+          </symbol>
+
+          <symbol id="ph-arrow-up-right-bold" viewBox="0 0 256 256">
+            <path d="M204,64V168a12,12,0,0,1-24,0V93L72.49,200.49a12,12,0,0,1-17-17L163,76H88a12,12,0,0,1,0-24H192A12,12,0,0,1,204,64Z" />
+          </symbol>
+
+          <!-- Scene 1 Warm Pastel Mesh Gradient -->
+          <linearGradient id="s1-mesh-bg" x1="10%" y1="0%" x2="90%" y2="100%">
+            <stop offset="0%" stop-color="#FFB38A" />
+            <stop offset="45%" stop-color="#F68C72" />
+            <stop offset="80%" stop-color="#B497D6" />
+            <stop offset="100%" stop-color="#8F96EA" />
+          </linearGradient>
+
+          <!-- Scene 4 Sky Blue Gradient -->
+          <linearGradient id="s4-sky-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#5599EB" />
+            <stop offset="60%" stop-color="#82B7F4" />
+            <stop offset="100%" stop-color="#B8DCFD" />
+          </linearGradient>
+
+          <!-- Scene 6 Outro Mesh Gradient -->
+          <linearGradient id="s6-mesh-bg" x1="15%" y1="10%" x2="85%" y2="95%">
+            <stop offset="0%" stop-color="#B39DD6" />
+            <stop offset="35%" stop-color="#E99285" />
+            <stop offset="70%" stop-color="#F2A583" />
+            <stop offset="100%" stop-color="#F7D397" />
+          </linearGradient>
+
+          <!-- Scene 3 Text Gradient (Purple for "deeper") -->
+          <linearGradient id="purple-text-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#7C6BF0" />
+            <stop offset="100%" stop-color="#A594F9" />
+          </linearGradient>
+
+          <!-- Scene 3 Text Gradient (Coral for "faster") -->
+          <linearGradient id="coral-text-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#F43F5E" />
+            <stop offset="100%" stop-color="#FB923C" />
+          </linearGradient>
+
+          <!-- Soft Card Shadow -->
+          <filter id="soft-card-shadow" x="-20%" y="-20%" width="140%" height="150%">
+            <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.08" />
+          </filter>
+
+          <!-- Button Shadow -->
+          <filter id="button-shadow" x="-25%" y="-25%" width="150%" height="160%">
+            <feDropShadow dx="0" dy="20" stdDeviation="30" flood-color="#000000" flood-opacity="0.12" />
+          </filter>
+        </defs>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 1: DROPDOWN SELECTION (0.0s – 1.5s)                     -->
+        <!-- ============================================================= -->
+        <g id="scene-1" class="scene-group">
+          <!-- Background -->
+          <rect width="1080" height="1920" fill="url(#s1-mesh-bg)" />
+
+          <!-- Centered White Card -->
+          <g id="s1-card-anchor" transform="translate(540, 960)">
+            <g id="s1-card-scale" transform="scale(1)">
+              <rect x="-330" y="-95" width="660" height="190" rx="42" fill="#FFFFFF" filter="url(#soft-card-shadow)" />
+
+              <!-- Card Text -->
+              <text id="s1-title" x="-265" y="-12" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="46" font-weight="700" fill="#000000">
+                GPT- 5
+              </text>
+              <text id="s1-subtitle" x="-265" y="44" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#71717A">
+                Flagship model
+              </text>
+
+              <!-- Checkmark Circle Badge with Phosphor check-bold (Pops in at 0.7s) -->
+              <g id="s1-badge" transform="translate(245, 0) scale(1)">
+                <circle cx="0" cy="0" r="34" fill="#000000" />
+                <use href="#ph-check-bold" width="40" height="40" x="-20" y="-20" fill="#FFFFFF" />
+              </g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 2: PILL INPUT FIELD (1.5s – 3.5s)                       -->
+        <!-- ============================================================= -->
+        <g id="scene-2" class="scene-group" opacity="0">
+          <rect width="1080" height="1920" fill="#FFFFFF" />
+
+          <!-- Wide Pill Input Bar -->
+          <g id="s2-pill-anchor" transform="translate(540, 960)">
+            <rect id="s2-pill-border" x="-460" y="-65" width="920" height="130" rx="65" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="3" />
+
+            <!-- Left '+' Icon (Phosphor plus-bold) -->
+            <g id="s2-icon-plus" transform="translate(-390, 0)">
+              <use href="#ph-plus-bold" width="38" height="38" x="-19" y="-19" fill="#000000" />
+            </g>
+
+            <!-- Center Typewriter Prompt Text -->
+            <text id="s2-prompt-text" x="-330" y="13" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="34" font-weight="500" fill="#000000">
+              Our smartest, fastest model yet
+            </text>
+
+            <!-- Blinking Vertical Cursor -->
+            <line id="s2-cursor" x1="215" y1="-22" x2="215" y2="22" stroke="#000000" stroke-width="3.5" />
+
+            <!-- Right: Microphone Outline Icon (Phosphor microphone-bold) -->
+            <g id="s2-icon-mic" transform="translate(300, 0)">
+              <use href="#ph-microphone-bold" width="36" height="36" x="-18" y="-18" fill="#000000" />
+            </g>
+
+            <!-- Right: Waveform Pill Badge (Phosphor waveform-bold) -->
+            <g id="s2-badge-wave" transform="translate(385, 0)">
+              <rect x="-35" y="-30" width="70" height="60" rx="30" fill="#F4F4F5" />
+              <use id="s2-wave-icon" href="#ph-waveform-bold" width="34" height="34" x="-17" y="-17" fill="#000000" />
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 3: KINETIC TYPOGRAPHY (3.5s – 5.5s)                     -->
+        <!-- ============================================================= -->
+        <g id="scene-3" class="scene-group" opacity="0">
+          <rect width="1080" height="1920" fill="#FFFFFF" />
+
+          <!-- Center Kinetic Typography -->
+          <g id="s3-text-anchor" transform="translate(540, 960)">
+            <text id="s3-lead" x="-14" y="20" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="64" font-weight="700" fill="#000000" text-anchor="end">
+              Think
+            </text>
+            <text id="s3-word-deeper" x="14" y="20" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="64" font-weight="700" fill="url(#purple-text-grad)" text-anchor="start">
+              deeper
+            </text>
+            <text id="s3-word-faster" x="14" y="20" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="64" font-weight="700" fill="url(#coral-text-grad)" text-anchor="start" opacity="0">
+              faster
+            </text>
+          </g>
+        </g>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 4: PROCESSING CARDS (5.5s – 7.5s)                       -->
+        <!-- ============================================================= -->
+        <g id="scene-4" class="scene-group" opacity="0">
+          <!-- Sky Blue Background -->
+          <rect width="1080" height="1920" fill="url(#s4-sky-bg)" />
+
+          <!-- Card 1: sales_deck.pdf (Red) -->
+          <g id="s4-card-1" transform="translate(540, 740)">
+            <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" filter="url(#soft-card-shadow)" />
+            <!-- Red Squircle Icon (Phosphor file-pdf-bold) -->
+            <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#F43F5E" />
+            <use href="#ph-file-pdf-bold" width="56" height="56" x="-313" y="-28" fill="#FFFFFF" />
+            <!-- Title & Status -->
+            <text x="-205" y="-4" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="34" font-weight="700" fill="#111827">sales_deck.pdf</text>
+            <text id="s4-sub-1" x="-205" y="38" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="25" font-weight="400" fill="#9CA3AF">Analyzing...</text>
+          </g>
+
+          <!-- Card 2: annual_report.xlsx (Green) -->
+          <g id="s4-card-2" transform="translate(540, 940)">
+            <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" filter="url(#soft-card-shadow)" />
+            <!-- Green Squircle Icon (Phosphor grid-four-bold) -->
+            <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#10B981" />
+            <use href="#ph-grid-four-bold" width="54" height="54" x="-314" y="-27" fill="#FFFFFF" />
+            <!-- Title & Status -->
+            <text x="-205" y="-4" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="34" font-weight="700" fill="#111827">annual_report.xlsx</text>
+            <text id="s4-sub-2" x="-205" y="38" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="25" font-weight="400" fill="#9CA3AF">Analyzing...</text>
+          </g>
+
+          <!-- Card 3: consult_notes.doc (Blue) -->
+          <g id="s4-card-3" transform="translate(540, 1140)">
+            <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" filter="url(#soft-card-shadow)" />
+            <!-- Blue Squircle Icon (Phosphor article-bold) -->
+            <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#0284C7" />
+            <use href="#ph-article-bold" width="54" height="54" x="-314" y="-27" fill="#FFFFFF" />
+            <!-- Title & Status -->
+            <text x="-205" y="-4" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="34" font-weight="700" fill="#111827">consult_notes.doc</text>
+            <text id="s4-sub-3" x="-205" y="38" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="25" font-weight="400" fill="#9CA3AF">Analyzing...</text>
+          </g>
+        </g>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 5: GENERATIVE TEXT & CAMERA ZOOM (7.5s – 10.0s)         -->
+        <!-- ============================================================= -->
+        <g id="scene-5" class="scene-group" opacity="0">
+          <rect width="1080" height="1920" fill="#FFFFFF" />
+
+          <!-- Dynamic Camera Stage: Translates and Zooms on Target -->
+          <g id="s5-camera-stage" transform="translate(0, 0) scale(1)">
+            <g id="s5-doc-content" transform="translate(90, 360)">
+              <!-- Doc Header -->
+              <text id="s5-intro" x="0" y="0" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="30" font-weight="400" fill="#52525B">
+                Below is a concise summary of your business
+              </text>
+              <text id="s5-intro-2" x="0" y="44" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="30" font-weight="400" fill="#52525B">
+                documents.
+              </text>
+
+              <!-- Section 1 -->
+              <text id="s5-h1" x="0" y="140" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="44" font-weight="800" fill="#000000">
+                Bottom line
+              </text>
+
+              <!-- Paragraph 1 Streaming Lines -->
+              <text id="s5-p1-l1" x="0" y="205" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                Overall momentum remains strong, with clear
+              </text>
+              <text id="s5-p1-l2" x="0" y="255" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                product-market fit and a growing base of
+              </text>
+              <text id="s5-p1-l3" x="0" y="305" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                recurring revenue. Strengths include
+              </text>
+              <text id="s5-p1-l4" x="0" y="355" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                consistent ARR growth, above-average
+              </text>
+              <text id="s5-p1-l5" x="0" y="405" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                retention metrics, and solid client feedback.
+              </text>
+              <text id="s5-p1-l6" x="0" y="455" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                However, the business still faces challenges
+              </text>
+              <text id="s5-p1-l7" x="0" y="505" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                in diversifying the pipeline, creating scalable
+              </text>
+              <text id="s5-p1-l8" x="0" y="555" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                mid-funnel assets, and simplifying pricing
+              </text>
+              <text id="s5-p1-l9" x="0" y="605" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                structures for larger packages.
+              </text>
+
+              <!-- Section 2 -->
+              <text id="s5-h2" x="0" y="720" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="44" font-weight="800" fill="#000000">
+                Highlights
+              </text>
+
+              <!-- Section 3 Focus Block (Camera zooms here!) -->
+              <g id="s5-zoom-target" transform="translate(0, 810)">
+                <text id="s5-h3" x="0" y="0" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="44" font-weight="800" fill="#000000">
+                  Go-to-market (sales_deck
+                </text>
+                <text id="s5-p2-l1" x="0" y="60" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  sales deck positions the platform as core.
+                </text>
+                <text id="s5-p2-l2" x="0" y="110" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  The deck emphasizes modular workflows to
+                </text>
+                <text id="s5-p2-l3" x="0" y="160" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  be reused across product tiers, outbound
+                </text>
+                <text id="s5-p2-l4" x="0" y="210" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  campaigns, and onboarding flows.
+                </text>
+                <text id="s5-p2-l5" x="0" y="260" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  ICP is defined as mid-market growth teams
+                </text>
+                <text id="s5-p2-l6" x="0" y="310" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="31" font-weight="400" fill="#18181B">
+                  and developer tooling companies.
+                </text>
+              </g>
+            </g>
+          </g>
+        </g>
+
+        <!-- ============================================================= -->
+        <!-- SCENE 6: CALL TO ACTION (10.0s – 11.5s)                       -->
+        <!-- ============================================================= -->
+        <g id="scene-6" class="scene-group" opacity="0">
+          <!-- Warm Outro Mesh Background -->
+          <rect width="1080" height="1920" fill="url(#s6-mesh-bg)" />
+
+          <!-- Floating CTA Pill Button -->
+          <g id="s6-cta-anchor" transform="translate(540, 960)">
+            <g id="s6-cta-scale" transform="scale(1)">
+              <rect x="-270" y="-68" width="540" height="136" rx="68" fill="#FFFFFF" filter="url(#button-shadow)" />
+
+              <!-- Button Label & Diagonal Arrow -->
+              <text id="s6-cta-text" x="-35" y="14" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="44" font-weight="600" fill="#000000" text-anchor="middle">
+                Available now
+              </text>
+              <!-- 45-degree arrow ↗ (Phosphor arrow-up-right-bold) -->
+              <g transform="translate(150, 0)">
+                <use href="#ph-arrow-up-right-bold" width="46" height="46" x="-23" y="-23" fill="#000000" />
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
