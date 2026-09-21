@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 const EASE_SPRING = [0.16, 1, 0.3, 1] as const;
 
@@ -332,7 +333,7 @@ export const MeditationAppWorkspace: React.FC<MeditationAppWorkspaceProps> = ({
             <div className="flex items-center justify-between pb-4 border-b border-[#3F3F46]">
               <span className="font-medium text-[15px]">Tweaks Panel</span>
               <button onClick={() => setIsTweaksOpen(false)} className="text-[#A1A1AA] hover:text-white p-1">
-                ✕
+                <X className="w-4 h-4" />
               </button>
             </div>
 

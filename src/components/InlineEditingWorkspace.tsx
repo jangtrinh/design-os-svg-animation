@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Trees, Waves, Sliders, X } from "lucide-react";
 
 const EASE_SPRING = [0.16, 1, 0.3, 1] as const;
 
@@ -125,7 +126,7 @@ export const InlineEditingWorkspace: React.FC<InlineEditingWorkspaceProps> = ({
                     {photoType === "forest" ? (
                       /* Misty Forest Mock Art */
                       <div className="w-full h-full bg-gradient-to-b from-[#1E293B] via-[#0F172A] to-[#022c22] flex flex-col items-center justify-center p-6 text-center">
-                        <span className="text-3xl mb-2">🌲🌫️</span>
+                        <Trees className="w-10 h-10 text-[#10B981] mb-2" />
                         <span className="text-[13px] text-[#94A3B8] font-mono">
                           Misty Pine Forest Canopy • North Coast
                         </span>
@@ -133,7 +134,7 @@ export const InlineEditingWorkspace: React.FC<InlineEditingWorkspaceProps> = ({
                     ) : (
                       /* Coastline Photo Mock Art */
                       <div className="w-full h-full bg-gradient-to-b from-[#0C4A6E] via-[#0369A1] to-[#082f49] flex flex-col items-center justify-center p-6 text-center">
-                        <span className="text-3xl mb-2">🌊🏖️</span>
+                        <Waves className="w-10 h-10 text-[#38BDF8] mb-2" />
                         <span className="text-[13px] text-[#BAE6FD] font-mono">
                           Pacific Coastline Bluff • Shoreline Waves
                         </span>
@@ -191,8 +192,9 @@ export const InlineEditingWorkspace: React.FC<InlineEditingWorkspaceProps> = ({
                   className="p-3 -m-3 rounded-xl hover:bg-[#27272A]/40 transition-colors cursor-pointer group relative border border-transparent hover:border-[#3F3F46]"
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[11px] font-mono text-[#D96B43] opacity-0 group-hover:opacity-100 transition-opacity">
-                      Click to edit with Knobs ⚙️
+                    <span className="text-[11px] font-mono text-[#D96B43] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1.5">
+                      <span>Click to edit with Knobs</span>
+                      <Sliders className="w-3 h-3" />
                     </span>
                   </div>
                   <h1
@@ -225,7 +227,7 @@ export const InlineEditingWorkspace: React.FC<InlineEditingWorkspaceProps> = ({
                       <span className="text-[13px] text-[#A1A1AA]">/ Typography</span>
                     </div>
                     <button onClick={() => setIsKnobsPanelOpen(false)} className="text-[#A1A1AA] hover:text-white p-1">
-                      ✕
+                      <X className="w-4 h-4" />
                     </button>
                   </div>
 

@@ -28,6 +28,15 @@ This skill is certified across three primary AI coding runtimes:
 
 ---
 
+## Immutable Hardrules
+1. **Zero Raw Emojis / Official Vector Icon Sets Only**: NEVER use raw Unicode emojis (e.g. 📦, 📄, 🚀, 🤖, 🎨) as UI icons, button graphics, indicators, or decorative markers in code or documentation. ALWAYS use official vector icon libraries (Phosphor Icons `@phosphor-icons/core` or Lucide Icons `lucide-react` via SVG `<defs>` + `<use>` or React icon components).
+2. **Deterministic Virtual Clock**: All video/motion timelines must decouple from wall-clock time and expose a deterministic time hook (`window.__seekToTime(t)`).
+3. **GPU-Composited Transforms Only**: Strictly limit active continuous animations to `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Avoid layout thrashing (`width`, `height`, `top`, `left`, `d`).
+4. **Mandatory A11y Reduced Motion**: All animations must feature `@media (prefers-reduced-motion: reduce)` fallbacks.
+5. **Zero Design Flop**: Generated assets and videos must pass `python3 scripts/anti-flop-gate.py` with exit code 0.
+
+---
+
 ## The 5-Phase Workflow
 
 ### Phase 1: Temporal & Kinematic Deconstruction

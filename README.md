@@ -4,7 +4,7 @@
 
 ---
 
-## 📺 Visual Showcase & 5s Demos
+## Visual Showcase & 5s Demos
 
 | Example 1: Claude Design 3D Globe & Tweaks (16:9) | Example 2: SaaS 9:16 Vector Motion Short |
 | :---: | :---: |
@@ -13,20 +13,21 @@
 
 ---
 
-## 🤖 AI Agent Quick Reference & Ingestion Guide
+## AI Agent Quick Reference & Ingestion Guide
 
 If you are an AI coding agent reading this codebase, follow these rules and directives strictly:
 
-### 1. The 5 Immutable Agent Invariants
+### 1. The 6 Immutable Agent Invariants
 1. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](file:///Users/jang/Products/design-os-svg-animation/schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
 2. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
 3. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
 4. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
-5. **Zero Design Flop**: Generated assets and videos must pass all 5 verification gates via `python3 scripts/anti-flop-gate.py` with exit code `0`.
+5. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components.
+6. **Zero Design Flop**: Generated assets and videos must pass all 5 verification gates via `python3 scripts/anti-flop-gate.py` with exit code `0`.
 
 ---
 
-## 🛠️ Multi-Agent Runtime Commands & Mappings
+## Multi-Agent Runtime Commands & Mappings
 
 | Action | Claude Code (`.claude`) | Codex Native (`Codex CLI`) | Antigravity (`Gemini Agentic`) |
 | :--- | :--- | :--- | :--- |
@@ -38,7 +39,7 @@ If you are an AI coding agent reading this codebase, follow these rules and dire
 
 ---
 
-## 📦 AI Agent Installation & Setup
+## AI Agent Installation & Setup
 
 ### 1. Install Project Dependencies
 ```bash
@@ -64,7 +65,7 @@ npm install
 
 ---
 
-## 🚀 Deterministic AI Agent Workflows
+## Deterministic AI Agent Workflows
 
 ### Workflow A: Recreating Promo Video with 99% Parity
 1. **Start Virtual-Clock Local Server**:
@@ -91,7 +92,7 @@ npm install
 
 ---
 
-## 🏛️ Repository Architecture & Entrypoints
+## Repository Architecture & Entrypoints
 
 ```
 design-os-svg-animation/
@@ -127,11 +128,11 @@ design-os-svg-animation/
 
 ---
 
-## 🛡️ Anti-Flop Automated Gates Reference
+## Anti-Flop Automated Gates Reference
 
 | Gate | Target | Pass Condition |
 | :--- | :--- | :--- |
-| **Gate 1** | Icon System | Official Phosphor / Lucide symbols only in `<defs>` / `<use>`. No manual hack paths. |
+| **Gate 1** | Icon System & Zero Emoji | Official Phosphor / Lucide symbols only in `<defs>` / `<use>` / React components. Zero raw emojis allowed. |
 | **Gate 2** | Typography & Contrast | `-webkit-font-smoothing: antialiased`, WCAG 2.2 AA compliant contrast ratios. |
 | **Gate 3** | Tactile Spatial Depth | 8pt/4pt modular grid, multi-layered diffuse drop shadows. |
 | **Gate 4** | A11y & Motion Safety | `@media (prefers-reduced-motion: reduce)` fallbacks, valid ARIA tags. |
@@ -139,7 +140,7 @@ design-os-svg-animation/
 
 ---
 
-## 🤝 Ecosystem
+## Ecosystem
 - **Ecosystem**: Design OS
 - **Target Runtimes**: Modern Browsers, React 19 / Three.js / R3F, Headless Chromium, Web Components
 - **License**: MIT

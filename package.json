@@ -12,14 +12,22 @@
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
+    "@react-three/drei": "^10.7.8",
+    "@react-three/fiber": "^9.7.0",
     "ajv": "^8.17.1",
     "flubber": "^0.4.2",
+    "framer-motion": "^13.4.0",
     "gsap": "^3.12.5",
+    "lucide-react": "^1.47.0",
     "paper": "^0.12.17",
-    "svgo": "^3.3.2"
+    "svgo": "^3.3.2",
+    "three": "^0.186.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/three": "^0.186.0",
     "svgo": "4.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4"

@@ -2073,3 +2073,12 @@ body.clean-export .video-stage {
   color: #18181B;
   letter-spacing: -0.02em;
 }
+
+/* Phosphor SVG Icon Universal Standard */
+.ph-icon {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: -0.18em;
+  fill: currentColor;
+  display: inline-block;
+}

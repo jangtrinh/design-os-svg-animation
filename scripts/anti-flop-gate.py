@@ -30,7 +30,7 @@ def banner(title: str):
 
 
 def test_gate_1_phosphor_icons():
-    banner("Gate 1: Phosphor Icons Systemic Verification")
+    banner("Gate 1: Phosphor / Lucide Icons & Zero Emojis Hardrule Verification")
     html_path = ROOT_DIR / "promo/saas-short.html"
     content = html_path.read_text(encoding="utf-8")
 
@@ -61,7 +61,40 @@ def test_gate_1_phosphor_icons():
         print(f"❌ Unused Phosphor symbols in composition: {missing_uses}")
 
     assert not missing_defs and not missing_uses, "All required Phosphor symbols must be defined and instantiated!"
-    print("✅ GATE 1 PASSED: 100% verified official Phosphor vector icon system.")
+
+    # --- IMMUTABLE HARDRULE: ZERO RAW EMOJIS IN UI CODE ---
+    emoji_pattern = re.compile(
+        r"[\U00010000-\U0010ffff\u2600-\u27bf\u2300-\u23ff\u2b50\u2b55\u203c\u2049\u25aa\u25ab\u25b6\u25c0\u25fb-\u25fe]",
+        flags=re.UNICODE
+    )
+
+    scanned_targets = [
+        ROOT_DIR / "promo/claude-design-promo.html",
+        ROOT_DIR / "promo/claude-design-engine.js",
+        ROOT_DIR / "src/components"
+    ]
+
+    emoji_violations = {}
+    for target in scanned_targets:
+        if target.is_dir():
+            for p in target.rglob("*.tsx"):
+                txt = p.read_text(encoding="utf-8")
+                matches = emoji_pattern.findall(txt)
+                if matches:
+                    emoji_violations[str(p.relative_to(ROOT_DIR))] = list(set(matches))
+        elif target.exists():
+            txt = target.read_text(encoding="utf-8")
+            matches = emoji_pattern.findall(txt)
+            if matches:
+                emoji_violations[str(target.relative_to(ROOT_DIR))] = list(set(matches))
+
+    if emoji_violations:
+        print(f"❌ FORBIDDEN RAW EMOJIS DETECTED: {emoji_violations}")
+        print("   Hardrule: All UI elements must use Phosphor (@phosphor-icons/core) or Lucide (lucide-react). Emojis are strictly banned.")
+        sys.exit(1)
+
+    print("✅ HARDRULE VERIFIED: 0 raw emojis detected across UI code; 100% official vector icon system.")
+    print("✅ GATE 1 PASSED: 100% verified official Phosphor / Lucide vector icon system.")
 
 
 def test_gate_2_typography_and_smoothing():

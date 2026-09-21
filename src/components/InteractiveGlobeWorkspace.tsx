@@ -3,6 +3,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 const TOKENS = {
   bgLight: "#FAF9F5",
@@ -502,9 +503,9 @@ export const InteractiveGlobeWorkspace: React.FC<InteractiveGlobeWorkspaceProps>
                 </span>
                 <button
                   onClick={() => setShowTweaksPrompt(false)}
-                  className="text-[#A1A1AA] hover:text-white"
+                  className="text-[#A1A1AA] hover:text-white p-1"
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
               </div>
               <textarea

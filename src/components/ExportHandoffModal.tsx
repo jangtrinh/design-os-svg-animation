@@ -1,5 +1,16 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  Archive,
+  FileText,
+  BarChart3,
+  Palette,
+  Globe,
+  Zap,
+  Copy,
+  Check,
+  Terminal,
+} from "lucide-react";
 
 const EASE_SPRING = [0.16, 1, 0.3, 1] as const;
 
@@ -53,12 +64,12 @@ export const ExportHandoffModal: React.FC<ExportHandoffModalProps> = ({
               className="absolute right-0 mt-2 w-56 bg-[#18181B] border border-[#27272A] rounded-xl shadow-2xl py-1.5 z-30"
             >
               {[
-                { label: ".zip archive", icon: "📦" },
-                { label: "PDF document", icon: "📄" },
-                { label: "PPTX presentation", icon: "📊" },
-                { label: "Send to Canva", icon: "🎨" },
-                { label: "Standalone HTML", icon: "🌐" },
-                { label: "Handoff to Claude Code", icon: "⚡", highlight: true },
+                { label: ".zip archive", icon: <Archive className="w-4 h-4 text-[#A1A1AA]" /> },
+                { label: "PDF document", icon: <FileText className="w-4 h-4 text-[#A1A1AA]" /> },
+                { label: "PPTX presentation", icon: <BarChart3 className="w-4 h-4 text-[#A1A1AA]" /> },
+                { label: "Send to Canva", icon: <Palette className="w-4 h-4 text-[#A1A1AA]" /> },
+                { label: "Standalone HTML", icon: <Globe className="w-4 h-4 text-[#A1A1AA]" /> },
+                { label: "Handoff to Claude Code", icon: <Zap className="w-4 h-4 text-[#D96B43]" />, highlight: true },
               ].map((item) => (
                 <button
                   key={item.label}
@@ -73,7 +84,7 @@ export const ExportHandoffModal: React.FC<ExportHandoffModalProps> = ({
                       : "text-[#E4E4E7] hover:bg-[#27272A]"
                   }`}
                 >
-                  <span className="text-[14px]">{item.icon}</span>
+                  <span className="flex items-center justify-center">{item.icon}</span>
                   <span>{item.label}</span>
                 </button>
               ))}
@@ -148,7 +159,13 @@ export const ExportHandoffModal: React.FC<ExportHandoffModalProps> = ({
                     : "bg-[#27272A] hover:bg-[#3F3F46] text-[#F4F4F5] border border-[#3F3F46]"
                 }`}
               >
-                <span>{copied ? "✓" : "📋"}</span>
+                <span className="flex items-center">
+                  {copied ? (
+                    <Check className="w-3.5 h-3.5 text-white" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-[#A1A1AA]" />
+                  )}
+                </span>
                 <span>{copied ? "Copied!" : "Copy command"}</span>
               </button>
             </div>

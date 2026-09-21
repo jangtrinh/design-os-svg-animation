@@ -159,7 +159,7 @@ ffmpeg -y -framerate 30 -i /tmp/frames/frame_%04d.png \
 
 ### Stage 5: The Anti-Flop Gate (`scripts/anti-flop-gate.py`)
 No video or component passes without satisfying the 5 validation gates:
-1. **Gate 1 - Official Vector Glyphs**: Forbid approximate path drawings; require certified icon systems (Phosphor / Lucide).
+1. **Gate 1 - Official Vector Glyphs & Zero Raw Emojis (HARDRULE)**: Strictly forbid approximate path drawings and raw Unicode emojis in UI templates, buttons, or indicators; require certified icon systems (Phosphor / Lucide).
 2. **Gate 2 - Typography & Contrast**: Font smoothing (`-webkit-font-smoothing: antialiased`), WCAG 2.2 AA compliant foreground/background ratios.
 3. **Gate 3 - Spatial Hierarchy**: 8pt/4pt modular layout grid, layered soft shadows (`box-shadow: 0 20px 40px -12px rgba(...)`).
 4. **Gate 4 - Accessibility (A11y)**: `@media (prefers-reduced-motion: reduce)` fallbacks that preserve content legibility.

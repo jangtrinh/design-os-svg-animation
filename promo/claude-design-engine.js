@@ -565,7 +565,7 @@
           virtualCursor.style.transform = `translate3d(640px, 360px, 0)`;
         }
       } else {
-        // Morphing into centered pill: [✳ Designing...] -> [✳ Editing...]
+        // Morphing into centered pill: [Designing...] -> [Editing...]
         s1Pill.classList.add('hidden');
         s1Expanded.classList.add('hidden');
         s1MorphPill.classList.remove('hidden');
@@ -744,10 +744,10 @@
         // 49.5s: Photo swaps to Coastline
         if (t >= 49.5) {
           s4CoverPhoto.classList.add('coastline');
-          s4PhotoTag.textContent = '🌊 Pacific Coastline Bluff';
+          s4PhotoTag.textContent = 'Pacific Coastline Bluff';
         } else {
           s4CoverPhoto.classList.remove('coastline');
-          s4PhotoTag.textContent = '🌲 Big Sur Redwood Path';
+          s4PhotoTag.textContent = 'Big Sur Redwood Path';
         }
 
         // 51.5s: Knobs headline font resize with tactile dial feedback
@@ -841,8 +841,8 @@
 
         if (t >= 70.0) {
           const copyLabel = s5BtnCopy.querySelector('.copy-btn-label');
-          if (copyLabel) copyLabel.textContent = 'Copied! ✓';
-          else s5BtnCopy.textContent = 'Copied! ✓';
+          if (copyLabel) copyLabel.textContent = 'Copied!';
+          else s5BtnCopy.textContent = 'Copied!';
           s5BtnCopy.classList.add('copied');
           if (s5CopyRipple) s5CopyRipple.classList.add('active');
         } else {
@@ -879,6 +879,9 @@
     }
   }
 
+  const PH_PLAY_ICON = '<svg class="ph-icon" viewBox="0 0 256 256"><path fill="currentColor" d="M240,128a15.74,15.74,0,0,1-7.6,13.51L88.32,229.65a16,16,0,0,1-16.2.3A15.86,15.86,0,0,1,64,216.13V39.87a15.86,15.86,0,0,1,8.12-13.82,16,16,0,0,1,16.2.3L232.4,114.49A15.74,15.74,0,0,1,240,128Z"/></svg>';
+  const PH_PAUSE_ICON = '<svg class="ph-icon" viewBox="0 0 256 256"><path fill="currentColor" d="M216,48V208a16,16,0,0,1-16,16H160a16,16,0,0,1-16-16V48a16,16,0,0,1,16-16h40A16,16,0,0,1,216,48ZM96,32H56A16,16,0,0,0,40,48V208a16,16,0,0,0,16,16H96a16,16,0,0,0,16-16V48A16,16,0,0,0,96,32Z"/></svg>';
+
   // --- ANIMATION REQUEST ANIMATION FRAME LOOP ---
   function animate(timestamp) {
     if (!lastTimestamp) lastTimestamp = timestamp;
@@ -900,7 +903,7 @@
   if (playBtn) {
     playBtn.addEventListener('click', () => {
       isPlaying = !isPlaying;
-      playIcon.textContent = isPlaying ? '❚❚' : '▶';
+      if (playIcon) playIcon.innerHTML = isPlaying ? PH_PAUSE_ICON : PH_PLAY_ICON;
     });
   }
 
@@ -908,7 +911,7 @@
     if (e.code === 'Space') {
       e.preventDefault();
       isPlaying = !isPlaying;
-      if (playIcon) playIcon.textContent = isPlaying ? '❚❚' : '▶';
+      if (playIcon) playIcon.innerHTML = isPlaying ? PH_PAUSE_ICON : PH_PLAY_ICON;
     }
   });
 
