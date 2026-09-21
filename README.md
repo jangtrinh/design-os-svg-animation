@@ -60,10 +60,41 @@ design-os-svg-animation/
 │   ├── jev-svg-curator.py             # Curate & audit tri thức qua JEV System One
 │   ├── jev-svg-auditor.py             # Code review, AST & SVG animatability audit
 │   └── motion-ir-compiler-demo.ts     # Prototype compiler Motion IR -> CSS & GSAP
+├── promo/                             # Standalone Virtual-Clock Video Player & MP4
+│   ├── claude-design-promo.html       # 82s Anthropic Claude Design Launch Promo recreation
+│   ├── claude-design-promo.mp4        # 1080p 60fps Broadcast-grade MP4 export
+│   ├── claude-design-engine.js        # Deterministic virtual-clock engine
+│   └── claude-design.css              # Custom styling, dark/light transitions & easing
+├── src/components/                    # React Three Fiber & Interactive Components
+│   ├── InteractiveGlobeWorkspace.tsx  # 3D Orthographic Globe + Great-Circle Arcs
+│   ├── ExpandingInput.tsx             # Morphing input pill + Claude star spinner
+│   ├── MeditationAppWorkspace.tsx     # Enso ring timer + iOS mockup + theme switch
+│   ├── InlineEditingWorkspace.tsx     # Photo crossfade + Typography knobs + Spline chart
+│   ├── ExportHandoffModal.tsx         # Code handoff card + interactive toast
+│   └── ClaudeDesignShowcase.tsx       # Unified master showcase container
+├── skills/                            # Cross-Agent Skills (Claude, Codex, Antigravity)
+│   └── motion-video-recreation/       # Universal motion video recreation skill
 ├── research/                          # Báo cáo nghiên cứu & Debate logs
 │   ├── 2026-09-codex-architecture.md  # Tham vấn kiến trúc Codex Web GPT-6-Astra
 │   └── multi-persona-debate-log.md    # Biên bản tranh luận 5 chuyên gia
 └── examples/                          # Các mẫu SVG và animation thực tế
+```
+
+---
+
+## 🎬 Video Recreation & Export Pipeline
+
+Recreate any high-fidelity UI/UX promo video with 99% kinematic & visual parity:
+
+```bash
+# 1. Host virtual-clock player locally
+python3 -m http.server 3033 --directory ./promo
+
+# 2. Run deterministic headless frame capture & FFmpeg MP4 export
+python3 scripts/export-promo-video.py
+
+# 3. Run 5-Gate Anti-Flop Certification
+python3 scripts/anti-flop-gate.py
 ```
 
 ---
@@ -92,7 +123,9 @@ npm run audit:svg
 
 ---
 
-## 🤝 Ecosystem
+## 🤝 Ecosystem & Runtimes
 - **Ecosystem**: Design OS
-- **Target Runtimes**: Modern Browsers, React/Vue/Svelte, Web Components, Mobile Webviews
+- **Certified AI Runtimes**: Claude Code (`.claude/skills`), Codex Native (`AGENTS.md`), Antigravity (`ak:motion-video-recreation`)
+- **Target Platforms**: Modern Browsers, React 19 / Three.js / R3F, Web Components, Headless Chromium
 - **License**: MIT
+

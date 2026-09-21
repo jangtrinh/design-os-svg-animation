@@ -15,4 +15,13 @@ Guidance for AI agents (Antigravity, Codex, Claude Code) working inside `design-
 ## Tooling & Scripts
 - Knowledge Curation: `python3 scripts/jev-svg-curator.py audit-catalog`
 - SVG & Code Review Audit: `python3 scripts/jev-svg-auditor.py audit-dir ./examples`
+- Anti-Flop & QA Gate: `python3 scripts/anti-flop-gate.py`
+- Headless Promo Exporter: `python3 scripts/export-promo-video.py`
 - Compiler Prototype: `npx tsx scripts/motion-ir-compiler-demo.ts`
+
+## Standards & Skills
+- Motion Video Recreation Pipeline: `docs/motion-video-recreation-pipeline.md`
+- Portable Universal Skill: `skills/motion-video-recreation/SKILL.md`
+- Standalone Promo Player: `promo/claude-design-promo.html`
+- Production R3F Suite: `src/components/`
+
