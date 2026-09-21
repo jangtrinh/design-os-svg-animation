@@ -1,131 +1,136 @@
-# Design OS — SVG Animation Engine & Knowledge Base
+# Design OS — SVG Animation Engine & Motion Video Pipeline
 
-> **Production-grade AI-powered SVG Animation Engine, Motion IR, and Comprehensive Vector Motion Knowledge Base.**
-
-Part of the **Design OS** ecosystem (alongside `design-os-3d-blender` and `ease-design`).
+> **AI-AGENT-FIRST RUNBOOK**: This repository is engineered for autonomous AI agents (Claude Code, Codex Native, Antigravity) to design, compile, verify, and render production-grade vector animations and high-fidelity launch promo videos.
 
 ---
 
-## 🎯 Vision & Core Philosophy
+## 🤖 AI Agent Quick Reference & Ingestion Guide
 
-Tự động hóa SVG Animation bằng AI đòi hỏi sự phân tách rạch ròi giữa **Ý định ngữ nghĩa (Semantic Intent)** và **Hình học tất định (Deterministic Geometry)**.
+If you are an AI coding agent reading this codebase, follow these rules and directives strictly:
 
-```
-Prompt / Intent / Sketch
-          │
-          ▼
-┌──────────────────────────────────────────────┐
-│  AI / LLM Stage: Semantic Motion Planning    │
-│  - Intent Understanding                      │
-│  - Semantic Scene Graph Decomposition        │
-│  - Motion Semantics & Timing Tokens          │
-└──────────────────────┬───────────────────────┘
-                       │ Motion IR (JSON/YAML)
-                       ▼
-┌──────────────────────────────────────────────┐
-│  Deterministic Engine Stage: Geometry & Math │
-│  - SVGO & Path Normalization                 │
-│  - Cubic Bézier Conversion & Point Alignment │
-│  - Morphing & Subpath Triangulation          │
-│  - Multi-target Compilation                  │
-└──────────────────────┬───────────────────────┘
-                       │
-       ┌───────────────┼───────────────┬───────────────┐
-       ▼               ▼               ▼               ▼
-Pure CSS Keyframes   GSAP Timeline   WAAPI Tracks   Lottie / SMIL
-```
+### 1. The 5 Immutable Agent Invariants
+1. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](file:///Users/jang/Products/design-os-svg-animation/schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
+2. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
+3. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
+4. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
+5. **Zero Design Flop**: Generated assets and videos must pass all 5 verification gates via `python3 scripts/anti-flop-gate.py` with exit code `0`.
 
 ---
 
-## 🏛️ Project Architecture
+## 🛠️ Multi-Agent Runtime Commands & Mappings
 
-```
-design-os-svg-animation/
-├── docs/                              # Kiến trúc & Đặc tả kỹ thuật
-│   ├── architecture-overview.md       # 7-Stage Hybrid Engine
-│   ├── motion-ir-specification.md     # Đặc tả Motion Intermediate Representation
-│   ├── ai-capabilities-and-limits.md  # Năng lực & Giới hạn của AI trong Vector Motion
-│   ├── morphing-topology-strategy.md  # Kỹ thuật nội suy và ghép nối Path
-│   └── quality-and-safety-gates.md    # Tiêu chuẩn kiểm duyệt JEV System One & A11y
-├── knowledge/                         # 7 Trụ Cột Tri Thức Chuyên Sâu
-│   ├── INDEX.md                       # Bản đồ tri thức & ma trận năng lực
-│   ├── 01-svg-dom-and-geometry.md     # ViewBox, paths, transforms, winding rules
-│   ├── 02-motion-semantics-physics.md # Easing, cubic-bezier, spring kinematics
-│   ├── 03-morphing-interpolation.md   # Flubber, point resampling, topology alignment
-│   ├── 04-animation-engines-targets.md# GSAP, CSS, WAAPI, Lottie SVG, SMIL so sánh
-│   ├── 05-ai-svg-pipeline-motion-ir.md# Prompt decomposition, structured outputs
-│   ├── 06-interactive-state-machines.md# Micro-interactions, hover/click/scroll triggers
-│   └── 07-performance-optimization.md # GPU compositing, paint metrics, will-change
-├── scripts/                           # Tooling tự động hóa & JEV System One
-│   ├── jev-svg-curator.py             # Curate & audit tri thức qua JEV System One
-│   ├── jev-svg-auditor.py             # Code review, AST & SVG animatability audit
-│   └── motion-ir-compiler-demo.ts     # Prototype compiler Motion IR -> CSS & GSAP
-├── promo/                             # Standalone Virtual-Clock Video Player & MP4
-│   ├── claude-design-promo.html       # 82s Anthropic Claude Design Launch Promo recreation
-│   ├── claude-design-promo.mp4        # 1080p 60fps Broadcast-grade MP4 export
-│   ├── claude-design-engine.js        # Deterministic virtual-clock engine
-│   └── claude-design.css              # Custom styling, dark/light transitions & easing
-├── src/components/                    # React Three Fiber & Interactive Components
-│   ├── InteractiveGlobeWorkspace.tsx  # 3D Orthographic Globe + Great-Circle Arcs
-│   ├── ExpandingInput.tsx             # Morphing input pill + Claude star spinner
-│   ├── MeditationAppWorkspace.tsx     # Enso ring timer + iOS mockup + theme switch
-│   ├── InlineEditingWorkspace.tsx     # Photo crossfade + Typography knobs + Spline chart
-│   ├── ExportHandoffModal.tsx         # Code handoff card + interactive toast
-│   └── ClaudeDesignShowcase.tsx       # Unified master showcase container
-├── skills/                            # Cross-Agent Skills (Claude, Codex, Antigravity)
-│   └── motion-video-recreation/       # Universal motion video recreation skill
-├── research/                          # Báo cáo nghiên cứu & Debate logs
-│   ├── 2026-09-codex-architecture.md  # Tham vấn kiến trúc Codex Web GPT-6-Astra
-│   └── multi-persona-debate-log.md    # Biên bản tranh luận 5 chuyên gia
-└── examples/                          # Các mẫu SVG và animation thực tế
-```
+| Action | Claude Code (`.claude`) | Codex Native (`Codex CLI`) | Antigravity (`Gemini Agentic`) |
+| :--- | :--- | :--- | :--- |
+| **Activate Skill** | `/motion-video-recreation` | Prompt task referenced in `AGENTS.md` | `ak:motion-video-recreation` |
+| **Verify Anti-Flop** | `bash: python3 scripts/anti-flop-gate.py` | `shell: python3 scripts/anti-flop-gate.py` | `run_command: python3 scripts/anti-flop-gate.py` |
+| **Export MP4 Video**| `bash: python3 scripts/export-promo-video.py` | `shell: python3 scripts/export-promo-video.py` | `run_command: python3 scripts/export-promo-video.py` |
+| **Compile Motion IR**| `bash: npx tsx scripts/motion-ir-compiler-demo.ts` | `shell: npx tsx scripts/motion-ir-compiler-demo.ts` | `run_command: npx tsx scripts/motion-ir-compiler-demo.ts` |
+| **Audit SVGs / AST**| `bash: python3 scripts/jev-svg-auditor.py` | `shell: python3 scripts/jev-svg-auditor.py` | `run_command: python3 scripts/jev-svg-auditor.py` |
 
 ---
 
-## 🎬 Video Recreation & Export Pipeline
+## 📦 AI Agent Installation & Setup
 
-Recreate any high-fidelity UI/UX promo video with 99% kinematic & visual parity:
-
-```bash
-# 1. Host virtual-clock player locally
-python3 -m http.server 3033 --directory ./promo
-
-# 2. Run deterministic headless frame capture & FFmpeg MP4 export
-python3 scripts/export-promo-video.py
-
-# 3. Run 5-Gate Anti-Flop Certification
-python3 scripts/anti-flop-gate.py
-```
-
----
-
-## ⚡ Quickstart
-
-### 1. Cài đặt Dependencies
+### 1. Install Project Dependencies
 ```bash
 npm install
 ```
 
-### 2. Chạy Demo Motion IR Compiler
-```bash
-npm run demo
-```
+### 2. Verify System Tooling Prerequisites
+- **Python 3.10+**: `python3 --version`
+- **Google Chrome** (Headless rendering): `/Applications/Google Chrome.app/Contents/MacOS/Google Chrome`
+- **FFmpeg**: `which ffmpeg` (or `/opt/homebrew/bin/ffmpeg`)
 
-### 3. Thẩm định Tri thức bằng JEV System One
-```bash
-npm run audit:knowledge
-```
+### 3. Install Skill for Your Current Agent Harness
+- **For Claude Code / Workspace Agents**:
+  ```bash
+  mkdir -p /Users/jang/Products/.agents/skills/motion-video-recreation
+  cp skills/motion-video-recreation/SKILL.md /Users/jang/Products/.agents/skills/motion-video-recreation/SKILL.md
+  ```
+- **For Antigravity Global Agent**:
+  ```bash
+  mkdir -p ~/.gemini/config/skills/ak-motion-video-recreation
+  cp skills/motion-video-recreation/SKILL.md ~/.gemini/config/skills/ak-motion-video-recreation/SKILL.md
+  ```
 
-### 4. Kiểm duyệt File SVG bằng JEV SVG Auditor
-```bash
-npm run audit:svg
+---
+
+## 🚀 Deterministic AI Agent Workflows
+
+### Workflow A: Recreating Promo Video with 99% Parity
+1. **Start Virtual-Clock Local Server**:
+   ```bash
+   python3 -m http.server 3033 --directory ./promo &
+   ```
+2. **Capture Deterministic Frames & Assemble Broadcast MP4**:
+   ```bash
+   python3 scripts/export-promo-video.py
+   # Output: promo/claude-design-promo.mp4 (1080p 60fps, CRF 18)
+   ```
+3. **Run 5-Gate Anti-Flop Audit**:
+   ```bash
+   python3 scripts/anti-flop-gate.py
+   # Exit code must be 0
+   ```
+
+### Workflow B: Compiling Motion IR to Production Code
+1. Inspect or modify animation storyboard: `fixtures/saas-short.motion.json`.
+2. Compile to pure CSS keyframes & GSAP timeline:
+   ```bash
+   npx tsx scripts/motion-ir-compiler-demo.ts
+   ```
+
+---
+
+## 🏛️ Repository Architecture & Entrypoints
+
+```
+design-os-svg-animation/
+├── docs/                               # Canonical Engineering Specifications
+│   ├── motion-video-recreation-pipeline.md  # 5-Stage Universal Motion Pipeline
+│   ├── architecture-overview.md        # 7-Stage Hybrid Engine Architecture
+│   ├── motion-ir-specification.md      # Formal Motion IR Schema Spec
+│   └── quality-and-safety-gates.md     # JEV System One & A11y Standards
+├── skills/                             # Universal Portable Agent Skills
+│   └── motion-video-recreation/
+│       └── SKILL.md                    # Multi-agent skill definition
+├── promo/                              # Virtual-Clock Engine & Rendered Assets
+│   ├── claude-design-promo.html        # 82s Standalone Interactive Web Player
+│   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output
+│   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine
+│   └── claude-design.css               # Dynamic dark/light theme & easing tokens
+├── src/components/                     # Production React Three Fiber Suite
+│   ├── InteractiveGlobeWorkspace.tsx   # 3D Orthographic Globe + Great-Circle Arcs
+│   ├── ExpandingInput.tsx              # Morphing pill-to-form + Claude star spinner
+│   ├── MeditationAppWorkspace.tsx      # Pulsing Enso ring timer + iOS device mockup
+│   ├── InlineEditingWorkspace.tsx      # Guide layout + Typography knobs + Spline chart
+│   ├── ExportHandoffModal.tsx          # Design-to-code CLI handoff card
+│   └── ClaudeDesignShowcase.tsx        # Unified master showcase container
+├── scripts/                            # Deterministic Tooling & Verification Gates
+│   ├── anti-flop-gate.py               # 5-Gate automated quality & a11y auditor
+│   ├── export-promo-video.py           # Headless Chrome + FFmpeg frame capture pipeline
+│   ├── jev-svg-auditor.py              # SVG AST & animatability auditor
+│   └── motion-ir-compiler-demo.ts      # Motion IR -> CSS & GSAP prototype compiler
+├── schemas/
+│   └── motion-ir.schema.json           # JSON Schema for motion timeline tracks
+└── package.json                        # Dependencies (three, @react-three/fiber, lucide-react)
 ```
 
 ---
 
-## 🤝 Ecosystem & Runtimes
-- **Ecosystem**: Design OS
-- **Certified AI Runtimes**: Claude Code (`.claude/skills`), Codex Native (`AGENTS.md`), Antigravity (`ak:motion-video-recreation`)
-- **Target Platforms**: Modern Browsers, React 19 / Three.js / R3F, Web Components, Headless Chromium
-- **License**: MIT
+## 🛡️ Anti-Flop Automated Gates Reference
 
+| Gate | Target | Pass Condition |
+| :--- | :--- | :--- |
+| **Gate 1** | Icon System | Official Phosphor / Lucide symbols only in `<defs>` / `<use>`. No manual hack paths. |
+| **Gate 2** | Typography & Contrast | `-webkit-font-smoothing: antialiased`, WCAG 2.2 AA compliant contrast ratios. |
+| **Gate 3** | Tactile Spatial Depth | 8pt/4pt modular grid, multi-layered diffuse drop shadows. |
+| **Gate 4** | A11y & Motion Safety | `@media (prefers-reduced-motion: reduce)` fallbacks, valid ARIA tags. |
+| **Gate 5** | Security & Determinism | No XSS strings, no `NaN` or unclosed coordinates, valid Motion IR syntax. |
+
+---
+
+## 🤝 Ecosystem
+- **Ecosystem**: Design OS
+- **Target Runtimes**: Modern Browsers, React 19 / Three.js / R3F, Headless Chromium, Web Components
+- **License**: MIT
