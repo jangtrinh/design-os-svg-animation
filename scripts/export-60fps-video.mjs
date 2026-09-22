@@ -52,6 +52,15 @@ const TARGETS = {
     width: 1920,
     height: 1080,
     outputFilename: 'claude-design-promo.mp4'
+  },
+  v0: {
+    name: 'Vercel v0: Generative UI Launch Video',
+    url: 'http://localhost:3033/v0-generative-ui.html?clean=true&autoplay=false',
+    duration: 47.5,
+    fps: 60,
+    width: 1920,
+    height: 1080,
+    outputFilename: 'v0-generative-ui.mp4'
   }
 };
 
@@ -196,6 +205,10 @@ async function main() {
 
   if (targetArg === 'claude' || targetArg === 'all') {
     await renderTarget('claude', TARGETS.claude);
+  }
+
+  if (targetArg === 'v0' || targetArg === 'all') {
+    await renderTarget('v0', TARGETS.v0);
   }
 
   console.log('\n🎉 ALL 60FPS VIDEO EXPORTS COMPLETED SUCCESSFULLY!\n');

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Introducing v0: Generative UI — Official Recreation (00:00 – 00:47.5)</title>
+  <link rel="stylesheet" href="v0-generative-ui.css">
+  <script>
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('clean') === 'true' || p.get('render') === 'true') {
+        document.documentElement.classList.add('clean-export');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- SVG Sprite Definitions (Official Marks & Phosphor Icons) -->
+  <svg style="display: none;">
+    <defs>
+      <!-- Official Vercel Equilateral Triangle (SVGL) -->
+      <symbol id="icon-vercel-triangle" viewBox="0 0 256 222">
+        <path fill="currentColor" d="M128 0L256 221.705H0L128 0Z"/>
+      </symbol>
+
+      <!-- Official v0 Logo Mark (SVGL) -->
+      <symbol id="icon-v0" viewBox="0 0 16 16">
+        <path clip-rule="evenodd" d="M9.50321 5.5H13.2532C13.3123 5.5 13.3704 5.5041 13.4273 5.51203L9.51242 9.42692C9.50424 9.36912 9.5 9.31006 9.5 9.25L9.5 5.5L8 5.5L8 9.25C8 10.7688 9.23122 12 10.75 12H14.5V10.5L10.75 10.5C10.6899 10.5 10.6309 10.4958 10.5731 10.4876L14.4904 6.57028C14.4988 6.62897 14.5032 6.68897 14.5032 6.75V10.5H16.0032V6.75C16.0032 5.23122 14.772 4 13.2532 4H9.50321V5.5ZM0 5V5.00405L5.12525 11.5307C5.74119 12.3151 7.00106 11.8795 7.00106 10.8822V5H5.50106V9.58056L1.90404 5H0Z" fill="currentColor" fill-rule="evenodd"/>
+      </symbol>
+
+      <!-- Phosphor LockSimple -->
+      <symbol id="icon-lock" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M208 80h-32V56a48 48 0 0 0-96 0v24H48a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16Zm-112-24a32 32 0 0 1 64 0v24H96ZM48 96h160v112H48Z"/>
+      </symbol>
+
+      <!-- Phosphor LockSimpleOpen (Unlocked) -->
+      <symbol id="icon-lock-open" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M208 80h-80V56a32 32 0 0 1 64 0 8 8 0 0 0 16 0 48 48 0 0 0-96 0v24H48a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16Zm0 128H48V96h160Z"/>
+      </symbol>
+
+      <!-- Phosphor CornerDownLeft / Return Key (↵) -->
+      <symbol id="icon-return" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M224 88v64a16 16 0 0 1-16 16H83.31l34.35 34.34a8 8 0 0 1-11.32 11.32l-48-48a8 8 0 0 1 0-11.32l48-48a8 8 0 0 1 11.32 11.32L83.31 152H208V88a8 8 0 0 1 16 0Z"/>
+      </symbol>
+
+      <!-- Phosphor Sparkle -->
+      <symbol id="icon-sparkle" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M213.66 122.34a8 8 0 0 0-11.32 0L176 148.69l-26.34-26.35a8 8 0 0 0-11.32 11.32L164.69 160l-26.35 26.34a8 8 0 0 0 11.32 11.32L176 171.31l26.34 26.35a8 8 0 0 0 11.32-11.32L187.31 160l26.35-26.34a8 8 0 0 0 0-11.32Zm-80-64a8 8 0 0 0-11.32 0L96 84.69 69.66 58.34a8 8 0 0 0-11.32 11.32L84.69 96 58.34 122.34a8 8 0 0 0 11.32 11.32L96 107.31l26.34 26.35a8 8 0 0 0 11.32-11.32L107.31 96l26.35-26.34a8 8 0 0 0 0-11.32Z"/>
+      </symbol>
+
+      <!-- Phosphor Code -->
+      <symbol id="icon-code" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M69.66 154.34a8 8 0 0 1 0 11.32l-48 48a8 8 0 0 1-11.32-11.32L52.69 160 10.34 117.66a8 8 0 0 1 11.32-11.32Zm176-48a8 8 0 0 0-11.32 0l-48 48a8 8 0 0 0 0 11.32l48 48a8 8 0 0 0 11.32-11.32L203.31 160l42.35-42.34a8 8 0 0 0 0-11.32Zm-88-64a8 8 0 0 0-10.12 5.06l-48 144a8 8 0 0 0 15.18 5.06l48-144a8 8 0 0 0-5.06-10.12Z"/>
+      </symbol>
+
+      <!-- Phosphor Copy -->
+      <symbol id="icon-copy" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M216 32H88a8 8 0 0 0-8 8v40H40a8 8 0 0 0-8 8v128a8 8 0 0 0 8 8h128a8 8 0 0 0 8-8v-40h40a8 8 0 0 0 8-8V40a8 8 0 0 0-8-8Zm-56 176H48V96h112Zm48-48h-32V88a8 8 0 0 0-8-8H96V48h112Z"/>
+      </symbol>
+
+      <!-- Phosphor Check -->
+      <symbol id="icon-check" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 77.66a8 8 0 0 0-11.32-11.32L96 188.69l-58.34-58.35a8 8 0 0 0-11.32 11.32l64 64a8 8 0 0 0 11.32 0Z"/>
+      </symbol>
+
+      <!-- Phosphor MagnifyingGlass -->
+      <symbol id="icon-search" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/>
+      </symbol>
+
+      <!-- Phosphor Storefront (Acme Logo Mark) -->
+      <symbol id="icon-storefront" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M232 96a8 8 0 0 0-8-8H32a8 8 0 0 0-8 8v112a16 16 0 0 0 16 16h176a16 16 0 0 0 16-16ZM40 104h176v24H40Zm176 104H40v-64h176Z M224 48H32a8 8 0 0 0-8 8v16a8 8 0 0 0 8 8h192a8 8 0 0 0 8-8V56a8 8 0 0 0-8-8Z"/>
+      </symbol>
+
+      <!-- Phosphor ArrowSquareOut / External Link -->
+      <symbol id="icon-external" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M224 104a8 8 0 0 1-16 0V59.31l-82.34 82.35a8 8 0 0 1-11.32-11.32L196.69 48H152a8 8 0 0 1 0-16h72a8 8 0 0 1 8 8Zm-40 40a8 8 0 0 0-8 8v56H48V80h56a8 8 0 0 0 0-16H40a16 16 0 0 0-16 16v136a16 16 0 0 0 16 16h136a16 16 0 0 0 16-16v-64a8 8 0 0 0-8-8Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Video Stage Wrapper (Auto-Scales to Fit Viewport) -->
+  <div class="video-stage-wrapper">
+    <div id="video-stage">
+      
+      <!-- Continuous Virtual Camera World -->
+      <div id="camera-world">
+
+        <!-- ==========================================================
+             SCENE 1: Animated v0 Wireframe Stroke Logo
+             ========================================================== -->
+        <div id="scene-1-logo" class="scene-layer">
+          <div class="logo-draw-container">
+            <svg class="v0-hero-svg" viewBox="0 0 16 16">
+              <!-- Wireframe outline stroke paths -->
+              <path id="v0-stroke-path" class="v0-wire-stroke" d="M0 5L5.125 11.53C5.74 12.315 7 11.88 7 10.88V5H5.5V9.58L1.9 5H0Z M9.5 5.5H13.25C13.43 5.51 9.51 9.43 9.5 9.25V5.5H8V9.25C8 10.77 9.23 12 10.75 12H14.5V10.5H10.75C10.57 10.49 14.49 6.57 14.5 6.75V10.5H16V6.75C16 5.23 14.77 4 13.25 4H9.5V5.5Z" />
+              <!-- Solid block fill path -->
+              <path id="v0-fill-path" class="v0-block-fill" clip-rule="evenodd" fill-rule="evenodd" d="M9.50321 5.5H13.2532C13.3123 5.5 13.3704 5.5041 13.4273 5.51203L9.51242 9.42692C9.50424 9.36912 9.5 9.31006 9.5 9.25L9.5 5.5L8 5.5L8 9.25C8 10.7688 9.23122 12 10.75 12H14.5V10.5L10.75 10.5C10.6899 10.5 10.6309 10.4958 10.5731 10.4876L14.4904 6.57028C14.4988 6.62897 14.5032 6.68897 14.5032 6.75V10.5H16.0032V6.75C16.0032 5.23122 14.772 4 13.2532 4H9.50321V5.5ZM0 5V5.00405L5.12525 11.5307C5.74119 12.3151 7.00106 11.8795 7.00106 10.8822V5H5.50106V9.58056L1.90404 5H0Z" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             SCENE 2: "What will you ship?" Title Card
+             ========================================================== -->
+        <div id="scene-2-title" class="scene-layer">
+          <h1 id="title-hero-text" class="title-text-hero">
+            <span class="title-dark">What will</span> <span class="title-muted">you ship?</span>
+          </h1>
+        </div>
+
+        <!-- ==========================================================
+             SCENE 3: Dark Floating Prompt Bar & Vertical Reel
+             ========================================================== -->
+        <div id="scene-3-prompt" class="scene-layer">
+          <div class="prompt-scene-wrapper">
+            <div id="prompt-pill-bar" class="prompt-bar-container">
+              <div class="guillermo-avatar">
+                <img src="guillermo.png" alt="Guillermo Rauch" class="guillermo-avatar-img">
+              </div>
+              <div class="prompt-bar-divider"></div>
+              <div class="prompt-reel-viewport">
+                <span id="prompt-active-text" class="prompt-input-line">A sleek pricing page</span>
+                <span class="blinking-cursor">|</span>
+              </div>
+              <div class="prompt-controls">
+                <button class="circle-btn-action">
+                  <svg><use href="#icon-lock"></use></svg>
+                </button>
+                <button id="btn-prompt-enter" class="circle-btn-action btn-enter">
+                  <svg><use href="#icon-return"></use></svg>
+                </button>
+              </div>
+            </div>
+            <!-- Subtitle reflection / next item -->
+            <div id="prompt-sub-reflection" class="prompt-sub-reflection">A flower shop</div>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             SCENE 4 & 5: Acme Inc Dashboard Canvas & Component Edit
+             ========================================================== -->
+        <div id="scene-4-app" class="scene-layer">
+          <div class="app-workspace-canvas">
+            
+            <!-- Top Global Breadcrumb Bar -->
+            <div class="top-breadcrumb-bar">
+              <div class="breadcrumb-left">
+                <div class="v0-brand-icon">
+                  <svg><use href="#icon-v0"></use></svg>
+                </div>
+                <span class="bc-slash">/</span>
+                <img src="guillermo.png" class="bc-avatar">
+                <span class="bc-prompt-title">A SaaS dashboard layout</span>
+                <span class="bc-time-muted">1 hour ago</span>
+                <div id="badge-stealth-toggle" class="badge-stealth-pill">
+                  <svg class="badge-lock-icon"><use href="#icon-lock"></use></svg>
+                  <span id="badge-stealth-text">Private</span>
+                </div>
+              </div>
+              <div class="breadcrumb-right">
+                <div class="credits-capsule">
+                  <svg width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M128 24a104 104 0 1 0 104 104A104.11 104.11 0 0 0 128 24Zm0 192a88 88 0 1 1 88-88 88.1 88.1 0 0 1-88 88Zm64-88a8 8 0 0 1-8 8h-56a8 8 0 0 1-8-8V72a8 8 0 0 1 16 0v48h48a8 8 0 0 1 8 8Z"/></svg>
+                  <span>200</span>
+                </div>
+                <div class="menu-hamburger-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="8" x2="21" y2="8"/><line x1="3" y1="16" x2="21" y2="16"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Canvas Header (Speech bubble & actions) -->
+            <div class="canvas-header-row">
+              <div class="chat-bubble-container">
+                <img src="guillermo.png" class="chat-avatar">
+                <div class="chat-speech-bubble">
+                  <span id="canvas-chat-text">A SaaS dashboard layout</span>
+                </div>
+                <span class="chat-time-label">1 hour ago</span>
+              </div>
+              <div class="canvas-actions-group">
+                <button class="action-btn-clean">New +</button>
+                <button class="action-btn-clean">☆ 23</button>
+                <button class="action-btn-clean">Fork</button>
+                <button class="action-btn-clean">Share</button>
+                <button id="btn-toggle-code" class="action-btn-dark">
+                  <svg width="14" height="14"><use href="#icon-code"></use></svg>
+                  <span id="btn-code-label">Code &lt;/&gt;</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Workspace Main Area -->
+            <div class="workspace-main-area">
+              
+              <!-- Left Sidebar + Center Generated Canvas (The App Card) -->
+              <div id="primary-app-card" class="primary-app-card">
+                
+                <!-- Inner App Sidebar -->
+                <div class="inner-sidebar">
+                  <div class="brand-item-row">
+                    <div id="acme-brand-wrap" class="acme-brand-wrap">
+                      <svg id="acme-brand-icon" class="acme-brand-svg"><use href="#icon-storefront"></use></svg>
+                      <span id="acme-brand-text" class="acme-brand-text">Acme Inc</span>
+                    </div>
+                    <!-- Blue Component Tag & Bounding Box -->
+                    <div id="component-inspect-box" class="component-inspect-box">
+                      <span class="component-inspect-tag">svg</span>
+                    </div>
+                  </div>
+
+                  <nav class="inner-nav-list">
+                    <div class="nav-row active">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                      <span>Dashboard</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                      <span>Orders</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                      <span>Products</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      <span>Customers</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                      <span>Analytics</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      <span>Support</span>
+                    </div>
+                    <div class="nav-row">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                      <span>Settings</span>
+                    </div>
+                  </nav>
+                </div>
+
+                <!-- Inner Canvas Body -->
+                <div class="inner-canvas-content">
+                  <div class="inner-search-bar">
+                    <svg width="15" height="15"><use href="#icon-search"></use></svg>
+                    <span>Search products...</span>
+                  </div>
+
+                  <!-- Dashed Wireframe Placeholder Cards -->
+                  <div class="wireframe-stream-container">
+                    <div id="wire-card-top" class="wire-card-dashed wire-top-banner"></div>
+                    <div id="wire-card-chart" class="wire-card-dashed wire-large-canvas">
+                      <!-- Rendered Metrics inside Wireframe -->
+                      <div class="wire-metrics-row">
+                        <div class="wire-metric-box">
+                          <span class="w-label">Total Revenue</span>
+                          <span class="w-val">$45,231.89</span>
+                        </div>
+                        <div class="wire-metric-box">
+                          <span class="w-label">Subscriptions</span>
+                          <span class="w-val">+2,350</span>
+                        </div>
+                        <div class="wire-metric-box">
+                          <span class="w-label">Sales</span>
+                          <span class="w-val">+12,234</span>
+                        </div>
+                      </div>
+                      <!-- Bar Chart -->
+                      <div class="wire-chart-bars">
+                        <div class="w-bar" style="height: 42%;"></div>
+                        <div class="w-bar" style="height: 60%;"></div>
+                        <div class="w-bar" style="height: 48%;"></div>
+                        <div class="w-bar" style="height: 75%;"></div>
+                        <div class="w-bar" style="height: 88%;"></div>
+                        <div class="w-bar" style="height: 52%;"></div>
+                        <div class="w-bar accent-blue" style="height: 96%;"></div>
+                        <div class="w-bar" style="height: 68%;"></div>
+                        <div class="w-bar" style="height: 80%;"></div>
+                        <div class="w-bar" style="height: 58%;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Floating Component Edit Popover (Scene 5) -->
+                  <div id="component-edit-popover" class="component-edit-popover">
+                    <span id="popover-typewriter-text" class="popover-text-input">Make this element larger, add an element, change colors</span>
+                    <button id="btn-popover-update" class="btn-popover-blue">
+                      <span>Update</span>
+                      <svg width="12" height="12"><use href="#icon-return"></use></svg>
+                    </button>
+                  </div>
+
+                </div>
+              </div> <!-- /primary-app-card -->
+
+              <!-- 3D Tilted Code View (Scene 6) -->
+              <div id="code-inspector-card" class="code-inspector-card">
+                <div class="code-card-header">
+                  <div class="code-header-copy">
+                    <span class="code-card-title">Add this component to your project</span>
+                    <span class="code-card-note">Note: By using this code or product you agree to the <u style="color: #A1A1AA;">pre-release agreement</u>.</span>
+                  </div>
+                </div>
+                <div class="cli-terminal-bar">
+                  <div class="cli-left">
+                    <span class="cli-prompt">&gt;_</span>
+                    <span class="cli-text">npx v0 add KfhD9whj4vi</span>
+                  </div>
+                  <button class="cli-learn-btn">
+                    <span>Learn more</span>
+                    <svg width="11" height="11"><use href="#icon-external"></use></svg>
+                  </button>
+                </div>
+                <div class="code-tabs-row">
+                  <div class="code-tab-pill active">React</div>
+                  <div class="code-tab-pill">HTML</div>
+                  <div class="code-copy-action">
+                    <svg width="14" height="14"><use href="#icon-copy"></use></svg>
+                  </div>
+                </div>
+                <div class="code-snippet-body">
+                  <p class="c-line c-comment">/**</p>
+                  <p class="c-line c-comment">&nbsp;* v0 by Vercel.</p>
+                  <p class="c-line c-comment">&nbsp;* @see https://v0.dev/t/KfhD9whj4vi</p>
+                  <p class="c-line c-comment">&nbsp;*/</p>
+                  <p class="c-line"><span class="c-kwd">import</span> <span class="c-id">Link</span> <span class="c-kwd">from</span> <span class="c-str">"next/link"</span></p>
+                  <p class="c-line"><span class="c-kwd">import</span> { <span class="c-id">Button</span> } <span class="c-kwd">from</span> <span class="c-str">"@/components/ui/button"</span></p>
+                  <p class="c-line"><span class="c-kwd">import</span> { <span class="c-id">Card</span>, <span class="c-id">CardContent</span> } <span class="c-kwd">from</span> <span class="c-str">"@/components/ui/card"</span></p>
+                  <p class="c-line"><span class="c-kwd">import</span> { <span class="c-id">Input</span> } <span class="c-kwd">from</span> <span class="c-str">"@/components/ui/input"</span></p>
+                  <p class="c-line">&nbsp;</p>
+                  <p class="c-line"><span class="c-kwd">export default function</span> <span class="c-fn">Component</span>() {</p>
+                  <p class="c-line">&nbsp;&nbsp;<span class="c-kwd">return</span> (</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="c-tag">div</span> <span class="c-attr">className</span>=<span class="c-str">"grid h-screen min-h-screen w-full lg:grid-cols-[280px_1fr]"</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="c-tag">div</span> <span class="c-attr">className</span>=<span class="c-str">"hidden border-r bg-zinc-100/40 lg:block dark:bg-zinc-800/40"</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="c-tag">div</span> <span class="c-attr">className</span>=<span class="c-str">"flex flex-col gap-2"</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="c-tag">Link</span> <span class="c-attr">className</span>=<span class="c-str">"flex items-center gap-2 font-semibold"</span> <span class="c-attr">href</span>=<span class="c-str">"#"</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span class="c-tag">svg</span> <span class="c-attr">className</span>=<span class="c-str">"h-6 w-6 text-blue-600"</span> /&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="c-tag">Link</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="c-tag">div</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="c-tag">div</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;&nbsp;&nbsp;&lt;/<span class="c-tag">div</span>&gt;</p>
+                  <p class="c-line">&nbsp;&nbsp;)</p>
+                  <p class="c-line">}</p>
+                </div>
+              </div> <!-- /code-inspector-card -->
+
+              <!-- Right Version History Stack -->
+              <aside class="right-version-stack">
+                <div id="card-ver-v0" class="version-thumbnail-card">
+                  <div class="ver-thumb-preview"></div>
+                  <span class="ver-tag-pill">v0</span>
+                </div>
+                <div id="card-ver-v1" class="version-thumbnail-card active-v1">
+                  <div class="ver-thumb-preview preview-blue"></div>
+                  <span class="ver-tag-pill tag-blue">v1</span>
+                </div>
+              </aside>
+
+            </div> <!-- /workspace-main-area -->
+
+            <!-- Bottom Floating Prompt Bar -->
+            <div class="bottom-floating-prompt">
+              <div class="bf-left">
+                <img src="guillermo.png" class="bf-avatar">
+                <span class="bf-placeholder">Make the text larger...</span>
+              </div>
+              <div class="bf-right">
+                <button class="circle-btn-action btn-sm">
+                  <svg><use href="#icon-return"></use></svg>
+                </button>
+                <button class="circle-btn-action btn-sm">
+                  <svg><use href="#icon-sparkle"></use></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Stealth Mode Popover Dialog (Scene 7) -->
+            <div id="stealth-popover-dialog" class="stealth-popover-dialog">
+              <div class="stealth-dialog-head">
+                <span class="stealth-main-title">Stealth Mode</span>
+                <span class="stealth-sub-title">Who can view this generation?</span>
+              </div>
+              <div class="stealth-choice-stack">
+                <!-- Public Option (Top) -->
+                <div id="opt-stealth-public" class="stealth-choice-row">
+                  <div class="sc-left">
+                    <div class="sc-icon-circle icon-public">
+                      <svg><use href="#icon-lock-open"></use></svg>
+                    </div>
+                    <div class="sc-meta">
+                      <span class="sc-name">Public</span>
+                      <span class="sc-desc">Anyone with a link can see this.</span>
+                    </div>
+                  </div>
+                  <div class="sc-radio-circle">
+                    <svg class="check-icon"><use href="#icon-check"></use></svg>
+                  </div>
+                </div>
+
+                <!-- Private Option (Bottom) -->
+                <div id="opt-stealth-private" class="stealth-choice-row selected">
+                  <div class="sc-left">
+                    <div class="sc-icon-circle icon-private">
+                      <svg><use href="#icon-lock"></use></svg>
+                    </div>
+                    <div class="sc-meta">
+                      <span class="sc-name">Private</span>
+                      <span class="sc-desc">Only you can see this.</span>
+                    </div>
+                  </div>
+                  <div class="sc-radio-circle">
+                    <div class="radio-black-dot"></div>
+                  </div>
+                </div>
+              </div>
+            </div> <!-- /stealth-popover-dialog -->
+
+          </div> <!-- /app-workspace-canvas -->
+        </div> <!-- /scene-4-app -->
+
+        <!-- ==========================================================
+             SCENE 8: Grid Wall of Generations & "v0.dev"
+             ========================================================== -->
+        <div id="scene-8-v0dev" class="scene-layer">
+          <!-- Ambient Generative Grid Wall in Background -->
+          <div id="grid-wall-container" class="grid-wall-container">
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A sleek pricing page for a SaaS</span></div><div class="gm-canvas"></div></div>
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A cookie consent banner</span></div><div class="gm-canvas"></div></div>
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A FAQ section</span></div><div class="gm-canvas"></div></div>
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A note taking app</span></div><div class="gm-canvas"></div></div>
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A table of financial invoices</span></div><div class="gm-canvas"></div></div>
+            <div class="grid-card-mock"><div class="gm-speech"><img src="guillermo.png" class="gm-av"><span>A flower shop homepage</span></div><div class="gm-canvas"></div></div>
+          </div>
+          <!-- Centered v0 logo + v0.dev -->
+          <div id="v0dev-center-lockup" class="v0dev-center-lockup">
+            <svg class="v0-hero-svg" viewBox="0 0 16 16"><use href="#icon-v0"></use></svg>
+          </div>
+        </div>
+
+        <!-- ==========================================================
+             SCENE 9: Vercel Outro (Horizontal Lockup)
+             ========================================================== -->
+        <div id="scene-9-vercel" class="scene-layer">
+          <div id="vercel-outro-lockup" class="vercel-lockup-horizontal">
+            <svg class="vercel-triangle-large" viewBox="0 0 256 222"><use href="#icon-vercel-triangle"></use></svg>
+            <span class="vercel-brand-text">Vercel</span>
+          </div>
+        </div>
+
+      </div> <!-- /camera-world -->
+
+      <!-- Virtual Cursor & Click Ripple -->
+      <div id="virtual-cursor">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+          <path d="M4 2L20 9L12 12L9 20L4 2Z" fill="#000000" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div id="click-ripple"></div>
+
+      <!-- Player HUD & Interactive Scrubbing Bar (Hidden during clean export) -->
+      <div id="player-ui">
+        <div class="player-scrubber-row">
+          <input type="range" id="video-scrubber" class="scrubber-slider" min="0" max="47.5" step="0.05" value="0">
+        </div>
+        <div class="player-controls-row">
+          <div class="player-left-group">
+            <button id="btn-play-pause" class="player-btn">Play</button>
+            <span id="timecode" class="timecode-label">00:00.0 / 00:47.5</span>
+            <span id="scene-name" class="scene-label">Scene 1: v0 Wireframe Logo</span>
+          </div>
+          <div class="player-right-group">
+            <div class="scene-markers-list">
+              <button class="scene-pill-btn active" data-time="0.0">S1 Logo</button>
+              <button class="scene-pill-btn" data-time="3.0">S2 Title</button>
+              <button class="scene-pill-btn" data-time="5.5">S3 Reel</button>
+              <button class="scene-pill-btn" data-time="12.5">S4 App</button>
+              <button class="scene-pill-btn" data-time="18.0">S5 Edit</button>
+              <button class="scene-pill-btn" data-time="26.0">S6 Code</button>
+              <button class="scene-pill-btn" data-time="33.0">S7 Stealth</button>
+              <button class="scene-pill-btn" data-time="38.5">S8 Grid/v0</button>
+              <button class="scene-pill-btn" data-time="43.0">S9 Vercel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /video-stage -->
+  </div> <!-- /video-stage-wrapper -->
+
+  <!-- Standalone Deterministic Virtual Clock Engine -->
+  <script src="v0-generative-ui-engine.js"></script>
+</body>
+</html>

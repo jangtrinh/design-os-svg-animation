@@ -17,13 +17,13 @@
 
 ## Visual Showcase & Promo Demos
 
-| Metric / Demo | Example 1: Claude Design Master Promo | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App Promo |
-| :--- | :---: | :---: | :---: |
-| **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) |
-| **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [📱 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/saas-short.html) ([local](promo/saas-short.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) |
-| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) |
-| **Aspect & Duration** | 16:9 · 82.0 seconds | 9:16 Vertical · 11.5 seconds | 16:9 · 38.0 seconds |
-| **Key Motion Features** | Orthographic 3D Globe with glowing arcs, live Tweaks sliders, and 16-project gallery montage outro | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview |
+| Metric / Demo | Example 1: Claude Design Master Promo | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App Promo | Example 4: Vercel v0 Generative UI |
+| :--- | :---: | :---: | :---: | :---: |
+| **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) | ![Vercel v0 Generative UI](docs/assets/example-4-v0-generative-ui.gif) |
+| **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [📱 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/saas-short.html) ([local](promo/saas-short.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) | [▲ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui.html) ([local](promo/v0-generative-ui.html)) |
+| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4](promo/v0-generative-ui.mp4) |
+| **Aspect & Duration** | 16:9 · 82.0 seconds | 9:16 Vertical · 11.5 seconds | 16:9 · 38.0 seconds | 16:9 · 47.5 seconds |
+| **Key Motion Features** | Orthographic 3D Globe with glowing arcs, live Tweaks sliders, and 16-project gallery montage outro | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
 
 ---
 
@@ -103,6 +103,9 @@ npm install
 
    # Demo 3: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
    python3 scripts/export-promo-video.py --url http://localhost:3033/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
+
+   # Demo 4: Vercel v0 Generative UI 47.5s Official Video (16:9, 1080p 60fps)
+   node scripts/export-60fps-video.mjs v0
    ```
 3. **Run Proactive Pre-Flight & Anti-Flop Audits**:
    ```bash
