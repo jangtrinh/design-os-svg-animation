@@ -15,12 +15,12 @@
 
 ---
 
-## Visual Showcase & 5s Demos
+## Visual Showcase & Promo Demos
 
-| Example 1: Claude Design 3D Globe & Tweaks (16:9) | Example 2: SaaS 9:16 Vector Motion Short |
-| :---: | :---: |
-| ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) |
-| *Orthographic 3D Globe with glowing arcs & live Tweaks panel* | *Shared-element morph, Phosphor icons & kinetic typography* |
+| Example 1: Claude Design 3D Globe (16:9) | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App 38s Promo (16:9) |
+| :---: | :---: | :---: |
+| ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) |
+| *Orthographic 3D Globe with glowing arcs & live Tweaks* | *Shared-element morph, Phosphor vectors & kinetics* | *Native macOS window morph, multi-agent stream, code diff review & spring outro* |
 
 ---
 
@@ -30,12 +30,12 @@ If you are an AI coding agent reading this codebase, follow these rules and dire
 
 ### 1. The 7 Immutable Agent Invariants
 1. **Mandatory Product Designer Skill (MUST-CALL)**: Before designing, creating, or modifying any animation scene, UI mockup, or video layout, agents MUST activate and consult [`skills/product-designer/SKILL.md`](skills/product-designer/SKILL.md) for EaseUI tactile depth, 1px subtle borders, authentic SVGL marks, and undistorted 3D projections.
-2. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](file:///Users/jang/Products/design-os-svg-animation/schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
+2. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
 3. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
 4. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
 5. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
 6. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components. Sourced brand marks must come from SVGL (`https://svgl.app/`).
-7. **Zero Design Flop**: Generated assets and videos must pass all 5 verification gates via `python3 scripts/anti-flop-gate.py` with exit code `0`.
+7. **Zero Design Flop & Proactive Pre-Flight**: Generated assets and videos must pass the proactive pre-flight guard (`npm run guard`) and all anti-flop verification gates (`npm run audit:anti-flop`) with exit code `0`.
 
 ---
 
@@ -45,7 +45,8 @@ If you are an AI coding agent reading this codebase, follow these rules and dire
 | :--- | :--- | :--- | :--- |
 | **Product Designer (MUST-CALL)** | `/product-designer` | Role in `AGENTS.md` | `ak:product-designer` |
 | **Motion Video Skill** | `/motion-video-recreation` | Task referenced in `AGENTS.md` | `ak:motion-video-recreation` |
-| **Verify Anti-Flop** | `bash: python3 scripts/anti-flop-gate.py` | `shell: python3 scripts/anti-flop-gate.py` | `run_command: python3 scripts/anti-flop-gate.py` |
+| **Pre-Flight Guard & Auto-Fix** | `bash: npm run guard:fix` | `shell: npm run guard:fix` | `run_command: npm run guard:fix` |
+| **Verify Anti-Flop Gates** | `bash: npm run audit:anti-flop` | `shell: npm run audit:anti-flop` | `run_command: npm run audit:anti-flop` |
 | **Export MP4 Video**| `bash: python3 scripts/export-promo-video.py` | `shell: python3 scripts/export-promo-video.py` | `run_command: python3 scripts/export-promo-video.py` |
 | **Compile Motion IR**| `bash: npx tsx scripts/motion-ir-compiler-demo.ts` | `shell: npx tsx scripts/motion-ir-compiler-demo.ts` | `run_command: npx tsx scripts/motion-ir-compiler-demo.ts` |
 | **Audit SVGs / AST**| `bash: python3 scripts/jev-svg-auditor.py` | `shell: python3 scripts/jev-svg-auditor.py` | `run_command: python3 scripts/jev-svg-auditor.py` |
@@ -94,10 +95,11 @@ npm install
    python3 scripts/export-promo-video.py
    # Output: promo/claude-design-promo.mp4 (1080p 60fps, CRF 18)
    ```
-3. **Run 5-Gate Anti-Flop Audit**:
+3. **Run Proactive Pre-Flight & Anti-Flop Audits**:
    ```bash
-   python3 scripts/anti-flop-gate.py
-   # Exit code must be 0
+   npm run guard          # Proactive pre-flight invariant check
+   npm run audit:anti-flop # 6-Gate Design:OS quality verification
+   # Both must exit with code 0
    ```
 
 ### Workflow B: Compiling Motion IR to Production Code
@@ -107,6 +109,16 @@ npm install
    npx tsx scripts/motion-ir-compiler-demo.ts
    ```
 
+### Workflow C: Universal 5-Phase Motion Video Recreation Pipeline
+For any UI/UX or product launch video (e.g. OpenAI Codex App, Apple Keynote, Stripe Sessions):
+1. **Consult Full Guide**: [`docs/motion-video-recreation-workflow-guide.md`](docs/motion-video-recreation-workflow-guide.md)
+2. **Review Session Learnings**: [`plans/journals/2026-09-22-codex-app-promo-pipeline.md`](plans/journals/2026-09-22-codex-app-promo-pipeline.md)
+3. **Auto-Fix & Verify Before Commit**:
+   ```bash
+   npm run guard:fix
+   npm run audit:anti-flop
+   ```
+
 ---
 
 ## Repository Architecture & Entrypoints
@@ -114,16 +126,21 @@ npm install
 ```
 design-os-svg-animation/
 ├── docs/                               # Canonical Engineering Specifications
-│   ├── motion-video-recreation-pipeline.md  # 5-Stage Universal Motion Pipeline
+│   ├── motion-video-recreation-workflow-guide.md # Universal 5-Phase Pipeline & Architectural Invariants Guide
+│   ├── motion-video-recreation-pipeline.md  # 5-Stage Universal Motion Pipeline Spec
 │   ├── architecture-overview.md        # 7-Stage Hybrid Engine Architecture
 │   ├── motion-ir-specification.md      # Formal Motion IR Schema Spec
 │   └── quality-and-safety-gates.md     # JEV System One & A11y Standards
+├── plans/journals/                     # Engineering Retros & Session History
+│   └── 2026-09-22-codex-app-promo-pipeline.md # Codex App Session Retro & Root Cause Analysis
 ├── skills/                             # Universal Portable Agent Skills
-│   └── motion-video-recreation/
-│       └── SKILL.md                    # Multi-agent skill definition
-├── promo/                              # Virtual-Clock Engine & Rendered Assets
-│   ├── claude-design-promo.html        # 82s Standalone Interactive Web Player
+│   ├── product-designer/               # EaseUI tactile depth & SVGL brand marks
+│   └── motion-video-recreation/        # Multi-agent motion video recreation skill
+├── promo/                              # Virtual-Clock Engine & Rendered Broadcast Assets
+│   ├── claude-design-promo.html        # 82s Interactive Web Player (Claude Design)
 │   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output
+│   ├── codex-app-promo.html            # 38s Interactive Web Player (OpenAI Codex App)
+│   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output
 │   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine
 │   └── claude-design.css               # Dynamic dark/light theme & easing tokens
 ├── src/components/                     # Production React Three Fiber Suite
@@ -134,21 +151,24 @@ design-os-svg-animation/
 │   ├── ExportHandoffModal.tsx          # Design-to-code CLI handoff card
 │   └── ClaudeDesignShowcase.tsx        # Unified master showcase container
 ├── scripts/                            # Deterministic Tooling & Verification Gates
-│   ├── anti-flop-gate.py               # 5-Gate automated quality & a11y auditor
+│   ├── motion-preflight-guard.py       # Proactive Pre-Flight Quality Guard & Auto-Fix CLI
+│   ├── anti-flop-gate.py               # 6-Gate automated quality & a11y auditor
 │   ├── export-promo-video.py           # Headless Chrome + FFmpeg frame capture pipeline
 │   ├── jev-svg-auditor.py              # SVG AST & animatability auditor
 │   └── motion-ir-compiler-demo.ts      # Motion IR -> CSS & GSAP prototype compiler
 ├── schemas/
 │   └── motion-ir.schema.json           # JSON Schema for motion timeline tracks
-└── package.json                        # Dependencies (three, @react-three/fiber, lucide-react)
+└── package.json                        # Dependencies & verified npm scripts (guard, audit)
 ```
 
 ---
 
-## Anti-Flop Automated Gates Reference
+## Anti-Flop & Quality Gates Reference
 
 | Gate | Target | Pass Condition |
 | :--- | :--- | :--- |
+| **Pre-Flight** | Invariant Self-Healing | Stroke boundary $\ge 4\text{px}$, button glyphs with explicit fill, DOM camera decoupling, damped harmonic springs. |
+| **Gate 0** | Mandatory Product Designer | Product designer skill verified and active for tactile depth and authentic SVGL marks. |
 | **Gate 1** | Icon System & Zero Emoji | Official Phosphor / Lucide symbols only in `<defs>` / `<use>` / React components. Zero raw emojis allowed. |
 | **Gate 2** | Typography & Contrast | `-webkit-font-smoothing: antialiased`, WCAG 2.2 AA compliant contrast ratios. |
 | **Gate 3** | Tactile Spatial Depth | 8pt/4pt modular grid, multi-layered diffuse drop shadows. |

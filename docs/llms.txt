@@ -1,19 +1,20 @@
 # design-os-svg-animation
 
-> Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents (Claude Code, Codex, Antigravity). Motion IR compiler, virtual clock quantizing, and 5 anti-flop verification gates.
+> Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents (Claude Code, Codex, Antigravity). Motion IR compiler, virtual clock quantizing, proactive pre-flight guard, and 6 anti-flop verification gates.
 
-A motion engineering pipeline that compiles Motion IR storyboards to CSS and GSAP, renders broadcast MP4s with headless Chromium virtual clocks, and audits output against 5 anti-flop gates.
+A motion engineering pipeline that compiles Motion IR storyboards to CSS and GSAP, renders broadcast MP4s with headless Chromium virtual clocks, and audits output against proactive pre-flight quality guards and 6 anti-flop gates.
 
 ## Documentation
 
-- [Overview & Showcase](https://jangtrinh.github.io/design-os-svg-animation/): Interactive landing page with live animations and video showcase.
+- [Overview & Dual Carousel Showcase](https://jangtrinh.github.io/design-os-svg-animation/): Interactive landing page with live animations and dual video showcase (Claude Design 82s & OpenAI Codex App 38s).
+- [Universal Workflow Guide](https://jangtrinh.github.io/design-os-svg-animation/motion-video-recreation-workflow-guide.html): 5-phase motion video recreation pipeline and golden architectural invariants.
 - [Motion IR Specification](https://jangtrinh.github.io/design-os-svg-animation/motion-ir.html): Full specification for the intermediate representation.
 - [Architecture Overview](https://jangtrinh.github.io/design-os-svg-animation/architecture-overview.html): Multi-stage video rendering pipeline and virtual clock mechanism.
-- [Quality & Safety Gates](https://jangtrinh.github.io/design-os-svg-animation/quality-and-safety-gates.html): The 5 deterministic anti-flop validation criteria.
+- [Quality & Safety Gates](https://jangtrinh.github.io/design-os-svg-animation/quality-and-safety-gates.html): The 6 deterministic anti-flop validation criteria and pre-flight guard.
 - [GitHub Repository](https://github.com/jangtrinh/design-os-svg-animation): Source code, CLI commands, and test suites.
 
 ## Core Features & Workflow
 
 - **Motion IR**: JSON intermediate representation capturing keyframes, easings, spatial trajectories, and timeline markers.
 - **Virtual Clock Engine**: Drives headless Chromium via explicit timestamp increments (1/60s), eliminating dropped frames.
-- **5 Anti-Flop Gates**: Frame drift, color gamut, bounds overflow, font loading, and timeline integrity audits.
+- **Pre-Flight Guard & 6 Anti-Flop Gates**: Boundary clipping prevention, SVG glyph fill audits, camera decoupling, frame drift, color gamut, font loading, and timeline integrity audits.
