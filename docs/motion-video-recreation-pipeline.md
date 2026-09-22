@@ -1,6 +1,6 @@
 # Motion Video Recreation Pipeline Specification
 
-> **Version**: 2.0.0 (NullMotion Infused)  
+> **Version**: 2.0.0 (HyperFrames Architecture)  
 > **Status**: Production Standard  
 > **Ecosystem**: Design OS / AgentKit  
 > **Compatible Runtimes**: Claude Code, Codex Native (`codex-web -m pro`), Antigravity
@@ -11,7 +11,7 @@
 
 The **Motion Video Recreation Pipeline** is an end-to-end engineering methodology designed to recreate complex UI/UX launch promos, SaaS product demos, and vector/3D motion videos with **99% visual, kinematic, and timing parity** relative to a reference video (e.g., Anthropic Claude Design, Apple Keynote, Stripe Sessions).
 
-### Core Breakthroughs Adopted from NullMotion
+### Core Architectural Breakthroughs
 1. **Automated Cut & Waveform Analysis**: Eliminates manual timecode guessing via FFmpeg scene scoring (`gt(scene,0.18)`) and 50Hz PCM audio peak extraction.
 2. **20 HyperFrames Declarative Beats**: Rapid drafting in monochrome to lock timing and spatial choreography before high-fidelity asset rendering.
 3. **Dual-Layer Synchronizer**: Locked side-by-side scrubbers aligning reference video with live GSAP/SVG draft timelines frame-by-frame.

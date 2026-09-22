@@ -29,7 +29,7 @@
   const refVideo = document.getElementById('ref-video');
   let isSplitMode = urlParams.get('split') === 'true';
 
-  // Audio Waveform Reactive State (NullMotion 50Hz PCM Envelope)
+  // Audio Waveform Reactive State (50Hz PCM Envelope)
   let waveData = null;
   fetch('claude-design-promo.wave.json')
     .then(r => r.json())
@@ -743,7 +743,7 @@
     if (timecodeEl) timecodeEl.textContent = `${formatTime(t)} / 01:22`;
     if (scrubber) scrubber.value = t;
 
-    // Split Mode Video Synchronization (NullMotion Dual-Layer Sync)
+    // Split Mode Video Synchronization (Dual-Layer Sync)
     if (refVideo && isSplitMode) {
       if (Math.abs(refVideo.currentTime - t) > 0.08) {
         refVideo.currentTime = t;

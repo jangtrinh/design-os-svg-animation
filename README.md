@@ -1,11 +1,11 @@
 # Design OS — SVG Animation Engine & Motion Video Pipeline
 
 > **Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents.**  
-> **v0.2.0 — NullMotion Infused Edition**: Automated scene scoring, 50Hz audio envelopes, 20 HyperFrames beats, 1:1 dual-layer split sync, and Gate 6 concentricity.  
+> **v0.2.0 — HyperFrames Edition**: Automated scene scoring, 50Hz audio envelopes, 20 HyperFrames beats, 1:1 dual-layer split sync, and Gate 6 concentricity.  
 > Live Site: [https://jangtrinh.github.io/design-os-svg-animation/](https://jangtrinh.github.io/design-os-svg-animation/)
 
 <p align="left">
-  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.2.0--nullmotion-202020?style=for-the-badge" alt="Release: v0.2.0" height="28"></a>
+  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.2.0--hyperframes-202020?style=for-the-badge" alt="Release: v0.2.0" height="28"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-202020?style=for-the-badge" alt="License: MIT" height="28"></a>
   <img src="https://img.shields.io/badge/three.js-0.186-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js 0.186" height="28">
   <img src="https://img.shields.io/badge/react-19-202020?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React 19" height="28">
@@ -31,9 +31,9 @@
 
 ---
 
-## ⚡ What's New in v2.0 (NullMotion Architecture Infusion)
+## ⚡ What's New in v2.0 (HyperFrames Architecture Upgrade)
 
-Our recreation pipeline has been upgraded with the core architectural breakthroughs from [`blixvip/NullMotion`](https://github.com/blixvip/NullMotion):
+Our recreation pipeline has been upgraded with core architectural breakthroughs:
 
 1. **Automated Cut & Waveform Analysis (`npm run analyze:ref`)**:
    - Automated FFmpeg scene transition scoring (`select='gt(scene,0.18)'`) divides videos into logical scenes and renders 2-column contact sheets.

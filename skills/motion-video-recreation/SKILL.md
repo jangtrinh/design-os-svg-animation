@@ -11,7 +11,7 @@ metadata:
   version: "2.0.0"
 ---
 
-# Motion Video Recreation Skill (v2.0 - NullMotion Infused)
+# Motion Video Recreation Skill (v2.0 - HyperFrames Architecture)
 
 ## Multi-Agent Runtime Compatibility
 

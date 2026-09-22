@@ -243,7 +243,7 @@ body.clean-export .export-dropdown-card {
   transition: all 0.3s ease;
 }
 
-/* 1:1 Split-Screen Dual-Layer Mode (NullMotion Drafts Sync) */
+/* 1:1 Split-Screen Dual-Layer Mode (Drafts Sync) */
 .video-stage-wrapper.split-mode {
   flex-direction: row !important;
   gap: 24px !important;
@@ -442,7 +442,7 @@ body.clean-export .export-dropdown-card {
   justify-content: center;
 }
 
-/* Collapsed Pill Button (NullMotion Specular Gloss & Glint) */
+/* Collapsed Pill Button (Specular Gloss & Glint) */
 .s1-pill-btn {
   height: 48px;
   padding: 0 24px;
@@ -1787,7 +1787,7 @@ body.clean-export .export-dropdown-card {
   height: 60px;
 }
 
-/* 2.5D Extruded Mini Bar (NullMotion 15-bar-3d Pattern) */
+/* 2.5D Extruded Mini Bar (2.5D Bar Pattern) */
 .mini-bar {
   width: 14px;
   background: #E8DFCE;

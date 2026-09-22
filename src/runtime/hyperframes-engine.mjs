@@ -1,7 +1,7 @@
 /**
  * hyperframes-engine.mjs — Design OS HyperFrames Beat & Motion Draft Engine
  * 
- * Adopted and enhanced from NullMotion (blixvip/NullMotion).
+ * Declarative motion staging and draft engine for Design OS.
  * Provides a declarative, pause-and-seek GSAP motion drafting architecture
  * with 20 atomic motion beat kinds, strict black-and-white / high-contrast
  * reduction, and zero-defect anti-flop compliance.
