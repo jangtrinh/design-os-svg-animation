@@ -29,6 +29,15 @@ def banner(title: str):
     print("=" * 70)
 
 
+def test_gate_0_product_designer_skill():
+    banner("Gate 0: Mandatory Product Designer Skill & Invariant Verification")
+    skill_file = ROOT_DIR / "skills/product-designer/SKILL.md"
+    assert skill_file.exists(), "skills/product-designer/SKILL.md must be present in repository"
+    content = skill_file.read_text(encoding="utf-8")
+    assert "name: product-designer" in content, "Invalid skill metadata"
+    print("✅ GATE 0 PASSED: Mandatory Product Designer skill registered and verified.")
+
+
 def test_gate_1_phosphor_icons():
     banner("Gate 1: Phosphor / Lucide Icons & Zero Emojis Hardrule Verification")
     html_path = ROOT_DIR / "promo/saas-short.html"
@@ -189,6 +198,7 @@ def main():
     print(" 🚀 RUNNING FULL DESIGN:OS ANTI-FLOP AUDIT")
     print("=" * 70)
 
+    test_gate_0_product_designer_skill()
     test_gate_1_phosphor_icons()
     test_gate_2_typography_and_smoothing()
     test_gate_3_modular_spacing_and_shadows()

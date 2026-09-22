@@ -29,15 +29,22 @@ This skill is certified across three primary AI coding runtimes:
 ---
 
 ## Immutable Hardrules
-1. **Zero Raw Emojis / Official Vector Icon Sets Only**: NEVER use raw Unicode emojis (e.g. 📦, 📄, 🚀, 🤖, 🎨) as UI icons, button graphics, indicators, or decorative markers in code or documentation. ALWAYS use official vector icon libraries (Phosphor Icons `@phosphor-icons/core` or Lucide Icons `lucide-react` via SVG `<defs>` + `<use>` or React icon components).
-2. **Deterministic Virtual Clock**: All video/motion timelines must decouple from wall-clock time and expose a deterministic time hook (`window.__seekToTime(t)`).
-3. **GPU-Composited Transforms Only**: Strictly limit active continuous animations to `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Avoid layout thrashing (`width`, `height`, `top`, `left`, `d`).
-4. **Mandatory A11y Reduced Motion**: All animations must feature `@media (prefers-reduced-motion: reduce)` fallbacks.
-5. **Zero Design Flop**: Generated assets and videos must pass `python3 scripts/anti-flop-gate.py` with exit code 0.
+1. **Mandatory Product Designer Consultation (MUST-CALL)**: Before creating, refining, or modifying any animation scenes or UI mockups, agents MUST activate and follow the `product-designer` skill (`/product-designer` or `ak:product-designer`). Enforce EaseUI tactile depth, 1px subtle borders, authentic SVGL marks, and undistorted 3D projections.
+2. **Zero Raw Emojis / Official Vector Icon Sets Only**: NEVER use raw Unicode emojis (e.g. 📦, 📄, 🚀, 🤖, 🎨) as UI icons, button graphics, indicators, or decorative markers in code or documentation. ALWAYS use official vector icon libraries (Phosphor Icons `@phosphor-icons/core` or Lucide Icons `lucide-react` via SVG `<defs>` + `<use>` or React icon components).
+3. **Deterministic Virtual Clock**: All video/motion timelines must decouple from wall-clock time and expose a deterministic time hook (`window.__seekToTime(t)`).
+4. **GPU-Composited Transforms Only**: Strictly limit active continuous animations to `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Avoid layout thrashing (`width`, `height`, `top`, `left`, `d`).
+5. **Mandatory A11y Reduced Motion**: All animations must feature `@media (prefers-reduced-motion: reduce)` fallbacks.
+6. **Zero Design Flop**: Generated assets and videos must pass `python3 scripts/anti-flop-gate.py` with exit code 0.
 
 ---
 
 ## The 5-Phase Workflow
+
+### Phase 0: Mandatory Product Designer Alignment (Gate 0)
+- Activate skill `product-designer` (`ak:product-designer` / `/product-designer`).
+- Validate iconography against official Phosphor sets and brand marks against SVGL (`https://svgl.app/`).
+- Inspect tactile depth, multi-layer ambient/key drop shadows, and 1px borders.
+- Check 3D canvas aspect ratio dynamically to avoid oval/stretched projections.
 
 ### Phase 1: Temporal & Kinematic Deconstruction
 1. **Timecode & Scene Table**: Partition the reference into scenes with exact start/end seconds and durations.
