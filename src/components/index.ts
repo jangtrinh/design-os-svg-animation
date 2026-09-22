@@ -4,3 +4,4 @@ export * from "./MeditationAppWorkspace";
 export * from "./InlineEditingWorkspace";
 export * from "./ExportHandoffModal";
 export * from "./ClaudeDesignShowcase";
+export * from "./codex-app";

@@ -81,6 +81,8 @@ def test_gate_1_phosphor_icons():
     scanned_targets = [
         ROOT_DIR / "promo/claude-design-promo.html",
         ROOT_DIR / "promo/claude-design-engine.js",
+        ROOT_DIR / "promo/codex-app-promo.html",
+        ROOT_DIR / "promo/codex-app-engine.js",
         ROOT_DIR / "src/components"
     ]
 
@@ -103,8 +105,23 @@ def test_gate_1_phosphor_icons():
         print("   Hardrule: All UI elements must use Phosphor (@phosphor-icons/core) or Lucide (lucide-react). Emojis and text pseudo-icons are strictly banned.")
         sys.exit(1)
 
+    # --- IMMUTABLE HARDRULE: AUTHENTIC SVGL (https://svgl.app/) BRAND MARKS ---
+    claude_html = (ROOT_DIR / "promo/claude-design-promo.html").read_text(encoding="utf-8")
+    assert "m50.228 170.321" in claude_html and 'viewBox="0 0 256 257"' in claude_html, (
+        "Claude brand mark must be sourced from SVGL (https://svgl.app/library/claude-ai-icon.svg)!"
+    )
+
+    codex_html = (ROOT_DIR / "promo/codex-app-promo.html").read_text(encoding="utf-8")
+    assert "252.794 108.802" in codex_html and 'viewBox="0 0 611 611"' in codex_html, (
+        "OpenAI brand mark must be sourced from SVGL (https://svgl.app/library/openai.svg)!"
+    )
+    assert "305.335 203.56" in codex_html and "icon-openai-wordmark" in codex_html, (
+        "OpenAI wordmark must be sourced from SVGL (https://svgl.app/library/openai_wordmark_light.svg)!"
+    )
+
     print("✅ HARDRULE VERIFIED: 0 raw emojis or text pseudo-icons detected; 100% official vector icon system.")
-    print("✅ GATE 1 PASSED: 100% verified official Phosphor / Lucide vector icon system.")
+    print("✅ HARDRULE VERIFIED: SVGL (https://svgl.app/) official brand marks certified for Claude & OpenAI.")
+    print("✅ GATE 1 PASSED: 100% verified official Phosphor / Lucide vector icon system & SVGL brand marks.")
 
 
 def test_gate_2_typography_and_smoothing():
