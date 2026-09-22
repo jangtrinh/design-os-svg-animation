@@ -137,7 +137,7 @@ design-os-svg-animation/
 │   ├── product-designer/               # EaseUI tactile depth & SVGL brand marks
 │   └── motion-video-recreation/        # Multi-agent motion video recreation skill
 ├── promo/                              # Virtual-Clock Engine & Rendered Broadcast Assets
-│   ├── claude-design-promo.html        # 82s Interactive Web Player (Claude Design)
+│   ├── claude-design-promo.html        # 82s Interactive Web Player (Claude Design + 16-Project Outro Montage)
 │   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output
 │   ├── codex-app-promo.html            # 38s Interactive Web Player (OpenAI Codex App)
 │   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output
