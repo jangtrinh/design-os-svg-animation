@@ -51,15 +51,33 @@ def main():
     for idx, sec in enumerate(all_times):
         frame_path = os.path.join(FRAMES_DIR, f"frame_{idx:04d}.png")
         url = f"{PROMO_URL_BASE}?clean=true&t={sec}&autoplay=false"
+        user_data = f"/tmp/chrome_claude_{idx % 8}"
         cmd = [
             CHROME_BIN,
             "--headless",
             "--disable-gpu",
+            "--no-first-run",
+            "--no-default-browser-check",
+            "--disable-background-networking",
+            f"--user-data-dir={user_data}",
             "--window-size=1920,1080",
+            "--virtual-time-budget=2000",
+            "--run-all-compositor-stages-before-draw",
             f"--screenshot={frame_path}",
             url
         ]
-        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        t_start = time.time()
+        while time.time() - t_start < 5.0:
+            if os.path.exists(frame_path) and os.path.getsize(frame_path) > 1000:
+                break
+            time.sleep(0.1)
+        proc.terminate()
+        try:
+            proc.wait(timeout=1.0)
+        except Exception:
+            proc.kill()
+
         if (idx + 1) % 10 == 0 or idx == len(all_times) - 1:
             print(f"  [{idx + 1}/{len(all_times)}] Frame at {sec:.1f}s captured")
 

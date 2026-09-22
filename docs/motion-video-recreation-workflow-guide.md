@@ -235,3 +235,31 @@ This guide codifies the **Universal Motion Video Recreation Pipeline** developed
 | **Determinism & Engineering Safety** | 20 | Passes all 5 Anti-Flop Gates; deterministic `__seekToTime(t)`; non-blocking export pipeline with clean error contracts. |
 | **Delivery & Showcase Quality** | 15 | 1080p MP4 broadcast export; high-fidelity lightweight GIF preview; documentation showcase integration. |
 | **Total** | **100** | **Minimum Passing Score: 90 / 100** |
+
+---
+
+## 6. Polished Delivery: Proactive Prevention & Self-Healing Guard
+
+> **Core Philosophy**: *Never wait for bugs to manifest during video rendering or user review. Detect, suggest, and auto-heal known failure modes before the first frame is captured.*
+
+### A. Pre-Flight Quality Guard Command
+Run the proactive pre-flight guard at any point during motion implementation:
+```bash
+# Proactively inspect code and print actionable suggestions
+npm run guard
+# or: python3 scripts/motion-preflight-guard.py --suggest
+
+# Proactively auto-heal fixable flaws across SVG, buttons, and DOM
+npm run guard:fix
+# or: python3 scripts/motion-preflight-guard.py --fix
+```
+
+### B. Automated Self-Healing Matrix
+
+| Failure Mode | Proactive Detection | Auto-Healing Action (`--fix`) | Manual Recommendation |
+| :--- | :--- | :--- | :--- |
+| **SVG Stroke Boundary Clipping** | JEV AST scan finds stroke paths reaching viewBox limits ($x \le 0$ or $x \ge W$). | Injects inner scaling group: `<g transform="translate(S/2, S/2) scale(1 - S/W)">` and `overflow: visible;`. | Maintain $S/2$ margin inside viewBox for any path with `stroke-width="S"`. |
+| **Pitch-Black Button Bug** | Unstyled `<rect>` or empty container inside `<button>`. | Replaces with `.btn-submit-circle` + `<svg><use href="#icon-arrow-up"/></svg>`. | Always wrap icons in `<svg>` with verified `<use>` references. |
+| **DOM Camera Transform Contamination** | Fixed overlays (`#outro-stage`, `#cursor-layer`) nested inside `#camera-world`. | Relocates overlays to root screen-space layer outside `#camera-world`. | Camera world must only contain zoomable elements; overlays stay fixed. |
+| **Unstable Outro Spring** | Spring damping ratio $\zeta \notin [0.5, 0.85]$ or missing decay envelope. | Auto-suggests calibrated damped harmonic oscillator parameters ($\zeta=0.65, \omega=7.5$). | Use analytical harmonic equation: $s(t) = 1 - e^{-\zeta\omega t}(\dots)$. |
+| **Headless Chrome Deadlock** | Synchronous `subprocess.run(CHROME_BIN)` without timeout or polling. | Flags risk and outputs non-blocking `subprocess.Popen` drop-in snippet. | Always poll screenshot file size ($>1000\text{B}$) with timeout-triggered `proc.terminate()`. |
