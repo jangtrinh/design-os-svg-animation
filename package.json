@@ -9,12 +9,14 @@
     "demo": "tsx scripts/motion-ir-compiler-demo.ts",
     "guard": "python3 scripts/motion-preflight-guard.py",
     "guard:fix": "python3 scripts/motion-preflight-guard.py --fix",
+    "audit:all": "npm run guard && npm run audit:hotspots && npm run audit:anti-flop",
     "audit:anti-flop": "python3 scripts/anti-flop-gate.py",
     "audit:hotspots": "node scripts/audit-cursor-click-hotspots.mjs",
     "audit:knowledge": "python3 scripts/jev-svg-curator.py audit-catalog",
     "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples",
     "detect:cuts": "node scripts/detect-scene-cuts.mjs",
     "extract:waveform": "node scripts/extract-audio-waveform.mjs",
+    "analyze:ref": "node scripts/detect-scene-cuts.mjs && node scripts/extract-audio-waveform.mjs",
     "export:video:60fps": "node scripts/export-60fps-video.mjs"
   },
   "dependencies": {

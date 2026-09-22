@@ -1,9 +1,9 @@
 # Motion Video Recreation Pipeline Specification
 
-> **Version**: 1.0.0  
+> **Version**: 2.0.0 (NullMotion Infused)  
 > **Status**: Production Standard  
 > **Ecosystem**: Design OS / AgentKit  
-> **Compatible Runtimes**: Claude Code, Codex Native, Antigravity
+> **Compatible Runtimes**: Claude Code, Codex Native (`codex-web -m pro`), Antigravity
 
 ---
 
@@ -11,62 +11,60 @@
 
 The **Motion Video Recreation Pipeline** is an end-to-end engineering methodology designed to recreate complex UI/UX launch promos, SaaS product demos, and vector/3D motion videos with **99% visual, kinematic, and timing parity** relative to a reference video (e.g., Anthropic Claude Design, Apple Keynote, Stripe Sessions).
 
-### Why Traditional Generative AI Fails at Motion Video
-1. **Kinematic Drift**: Pure LLM video generation hallucinates temporal progression, producing non-physical jumps and flickering interfaces.
-2. **Layout Thrashing**: Animating non-composited CSS properties (`top`, `left`, `width`, `height`, `d`) causes browser repaint bottlenecks.
-3. **Dropped Frames**: Real-time screen recording relies on variable system FPS. Dropped frames degrade fine spring animations.
-4. **Disconnection from Production**: Pure video outputs cannot be exported as actual interactive React / Three.js UI components.
-
-### The Solution: Hybrid Deterministic Vector Motion
-By decoupling temporal progression into a **virtual clock**, extracting exact **cubic-bezier and spring curves**, compiling into **Motion IR**, and executing a **headless frame-stepping capture**, this pipeline produces both:
-- **A 60fps 1080p full-fidelity broadcast video (MP4)**.
-- **A fully functional, interactive production React / Three.js component suite**.
+### Core Breakthroughs Adopted from NullMotion
+1. **Automated Cut & Waveform Analysis**: Eliminates manual timecode guessing via FFmpeg scene scoring (`gt(scene,0.18)`) and 50Hz PCM audio peak extraction.
+2. **20 HyperFrames Declarative Beats**: Rapid drafting in monochrome to lock timing and spatial choreography before high-fidelity asset rendering.
+3. **Dual-Layer Synchronizer**: Locked side-by-side scrubbers aligning reference video with live GSAP/SVG draft timelines frame-by-frame.
+4. **2.5D CSS Extrusions & Obsidian Tokens**: 3D geometric depth and glossy specular pill buttons without Three.js overhead.
+5. **In-Browser WebCodecs Export Engine**: Hardware AVC + AAC client-side export with backpressure queue throttling (`queue.length >= 2`) alongside Headless Chrome.
 
 ---
 
-## 2. The 5-Stage Standard Pipeline
+## 2. The 6-Stage Standard Pipeline
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 1: Multimodal Temporal & Spatial Deconstruction                    │
-│ - Timecode & Scene Breakdown (00:00 - MM:SS)                            │
-│ - Kinematic Parameter Extraction (Cubic Bézier, Spring Mass/Damp)       │
-│ - Design Tokens (Typography, Glassmorphism, Color Palettes)             │
+│ Stage 1: Automated Multimodal Deconstruction                            │
+│ - FFmpeg Scene Scoring (gt(scene, 0.18)) -> scene cuts & contact sheets │
+│ - 50Hz PCM Waveform Envelope Extraction (ffmpeg raw s16le @ 4000Hz)     │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 2: Deterministic AI Motion IR & Expert Consultation               │
-│ - Storyboard JSON schema validation (Tracks, Easing, Interpolations)   │
-│ - Multi-Agent Review: Codex Native (Math/Topology) + JEV System One     │
-│ - Anti-Flop Pre-flight Verification                                     │
+│ Stage 2: Declarative HyperFrames Beat Drafting                          │
+│ - 20 Atomic Beat Primitives (text, chat, window, cards, chart, etc.)     │
+│ - Fast monochrome staging (oklch(14% 0.012 255)) to lock timing        │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 3: Dual-Target Implementation Architecture                        │
+│ Stage 3: Dual-Layer Reference vs. Draft Synchronization                 │
+│ - Split-view runner (video.currentTime locked to GSAP master timeline)  │
+│ - Deterministic frame-accurate scrubber validation                      │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Stage 4: High-Fidelity Dressing & Kinematic Polishing                   │
+│ - Obsidian Specular Gloss Buttons & 2.5D CSS Extrusions (skewY(-34deg)) │
+│ - Procedural Audio Reactivity (--audio-energy, --audio-tone)            │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Stage 5: Multi-Gate Anti-Flop & Concentricity Audit                     │
+│ - Gate 0-5 Anti-Flop Standards (Zero Emojis, Vectors, WCAG AA, A11y)   │
+│ - Gate 6 Hotspot Concentricity Audit (Δ <= 1.0px)                       │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│ Stage 6: Dual-Engine Export Architecture                                │
 │ ┌───────────────────────────────────┐ ┌───────────────────────────────┐ │
-│ │ Target A: Virtual-Clock Web Engine│ │ Target B: Production R3F Suite│ │
-│ │ - Standalone HTML/CSS/JS          │ │ - React 19 + Three.js (R3F)   │ │
-│ │ - seekToTime(t) Determinism       │ │ - Framer Motion + Tailwind    │ │
+│ │ Target A: In-Browser WebCodecs    │ │ Target B: Headless Chrome CDP │ │
+│ │ - Hardware AVC (avc1.640033) 24M  │ │ - Chrome CDP Screenshot Step  │ │
+│ │ - mp4-muxer ArrayBufferTarget     │ │ - FFmpeg High-Profile 60fps   │ │
 │ └───────────────────────────────────┘ └───────────────────────────────┘ │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 4: Headless Frame-by-Frame Capture & FFmpeg Assembly              │
-│ - Google Chrome Headless CDP Screenshot Stepping (zero dropped frames) │
-│ - High-Profile FFmpeg Encoding (H.264 YUV420P, CRF 18, 60fps)          │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 5: Anti-Flop & Quality Assurance Gate (5 Gates)                   │
-│ - Phosphor / Lucide Icon Integrity                                     │
-│ - WCAG 2.2 AA Contrast & Typography Smoothing                           │
-│ - Tactile Depth & 8pt Grid Spacing                                      │
-│ - A11y & prefers-reduced-motion Fallback                                │
-│ - Security, Coordinate Realism & Determinism                            │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
