@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design OS — HyperFrames Declarative Beats Showcase</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #090A0F;
+      color: #F4F4F6;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+      gap: 32px;
+    }
+    header {
+      text-align: center;
+      max-width: 800px;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(180deg, #FFFFFF 0%, #A1A1AA 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+    }
+    p {
+      color: #71717A;
+      font-size: 15px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 640px);
+      gap: 24px;
+    }
+    .card {
+      background: #12131A;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    .card-header {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: #181922;
+      font-size: 13px;
+      font-weight: 600;
+      color: #D4D4D8;
+    }
+    .badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(0, 112, 243, 0.15);
+      color: #0070F3;
+      border: 1px solid rgba(0, 112, 243, 0.3);
+    }
+    .stage {
+      position: relative;
+      width: 640px;
+      height: 360px;
+      overflow: hidden;
+      background: #000000;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>HyperFrames Declarative Motion Beats</h1>
+    <p>Adopted from NullMotion · 640×360 Paused Timelines with Deterministic Scrubbing</p>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-header">
+        <span>Beat 1: Kinetic Brand Reveal (`logo` + `text`)</span>
+        <span class="badge">HyperFrames</span>
+      </div>
+      <div id="stage-1" class="stage"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span>Beat 2: Interactive Prompt Composer (`input`)</span>
+        <span class="badge">HyperFrames</span>
+      </div>
+      <div id="stage-2" class="stage"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span>Beat 3: 3D Perspective Hero Sheen (`shape`)</span>
+        <span class="badge">HyperFrames</span>
+      </div>
+      <div id="stage-3" class="stage"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span>Beat 4: Animated Growth Trajectory (`chart`)</span>
+        <span class="badge">HyperFrames</span>
+      </div>
+      <div id="stage-4" class="stage"></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { buildHyperFramesDraft } from '../src/runtime/hyperframes-engine.mjs';
+
+    // Stage 1: Logo & Text
+    const tl1 = buildHyperFramesDraft(
+      document.getElementById('stage-1'),
+      [
+        ['logo', 'Design OS', { mark: '⌘', markSize: 48, size: 44, sub: 'AI SVG Motion Engine' }],
+        ['text', 'Kinetic Vector Systems', { size: 38 }]
+      ],
+      4.0,
+      { bg: '#000000', fg: '#FFFFFF', accent: '#0070F3' }
+    );
+
+    // Stage 2: Prompt Input
+    const tl2 = buildHyperFramesDraft(
+      document.getElementById('stage-2'),
+      [
+        ['input', 'Generate 3D vector morphing animation', { h: 'Prompt Interface' }]
+      ],
+      3.5,
+      { bg: '#000000', fg: '#FFFFFF', accent: '#10B981' }
+    );
+
+    // Stage 3: 3D Shape
+    const tl3 = buildHyperFramesDraft(
+      document.getElementById('stage-3'),
+      [
+        ['shape', 'Obsidian Tactile Depth', {}]
+      ],
+      4.0,
+      { bg: '#000000', fg: '#FFFFFF', accent: '#F59E0B' }
+    );
+
+    // Stage 4: Chart
+    const tl4 = buildHyperFramesDraft(
+      document.getElementById('stage-4'),
+      [
+        ['chart', '+142% Velocity', {}]
+      ],
+      3.5,
+      { bg: '#000000', fg: '#FFFFFF', accent: '#0070F3' }
+    );
+
+    // Play all on loop for preview
+    [tl1, tl2, tl3, tl4].forEach(tl => {
+      if (tl) tl.repeat(-1).repeatDelay(0.5).play();
+    });
+
+    window.__seekAll = (sec) => {
+      [tl1, tl2, tl3, tl4].forEach(tl => tl?.seek(sec, false));
+    };
+  </script>
+</body>
+</html>

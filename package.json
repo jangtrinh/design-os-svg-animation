@@ -13,6 +13,8 @@
     "audit:hotspots": "node scripts/audit-cursor-click-hotspots.mjs",
     "audit:knowledge": "python3 scripts/jev-svg-curator.py audit-catalog",
     "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples",
+    "detect:cuts": "node scripts/detect-scene-cuts.mjs",
+    "extract:waveform": "node scripts/extract-audio-waveform.mjs",
     "export:video:60fps": "node scripts/export-60fps-video.mjs"
   },
   "dependencies": {
