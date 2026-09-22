@@ -26,21 +26,32 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
 
 const TARGETS = {
+  saas: {
+    name: 'SaaS Short Master (9:16 Vertical)',
+    url: 'http://localhost:3033/saas-short.html?clean=true&autoplay=false',
+    duration: 11.5,
+    fps: 60,
+    width: 1080,
+    height: 1920,
+    outputFilename: 'saas-short.mp4'
+  },
   codex: {
     name: 'OpenAI Codex App Promo',
     url: 'http://localhost:3033/codex-app-promo.html?clean=true&autoplay=false',
     duration: 38.0,
     fps: 60,
-    outputFilename: 'codex-app-promo.mp4',
-    altFilename: 'codex-app-promo-60fps.mp4'
+    width: 1920,
+    height: 1080,
+    outputFilename: 'codex-app-promo.mp4'
   },
   claude: {
     name: 'Claude Design Master Promo',
     url: 'http://localhost:3033/claude-design-promo.html?clean=true&autoplay=false',
     duration: 82.0,
     fps: 60,
-    outputFilename: 'claude-design-promo.mp4',
-    altFilename: 'claude-design-promo-60fps.mp4'
+    width: 1920,
+    height: 1080,
+    outputFilename: 'claude-design-promo.mp4'
   }
 };
 
@@ -53,8 +64,10 @@ async function renderTarget(key, config) {
   console.log(`============================================================\n`);
 
   const outputPath = path.join(PROMO_DIR, config.outputFilename);
-  const altOutputPath = path.join(PROMO_DIR, config.altFilename);
   const docsOutputPath = path.join(DOCS_PROMO_DIR, config.outputFilename);
+
+  const w = config.width || 1920;
+  const h = config.height || 1080;
 
   // 1. Launch Puppeteer Headless Chrome
   const browser = await puppeteer.launch({
@@ -64,15 +77,15 @@ async function renderTarget(key, config) {
       '--no-sandbox',
       '--disable-setuid-sandbox',
       '--disable-gpu',
-      '--window-size=1920,1080',
+      `--window-size=${w},${h}`,
       '--hide-scrollbars',
       '--disable-background-timer-throttling',
       '--disable-backgrounding-occluded-windows',
       '--disable-renderer-backgrounding'
     ],
     defaultViewport: {
-      width: 1920,
-      height: 1080,
+      width: w,
+      height: h,
       deviceScaleFactor: 1
     }
   });
@@ -172,6 +185,10 @@ async function renderTarget(key, config) {
 
 async function main() {
   const targetArg = process.argv[2] || 'all';
+
+  if (targetArg === 'saas' || targetArg === 'all') {
+    await renderTarget('saas', TARGETS.saas);
+  }
 
   if (targetArg === 'codex' || targetArg === 'all') {
     await renderTarget('codex', TARGETS.codex);

@@ -489,13 +489,13 @@ class SaasShortEngine {
       } else {
         const pPunch = this.clamp((localT - 1000) / 750);
         const easePunch = this.cubicBezier(pPunch, 0.22, 1, 0.36, 1);
-        zoomScale = Math.exp(this.lerp(Math.log(1.0), Math.log(1.5), easePunch));
+        zoomScale = Math.exp(this.lerp(Math.log(1.0), Math.log(1.35), easePunch));
 
-        // Focal point tracking toward "Go-to-market" header
-        const targetX = 460;
-        const targetY = 960 + 40;
+        // Precise focal point tracking: centers the 520px document block perfectly
+        const targetX = 370;
+        const targetY = 920;
         camX = 540 - zoomScale * targetX;
-        camY = 960 - zoomScale * (targetY - 100 * (1 - easePunch));
+        camY = 960 - zoomScale * (targetY - 60 * (1 - easePunch));
       }
 
       this.setAttr(
