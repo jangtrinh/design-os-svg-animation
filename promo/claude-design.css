@@ -240,6 +240,83 @@ body.clean-export .export-dropdown-card {
   background: #000000;
   overflow: hidden;
   padding: 20px;
+  transition: all 0.3s ease;
+}
+
+/* 1:1 Split-Screen Dual-Layer Mode (NullMotion Drafts Sync) */
+.video-stage-wrapper.split-mode {
+  flex-direction: row !important;
+  gap: 24px !important;
+  padding: 20px 30px !important;
+}
+
+.ref-video-panel {
+  display: none;
+  width: 960px;
+  height: 540px;
+  background: #0d0e12;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.8);
+  border: 1px solid #27272a;
+  flex: none;
+}
+
+.video-stage-wrapper.split-mode .ref-video-panel {
+  display: block;
+}
+
+.ref-video-panel video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.ref-layer-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(13, 14, 18, 0.85);
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.5px;
+  z-index: 10;
+}
+
+.draft-layer-badge {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(13, 14, 18, 0.85);
+  color: #34d399;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+  backdrop-filter: blur(8px);
+  letter-spacing: 0.5px;
+  z-index: 100;
+}
+
+.video-stage-wrapper.split-mode .draft-layer-badge {
+  display: block;
+}
+
+.video-stage-wrapper.split-mode .video-stage {
+  width: 960px !important;
+  height: 540px !important;
+  transform: none !important;
+  border-radius: 12px !important;
+  border: 1px solid #27272a !important;
 }
 
 .video-stage {
@@ -365,19 +442,52 @@ body.clean-export .export-dropdown-card {
   justify-content: center;
 }
 
-/* Collapsed Pill Button */
+/* Collapsed Pill Button (NullMotion Specular Gloss & Glint) */
 .s1-pill-btn {
   height: 48px;
   padding: 0 24px;
-  border-radius: 24px;
-  background: #E8E6DF;
-  border: 1px solid #DFDDD6;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #EDEBE3 100%);
+  border: 1px solid rgba(223, 221, 214, 0.85);
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    inset 0 1.5px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.06),
+    0 8px 24px rgba(0, 0, 0, 0.08);
   cursor: pointer;
-  transition: transform 0.15s;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Specular Top Cap */
+.s1-pill-btn::before {
+  content: "";
+  position: absolute;
+  top: 1px; left: 8px; right: 8px; height: 44%;
+  border-radius: 999px 999px 60% 60% / 999px 999px 80% 80%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.75) 0%, rgba(255, 255, 255, 0.06) 100%);
+  pointer-events: none;
+}
+
+/* 105deg Moving Glint Sweep */
+.s1-pill-btn::after {
+  content: "";
+  position: absolute;
+  top: -50%; left: -60%; width: 40%; height: 200%;
+  background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.55) 50%, transparent 80%);
+  transform: rotate(25deg);
+  animation: pillGlintSweep 4.5s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes pillGlintSweep {
+  0% { transform: translateX(-120px) rotate(25deg); opacity: 0; }
+  15% { opacity: 1; }
+  35% { transform: translateX(380px) rotate(25deg); opacity: 0; }
+  100% { transform: translateX(380px) rotate(25deg); opacity: 0; }
 }
 
 .icon-palette {
@@ -392,18 +502,23 @@ body.clean-export .export-dropdown-card {
   color: #18181B;
 }
 
-/* Expanded Card */
+/* Expanded Card (Audio Reactive + Tactile Inset) */
 .s1-expanded-box {
   width: 620px;
   min-height: 165px;
   background: #FFFFFF;
   border-radius: 26px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+  border: 1px solid rgba(223, 221, 214, 0.6);
+  box-shadow:
+    0 20px 50px rgba(0,0,0,0.12),
+    0 0 calc(16px + var(--audio-energy, 0) * 36px) rgba(217, 107, 67, calc(0.08 + var(--audio-energy, 0) * 0.32)),
+    inset 0 1px 1px rgba(255, 255, 255, 0.9);
   padding: 18px 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   animation: s1BoxExpand 0.375s var(--ease-spring) forwards;
+  transition: box-shadow 0.08s ease-out;
 }
 
 @keyframes s1BoxExpand {
@@ -1672,21 +1787,40 @@ body.clean-export .export-dropdown-card {
   height: 60px;
 }
 
+/* 2.5D Extruded Mini Bar (NullMotion 15-bar-3d Pattern) */
 .mini-bar {
   width: 14px;
   background: #E8DFCE;
-  border-radius: 3px;
+  border-radius: 2px 2px 0 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   font-size: 8px;
   padding-bottom: 2px;
   color: #71717A;
+  position: relative;
+  transform-style: preserve-3d;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.mini-bar::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 100%; width: 5px; height: 100%;
+  background: #D5C7B3;
+  transform: skewY(-34deg);
+  transform-origin: top left;
+  border-radius: 0 2px 0 0;
 }
 
 .mini-bar.tall {
   background: #B39B78;
   color: white;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.mini-bar.tall::after {
+  background: #8F7757;
 }
 
 /* Screen View 2: Player Screen */

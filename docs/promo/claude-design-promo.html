@@ -38,6 +38,10 @@
         <button class="speed-btn" data-speed="4">4x</button>
       </div>
 
+      <button id="btn-split-sync" class="btn-ctrl" title="Toggle 1:1 Split Sync Comparison with Reference Video" style="margin-left: 8px; padding: 0 12px; font-size: 11px; font-weight: 600; background: #27272a; color: #38bdf8; border: 1px solid #38bdf844; border-radius: 6px; cursor: pointer; height: 32px;">
+        <span>1:1 Split Sync</span>
+      </button>
+
       <button id="btn-record-video" class="btn-record" title="Record full video to file">
         <span class="rec-dot"></span>
         <span>Export Video</span>
@@ -55,8 +59,15 @@
   </header>
 
   <!-- Master Video Viewport (1920 x 1080 16:9 Canvas Container) -->
-  <main class="video-stage-wrapper">
+  <main id="video-stage-wrapper" class="video-stage-wrapper">
+    <!-- Ground Truth Reference Video Panel (NullMotion Sync Layer) -->
+    <div id="ref-video-panel" class="ref-video-panel">
+      <div class="ref-layer-badge">REFERENCE MP4 (GROUND TRUTH)</div>
+      <video id="ref-video" src="claude-design-promo.mp4" muted playsinline preload="auto"></video>
+    </div>
+
     <div id="video-stage" class="video-stage">
+      <div class="draft-layer-badge">RECREATED ENGINE (1:1 VIRTUAL CLOCK)</div>
 
       <!-- Dynamic Mouse Cursor Overlay (Tip at 0,0) -->
       <div id="virtual-cursor" class="virtual-cursor">

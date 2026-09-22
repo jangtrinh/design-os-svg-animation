@@ -24,6 +24,17 @@
   const playBtn = document.getElementById('btn-play-pause');
   const playIcon = document.getElementById('play-icon');
   const virtualCursor = document.getElementById('virtual-cursor');
+  const stageWrapper = document.getElementById('video-stage-wrapper');
+  const splitBtn = document.getElementById('btn-split-sync');
+  const refVideo = document.getElementById('ref-video');
+  let isSplitMode = urlParams.get('split') === 'true';
+
+  // Audio Waveform Reactive State (NullMotion 50Hz PCM Envelope)
+  let waveData = null;
+  fetch('claude-design-promo.wave.json')
+    .then(r => r.json())
+    .then(data => { waveData = data; })
+    .catch(() => {});
 
   const scenes = {
     s1: document.getElementById('scene-1'),
@@ -732,6 +743,22 @@
     if (timecodeEl) timecodeEl.textContent = `${formatTime(t)} / 01:22`;
     if (scrubber) scrubber.value = t;
 
+    // Split Mode Video Synchronization (NullMotion Dual-Layer Sync)
+    if (refVideo && isSplitMode) {
+      if (Math.abs(refVideo.currentTime - t) > 0.08) {
+        refVideo.currentTime = t;
+      }
+    }
+
+    // Audio Reactivity (50Hz PCM Waveform Envelope)
+    if (waveData && waveData.peaks) {
+      const idx = Math.min(waveData.peaks.length - 1, Math.floor(t * waveData.rate));
+      const peak = waveData.peaks[idx] || 0;
+      const energy = peak / 100.0;
+      document.documentElement.style.setProperty('--audio-energy', energy.toFixed(3));
+      document.documentElement.style.setProperty('--audio-tone', (energy * 1.5).toFixed(3));
+    }
+
     // ==========================================================
     // SCENE 1: INITIAL PROMPT (00:00 – 00:12)
     // ==========================================================
@@ -1189,6 +1216,32 @@
       updateTimeline(currentTime);
     });
   });
+
+  // --- 1:1 DUAL-LAYER SPLIT-SYNC CONTROLLER ---
+  function setSplitMode(enable) {
+    isSplitMode = enable;
+    if (stageWrapper) stageWrapper.classList.toggle('split-mode', isSplitMode);
+    if (splitBtn) {
+      splitBtn.style.background = isSplitMode ? '#0284c7' : '#27272a';
+      splitBtn.style.color = '#ffffff';
+      splitBtn.style.borderColor = isSplitMode ? '#38bdf8' : '#38bdf844';
+    }
+    if (isSplitMode && refVideo) {
+      refVideo.currentTime = currentTime;
+      if (isPlaying) refVideo.play().catch(() => {});
+      else refVideo.pause();
+    }
+  }
+
+  if (splitBtn) {
+    splitBtn.addEventListener('click', () => {
+      setSplitMode(!isSplitMode);
+    });
+  }
+
+  if (isSplitMode) {
+    setSplitMode(true);
+  }
 
   // --- DETERMINISTIC VIRTUAL CLOCK INTERFACE ---
   window.__seekToTime = function(sec) {
