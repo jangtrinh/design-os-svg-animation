@@ -527,55 +527,57 @@ class SaasShortEngine {
         this.setAttr(this.s5.docContent, "transform", `translate(100, ${docY.toFixed(1)})`);
       }
 
-      // Camera Motion (Log-scale zoom into focus block at s5Time >= 1180ms, which is t >= 8500ms)
-      let camY = 0;
-      let zoomScale = 1.0;
-      let camX = 0;
+      // Camera Motion (C^1 continuous log-scale zoom from (0,0) to target — ZERO jump)
+      const targetZoom = 1.35;
+      const targetCamX = 540 - targetZoom * 390; // = +13.5
+      const targetCamY = 960 - targetZoom * 990; // = -376.5
+
+      let curZoom = 1.0;
+      let curCamX = 0;
+      let curCamY = 0;
       let easePunch = 0;
 
-      if (s5Time >= 1180) {
-        const pPunch = this.clamp((s5Time - 1180) / 780);
+      if (s5Time >= 1350) {
+        const pPunch = this.clamp((s5Time - 1350) / 850);
         easePunch = this.cubicBezier(pPunch, 0.22, 1, 0.36, 1);
-        zoomScale = Math.exp(this.lerp(Math.log(1.0), Math.log(1.35), easePunch));
-
-        // Center the 520px focus block (x=390, y=990)
-        const targetX = 390;
-        const targetY = 990;
-        camX = 540 - zoomScale * targetX;
-        camY = 960 - zoomScale * targetY;
+        curZoom = this.lerp(1.0, targetZoom, easePunch);
+        curCamX = this.lerp(0, targetCamX, easePunch);
+        curCamY = this.lerp(0, targetCamY, easePunch);
       }
 
       this.setAttr(
         this.s5.stage,
         "transform",
-        `translate(${camX.toFixed(1)}, ${camY.toFixed(1)}) scale(${zoomScale.toFixed(4)})`
+        `translate(${curCamX.toFixed(2)}, ${curCamY.toFixed(2)}) scale(${curZoom.toFixed(4)})`
       );
 
-      // Top elements fade out during zoom so they never crowd or collide with the top notch
-      const topFade = Math.max(0, 1 - easePunch * 1.5);
+      // Top elements softly dissolve during zoom so they never crowd or collide with the top notch
+      const topFade = Math.max(0, 1 - easePunch * 1.6);
 
+      // Silky smooth 240ms cubic ease-out text reveal (eliminates harsh 90ms linear pop)
       const showAt = (elem, revealT, isTop = true) => {
         if (!elem) return;
-        const p = this.clamp((s5Time - revealT) / 90);
-        const finalOpac = isTop ? p * topFade : p;
+        const pRaw = this.clamp((s5Time - revealT) / 240);
+        const easeIn = this.easeOutCubic(pRaw);
+        const finalOpac = isTop ? easeIn * topFade : easeIn;
         this.setAttr(elem, "opacity", finalOpac.toFixed(3));
       };
 
-      // Header badge appears first, intro text begins at 7400ms after S4 header is gone
+      // Natural, readable text cascade timing
       if (this.s5.badge) showAt(this.s5.badge, 0, true);
       showAt(this.s5.intro, 80, true);
-      showAt(this.s5.intro2, 130, true);
-      showAt(this.s5.h1, 190, true);
+      showAt(this.s5.intro2, 150, true);
+      showAt(this.s5.h1, 240, true);
 
       this.s5.p1Lines.forEach((line, idx) => {
-        showAt(line, 250 + idx * 65, true);
+        showAt(line, 320 + idx * 80, true);
       });
 
-      showAt(this.s5.h2, 860, false);
-      showAt(this.s5.h3, 940, false);
+      showAt(this.s5.h2, 880, false);
+      showAt(this.s5.h3, 980, false);
 
       this.s5.p2Lines.forEach((line, idx) => {
-        showAt(line, 1010 + idx * 60, false);
+        showAt(line, 1060 + idx * 75, false);
       });
     }
 
