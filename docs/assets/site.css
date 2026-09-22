@@ -191,5 +191,21 @@ ol.steps .ds-code{margin-top:var(--s-3)}
 .prose tbody td:first-child{color:var(--c-gray-1200);font-weight:var(--fw-medium)}
 .prose tbody tr:first-child td{padding-top:var(--s-6)}
 .table-scroll{overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
-.doc-head{margin-bottom:var(--s-12)}
 .doc-nav{display:flex;flex-wrap:wrap;gap:var(--s-2);margin-top:var(--s-24);padding-top:var(--s-12);border-top:1px solid var(--c-gray-300)}
+
+/* Hero Showcase Carousel */
+.carousel-container{position:relative}
+.carousel-header{display:flex;align-items:center;justify-content:space-between;padding:var(--s-3) var(--s-6) var(--s-3) var(--s-4);border-bottom:1px solid var(--c-preview-border);background:var(--c-gray-100);border-radius:var(--r-5) var(--r-5) 0 0;flex-wrap:wrap;gap:var(--s-3)}
+.carousel-tabs{display:inline-flex;align-items:center;gap:var(--s-2);background:var(--c-gray-200);padding:2px;border-radius:var(--r-pill)}
+.carousel-tab{display:inline-flex;align-items:center;gap:var(--s-2);height:var(--ctl-28);padding-inline:var(--s-5);border:0;border-radius:var(--r-pill);background:transparent;color:var(--c-gray-1100);font-size:var(--t-13);font-family:var(--stack-sans);font-weight:var(--fw-medium);cursor:pointer;transition:all var(--dur-fast) var(--ease-out)}
+.carousel-tab:hover{color:var(--c-gray-1200)}
+.carousel-tab.active{background:var(--c-canvas);color:var(--c-gray-1200);box-shadow:var(--shadow-custom);font-weight:var(--fw-semibold)}
+.carousel-tab-dot{width:6px;height:6px;border-radius:var(--r-pill);background:var(--c-gray-900);transition:background var(--dur-fast) var(--ease-out)}
+.carousel-tab.active .carousel-tab-dot{background:var(--c-accent)}
+.carousel-arrows{display:inline-flex;align-items:center;gap:var(--s-2)}
+.carousel-btn{display:inline-flex;align-items:center;justify-content:center;width:var(--ctl-28);height:var(--ctl-28);border:1px solid var(--c-preview-border);border-radius:var(--r-pill);background:var(--c-canvas);color:var(--c-gray-1100);cursor:pointer;transition:all var(--dur-fast) var(--ease-out)}
+.carousel-btn:hover{background:var(--c-gray-200);color:var(--c-gray-1200);border-color:var(--c-gray-400)}
+.carousel-track{position:relative;width:100%;overflow:hidden}
+.carousel-slide{display:none;width:100%}
+.carousel-slide.active{display:block;animation:carouselFadeIn var(--dur-base) var(--ease-out)}
+@keyframes carouselFadeIn{from{opacity:0;transform:scale(0.995)}to{opacity:1;transform:scale(1)}}
