@@ -15,12 +15,16 @@
   const videoStage = document.getElementById('video-stage');
   const cameraWorld = document.getElementById('camera-world');
   const virtualCursor = document.getElementById('virtual-cursor');
+  const cursorSvgArrow = document.getElementById('cursor-svg-arrow');
+  const cursorSvgHand = document.getElementById('cursor-svg-hand');
   const clickRipple = document.getElementById('click-ripple');
   const videoScrubber = document.getElementById('video-scrubber');
   const timecodeDisplay = document.getElementById('timecode');
   const sceneNameDisplay = document.getElementById('scene-name');
   const btnPlayPause = document.getElementById('btn-play-pause');
-  const scenePillBtns = document.querySelectorAll('.scene-pill-btn');
+  const playIcon = document.getElementById('play-icon');
+  const speedBtns = document.querySelectorAll('.speed-btn');
+  const pillBtns = document.querySelectorAll('.pill-btn');
 
   // Scene Layers
   const scene1 = document.getElementById('scene-1-logo');
@@ -31,15 +35,16 @@
   const scene9 = document.getElementById('scene-9-vercel');
 
   // Scene 1 Elements
+  const s1GuidelinesSvg = document.getElementById('s1-guidelines-svg');
   const v0StrokePath = document.getElementById('v0-stroke-path');
   const v0FillPath = document.getElementById('v0-fill-path');
 
-  // Scene 2 Elements
+  // Scene 2 & 3 Elements
+  const titlePillMorph = document.getElementById('title-pill-morph');
   const titleHeroText = document.getElementById('title-hero-text');
-
-  // Scene 3 Elements
+  const reelTextTop = document.getElementById('reel-text-top');
   const promptActiveText = document.getElementById('prompt-active-text');
-  const promptSubReflection = document.getElementById('prompt-sub-reflection');
+  const reelTextBottom = document.getElementById('reel-text-bottom');
   const btnPromptEnter = document.getElementById('btn-prompt-enter');
 
   // Scene 4 & 5 Elements
@@ -48,13 +53,17 @@
   const canvasChatText = document.getElementById('canvas-chat-text');
   const btnToggleCode = document.getElementById('btn-toggle-code');
   const btnCodeLabel = document.getElementById('btn-code-label');
+  const btnCodeIcon = document.getElementById('btn-code-icon');
   const primaryAppCard = document.getElementById('primary-app-card');
   const acmeBrandWrap = document.getElementById('acme-brand-wrap');
   const componentInspectBox = document.getElementById('component-inspect-box');
   const componentEditPopover = document.getElementById('component-edit-popover');
   const popoverTypewriterText = document.getElementById('popover-typewriter-text');
+  const btnPopoverUpdate = document.getElementById('btn-popover-update');
+  const popoverUpdateIcon = document.getElementById('popover-update-icon');
   const cardVerV1 = document.getElementById('card-ver-v1');
   const codeInspectorCard = document.getElementById('code-inspector-card');
+  const tooltipClickEdit = document.getElementById('tooltip-click-edit');
 
   // Scene 7 Elements
   const stealthPopoverDialog = document.getElementById('stealth-popover-dialog');
@@ -62,36 +71,37 @@
   const optStealthPrivate = document.getElementById('opt-stealth-private');
 
   // Scene 8 & 9 Elements
+  const gridWallContainer = document.getElementById('grid-wall-container');
   const v0devCenterLockup = document.getElementById('v0dev-center-lockup');
-  const vercelOutroLockup = document.getElementById('vercel-outro-lockup');
+  const vercelOutroTriangle = document.getElementById('vercel-outro-triangle');
+  const vercelOutroWordmark = document.getElementById('vercel-outro-wordmark');
 
   // --- State ---
   let currentTime = 0;
   let isPlaying = false;
+  let playbackSpeed = 1.0;
   let lastTimestamp = null;
   let animationFrameId = null;
 
-  // --- Viewport Auto-Scaling ---
+  // --- Viewport Auto-Scaling (Fit 1920x1080 without Distortion or Cropping) ---
   function updateViewportScale() {
     const wrapper = document.querySelector('.video-stage-wrapper');
     if (!wrapper || !videoStage) return;
 
-    if (document.body.classList.contains('clean-export')) {
+    if (document.body.classList.contains('clean-export') || document.documentElement.classList.contains('clean-export')) {
       videoStage.style.transform = 'none';
       return;
     }
 
-    const availableWidth = wrapper.clientWidth;
-    const availableHeight = wrapper.clientHeight;
-
-    const scaleX = availableWidth / W;
-    const scaleY = availableHeight / H;
-    const scale = Math.min(scaleX, scaleY, 1.0);
+    const availW = wrapper.clientWidth - 40;
+    const availH = wrapper.clientHeight - 40;
+    const scale = Math.min(availW / W, availH / H);
 
     videoStage.style.transform = `scale(${scale})`;
   }
 
   window.addEventListener('resize', updateViewportScale);
+  setTimeout(updateViewportScale, 30);
   updateViewportScale();
 
   // --- Kinematic Utilities ---
@@ -126,14 +136,22 @@
     clickRipple.style.transform = `translate3d(${x - 22}px, ${y - 22}px, 0) scale(${scale.toFixed(3)})`;
   }
 
-  // --- Set Cursor Position ---
-  function setCursor(x, y, visible = true) {
+  // --- Set Cursor Position & Style ---
+  function setCursor(x, y, visible = true, isHand = false) {
     if (!visible) {
       virtualCursor.style.opacity = '0';
       return;
     }
     virtualCursor.style.opacity = '1';
     virtualCursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+
+    if (isHand) {
+      cursorSvgArrow.style.display = 'none';
+      cursorSvgHand.style.display = 'block';
+    } else {
+      cursorSvgArrow.style.display = 'block';
+      cursorSvgHand.style.display = 'none';
+    }
   }
 
   // --- Master Timecode Renderer ---
@@ -152,27 +170,36 @@
 
     // Default cursor & camera
     let cursorVisible = false;
+    let isHand = false;
     let cursorX = -100, cursorY = -100;
     let rippleProgress = 0, rippleX = 0, rippleY = 0;
     let camScale = 1.0;
     let camX = 0, camY = 0;
 
     // -------------------------------------------------------------
-    // SCENE 1: Animated v0 Wireframe Stroke Logo (0.0s – 3.0s)
+    // SCENE 1: Geometric Wireframe Logo & Radial Guidelines (0.0s – 3.2s)
     // -------------------------------------------------------------
     if (t < 3.2) {
-      const s1Opacity = t < 2.6 ? clamp(t / 0.3) : clamp((3.0 - t) / 0.4);
+      const s1Opacity = t < 2.6 ? clamp(t / 0.3) : clamp((3.2 - t) / 0.4);
       scene1.style.opacity = s1Opacity.toFixed(3);
       scene1.style.display = s1Opacity > 0 ? 'flex' : 'none';
 
-      // Stroke dashoffset: 80 -> 0 over 0.0s to 1.6s
-      const strokeP = clamp(t / 1.6);
+      // Stroke dashoffset: 80 -> 0 over 0.0s to 1.4s
+      const strokeP = clamp(t / 1.4);
       const dashoffset = lerp(80, 0, smootherstep(strokeP));
       v0StrokePath.style.strokeDashoffset = dashoffset.toFixed(1);
 
-      // Solid block fill morph at 1.7s
-      if (t >= 1.6) {
-        const fillP = clamp((t - 1.6) / 0.35);
+      // Radial Guidelines emerge at 1.2s to 2.5s
+      if (t >= 1.1 && t < 2.8) {
+        const guideP = t < 1.8 ? clamp((t - 1.1) / 0.5) : clamp((2.8 - t) / 0.4);
+        s1GuidelinesSvg.style.opacity = smootherstep(guideP).toFixed(3);
+      } else {
+        s1GuidelinesSvg.style.opacity = '0';
+      }
+
+      // Solid block fill morph at 1.5s - 2.5s
+      if (t >= 1.5) {
+        const fillP = clamp((t - 1.5) / 0.4);
         const fillOpacity = smootherstep(fillP);
         v0FillPath.style.opacity = fillOpacity.toFixed(3);
         v0StrokePath.style.opacity = (1 - fillOpacity).toFixed(3);
@@ -181,63 +208,84 @@
         v0StrokePath.style.opacity = '1';
       }
 
-      if (sceneNameDisplay && t < 3.0) sceneNameDisplay.textContent = 'Scene 1: v0 Wireframe Logo';
+      // Subtle scale contraction before transition
+      if (t >= 2.6) {
+        const scaleP = clamp((t - 2.6) / 0.6);
+        const s = lerp(1.0, 0.96, smootherstep(scaleP));
+        scene1.style.transform = `scale(${s.toFixed(3)})`;
+      } else {
+        scene1.style.transform = 'scale(1.0)';
+      }
+
+      if (sceneNameDisplay && t < 3.2) sceneNameDisplay.textContent = 'Scene 1: v0 Wireframe & Radial Guidelines';
     } else {
       scene1.style.opacity = '0';
       scene1.style.display = 'none';
     }
 
     // -------------------------------------------------------------
-    // SCENE 2: "What will you ship?" Title Card (3.0s – 5.5s)
+    // SCENE 2 & 3A: Title Morph to Pill Capsule (3.2s – 6.5s)
     // -------------------------------------------------------------
-    if (t >= 2.8 && t < 5.8) {
-      const s2In = clamp((t - 3.0) / 0.4);
-      const s2Out = clamp((5.4 - t) / 0.4);
+    if (t >= 3.0 && t < 6.8) {
+      const s2In = clamp((t - 3.2) / 0.4);
+      const s2Out = clamp((6.6 - t) / 0.4);
       const s2Opacity = Math.min(s2In, s2Out);
       scene2.style.opacity = s2Opacity.toFixed(3);
       scene2.style.display = s2Opacity > 0 ? 'flex' : 'none';
 
-      const scale = lerp(0.96, 1.0, smootherstep(s2In));
-      titleHeroText.style.transform = `scale(${scale.toFixed(3)})`;
+      // Pill capsule form around text at 4.6s
+      if (t >= 4.6) {
+        titlePillMorph.classList.add('as-pill');
+      } else {
+        titlePillMorph.classList.remove('as-pill');
+      }
 
-      if (sceneNameDisplay && t >= 3.0 && t < 5.5) sceneNameDisplay.textContent = 'Scene 2: "What will you ship?"';
+      if (sceneNameDisplay && t >= 3.2 && t < 6.5) sceneNameDisplay.textContent = 'Scene 2: "What will you ship?" Pill Morph';
     } else {
       scene2.style.opacity = '0';
       scene2.style.display = 'none';
     }
 
     // -------------------------------------------------------------
-    // SCENE 3: Dark Floating Prompt Bar & Vertical Reel (5.5s – 12.5s)
+    // SCENE 3B: Vertical 3D Drum Reel Prompt Bar (6.5s – 13.5s)
     // -------------------------------------------------------------
-    if (t >= 5.2 && t < 13.0) {
-      const s3In = clamp((t - 5.4) / 0.4);
-      const s3Out = clamp((12.6 - t) / 0.4);
+    if (t >= 6.2 && t < 13.8) {
+      const s3In = clamp((t - 6.4) / 0.4);
+      const s3Out = clamp((13.6 - t) / 0.4);
       const s3Opacity = Math.min(s3In, s3Out);
       scene3.style.opacity = s3Opacity.toFixed(3);
       scene3.style.display = s3Opacity > 0 ? 'flex' : 'none';
 
-      // Typewriter & Reel transitions
-      if (t < 7.2) {
+      // Drum Reel Cycling
+      if (t < 8.2) {
+        reelTextTop.style.opacity = '0';
         promptActiveText.textContent = 'A sleek pricing page';
-        promptSubReflection.textContent = 'A flower shop';
-      } else if (t >= 7.2 && t < 9.2) {
+        reelTextBottom.textContent = 'A flower shop';
+        reelTextBottom.style.opacity = '0.8';
+      } else if (t >= 8.2 && t < 10.2) {
+        reelTextTop.textContent = 'A sleek pricing page';
+        reelTextTop.style.opacity = '0.7';
         promptActiveText.textContent = 'A flower shop';
-        promptSubReflection.textContent = 'A SaaS dashboard layout';
+        reelTextBottom.textContent = 'A SaaS dashboard layout';
+        reelTextBottom.style.opacity = '0.8';
       } else {
+        reelTextTop.textContent = 'A flower shop';
+        reelTextTop.style.opacity = '0.7';
         promptActiveText.textContent = 'A SaaS dashboard layout';
-        promptSubReflection.textContent = '';
+        reelTextBottom.textContent = 'A newsletter form in dark mode';
+        reelTextBottom.style.opacity = '0.7';
       }
 
-      // Cursor movement & click on Submit button
-      if (t >= 10.2 && t < 12.5) {
+      // Cursor movement & click on Submit button (11.5s - 13.5s)
+      if (t >= 11.2 && t < 13.5) {
         cursorVisible = true;
-        const curP = clamp((t - 10.2) / 1.5);
-        cursorX = lerp(1380, 1315, smootherstep(curP));
-        cursorY = lerp(720, 540, smootherstep(curP));
+        const curP = clamp((t - 11.2) / 1.4);
+        cursorX = lerp(1480, 1315, smootherstep(curP));
+        cursorY = lerp(780, 540, smootherstep(curP));
 
-        // Click at 12.0s
-        if (t >= 11.95 && t <= 12.35) {
-          const clickP = (t - 11.95) / 0.4;
+        // Click at 12.8s
+        if (t >= 12.65 && t <= 13.05) {
+          const clickP = (t - 12.65) / 0.4;
           rippleProgress = clickP;
           rippleX = 1315;
           rippleY = 540;
@@ -247,63 +295,89 @@
         }
       }
 
-      if (sceneNameDisplay && t >= 5.5 && t < 12.5) sceneNameDisplay.textContent = 'Scene 3: Prompt Reel';
+      if (sceneNameDisplay && t >= 6.5 && t < 13.5) sceneNameDisplay.textContent = 'Scene 3: 3D Cylindrical Drum Reel';
     } else {
       scene3.style.opacity = '0';
       scene3.style.display = 'none';
     }
 
     // -------------------------------------------------------------
-    // SCENE 4 & 5: Acme Inc Dashboard Canvas & Component Edit (12.5s – 26.5s)
+    // SCENE 4 & 5: Acme Inc Dashboard Canvas & Component Edit (13.5s – 26.5s)
     // -------------------------------------------------------------
-    if (t >= 12.4 && t < 26.8) {
-      const s4In = clamp((t - 12.5) / 0.5);
+    if (t >= 13.4 && t < 26.8) {
+      const s4In = clamp((t - 13.5) / 0.5);
       const s4Out = clamp((26.7 - t) / 0.4);
       const s4Opacity = Math.min(s4In, s4Out);
       scene4.style.opacity = s4Opacity.toFixed(3);
       scene4.style.display = s4Opacity > 0 ? 'block' : 'none';
 
-      // Primary app card visible
       primaryAppCard.style.opacity = '1';
       codeInspectorCard.style.opacity = '0';
       codeInspectorCard.style.pointerEvents = 'none';
       btnCodeLabel.textContent = 'Code </>';
+      btnCodeIcon.innerHTML = '<use href="#icon-code"></use>';
 
-      // --- Scene 5: Component-Level Blue Logo Edit (18.0s – 26.0s) ---
-      if (t >= 17.5 && t < 26.2) {
-        // Continuous $C^1$ Camera Zoom-In towards Acme Inc logo area
-        if (t >= 17.8 && t < 24.2) {
-          const zoomP = clamp((t - 17.8) / 1.2);
-          camScale = lerp(1.0, 1.42, smootherstep(zoomP));
-          camX = lerp(0, 120, smootherstep(zoomP));
-          camY = lerp(0, 60, smootherstep(zoomP));
-        } else if (t >= 24.2) {
-          const unzoomP = clamp((t - 24.2) / 1.2);
-          camScale = lerp(1.42, 1.0, smootherstep(unzoomP));
-          camX = lerp(120, 0, smootherstep(unzoomP));
-          camY = lerp(60, 0, smootherstep(unzoomP));
+      // Scene 4: Hover bottom edit button & show "Click & Edit" tooltip (15.5s - 17.2s)
+      if (t >= 15.2 && t < 17.4) {
+        cursorVisible = true;
+        const cp = clamp((t - 15.2) / 1.2);
+        cursorX = lerp(1100, 1226, smootherstep(cp));
+        cursorY = lerp(800, 1024, smootherstep(cp));
+
+        if (t >= 16.0 && t < 17.1) {
+          tooltipClickEdit.style.opacity = '1';
+          isHand = true;
+        } else {
+          tooltipClickEdit.style.opacity = '0';
         }
 
-        // Cursor hovers over Acme Inc logo at 18.5s
-        if (t >= 18.0 && t < 23.5) {
+        // Click Edit button at 16.7s
+        if (t >= 16.65 && t <= 17.0) {
+          rippleProgress = (t - 16.65) / 0.35;
+          rippleX = 1226;
+          rippleY = 1024;
+        }
+      } else {
+        tooltipClickEdit.style.opacity = '0';
+      }
+
+      // --- Scene 5: Component-Level Blue Logo Edit (17.0s – 26.5s) ---
+      if (t >= 17.0 && t < 26.5) {
+        // Continuous $C^1$ Camera Zoom-In towards Acme Inc logo area
+        if (t >= 17.2 && t < 24.8) {
+          const zoomP = clamp((t - 17.2) / 1.4);
+          camScale = lerp(1.0, 1.65, smootherstep(zoomP));
+          camX = lerp(0, 260, smootherstep(zoomP));
+          camY = lerp(0, 120, smootherstep(zoomP));
+        } else if (t >= 24.8) {
+          const unzoomP = clamp((t - 24.8) / 1.4);
+          camScale = lerp(1.65, 1.0, smootherstep(unzoomP));
+          camX = lerp(260, 0, smootherstep(unzoomP));
+          camY = lerp(120, 0, smootherstep(unzoomP));
+        }
+
+        // Cursor hovers over Acme Inc logo at 18.0s - 19.5s
+        if (t >= 17.5 && t < 24.5) {
           cursorVisible = true;
-          if (t < 19.5) {
-            const cp = clamp((t - 18.0) / 1.2);
-            cursorX = lerp(450, 120, smootherstep(cp));
-            cursorY = lerp(320, 180, smootherstep(cp));
-          } else if (t >= 19.5 && t < 21.6) {
-            // Move to Update button in popover at (640, 260)
-            const upP = clamp((t - 19.8) / 1.0);
-            cursorX = lerp(120, 640, smootherstep(upP));
-            cursorY = lerp(180, 260, smootherstep(upP));
+          if (t < 19.4) {
+            const cp = clamp((t - 17.5) / 1.4);
+            cursorX = lerp(1226, 200, smootherstep(cp));
+            cursorY = lerp(1024, 276, smootherstep(cp));
+            if (t >= 18.4) isHand = true;
+          } else if (t >= 19.4 && t < 23.5) {
+            // Move to Update button in popover at (682, 370)
+            const upP = clamp((t - 19.8) / 1.2);
+            cursorX = lerp(200, 682, smootherstep(upP));
+            cursorY = lerp(276, 370, smootherstep(upP));
+            if (t >= 22.8) isHand = true;
           } else {
-            cursorX = 640;
-            cursorY = 260;
+            cursorX = 682;
+            cursorY = 370;
           }
         }
 
         // Component Inspection Outline snaps on
-        if (t >= 18.8 && t < 23.2) {
+        if (t >= 18.2 && t < 24.2) {
           componentInspectBox.style.opacity = '1';
           componentInspectBox.style.transform = 'scale(1.0)';
         } else {
@@ -311,44 +385,55 @@
           componentInspectBox.style.transform = 'scale(0.96)';
         }
 
-        // Click Logo at 19.5s
-        if (t >= 19.45 && t <= 19.85) {
-          rippleProgress = (t - 19.45) / 0.4;
-          rippleX = 120;
-          rippleY = 180;
+        // Click Logo at 19.4s
+        if (t >= 19.35 && t <= 19.75) {
+          rippleProgress = (t - 19.35) / 0.4;
+          rippleX = 200;
+          rippleY = 276;
         }
 
-        // Popover Dialog Springs Open (19.6s – 23.2s)
-        if (t >= 19.6 && t < 23.0) {
-          const popP = clamp((t - 19.6) / 0.35);
+        // Popover Dialog Springs Open (19.5s – 24.8s)
+        if (t >= 19.5 && t < 24.8) {
+          const popP = clamp((t - 19.5) / 0.35);
           componentEditPopover.style.opacity = smootherstep(popP).toFixed(3);
           componentEditPopover.style.transform = `scale(${lerp(0.92, 1.0, smootherstep(popP)).toFixed(3)}) translateY(0)`;
 
           // Typewriting in popover
-          if (t < 20.3) {
+          if (t < 21.2) {
             popoverTypewriterText.textContent = 'Make this element larger, add an element, change colors';
             popoverTypewriterText.style.color = '#71717A';
           } else {
             const fullText = 'Make the company logo color blue';
-            const typeP = clamp((t - 20.3) / 1.0);
+            const typeP = clamp((t - 21.2) / 1.4);
             const chars = Math.round(fullText.length * typeP);
             popoverTypewriterText.textContent = fullText.slice(0, chars) + (typeP < 1 ? '|' : '');
             popoverTypewriterText.style.color = '#000000';
           }
+
+          // Spinner on Update button upon click (23.5s - 24.8s)
+          if (t >= 23.5) {
+            btnPopoverUpdate.classList.add('is-loading');
+            popoverUpdateIcon.innerHTML = '<use href="#icon-spinner"></use>';
+          } else {
+            btnPopoverUpdate.classList.remove('is-loading');
+            popoverUpdateIcon.innerHTML = '<use href="#icon-return"></use>';
+          }
         } else {
           componentEditPopover.style.opacity = '0';
           componentEditPopover.style.transform = 'scale(0.92) translateY(10px)';
+          btnPopoverUpdate.classList.remove('is-loading');
+          popoverUpdateIcon.innerHTML = '<use href="#icon-return"></use>';
         }
 
-        // Click Update Button at 21.8s
-        if (t >= 21.75 && t <= 22.15) {
-          rippleProgress = (t - 21.75) / 0.4;
-          rippleX = 640;
-          rippleY = 260;
+        // Click Update Button at 23.5s
+        if (t >= 23.45 && t <= 23.85) {
+          rippleProgress = (t - 23.45) / 0.4;
+          rippleX = 682;
+          rippleY = 370;
         }
 
-        // Blue Logo Morph at 22.8s!
-        if (t >= 22.8) {
+        // Blue Logo Morph at 24.8s!
+        if (t >= 24.8) {
           acmeBrandWrap.classList.add('is-blue');
           canvasChatText.textContent = 'Make the company logo color blue';
           cardVerV1.style.opacity = '1';
@@ -360,25 +445,26 @@
           cardVerV1.style.transform = 'translateY(10px)';
         }
 
-        if (sceneNameDisplay && t >= 18.0 && t < 26.0) sceneNameDisplay.textContent = 'Scene 5: Component Blue Edit';
+        if (sceneNameDisplay && t >= 17.0 && t < 26.5) sceneNameDisplay.textContent = 'Scene 5: Component Blue Edit & Spinner';
       } else {
         componentInspectBox.style.opacity = '0';
         componentEditPopover.style.opacity = '0';
-        if (sceneNameDisplay && t >= 12.5 && t < 18.0) sceneNameDisplay.textContent = 'Scene 4: Acme Dashboard Canvas';
+        if (sceneNameDisplay && t >= 13.5 && t < 17.0) sceneNameDisplay.textContent = 'Scene 4: Acme Dashboard Canvas & Click-Edit';
       }
 
       // Cursor movement to Header Code button at 26.0s
       if (t >= 25.8 && t < 26.8) {
         cursorVisible = true;
         const codeP = clamp((t - 25.8) / 0.8);
-        cursorX = lerp(640, 1680, smootherstep(codeP));
-        cursorY = lerp(260, 80, smootherstep(codeP));
+        cursorX = lerp(640, 1820, smootherstep(codeP));
+        cursorY = lerp(260, 86, smootherstep(codeP));
+        isHand = true;
 
-        // Click Code at 26.6s
-        if (t >= 26.55 && t <= 26.8) {
-          rippleProgress = (t - 26.55) / 0.25;
-          rippleX = 1680;
-          rippleY = 80;
+        // Click Code at 26.5s
+        if (t >= 26.45 && t <= 26.75) {
+          rippleProgress = (t - 26.45) / 0.3;
+          rippleX = 1820;
+          rippleY = 86;
         }
       }
     } else {
@@ -386,72 +472,99 @@
     }
 
     // -------------------------------------------------------------
-    // SCENE 6: Code Inspector & CLI View (3D Card Tilt) (26.8s – 33.0s)
+    // SCENE 6: Code View Flip & 3D Perspective Tilt (26.5s – 32.5s)
     // -------------------------------------------------------------
-    if (t >= 26.8 && t < 33.2) {
+    if (t >= 26.5 && t < 32.8) {
       scene4.style.opacity = '1';
       scene4.style.display = 'block';
 
       // 3D Card tilt entrance
-      const c6In = clamp((t - 26.8) / 0.4);
-      const c6Out = clamp((33.0 - t) / 0.4);
+      const c6In = clamp((t - 26.6) / 0.4);
+      const c6Out = clamp((32.5 - t) / 0.4);
       const c6Opacity = Math.min(c6In, c6Out);
       codeInspectorCard.style.opacity = c6Opacity.toFixed(3);
       codeInspectorCard.style.pointerEvents = 'auto';
 
       primaryAppCard.style.opacity = '0.15';
       btnCodeLabel.textContent = 'Canvas 🖵';
+      btnCodeIcon.innerHTML = '<use href="#icon-canvas"></use>';
 
-      // Cursor moves across code card
-      if (t >= 28.0 && t < 32.5) {
+      // Cursor moves across code card then back to Canvas button
+      if (t >= 27.5 && t < 32.5) {
         cursorVisible = true;
-        const cp = clamp((t - 28.0) / 2.0);
-        cursorX = lerp(1680, 520, smootherstep(cp));
-        cursorY = lerp(80, 240, smootherstep(cp));
-      }
-
-      if (sceneNameDisplay && t >= 26.8 && t < 33.0) sceneNameDisplay.textContent = 'Scene 6: Code Inspector & CLI';
-    } else if (t >= 33.2) {
-      codeInspectorCard.style.opacity = '0';
-      primaryAppCard.style.opacity = '1';
-      btnCodeLabel.textContent = 'Code </>';
-    }
-
-    // -------------------------------------------------------------
-    // SCENE 7: Stealth Mode & Privacy Dialog (33.0s – 38.5s)
-    // -------------------------------------------------------------
-    if (t >= 32.8 && t < 38.6) {
-      scene4.style.opacity = '1';
-      scene4.style.display = 'block';
-
-      // Cursor moves to Stealth/Private badge at top breadcrumb
-      if (t >= 33.0 && t < 37.8) {
-        cursorVisible = true;
-        if (t < 34.2) {
-          const spP = clamp((t - 33.0) / 1.0);
-          cursorX = lerp(520, 390, smootherstep(spP));
-          cursorY = lerp(240, 42, smootherstep(spP));
-        } else if (t >= 34.2 && t < 36.0) {
-          // Move down to Public option in stealth dialog at (550, 150)
-          const pubP = clamp((t - 34.5) / 1.0);
-          cursorX = lerp(390, 550, smootherstep(pubP));
-          cursorY = lerp(42, 150, smootherstep(pubP));
+        if (t < 30.5) {
+          const cp = clamp((t - 27.5) / 2.0);
+          cursorX = lerp(1820, 680, smootherstep(cp));
+          cursorY = lerp(86, 280, smootherstep(cp));
         } else {
-          cursorX = 550;
-          cursorY = 150;
+          const cp2 = clamp((t - 30.5) / 1.5);
+          cursorX = lerp(680, 1820, smootherstep(cp2));
+          cursorY = lerp(280, 86, smootherstep(cp2));
+          isHand = true;
+        }
+
+        // Click Canvas button at 32.0s
+        if (t >= 31.95 && t <= 32.3) {
+          rippleProgress = (t - 31.95) / 0.35;
+          rippleX = 1820;
+          rippleY = 86;
         }
       }
 
-      // Click Badge at 34.0s
-      if (t >= 33.95 && t <= 34.3) {
-        rippleProgress = (t - 33.95) / 0.35;
-        rippleX = 390;
-        rippleY = 42;
+      if (sceneNameDisplay && t >= 26.5 && t < 32.5) sceneNameDisplay.textContent = 'Scene 6: 3D Code View Flip & CLI';
+    } else if (t >= 32.8) {
+      codeInspectorCard.style.opacity = '0';
+      primaryAppCard.style.opacity = '1';
+      btnCodeLabel.textContent = 'Code </>';
+      btnCodeIcon.innerHTML = '<use href="#icon-code"></use>';
+    }
+
+    // -------------------------------------------------------------
+    // SCENE 7: Breadcrumb Stealth Mode & Privacy Dialog (32.5s – 36.5s)
+    // -------------------------------------------------------------
+    if (t >= 32.5 && t < 36.8) {
+      scene4.style.opacity = '1';
+      scene4.style.display = 'block';
+
+      // Camera zooms into breadcrumb
+      if (t >= 32.6 && t < 36.4) {
+        const camP = clamp((t - 32.6) / 1.0);
+        camScale = lerp(1.0, 1.55, smootherstep(camP));
+        camX = lerp(0, 240, smootherstep(camP));
+        camY = lerp(0, 40, smootherstep(camP));
       }
 
-      // Stealth Popover Opens at 34.1s
-      if (t >= 34.1 && t < 38.0) {
-        const popP = clamp((t - 34.1) / 0.35);
+      // Cursor moves to Stealth/Private badge at top breadcrumb
+      if (t >= 32.8 && t < 36.5) {
+        cursorVisible = true;
+        if (t < 34.0) {
+          const spP = clamp((t - 32.8) / 1.0);
+          cursorX = lerp(1820, 430, smootherstep(spP));
+          cursorY = lerp(86, 44, smootherstep(spP));
+          isHand = true;
+        } else if (t >= 34.0 && t < 35.8) {
+          // Move down to Public option in stealth dialog at (675, 230)
+          const pubP = clamp((t - 34.2) / 1.0);
+          cursorX = lerp(430, 675, smootherstep(pubP));
+          cursorY = lerp(44, 230, smootherstep(pubP));
+          isHand = true;
+        } else {
+          cursorX = 675;
+          cursorY = 230;
+          isHand = true;
+        }
+      }
+
+      // Click Badge at 33.8s
+      if (t >= 33.75 && t <= 34.1) {
+        rippleProgress = (t - 33.75) / 0.35;
+        rippleX = 430;
+        rippleY = 44;
+      }
+
+      // Stealth Popover Opens at 33.9s
+      if (t >= 33.9 && t < 36.5) {
+        const popP = clamp((t - 33.9) / 0.3);
         stealthPopoverDialog.style.opacity = smootherstep(popP).toFixed(3);
         stealthPopoverDialog.style.transform = `scale(${lerp(0.94, 1.0, smootherstep(popP)).toFixed(3)}) translateY(0)`;
       } else {
@@ -459,15 +572,15 @@
         stealthPopoverDialog.style.transform = 'scale(0.94) translateY(-10px)';
       }
 
-      // Click Public Option at 36.0s
-      if (t >= 35.95 && t <= 36.3) {
-        rippleProgress = (t - 35.95) / 0.35;
-        rippleX = 550;
-        rippleY = 150;
+      // Click Public Option at 35.8s
+      if (t >= 35.75 && t <= 36.1) {
+        rippleProgress = (t - 35.75) / 0.35;
+        rippleX = 675;
+        rippleY = 230;
       }
 
-      // Selection Toggle to Public at 36.0s
-      if (t >= 36.0) {
+      // Selection Toggle to Public at 35.8s
+      if (t >= 35.8) {
         optStealthPublic.classList.add('selected');
         optStealthPrivate.classList.remove('selected');
         badgeStealthToggle.classList.add('status-public');
@@ -479,33 +592,46 @@
         badgeStealthText.textContent = 'Private';
       }
 
-      if (sceneNameDisplay && t >= 33.0 && t < 38.5) sceneNameDisplay.textContent = 'Scene 7: Stealth Mode & Privacy';
+      if (sceneNameDisplay && t >= 32.5 && t < 36.5) sceneNameDisplay.textContent = 'Scene 7: Stealth Mode & Public Toggle';
     } else {
       stealthPopoverDialog.style.opacity = '0';
     }
 
     // -------------------------------------------------------------
-    // SCENE 8: Grid Wall of Generations & "v0.dev" (38.5s – 43.0s)
+    // SCENE 8: 12-Card Expansive Generative Grid Wall & "v0.dev" (36.5s – 43.0s)
     // -------------------------------------------------------------
-    if (t >= 38.4 && t < 43.2) {
+    if (t >= 36.4 && t < 43.2) {
       scene4.style.opacity = '0';
-      const s8In = clamp((t - 38.6) / 0.45);
-      const s8Out = clamp((43.0 - t) / 0.45);
+      const s8In = clamp((t - 36.5) / 0.5);
+      const s8Out = clamp((43.0 - t) / 0.5);
       const s8Opacity = Math.min(s8In, s8Out);
       scene8.style.opacity = s8Opacity.toFixed(3);
       scene8.style.display = s8Opacity > 0 ? 'flex' : 'none';
 
-      const scale = lerp(0.92, 1.0, smootherstep(s8In));
-      v0devCenterLockup.style.transform = `scale(${scale.toFixed(3)})`;
+      // 4x3 Grid Wall zoom-out and fade
+      if (t < 40.0) {
+        gridWallContainer.style.opacity = '1';
+        v0devCenterLockup.style.opacity = '0';
+        const pullP = clamp((t - 36.5) / 2.5);
+        const scale = lerp(1.2, 0.95, smootherstep(pullP));
+        gridWallContainer.style.transform = `translate(-50%, -50%) scale(${scale.toFixed(3)})`;
+      } else {
+        // Grid fades out, v0.dev fades in
+        const fadeP = clamp((t - 40.0) / 0.6);
+        gridWallContainer.style.opacity = (1 - smootherstep(fadeP)).toFixed(3);
+        v0devCenterLockup.style.opacity = smootherstep(fadeP).toFixed(3);
+        const titleScale = lerp(0.94, 1.0, smootherstep(fadeP));
+        v0devCenterLockup.style.transform = `scale(${titleScale.toFixed(3)})`;
+      }
 
-      if (sceneNameDisplay && t >= 38.5 && t < 43.0) sceneNameDisplay.textContent = 'Scene 8: Grid Wall & v0.dev';
+      if (sceneNameDisplay && t >= 36.5 && t < 43.0) sceneNameDisplay.textContent = 'Scene 8: 12-Card Generative Wall & v0.dev';
     } else {
       scene8.style.opacity = '0';
       scene8.style.display = 'none';
     }
 
     // -------------------------------------------------------------
-    // SCENE 9: Vercel Outro (Horizontal Lockup) (43.0s – 47.5s)
+    // SCENE 9: Official Vercel Outro (Center to Horizontal Lockup) (43.0s – 47.5s)
     // -------------------------------------------------------------
     if (t >= 42.8) {
       const s9In = clamp((t - 43.0) / 0.5);
@@ -514,11 +640,22 @@
       scene9.style.opacity = s9Opacity.toFixed(3);
       scene9.style.display = s9Opacity > 0 ? 'flex' : 'none';
 
-      // Spring Settle: 0.88 -> 1.0
-      const scale = lerp(0.88, 1.0, smootherstep(s9In));
-      vercelOutroLockup.style.transform = `scale(${scale.toFixed(3)})`;
+      // 43.0s - 44.5s: Triangle centered
+      // 44.5s - 46.5s: Triangle translates left, wordmark slides & fades in
+      if (t < 44.5) {
+        vercelOutroTriangle.style.transform = 'translateX(0)';
+        vercelOutroWordmark.style.opacity = '0';
+        vercelOutroWordmark.style.transform = 'translateX(-20px)';
+      } else {
+        const transP = clamp((t - 44.5) / 1.0);
+        const triX = lerp(0, -20, smootherstep(transP));
+        vercelOutroTriangle.style.transform = `translateX(${triX.toFixed(1)}px)`;
+        vercelOutroWordmark.style.opacity = smootherstep(transP).toFixed(3);
+        const wordX = lerp(-20, 0, smootherstep(transP));
+        vercelOutroWordmark.style.transform = `translateX(${wordX.toFixed(1)}px)`;
+      }
 
-      if (sceneNameDisplay && t >= 43.0) sceneNameDisplay.textContent = 'Scene 9: Vercel Outro';
+      if (sceneNameDisplay && t >= 43.0) sceneNameDisplay.textContent = 'Scene 9: Official Vercel Outro';
     } else {
       scene9.style.opacity = '0';
       scene9.style.display = 'none';
@@ -528,12 +665,12 @@
     cameraWorld.style.transform = `scale(${camScale.toFixed(4)}) translate3d(${camX.toFixed(1)}px, ${camY.toFixed(1)}px, 0)`;
 
     // Apply Cursor & Ripple
-    setCursor(cursorX, cursorY, cursorVisible);
+    setCursor(cursorX, cursorY, cursorVisible, isHand);
     setRipple(rippleX, rippleY, rippleProgress);
 
     // Update active scene pill button
-    scenePillBtns.forEach(btn => {
-      const sceneTime = parseFloat(btn.dataset.time);
+    pillBtns.forEach(btn => {
+      const sceneTime = parseFloat(btn.dataset.seek);
       const nextTime = getNextSceneTime(sceneTime);
       if (t >= sceneTime && t < nextTime) {
         btn.classList.add('active');
@@ -544,23 +681,34 @@
   }
 
   function getNextSceneTime(st) {
-    const times = [0.0, 3.0, 5.5, 12.5, 18.0, 26.0, 33.0, 38.5, 43.0, DURATION];
+    const times = [0.0, 3.2, 6.5, 13.5, 17.0, 26.5, 32.5, 36.5, 43.0, DURATION];
     const idx = times.indexOf(st);
     return idx !== -1 && idx < times.length - 1 ? times[idx + 1] : DURATION;
   }
 
-  // --- Public Deterministic Virtual Clock Hook ---
+  // --- Public Deterministic Virtual Clock API ---
   window.__seekToTime = function (timestampSeconds) {
     currentTime = Math.max(0, Math.min(DURATION, timestampSeconds));
     renderAt(currentTime);
   };
 
+  window.__getVideoDuration = function () {
+    return DURATION;
+  };
+
+  window.__renderFrame = function (timestampSeconds) {
+    window.__seekToTime(timestampSeconds);
+  };
+
   // --- Interactive Playback Loop ---
+  const playSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+  const pauseSvg = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
+
   function tick(now) {
     if (!isPlaying) return;
     if (lastTimestamp === null) lastTimestamp = now;
 
-    const deltaSec = (now - lastTimestamp) / 1000;
+    const deltaSec = ((now - lastTimestamp) / 1000) * playbackSpeed;
     lastTimestamp = now;
 
     currentTime += deltaSec;
@@ -580,14 +728,17 @@
     if (currentTime >= DURATION) currentTime = 0;
     isPlaying = true;
     lastTimestamp = null;
-    if (btnPlayPause) btnPlayPause.textContent = 'Pause';
+    if (playIcon) playIcon.innerHTML = pauseSvg;
     animationFrameId = requestAnimationFrame(tick);
   }
 
   function pause() {
     isPlaying = false;
-    if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    if (btnPlayPause) btnPlayPause.textContent = 'Play';
+    if (animationFrameId) {
+      cancelAnimationFrame(animationFrameId);
+      animationFrameId = null;
+    }
+    if (playIcon) playIcon.innerHTML = playSvg;
   }
 
   function togglePlayPause() {
@@ -607,25 +758,45 @@
     });
   }
 
-  scenePillBtns.forEach(btn => {
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speedBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      playbackSpeed = parseFloat(btn.dataset.speed) || 1.0;
+    });
+  });
+
+  pillBtns.forEach(btn => {
     btn.addEventListener('click', () => {
       pause();
-      window.__seekToTime(parseFloat(btn.dataset.time));
+      window.__seekToTime(parseFloat(btn.dataset.seek));
     });
   });
 
   window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
     if (e.code === 'Space') {
       e.preventDefault();
       togglePlayPause();
     } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
       window.__seekToTime(currentTime + 1.0);
     } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
       window.__seekToTime(currentTime - 1.0);
     }
   });
 
-  // Initial render at t = 0
-  window.__seekToTime(0.0);
+  // URL parameter override: ?t=13.5&autoplay=true
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('t')) {
+    window.__seekToTime(parseFloat(params.get('t')));
+  } else {
+    window.__seekToTime(0.0);
+  }
+
+  if (params.get('autoplay') === 'true' || params.get('autoplay') === '1') {
+    play();
+  }
 
 })();

@@ -7,16 +7,19 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 const URL = 'http://localhost:3033/v0-generative-ui.html?clean=true';
 
 const KEYFRAMES = [
-  { time: 1.8,  name: 'proof_v0_s1_wireframe_logo.png', desc: 'Scene 1: v0 Wireframe Logo Drawing & Fill' },
-  { time: 4.2,  name: 'proof_v0_s2_what_will_you_ship.png', desc: 'Scene 2: "What will you ship?" Title Card' },
-  { time: 10.5, name: 'proof_v0_s3_prompt_reel.png', desc: 'Scene 3: Prompt Reel with Guillermo Avatar & Enter' },
-  { time: 15.5, name: 'proof_v0_s4_dashboard_canvas.png', desc: 'Scene 4: Acme Inc Dashboard Canvas Stream' },
-  { time: 20.5, name: 'proof_v0_s5_component_popover.png', desc: 'Scene 5: Component Blue Edit Popover' },
-  { time: 24.0, name: 'proof_v0_s5_blue_logo_v1.png', desc: 'Scene 5: Blue Logo Morph & v1 Version Card' },
-  { time: 29.5, name: 'proof_v0_s6_code_inspector.png', desc: 'Scene 6: Code Inspector & CLI View' },
-  { time: 36.5, name: 'proof_v0_s7_stealth_mode_public.png', desc: 'Scene 7: Stealth Mode Public Selected' },
-  { time: 40.5, name: 'proof_v0_s8_v0dev_title.png', desc: 'Scene 8: v0.dev Title Card' },
-  { time: 45.0, name: 'proof_v0_s9_vercel_outro.png', desc: 'Scene 9: Vercel Equilateral Triangle & Wordmark' }
+  { time: 2.0,  name: 'proof_v0_s1_wireframe_guidelines.png', desc: 'Scene 1: v0 Wireframe + Radiating Guidelines' },
+  { time: 4.8,  name: 'proof_v0_s2_title_pill_morph.png', desc: 'Scene 2: "What will you ship?" Pill Morph' },
+  { time: 8.5,  name: 'proof_v0_s3_3d_drum_reel.png', desc: 'Scene 3: Vertical 3D Drum Reel with Blur Reflection' },
+  { time: 16.2, name: 'proof_v0_s4_click_and_edit.png', desc: 'Scene 4: Acme Dashboard Canvas & "Click & Edit" Tooltip' },
+  { time: 18.8, name: 'proof_v0_s5_camera_zoom_inspect.png', desc: 'Scene 5: Camera Punch Zoom, Dashed Bounding Box & svg Tag' },
+  { time: 23.8, name: 'proof_v0_s5_popover_update_spinner.png', desc: 'Scene 5: Interactive Popover with Update ⟳ Spinner' },
+  { time: 25.5, name: 'proof_v0_s5_blue_logo_v1.png', desc: 'Scene 5: Blue Logo Morph & v1 Version Card in Drawer' },
+  { time: 29.5, name: 'proof_v0_s6_3d_code_inspector.png', desc: 'Scene 6: 3D Perspective Tilt Code Inspector & Canvas Button' },
+  { time: 34.8, name: 'proof_v0_s7_stealth_mode_dropdown.png', desc: 'Scene 7: Camera Zoom Breadcrumb & Stealth Mode Dialog' },
+  { time: 36.2, name: 'proof_v0_s7_stealth_public_selected.png', desc: 'Scene 7: Public Option Selected with Radio Checkmark' },
+  { time: 38.5, name: 'proof_v0_s8_12_card_grid_wall.png', desc: 'Scene 8: Expansive 4x3 Generative Wall of 12 Projects' },
+  { time: 41.5, name: 'proof_v0_s8_v0dev_title.png', desc: 'Scene 8: Centered v0.dev Title Lockup' },
+  { time: 45.5, name: 'proof_v0_s9_vercel_outro.png', desc: 'Scene 9: Official Vercel Brand Lockup' }
 ];
 
 async function main() {
@@ -45,7 +48,7 @@ async function main() {
   for (const kf of KEYFRAMES) {
     console.log(`Seeking to t = ${kf.time}s (${kf.desc})...`);
     await page.evaluate((sec) => window.__seekToTime(sec), kf.time);
-    await new Promise(r => setTimeout(r, 100)); // allow render tick
+    await new Promise(r => setTimeout(r, 120)); // allow render tick
 
     const outPath = path.join(ARTIFACTS_DIR, kf.name);
     await page.screenshot({ path: outPath, type: 'png' });

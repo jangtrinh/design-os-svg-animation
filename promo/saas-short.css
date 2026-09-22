@@ -22,23 +22,24 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 24px 16px;
-  overflow-x: hidden;
+  padding: 12px 16px;
+  overflow: hidden;
 }
 
 /* Header Navigation Bar */
 .nav-header {
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .brand-badge {
@@ -78,17 +79,19 @@ body {
 /* Phone Mockup Frame (9:16 Vertical) */
 .phone-mockup-wrapper {
   position: relative;
-  width: 100%;
-  max-width: 440px;
+  height: min(calc(100vh - 210px), 640px);
   aspect-ratio: 9 / 16;
+  width: auto;
+  max-width: 90vw;
   background: #000000;
   border: 3px solid #3f3f46;
-  border-radius: 44px;
+  border-radius: 36px;
   overflow: hidden;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 1;
 }
 
 /* Dynamic Island / Bezel Notch */
@@ -138,16 +141,17 @@ body {
 /* Controls & HUD Bar */
 .controls-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 500px;
   background: var(--panel-bg);
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 18px 20px;
-  margin-top: 16px;
+  border-radius: 16px;
+  padding: 12px 16px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  flex-shrink: 0;
 }
 
 /* Scrubber Timeline */
