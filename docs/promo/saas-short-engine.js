@@ -82,18 +82,20 @@ class SaasShortEngine {
       card3: get("s4-card-3"),
       sub1: get("s4-sub-1"),
       sub2: get("s4-sub-2"),
-      sub3: get("s4-sub-3")
+      sub3: get("s4-sub-3"),
+      exitWhite: get("s4-exit-white")
     };
 
     this.s5 = {
       stage: get("s5-camera-stage"),
+      docContent: get("s5-doc-content"),
       badge: get("s5-doc-badge"),
       intro: get("s5-intro"),
       intro2: get("s5-intro-2"),
       h1: get("s5-h1"),
       p1Lines: [
         get("s5-p1-l1"), get("s5-p1-l2"), get("s5-p1-l3"),
-        get("s5-p1-l4"), get("s5-p1-l5"), get("s5-p1-l6")
+        get("s5-p1-l4"), get("s5-p1-l5")
       ],
       h2: get("s5-h2"),
       h3: get("s5-h3"),
@@ -231,20 +233,63 @@ class SaasShortEngine {
    * Deterministic Frame Renderer (HyperFrames 120fps Quantization)
    * ------------------------------------------------------------- */
   renderAt(t) {
-    // Exact timeline intervals with continuous shared-element handoff
+    // Exact timeline intervals with continuous crossfades
     const showS1 = t < 1500;
     const showS2 = t >= 1480 && t < 3500;
-    const showS3 = t >= 3500 && t < 5500;
-    const showS4 = t >= 5500 && t < 7500;
-    const showS5 = t >= 7500 && t < 10000;
-    const showS6 = t >= 10000;
+    const showS3 = t >= 3450 && t < 5500;
+    const showS4 = t >= 5480 && t < 7550;
+    const showS5 = t >= 7280 && t < 10000;
+    const showS6 = t >= 9850;
 
     this.setAttr(this.scenes.s1, "opacity", showS1 ? "1" : "0");
     this.setAttr(this.scenes.s2, "opacity", showS2 ? "1" : "0");
-    this.setAttr(this.scenes.s3, "opacity", showS3 ? "1" : "0");
-    this.setAttr(this.scenes.s4, "opacity", showS4 ? "1" : "0");
-    this.setAttr(this.scenes.s5, "opacity", showS5 ? "1" : "0");
-    this.setAttr(this.scenes.s6, "opacity", showS6 ? "1" : "0");
+
+    // S2 pill fade-out on exit
+    if (showS2 && t >= 3350) {
+      const pExit2 = this.clamp((t - 3350) / 150);
+      this.setAttr(this.s2.pillAnchor, "opacity", (1 - pExit2).toFixed(3));
+    } else if (showS2) {
+      this.setAttr(this.s2.pillAnchor, "opacity", "1");
+    }
+
+    // S3 entrance & exit
+    if (showS3) {
+      const pEnter3 = this.clamp((t - 3450) / 120);
+      const pExit3 = t >= 5350 ? this.clamp((t - 5350) / 150) : 0;
+      this.setAttr(this.scenes.s3, "opacity", (pEnter3 * (1 - pExit3)).toFixed(3));
+    } else {
+      this.setAttr(this.scenes.s3, "opacity", "0");
+    }
+
+    // S4 entrance & exit
+    if (showS4) {
+      const pEnter4 = this.clamp((t - 5480) / 120);
+      const pExit4 = t >= 7400 ? 1 - this.clamp((t - 7400) / 80) : 1;
+      this.setAttr(this.scenes.s4, "opacity", (pEnter4 * pExit4).toFixed(3));
+    } else {
+      this.setAttr(this.scenes.s4, "opacity", "0");
+    }
+
+    // S5 entrance & exit crossfade
+    if (showS5) {
+      let opac5 = 1;
+      if (t < 7450) {
+        opac5 = this.clamp((t - 7340) / 100);
+      } else if (t >= 9800) {
+        opac5 = 1 - this.clamp((t - 9800) / 200);
+      }
+      this.setAttr(this.scenes.s5, "opacity", opac5.toFixed(3));
+    } else {
+      this.setAttr(this.scenes.s5, "opacity", "0");
+    }
+
+    // S6 entrance
+    if (showS6) {
+      const pEnter6 = this.clamp((t - 9850) / 150);
+      this.setAttr(this.scenes.s6, "opacity", pEnter6.toFixed(3));
+    } else {
+      this.setAttr(this.scenes.s6, "opacity", "0");
+    }
 
     // =========================================================
     // SCENE 1 (0ms - 1500ms): Dropdown Selection Card & Shared Morph
@@ -332,17 +377,18 @@ class SaasShortEngine {
       this.setAttr(this.s2.pillAnchor, "transform", `translate(540, 960) scale(${sShell.toFixed(4)})`);
 
       // Interior icon entries (pop/slide in after morph locks)
+      // Expanded mic (x=275) and wave badge (x=395) for generous 59px breathing room
       const pIcons = this.clamp(localT / 250);
       const sPlus = this.dampedSpring(localT, 0, 0.7, 8.5);
       this.setAttr(this.s2.iconPlus, "transform", `translate(-390, 0) scale(${Math.max(0, sPlus).toFixed(3)})`);
       this.setAttr(this.s2.iconPlus, "opacity", pIcons.toFixed(3));
 
       const sMic = this.dampedSpring(localT, 60, 0.7, 8.5);
-      this.setAttr(this.s2.iconMic, "transform", `translate(300, 0) scale(${Math.max(0, sMic).toFixed(3)})`);
+      this.setAttr(this.s2.iconMic, "transform", `translate(275, 0) scale(${Math.max(0, sMic).toFixed(3)})`);
       this.setAttr(this.s2.iconMic, "opacity", this.clamp((localT - 60) / 200).toFixed(3));
 
       const sWave = this.dampedSpring(localT, 100, 0.7, 8.5);
-      this.setAttr(this.s2.badgeWave, "transform", `translate(385, 0) scale(${Math.max(0, sWave).toFixed(3)})`);
+      this.setAttr(this.s2.badgeWave, "transform", `translate(395, 0) scale(${Math.max(0, sWave).toFixed(3)})`);
       this.setAttr(this.s2.badgeWave, "opacity", this.clamp((localT - 100) / 200).toFixed(3));
 
       // 250 - 1750ms: Typewriter text
@@ -387,7 +433,7 @@ class SaasShortEngine {
       const sDrift = 1.0 + 0.04 * pDrift;
       this.setAttr(this.s3.textAnchor, "transform", `translate(540, 960) scale(${sDrift.toFixed(4)})`);
 
-      // Category badge reveal
+      // Category badge reveal (moved up to y=-125 for generous breathing room)
       const pBadge = this.clamp(localT / 350);
       if (this.s3.badge) {
         this.setAttr(this.s3.badge, "opacity", pBadge.toFixed(3));
@@ -416,16 +462,30 @@ class SaasShortEngine {
     }
 
     // =========================================================
-    // SCENE 4 (5500ms - 7500ms): Processing Cards Stack
+    // SCENE 4 (5500ms - 7550ms): Processing Cards Stack
     // Cascading Momentum Stagger (+0ms, +80ms, +160ms)
+    // Continuous exit dissolve into Scene 5 (7150ms - 7500ms)
     // =========================================================
     if (showS4) {
       const localT = t - 5500;
 
-      // Header badge fade in
+      // Exit transition calculation (7150ms - 7450ms)
+      const pExit = this.clamp((t - 7150) / 280);
+      const easeExit = this.easeOutCubic(pExit);
+      const exitFade = 1 - pExit;
+      const exitLiftY = -40 * easeExit;
+
+      // Header badge fade in & exit (fade header out swiftly by 7280ms)
       if (this.s4.header) {
         const pHead = this.clamp(localT / 250);
-        this.setAttr(this.s4.header, "opacity", pHead.toFixed(3));
+        const pHeadExit = 1 - this.clamp((t - 7120) / 160);
+        this.setAttr(this.s4.header, "opacity", (pHead * pHeadExit).toFixed(3));
+        this.setAttr(this.s4.header, "transform", `translate(540, ${(500 + exitLiftY).toFixed(1)})`);
+      }
+
+      // Exit white crossfade overlay
+      if (this.s4.exitWhite) {
+        this.setAttr(this.s4.exitWhite, "opacity", easeExit.toFixed(3));
       }
 
       const updateCard = (cardElem, startTime, finalY) => {
@@ -434,68 +494,55 @@ class SaasShortEngine {
           this.setAttr(cardElem, "opacity", "0");
         } else {
           const s = this.dampedSpring(localT, startTime, 0.72, 8.0);
-          const curY = (finalY + 140) - (140 * s);
+          const curY = (finalY + 140) - (140 * s) + exitLiftY;
           this.setAttr(cardElem, "transform", `translate(540, ${curY.toFixed(1)})`);
-          this.setAttr(cardElem, "opacity", this.clamp((localT - startTime) / 220).toFixed(3));
+          const enterFade = this.clamp((localT - startTime) / 220);
+          this.setAttr(cardElem, "opacity", (enterFade * exitFade).toFixed(3));
         }
       };
 
-      updateCard(this.s4.card1, 0, 740);
-      updateCard(this.s4.card2, 80, 940);
-      updateCard(this.s4.card3, 160, 1140);
+      // Spaced at y = 710, 930, 1150 for generous 60px gaps
+      updateCard(this.s4.card1, 0, 710);
+      updateCard(this.s4.card2, 80, 930);
+      updateCard(this.s4.card3, 160, 1150);
 
       // Status text "Analyzing..." subtle glow pulse
-      const pulse = 0.65 + 0.35 * Math.sin(t * 0.009);
+      const pulse = (0.65 + 0.35 * Math.sin(t * 0.009)) * exitFade;
       this.setAttr(this.s4.sub1, "opacity", pulse.toFixed(3));
       this.setAttr(this.s4.sub2, "opacity", pulse.toFixed(3));
       this.setAttr(this.s4.sub3, "opacity", pulse.toFixed(3));
     }
 
     // =========================================================
-    // SCENE 5 (7500ms - 10000ms): Generative Text & Centered Camera
+    // SCENE 5 (7320ms - 10000ms): Generative Text & Centered Camera
+    // Seamless overlap handoff from S4 (no blank frames)
     // =========================================================
     if (showS5) {
-      const localT = t - 7500;
+      const s5Time = t - 7320;
 
-      const showAt = (elem, revealT) => {
-        if (!elem) return;
-        const p = this.clamp((localT - revealT) / 90);
-        this.setAttr(elem, "opacity", p.toFixed(3));
-      };
+      // Physical upward slide-in of the document canvas
+      const sDoc = this.dampedSpring(t, 7320, 0.72, 8.5);
+      const docY = 460 - 40 * sDoc;
+      if (this.s5.docContent) {
+        this.setAttr(this.s5.docContent, "transform", `translate(100, ${docY.toFixed(1)})`);
+      }
 
-      if (this.s5.badge) showAt(this.s5.badge, 0);
-      showAt(this.s5.intro, 40);
-      showAt(this.s5.intro2, 80);
-      showAt(this.s5.h1, 140);
-
-      this.s5.p1Lines.forEach((line, idx) => {
-        showAt(line, 200 + idx * 70);
-      });
-
-      showAt(this.s5.h2, 850);
-      showAt(this.s5.h3, 950);
-
-      this.s5.p2Lines.forEach((line, idx) => {
-        showAt(line, 1020 + idx * 65);
-      });
-
-      // Camera Motion (7.5s - 10.0s)
+      // Camera Motion (Log-scale zoom into focus block at s5Time >= 1180ms, which is t >= 8500ms)
       let camY = 0;
       let zoomScale = 1.0;
       let camX = 0;
+      let easePunch = 0;
 
-      if (localT < 1000) {
-        camY = -80 * (localT / 1000);
-      } else {
-        const pPunch = this.clamp((localT - 1000) / 750);
-        const easePunch = this.cubicBezier(pPunch, 0.22, 1, 0.36, 1);
+      if (s5Time >= 1180) {
+        const pPunch = this.clamp((s5Time - 1180) / 780);
+        easePunch = this.cubicBezier(pPunch, 0.22, 1, 0.36, 1);
         zoomScale = Math.exp(this.lerp(Math.log(1.0), Math.log(1.35), easePunch));
 
-        // Precise focal point tracking: centers the 520px document block perfectly
-        const targetX = 370;
-        const targetY = 920;
+        // Center the 520px focus block (x=390, y=990)
+        const targetX = 390;
+        const targetY = 990;
         camX = 540 - zoomScale * targetX;
-        camY = 960 - zoomScale * (targetY - 60 * (1 - easePunch));
+        camY = 960 - zoomScale * targetY;
       }
 
       this.setAttr(
@@ -503,22 +550,49 @@ class SaasShortEngine {
         "transform",
         `translate(${camX.toFixed(1)}, ${camY.toFixed(1)}) scale(${zoomScale.toFixed(4)})`
       );
+
+      // Top elements fade out during zoom so they never crowd or collide with the top notch
+      const topFade = Math.max(0, 1 - easePunch * 1.5);
+
+      const showAt = (elem, revealT, isTop = true) => {
+        if (!elem) return;
+        const p = this.clamp((s5Time - revealT) / 90);
+        const finalOpac = isTop ? p * topFade : p;
+        this.setAttr(elem, "opacity", finalOpac.toFixed(3));
+      };
+
+      // Header badge appears first, intro text begins at 7400ms after S4 header is gone
+      if (this.s5.badge) showAt(this.s5.badge, 0, true);
+      showAt(this.s5.intro, 80, true);
+      showAt(this.s5.intro2, 130, true);
+      showAt(this.s5.h1, 190, true);
+
+      this.s5.p1Lines.forEach((line, idx) => {
+        showAt(line, 250 + idx * 65, true);
+      });
+
+      showAt(this.s5.h2, 860, false);
+      showAt(this.s5.h3, 940, false);
+
+      this.s5.p2Lines.forEach((line, idx) => {
+        showAt(line, 1010 + idx * 60, false);
+      });
     }
 
     // =========================================================
-    // SCENE 6 (10000ms - 11500ms): Call to Action & OpenAI Spring Outro
+    // SCENE 6 (9850ms - 11500ms): Call to Action & OpenAI Spring Outro
     // =========================================================
     if (showS6) {
-      const localT = t - 10000;
+      const localT = t - 9900;
 
       // 0 - 650ms: OpenAI Rosette + Wordmark scale from center with damped spring
       if (this.s6.brandLockup) {
         const sBrand = this.dampedSpring(localT, 0, 0.65, 7.5);
-        this.setAttr(this.s6.brandLockup, "transform", `translate(0, -90) scale(${Math.max(0, sBrand).toFixed(4)})`);
+        this.setAttr(this.s6.brandLockup, "transform", `translate(0, -120) scale(${Math.max(0, sBrand).toFixed(4)})`);
         this.setAttr(this.s6.brandLockup, "opacity", this.clamp(localT / 250).toFixed(3));
       }
 
-      // 350 - 950ms: CTA Pill Button scale in
+      // 350 - 950ms: CTA Pill Button scale in (placed at y = 180 for generous 116px gap)
       const sBtn = this.dampedSpring(localT, 350, 0.65, 7.5);
       let floatY = 0;
       if (localT > 850) {
@@ -526,7 +600,7 @@ class SaasShortEngine {
       }
 
       this.setAttr(this.s6.ctaScale, "transform", `scale(${Math.max(0, sBtn).toFixed(4)})`);
-      this.setAttr(this.s6.ctaAnchor, "transform", `translate(0, ${(110 + floatY).toFixed(1)})`);
+      this.setAttr(this.s6.ctaAnchor, "transform", `translate(0, ${(180 + floatY).toFixed(1)})`);
 
       // Secondary motion: Arrow follows with subtle bounce
       if (this.s6.arrowIcon) {

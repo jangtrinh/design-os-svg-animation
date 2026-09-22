@@ -192,13 +192,13 @@
             <line id="s2-cursor" x1="215" y1="-22" x2="215" y2="22" stroke="#000000" stroke-width="3.5" />
 
             <!-- Right: Microphone Outline Icon (Phosphor microphone-bold) -->
-            <g id="s2-icon-mic" transform="translate(300, 0)">
+            <g id="s2-icon-mic" transform="translate(275, 0)">
               <circle cx="0" cy="0" r="26" fill="#F4F4F5" />
               <use href="#ph-microphone-bold" width="30" height="30" x="-15" y="-15" fill="#000000" />
             </g>
 
             <!-- Right: Waveform Pill Badge (Phosphor waveform-bold) -->
-            <g id="s2-badge-wave" transform="translate(385, 0)">
+            <g id="s2-badge-wave" transform="translate(395, 0)">
               <rect x="-35" y="-30" width="70" height="60" rx="30" fill="#000000" />
               <use id="s2-wave-icon" href="#ph-waveform-bold" width="34" height="34" x="-17" y="-17" fill="#FFFFFF" />
             </g>
@@ -214,7 +214,7 @@
           <!-- Center Kinetic Typography -->
           <g id="s3-text-anchor" transform="translate(540, 960)">
             <!-- Subtle category badge -->
-            <g id="s3-badge" transform="translate(0, -90)">
+            <g id="s3-badge" transform="translate(0, -125)">
               <rect x="-140" y="-24" width="280" height="48" rx="24" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1.5" />
               <text x="0" y="8" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="18" font-weight="700" letter-spacing="1.5" fill="#71717A" text-anchor="middle">
                 REASONING CORE
@@ -238,9 +238,11 @@
         <g id="scene-4" class="scene-group" opacity="0">
           <!-- Sky Blue Background -->
           <rect width="1080" height="1920" fill="url(#s4-sky-bg)" />
+          <!-- White crossfade overlay for seamless exit into Scene 5 -->
+          <rect id="s4-exit-white" width="1080" height="1920" fill="#FFFFFF" opacity="0" />
 
           <!-- Header badge -->
-          <g id="s4-header" transform="translate(540, 560)">
+          <g id="s4-header" transform="translate(540, 500)">
             <rect x="-150" y="-26" width="300" height="52" rx="26" fill="rgba(255, 255, 255, 0.9)" stroke="rgba(255, 255, 255, 0.95)" stroke-width="1.5" filter="url(#soft-card-shadow)" />
             <text x="0" y="9" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="20" font-weight="700" letter-spacing="1" fill="#0284C7" text-anchor="middle">
               PARALLEL CONTEXT
@@ -248,7 +250,7 @@
           </g>
 
           <!-- Card 1: sales_deck.pdf (Red) -->
-          <g id="s4-card-1" transform="translate(540, 740)">
+          <g id="s4-card-1" transform="translate(540, 710)">
             <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" stroke="rgba(0,0,0,0.06)" stroke-width="1.5" filter="url(#soft-card-shadow)" />
             <!-- Red Squircle Icon (Phosphor file-pdf-bold) -->
             <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#F43F5E" />
@@ -260,7 +262,7 @@
           </g>
 
           <!-- Card 2: annual_report.xlsx (Green) -->
-          <g id="s4-card-2" transform="translate(540, 940)">
+          <g id="s4-card-2" transform="translate(540, 930)">
             <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" stroke="rgba(0,0,0,0.06)" stroke-width="1.5" filter="url(#soft-card-shadow)" />
             <!-- Green Squircle Icon (Phosphor grid-four-bold) -->
             <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#10B981" />
@@ -272,7 +274,7 @@
           </g>
 
           <!-- Card 3: consult_notes.doc (Blue) -->
-          <g id="s4-card-3" transform="translate(540, 1140)">
+          <g id="s4-card-3" transform="translate(540, 1150)">
             <rect x="-380" y="-80" width="760" height="160" rx="36" fill="#FFFFFF" stroke="rgba(0,0,0,0.06)" stroke-width="1.5" filter="url(#soft-card-shadow)" />
             <!-- Blue Squircle Icon (Phosphor article-bold) -->
             <rect x="-335" y="-48" width="96" height="96" rx="26" fill="#0284C7" />
@@ -292,9 +294,9 @@
 
           <!-- Dynamic Camera Stage: Translates and Zooms on Target -->
           <g id="s5-camera-stage" transform="translate(0, 0) scale(1)">
-            <g id="s5-doc-content" transform="translate(100, 360)">
+            <g id="s5-doc-content" transform="translate(100, 420)">
               <!-- Doc Header Badge -->
-              <g id="s5-doc-badge" transform="translate(0, -60)">
+              <g id="s5-doc-badge" transform="translate(0, -65)">
                 <rect x="0" y="-22" width="220" height="42" rx="10" fill="#F4F4F5" stroke="#E4E4E7" stroke-width="1" />
                 <use href="#ph-article-bold" width="20" height="20" x="14" y="-10" fill="#71717A" />
                 <text x="44" y="6" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="16" font-weight="700" fill="#52525B">
@@ -306,29 +308,29 @@
               <text id="s5-intro" x="0" y="0" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#52525B">
                 Below is a concise summary of your business
               </text>
-              <text id="s5-intro-2" x="0" y="42" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#52525B">
+              <text id="s5-intro-2" x="0" y="44" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#52525B">
                 documents.
               </text>
 
               <!-- Section 1 -->
-              <text id="s5-h1" x="0" y="130" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="38" font-weight="800" fill="#000000" letter-spacing="-0.5">
+              <text id="s5-h1" x="0" y="135" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="38" font-weight="800" fill="#000000" letter-spacing="-0.5">
                 Bottom line
               </text>
 
               <!-- Paragraph 1 Streaming Lines (Safe coordinates within 580px width) -->
-              <text id="s5-p1-l1" x="0" y="180" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
+              <text id="s5-p1-l1" x="0" y="185" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
                 Overall momentum remains strong,
               </text>
-              <text id="s5-p1-l2" x="0" y="222" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
+              <text id="s5-p1-l2" x="0" y="227" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
                 with clear product-market fit and a
               </text>
-              <text id="s5-p1-l3" x="0" y="264" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
+              <text id="s5-p1-l3" x="0" y="269" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
                 steadily growing recurring ARR base.
               </text>
-              <text id="s5-p1-l4" x="0" y="306" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
+              <text id="s5-p1-l4" x="0" y="311" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
                 Core strengths include accelerating
               </text>
-              <text id="s5-p1-l5" x="0" y="348" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
+              <text id="s5-p1-l5" x="0" y="353" font-family="-apple-system, 'SF Pro Display', sans-serif" font-size="28" font-weight="400" fill="#18181B">
                 expansion and customer sentiment.
               </text>
 
@@ -366,13 +368,13 @@
           <!-- Outro Center Container -->
           <g id="s6-center-group" transform="translate(540, 960)">
             <!-- OpenAI Official Brand Mark & Wordmark (Scales from 0 to 1 with spring bounce) -->
-            <g id="s6-brand-lockup" transform="translate(0, -90) scale(0)">
+            <g id="s6-brand-lockup" transform="translate(0, -120) scale(0)">
               <use href="#icon-openai" width="130" height="130" x="-65" y="-120" fill="#000000" />
               <use href="#icon-openai-wordmark" width="360" height="100" x="-180" y="24" fill="#000000" />
             </g>
 
             <!-- Floating CTA Pill Button -->
-            <g id="s6-cta-anchor" transform="translate(0, 150)">
+            <g id="s6-cta-anchor" transform="translate(0, 180)">
               <g id="s6-cta-scale" transform="scale(0)">
                 <rect x="-260" y="-60" width="520" height="120" rx="60" fill="#000000" filter="url(#button-shadow)" />
 
