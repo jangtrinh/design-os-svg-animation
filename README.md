@@ -1,6 +1,17 @@
 # Design OS — SVG Animation Engine & Motion Video Pipeline
 
-> **AI-AGENT-FIRST RUNBOOK**: This repository is engineered for autonomous AI agents (Claude Code, Codex Native, Antigravity) to design, compile, verify, and render production-grade vector animations and high-fidelity launch promo videos.
+> **Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents.**
+> Live Site: [https://jangtrinh.github.io/design-os-svg-animation/](https://jangtrinh.github.io/design-os-svg-animation/)
+
+<p align="left">
+  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.1.0-202020?style=for-the-badge" alt="Release: v0.1.0" height="28"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-202020?style=for-the-badge" alt="License: MIT" height="28"></a>
+  <img src="https://img.shields.io/badge/three.js-0.186-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js 0.186" height="28">
+  <img src="https://img.shields.io/badge/react-19-202020?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React 19" height="28">
+  <img src="https://img.shields.io/badge/headless-chromium-202020?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Headless Chromium" height="28">
+  <img src="https://img.shields.io/badge/virtual_clock-deterministic_60fps-202020?style=for-the-badge" alt="Virtual Clock: Deterministic 60fps" height="28">
+  <img src="https://img.shields.io/badge/anti--flop-5_gates_pass-202020?style=for-the-badge" alt="Anti-Flop: 5 Gates Pass" height="28">
+</p>
 
 ---
 
