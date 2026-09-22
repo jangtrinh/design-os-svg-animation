@@ -177,3 +177,11 @@ No video or component passes without satisfying the 5 validation gates:
 | **Inspection** | `Glob` / `Grep` | `file_search` / `grep` | `find_by_name` / `grep_search` |
 | **Consultation** | Claude internal reasoning | GPT-6-Astra deep thinking | MCP `codex-chatgpt-web` |
 | **Confirmation** | `AskUserQuestion` | `request_user_input` | `ask_question` |
+
+---
+
+## 5. Practical Workflow Reference & User Guide
+
+For the full step-by-step user implementation guide, analytical spring formulas, headless Chrome failure contracts, and the 0–100 Quality Scorecard synthesized from production sessions, see:
+- [Universal Motion Video Recreation Pipeline & Workflow Guide](motion-video-recreation-workflow-guide.md)
+- [OpenAI Codex App Session Engineering Journal](../plans/journals/2026-09-22-codex-app-promo-pipeline.md)

@@ -11,3 +11,6 @@
 - *AI-only Generator*: Do not use — implies LLM directly generating raw animation strings without deterministic safety.
 - *Flash SVG*: Obsolete terminology.
 - *SMIL-only Pipeline*: Do not use — SMIL has deprecation warnings and inconsistent engine support across modern frameworks.
+
+## Durable Lessons
+- **Screen-Space Decoupling & Vector Padding (2026-09-22)**: Fixed overlays (mouse cursor, click ripples, outro spring lockups) must reside in root screen-space outside `#camera-world` to prevent transform contamination, and all stroked vector glyphs must enforce inner padding $\ge \text{strokeWidth}/2$ from viewBox edges to eliminate clipping during headless multi-worker capture.
