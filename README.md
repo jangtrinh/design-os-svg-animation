@@ -1,29 +1,54 @@
 # Design OS — SVG Animation Engine & Motion Video Pipeline
 
-> **Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents.**
+> **Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents.**  
+> **v0.2.0 — NullMotion Infused Edition**: Automated scene scoring, 50Hz audio envelopes, 20 HyperFrames beats, 1:1 dual-layer split sync, and Gate 6 concentricity.  
 > Live Site: [https://jangtrinh.github.io/design-os-svg-animation/](https://jangtrinh.github.io/design-os-svg-animation/)
 
 <p align="left">
-  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.1.0-202020?style=for-the-badge" alt="Release: v0.1.0" height="28"></a>
+  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.2.0--nullmotion-202020?style=for-the-badge" alt="Release: v0.2.0" height="28"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-202020?style=for-the-badge" alt="License: MIT" height="28"></a>
   <img src="https://img.shields.io/badge/three.js-0.186-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js 0.186" height="28">
   <img src="https://img.shields.io/badge/react-19-202020?style=for-the-badge&logo=react&logoColor=%2361DAFB" alt="React 19" height="28">
   <img src="https://img.shields.io/badge/headless-chromium-202020?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Headless Chromium" height="28">
+  <img src="https://img.shields.io/badge/webcodecs-hardware_mp4-202020?style=for-the-badge" alt="WebCodecs: Hardware MP4" height="28">
   <img src="https://img.shields.io/badge/virtual_clock-deterministic_60fps-202020?style=for-the-badge" alt="Virtual Clock: Deterministic 60fps" height="28">
-  <img src="https://img.shields.io/badge/anti--flop-5_gates_pass-202020?style=for-the-badge" alt="Anti-Flop: 5 Gates Pass" height="28">
+  <img src="https://img.shields.io/badge/anti--flop-7_gates_pass-202020?style=for-the-badge" alt="Anti-Flop: 7 Gates Pass" height="28">
 </p>
 
 ---
 
-## Visual Showcase & Promo Demos
+## Visual Showcase & Promo Demos (v2.0 Upgraded)
 
 | Metric / Demo | Example 1: Claude Design Master Promo | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App Promo | Example 4: Vercel v0 Generative UI |
 | :--- | :---: | :---: | :---: | :---: |
 | **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) | ![Vercel v0 Generative UI](docs/assets/example-4-v0-generative-ui.gif) |
 | **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [📱 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/saas-short.html) ([local](promo/saas-short.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) | [▲ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui.html) ([local](promo/v0-generative-ui.html)) |
-| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4](promo/v0-generative-ui.mp4) |
+| **1:1 Dual-Layer Sync** | [🪞 Launch 1:1 Split Sync](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html?split=true) | Built-in Motion IR sync | [🪞 Launch 1:1 Split Sync](promo/codex-app-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/v0-generative-ui.html?split=true) |
+| **Deconstruction Assets** | [Contact Sheet](promo/claude-design-promo.contact-sheet.jpg) · [Waveform](promo/claude-design-promo.wave.json) | [Cuts JSON](docs/saas-short.cuts.json) · [Waveform](promo/saas-short.wave.json) | [Contact Sheet](promo/codex-app-promo.contact-sheet.jpg) · [Waveform](promo/codex-app-promo.wave.json) | [Contact Sheet](docs/v0-generative-ui.contact-sheet.jpg) · [Waveform](promo/v0-generative-ui.wave.json) |
+| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4 (2.4 MB)](promo/v0-generative-ui.mp4) |
 | **Aspect & Duration** | 16:9 · 82.0 seconds | 9:16 Vertical · 11.5 seconds | 16:9 · 38.0 seconds | 16:9 · 47.5 seconds |
-| **Key Motion Features** | Orthographic 3D Globe with glowing arcs, live Tweaks sliders, and 16-project gallery montage outro | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
+| **Key Motion Features** | Specular Glossy Pill, 2.5D CSS mini-bars, 3D Globe with Great-Circle arcs, live Tweaks, and audio-reactive aura | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
+
+---
+
+## ⚡ What's New in v2.0 (NullMotion Architecture Infusion)
+
+Our recreation pipeline has been upgraded with the core architectural breakthroughs from [`blixvip/NullMotion`](https://github.com/blixvip/NullMotion):
+
+1. **Automated Cut & Waveform Analysis (`npm run analyze:ref`)**:
+   - Automated FFmpeg scene transition scoring (`select='gt(scene,0.18)'`) divides videos into logical scenes and renders 2-column contact sheets.
+   - Raw 16-bit PCM mono audio extraction at 4000Hz aggregates into 50Hz peak envelopes (`.wave.json`), powering procedural `--audio-energy` reactive visuals.
+2. **20 Declarative HyperFrames Beats (`src/runtime/hyperframes-engine.mjs`)**:
+   - 20 high-speed atomic primitives (`text`, `logo`, `input`, `chat`, `window`, `phone`, `cards`, `list`, `chart`, `notify`, `icons`, `hub`, `cloud`, `collage`, `logos`, `shape`, `burst`, `grid`, `split`, `face`) to stage rough drafts in minutes.
+3. **1:1 Dual-Layer Reference vs. Draft Synchronizer**:
+   - Side-by-side split screen locking reference MP4 playback with live SVG/HTML canvas timelines for sub-frame verification.
+4. **Obsidian Specular Tokens & 2.5D CSS Extrusions**:
+   - High-gloss pill buttons with top specular highlight caps (`border-radius: 999px 999px 60% 60% / 999px 999px 80% 80%`) and 105° glint sweep.
+   - 2.5D isometric pseudo-element extrusions (`skewY(-34deg)`) providing physical depth without Three.js overhead.
+5. **Gate 6: Hotspot Concentricity (`npm run audit:hotspots`)**:
+   - Automated physical alignment gate verifying that cursor tips hit exact button centroids within `Δ <= 1.0px`.
+6. **In-Browser WebCodecs MP4 Exporter**:
+   - Client-side hardware `VideoEncoder` (`avc1.640033`, 24Mbps, 60fps) + `mp4-muxer` with queue backpressure (`queue.length >= 2`).
 
 ---
 
@@ -31,14 +56,15 @@
 
 If you are an AI coding agent reading this codebase, follow these rules and directives strictly:
 
-### 1. The 7 Immutable Agent Invariants
+### 1. The 8 Immutable Agent Invariants
 1. **Mandatory Product Designer Skill (MUST-CALL)**: Before designing, creating, or modifying any animation scene, UI mockup, or video layout, agents MUST activate and consult [`skills/product-designer/SKILL.md`](skills/product-designer/SKILL.md) for EaseUI tactile depth, 1px subtle borders, authentic SVGL marks, and undistorted 3D projections.
 2. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
 3. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
-4. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
-5. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
-6. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components. Sourced brand marks must come from SVGL (`https://svgl.app/`).
-7. **Zero Design Flop & Proactive Pre-Flight**: Generated assets and videos must pass the proactive pre-flight guard (`npm run guard`) and all anti-flop verification gates (`npm run audit:anti-flop`) with exit code `0`.
+4. **Finite Authored Timelines**: Child timelines MUST NOT contain infinite repeating tweens (`repeat: -1`). Unbounded timelines break deterministic Chromium seeking and WebCodecs encoders.
+5. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
+6. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
+7. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components. Sourced brand marks must come from SVGL (`https://svgl.app/`).
+8. **Gate 6 Hotspot Concentricity (`Δ <= 1.0px`)**: Pointer tip coordinates must match button centroids precisely. All assets must pass `npm run audit:all` with exit code `0`.
 
 ---
 

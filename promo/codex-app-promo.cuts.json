@@ -1,0 +1,54 @@
+{
+  "duration": 38,
+  "cuts": [],
+  "sections": [
+    {
+      "section": 1,
+      "start": 0,
+      "end": 4.75,
+      "duration": 4.75
+    },
+    {
+      "section": 2,
+      "start": 4.75,
+      "end": 9.5,
+      "duration": 4.75
+    },
+    {
+      "section": 3,
+      "start": 9.5,
+      "end": 14.25,
+      "duration": 4.75
+    },
+    {
+      "section": 4,
+      "start": 14.25,
+      "end": 19,
+      "duration": 4.75
+    },
+    {
+      "section": 5,
+      "start": 19,
+      "end": 23.75,
+      "duration": 4.75
+    },
+    {
+      "section": 6,
+      "start": 23.75,
+      "end": 28.5,
+      "duration": 4.75
+    },
+    {
+      "section": 7,
+      "start": 28.5,
+      "end": 33.25,
+      "duration": 4.75
+    },
+    {
+      "section": 8,
+      "start": 33.25,
+      "end": 38,
+      "duration": 4.75
+    }
+  ]
+}
