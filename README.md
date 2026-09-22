@@ -17,10 +17,13 @@
 
 ## Visual Showcase & Promo Demos
 
-| Example 1: Claude Design 3D Globe (16:9) | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App 38s Promo (16:9) |
-| :---: | :---: | :---: |
-| ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) |
-| *Orthographic 3D Globe with glowing arcs & live Tweaks* | *Shared-element morph, Phosphor vectors & kinetics* | *Native macOS window morph, multi-agent stream, code diff review & spring outro* |
+| Metric / Demo | Example 1: Claude Design Master Promo | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App Promo |
+| :--- | :---: | :---: | :---: |
+| **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) |
+| **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [📱 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/saas-short.html) ([local](promo/saas-short.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) |
+| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) |
+| **Aspect & Duration** | 16:9 · 82.0 seconds | 9:16 Vertical · 11.5 seconds | 16:9 · 38.0 seconds |
+| **Key Motion Features** | Orthographic 3D Globe with glowing arcs, live Tweaks sliders, and 16-project gallery montage outro | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview |
 
 ---
 
@@ -92,8 +95,14 @@ npm install
    ```
 2. **Capture Deterministic Frames & Assemble Broadcast MP4**:
    ```bash
+   # Demo 1: Claude Design 82s Promo (16:9, 1080p 60fps)
    python3 scripts/export-promo-video.py
-   # Output: promo/claude-design-promo.mp4 (1080p 60fps, CRF 18)
+
+   # Demo 2: SaaS Short 11.5s Motion Engine (9:16 Vertical, 1080x1920 60fps)
+   python3 scripts/export-promo-video.py --url http://localhost:3033/saas-short.html --output promo/saas-short.mp4 --width 1080 --height 1920 --fps 60 --duration 11.5
+
+   # Demo 3: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
+   python3 scripts/export-promo-video.py --url http://localhost:3033/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
    ```
 3. **Run Proactive Pre-Flight & Anti-Flop Audits**:
    ```bash
@@ -138,11 +147,17 @@ design-os-svg-animation/
 │   └── motion-video-recreation/        # Multi-agent motion video recreation skill
 ├── promo/                              # Virtual-Clock Engine & Rendered Broadcast Assets
 │   ├── claude-design-promo.html        # 82s Interactive Web Player (Claude Design + 16-Project Outro Montage)
-│   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output
+│   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output (13 MB)
+│   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine (Claude Design)
+│   ├── claude-design.css               # Dynamic dark/light theme & easing tokens
+│   ├── saas-short.html                 # 11.5s 9:16 Vertical Interactive Web Player (SaaS Product Demo)
+│   ├── saas-short.mp4                  # 1080x1920 60fps Broadcast Video Output (0.5 MB)
+│   ├── saas-short-engine.js            # Virtual Clock Engine (Continuous Camera Lerp, Phosphor Icons)
+│   ├── saas-short.css                  # High-DPI mobile phone bezel & layout styles
 │   ├── codex-app-promo.html            # 38s Interactive Web Player (OpenAI Codex App)
-│   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output
-│   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine
-│   └── claude-design.css               # Dynamic dark/light theme & easing tokens
+│   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output (10 MB)
+│   ├── codex-app-engine.js             # High-tempo macOS window & multi-agent engine
+│   └── codex-app.css                   # macOS Sonoma dark theme & terminal styling
 ├── src/components/                     # Production React Three Fiber Suite
 │   ├── InteractiveGlobeWorkspace.tsx   # 3D Orthographic Globe + Great-Circle Arcs
 │   ├── ExpandingInput.tsx              # Morphing pill-to-form + Claude star spinner
