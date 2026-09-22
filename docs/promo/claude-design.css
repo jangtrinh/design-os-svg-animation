@@ -65,6 +65,15 @@ body.clean-export .video-stage {
   border-radius: 0 !important;
   box-shadow: none !important;
 }
+body.clean-export .s1-expanded-box,
+body.clean-export .s1-morph-pill,
+body.clean-export .app-window,
+body.clean-export .tweaks-popover,
+body.clean-export .tweaks-drawer,
+body.clean-export .pin-comment-box,
+body.clean-export .export-dropdown-card {
+  animation: none !important;
+}
 
 /* ======================================================== */
 /* TOP PLAYBACK CONTROLS & TIMELINE TOOLBAR                 */
@@ -217,25 +226,26 @@ body.clean-export .video-stage {
 .video-stage-wrapper {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
-  background: #000000;
-  overflow: hidden;
-}
-
-.video-stage {
-  width: 100%;
-  max-width: 1440px;
-  aspect-ratio: 16 / 9;
-  position: relative;
-  background: var(--bg-stage);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 25px 70px rgba(0,0,0,0.85);
+  margin-top: 56px;
+  width: 100vw;
+  height: calc(100vh - 56px);
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #000000;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.video-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background: var(--bg-stage);
+  transform-origin: center center;
+  overflow: hidden;
+  box-shadow: 0 0 120px rgba(0, 0, 0, 0.9);
+  flex: none;
 }
 
 .scene {
@@ -266,14 +276,20 @@ body.clean-export .video-stage {
   height: 24px;
   z-index: 1000;
   pointer-events: none;
-  transform: translate3d(640px, 360px, 0);
-  transition: transform 0.08s linear;
+  transform: translate3d(960px, 540px, 0);
+  will-change: transform;
+}
+
+.virtual-cursor.pressed .cursor-arrow {
+  transform: scale(0.88);
+  transition: transform 0.05s ease;
 }
 
 .cursor-arrow {
   width: 24px;
   height: 24px;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
+  transform-origin: 0 0;
 }
 
 .cursor-crosshair {
@@ -281,6 +297,33 @@ body.clean-export .video-stage {
   font-weight: 300;
   color: #18181b;
   transform: translate(-50%, -50%);
+}
+
+.click-ripple {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--coral-claude);
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.click-ripple.active {
+  animation: clickRipplePulse 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes clickRipplePulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.4);
+    opacity: 0;
+  }
 }
 
 /* ======================================================== */
@@ -2341,14 +2384,17 @@ body.clean-export .video-stage {
 .finale-lockup {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 28px;
+  transform-origin: center center;
+  will-change: transform, opacity;
 }
 
 .finale-star-svg {
-  width: 44px;
-  height: 44px;
+  width: 96px;
+  height: 96px;
   color: var(--coral-claude);
-  animation: finaleStarSpin 3.5s linear infinite;
+  animation: finaleStarSpin 6s linear infinite;
+  filter: drop-shadow(0 12px 28px rgba(217, 119, 87, 0.28));
 }
 
 @keyframes finaleStarSpin {
@@ -2357,7 +2403,7 @@ body.clean-export .video-stage {
 
 .finale-wordmark {
   font-family: var(--font-serif);
-  font-size: 58px;
+  font-size: 96px;
   font-weight: 700;
   color: #18181B;
   letter-spacing: -0.02em;

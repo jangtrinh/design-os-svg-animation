@@ -102,22 +102,245 @@
   function easeInOutCubic(x) {
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   }
-  function interpolateCursor(startX, startY, endX, endY, progress, curvature = 0) {
+  function smoothstepQuintic(x) {
+    const p = Math.max(0, Math.min(1, x));
+    return p * p * p * (p * (p * 6 - 15) + 10);
+  }
+  function bezierArc(start, end, progress, curvature = 0) {
     const p = Math.max(0, Math.min(1, progress));
-    const easeP = easeOutCubic(p);
-    let x = startX + (endX - startX) * easeP;
-    let y = startY + (endY - startY) * easeP;
+    let x = start.x + (end.x - start.x) * p;
+    let y = start.y + (end.y - start.y) * p;
     if (curvature !== 0) {
-      const dx = endX - startX;
-      const dy = endY - startY;
+      const dx = end.x - start.x;
+      const dy = end.y - start.y;
       const dist = Math.sqrt(dx * dx + dy * dy) || 1;
       const nx = -dy / dist;
       const ny = dx / dist;
-      const curveAmount = Math.sin(p * Math.PI) * curvature;
-      x += nx * curveAmount;
-      y += ny * curveAmount;
+      const arc = Math.sin(p * Math.PI) * curvature;
+      x += nx * arc;
+      y += ny * arc;
     }
     return { x, y };
+  }
+  function dampedSpring(t, t0, zeta = 0.65, omega = 7.5) {
+    if (t < t0) return 0;
+    const dt = t - t0;
+    const alpha = zeta * omega;
+    const beta = omega * Math.sqrt(1 - zeta * zeta);
+    return 1 - Math.exp(-alpha * dt) * (Math.cos(beta * dt) + (alpha / beta) * Math.sin(beta * dt));
+  }
+
+  // --- DYNAMIC SPATIAL ANCHORING HELPER ---
+  function getAnchor(el, fallbackX = 960, fallbackY = 540) {
+    if (!el) return { x: fallbackX, y: fallbackY };
+    const stage = document.getElementById('video-stage');
+    if (!stage) return { x: fallbackX, y: fallbackY };
+    const r = el.getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0 || s.width === 0 || s.height === 0) {
+      return { x: fallbackX, y: fallbackY };
+    }
+    const scale = s.width / 1920;
+    return {
+      x: (r.left - s.left) / scale + (r.width / (2 * scale)),
+      y: (r.top - s.top) / scale + (r.height / (2 * scale))
+    };
+  }
+
+  // --- TACTILE CLICK RIPPLE HELPER ---
+  let lastRippleTime = -1;
+  function triggerClickRipple(x, y, t) {
+    const ripple = document.getElementById('click-ripple');
+    if (!ripple) return;
+    if (Math.abs(t - lastRippleTime) < 0.15) return;
+    lastRippleTime = t;
+    ripple.style.left = `${x.toFixed(1)}px`;
+    ripple.style.top = `${y.toFixed(1)}px`;
+    ripple.classList.remove('active');
+    void ripple.offsetWidth;
+    ripple.classList.add('active');
+  }
+
+  // --- RESPONSIVE 1920x1080 STAGE FITTER ---
+  function fitStageToWindow() {
+    const stage = document.getElementById('video-stage');
+    if (!stage) return;
+    if (document.body.classList.contains('clean-export')) {
+      stage.style.transform = 'none';
+      return;
+    }
+    const wrapper = document.querySelector('.video-stage-wrapper');
+    if (!wrapper) return;
+    const availW = wrapper.clientWidth - 40;
+    const availH = wrapper.clientHeight - 40;
+    const scale = Math.min(availW / 1920, availH / 1080);
+    stage.style.transform = `scale(${scale})`;
+  }
+  window.addEventListener('resize', fitStageToWindow);
+  setTimeout(fitStageToWindow, 50);
+
+  // --- UNIFIED HIGH-PRECISION MOUSE SOLVER ---
+  function solveCursor(t) {
+    let pos = { x: 1150, y: 720 };
+    let isPressed = false;
+    let isCrosshair = false;
+    let opacity = 1;
+
+    // --- Scene 1 (00:00 – 00:12) ---
+    if (t < 0.25) {
+      pos = { x: 1150, y: 720 };
+    } else if (t >= 0.25 && t < 1.35) {
+      const q = (t - 0.25) / 1.10;
+      const target = getAnchor(s1Pill, 960, 540);
+      pos = bezierArc({ x: 1150, y: 720 }, target, smoothstepQuintic(q), 32);
+    } else if (t >= 1.35 && t < 1.50) {
+      pos = getAnchor(s1Pill, 960, 540);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 1.35);
+    } else if (t >= 1.50 && t < 5.80) {
+      pos = { x: 960, y: 540 };
+      opacity = 0.85;
+    } else if (t >= 5.80 && t < 6.40) {
+      const q = (t - 5.80) / 0.60;
+      const target = getAnchor(s1SendBtn, 1205, 628);
+      pos = bezierArc({ x: 960, y: 540 }, target, smoothstepQuintic(q), -18);
+    } else if (t >= 6.40 && t < 6.60) {
+      pos = getAnchor(s1SendBtn, 1205, 628);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 6.40);
+    } else if (t >= 6.60 && t < 8.00) {
+      const q = (t - 6.60) / 1.40;
+      pos = bezierArc(getAnchor(s1SendBtn, 1205, 628), { x: 1120, y: 540 }, smoothstepQuintic(q), 10);
+      opacity = 0.6;
+    } else if (t >= 8.00 && t < 12.00) {
+      pos = { x: 1120, y: 540 };
+      opacity = 0.5;
+    }
+
+    // --- Scene 2 (00:12 – 00:27) ---
+    else if (t >= 12.00 && t < 14.50) {
+      const q = Math.min(1, (t - 12.00) / 2.0);
+      pos = bezierArc({ x: 1120, y: 540 }, { x: 960, y: 460 }, smoothstepQuintic(q), -25);
+      opacity = 0.9;
+    } else if (t >= 14.50 && t < 15.20) {
+      const q = (t - 14.50) / 0.70;
+      const target = getAnchor(s2TweaksBtn, 1520, 138);
+      pos = bezierArc({ x: 960, y: 460 }, target, smoothstepQuintic(q), -24);
+    } else if (t >= 15.20 && t < 15.50) {
+      pos = getAnchor(s2TweaksBtn, 1520, 138);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 15.20);
+    } else if (t >= 15.50 && t < 17.50) {
+      pos = { x: 1520, y: 220 };
+    } else if (t >= 17.50 && t < 19.00) {
+      const q = (t - 17.50) / 1.50;
+      const target = getAnchor(document.getElementById('slider-tweak-size'), 1620, 310);
+      pos = bezierArc({ x: 1520, y: 220 }, target, smoothstepQuintic(q), 16);
+    } else if (t >= 19.00 && t < 23.00) {
+      const q = (t - 19.00) / 4.0;
+      pos = { x: 1620 + q * 130, y: 310 };
+      isPressed = true;
+    } else if (t >= 23.00 && t < 27.00) {
+      pos = { x: 1750, y: 310 };
+      opacity = 0.8;
+    }
+
+    // --- Scene 3 (00:27 – 00:44) ---
+    else if (t >= 27.00 && t < 30.00) {
+      opacity = 0;
+    } else if (t >= 30.00 && t < 33.50) {
+      opacity = 1;
+      const q = (t - 30.00) / 3.50;
+      const target = getAnchor(s3SwatchMoss, 1080, 340);
+      pos = bezierArc({ x: 1750, y: 310 }, target, smoothstepQuintic(q), 30);
+    } else if (t >= 33.50 && t < 34.20) {
+      pos = getAnchor(s3SwatchMoss, 1080, 340);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 33.80);
+    } else if (t >= 34.20 && t < 37.00) {
+      const q = (t - 34.20) / 2.80;
+      pos = bezierArc(getAnchor(s3SwatchMoss, 1080, 340), { x: 960, y: 480 }, smoothstepQuintic(q), -20);
+      isCrosshair = true;
+    } else if (t >= 37.00 && t < 40.50) {
+      pos = { x: 960, y: 480 };
+      isCrosshair = true;
+      if (t >= 37.40 && t < 37.70) {
+        isPressed = true;
+        triggerClickRipple(960, 480, 37.50);
+      }
+    } else if (t >= 40.50 && t < 42.00) {
+      const q = (t - 40.50) / 1.50;
+      const target = getAnchor(s3IosSwitch, 1180, 560);
+      pos = bezierArc({ x: 960, y: 480 }, target, smoothstepQuintic(q), 22);
+    } else if (t >= 42.00 && t < 42.80) {
+      pos = getAnchor(s3IosSwitch, 1180, 560);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 42.50);
+    } else if (t >= 42.80 && t < 44.00) {
+      pos = { x: 1180, y: 560 };
+    }
+
+    // --- Scene 4 (00:44 – 01:03) ---
+    else if (t >= 44.00 && t < 46.50) {
+      const q = (t - 44.00) / 2.50;
+      pos = bezierArc({ x: 1180, y: 560 }, { x: 680, y: 320 }, smoothstepQuintic(q), -35);
+    } else if (t >= 46.50 && t < 47.50) {
+      pos = getAnchor(s4PhotoTag, 680, 320);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 47.00);
+    } else if (t >= 47.50 && t < 50.50) {
+      const q = (t - 47.50) / 3.00;
+      const target = getAnchor(s4KnobsBtn, 1320, 138);
+      pos = bezierArc({ x: 680, y: 320 }, target, smoothstepQuintic(q), -30);
+    } else if (t >= 50.50 && t < 53.50) {
+      pos = getAnchor(s4KnobsBtn, 1320, 138);
+      isPressed = true;
+    } else if (t >= 53.50 && t < 56.50) {
+      const q = (t - 53.50) / 3.00;
+      pos = bezierArc({ x: 1320, y: 138 }, { x: 980, y: 420 }, smoothstepQuintic(q), 28);
+    } else if (t >= 56.50 && t < 57.50) {
+      pos = { x: 980, y: 420 };
+      isPressed = true;
+      triggerClickRipple(980, 420, 56.80);
+    } else if (t >= 57.50 && t < 63.00) {
+      pos = { x: 1120, y: 420 };
+      opacity = 0.8;
+    }
+
+    // --- Scene 5 (01:03 – 01:22) ---
+    else if (t >= 63.00 && t < 64.50) {
+      const q = (t - 63.00) / 1.50;
+      const target = getAnchor(document.getElementById('s5-export-trigger'), 1620, 138);
+      pos = bezierArc({ x: 1120, y: 420 }, target, smoothstepQuintic(q), -25);
+    } else if (t >= 64.50 && t < 65.50) {
+      pos = getAnchor(document.getElementById('s5-export-trigger'), 1620, 138);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 64.80);
+    } else if (t >= 65.50 && t < 67.00) {
+      const q = (t - 65.50) / 1.50;
+      const target = getAnchor(document.getElementById('s5-menu-handoff'), 1620, 360);
+      pos = bezierArc(getAnchor(document.getElementById('s5-export-trigger'), 1620, 138), target, smoothstepQuintic(q), 10);
+    } else if (t >= 67.00 && t < 67.80) {
+      pos = getAnchor(document.getElementById('s5-menu-handoff'), 1620, 360);
+      isPressed = true;
+      triggerClickRipple(pos.x, pos.y, 67.20);
+    } else if (t >= 67.80 && t < 69.50) {
+      const q = (t - 67.80) / 1.70;
+      const target = getAnchor(s5BtnCopy, 1140, 620);
+      pos = bezierArc(getAnchor(document.getElementById('s5-menu-handoff'), 1620, 360), target, smoothstepQuintic(q), 25);
+    } else if (t >= 69.50 && t < 71.00) {
+      pos = getAnchor(s5BtnCopy, 1140, 620);
+      if (t >= 69.80 && t < 70.40) {
+        isPressed = true;
+        triggerClickRipple(pos.x, pos.y, 70.00);
+      }
+    } else if (t >= 71.00 && t < 73.00) {
+      pos = { x: 1140, y: 620 };
+    } else {
+      opacity = 0;
+    }
+
+    return { pos, isPressed, isCrosshair, opacity };
   }
 
   // --- 3D CONTINENT POLYGONS (Simplified Global Landmasses) ---
@@ -514,11 +737,7 @@
     if (t < 12.0) {
       setActiveScene('s1', 'Scene 1: Initial Prompt');
 
-      // Cursor position with natural kinematic curvature & spring easing
       if (t < 1.5) {
-        const p = Math.min(1, t / 1.5);
-        const cur = interpolateCursor(760, 500, 640, 360, p, 24);
-        virtualCursor.style.transform = `translate3d(${cur.x.toFixed(1)}px, ${cur.y.toFixed(1)}px, 0)`;
         if (t >= 1.35) {
           s1Pill.style.transform = 'scale(0.96)';
         } else {
@@ -555,14 +774,10 @@
           s1Attachments.classList.add('hidden');
         }
 
-        // Move cursor to Send button with natural arc trajectory
         if (t >= 5.8) {
-          const sendP = Math.min(1, (t - 5.8) / 0.8);
-          const cur = interpolateCursor(640, 360, 880, 400, sendP, -16);
-          virtualCursor.style.transform = `translate3d(${cur.x.toFixed(1)}px, ${cur.y.toFixed(1)}px, 0)`;
-          s1SendBtn.style.transform = t > 6.4 ? 'scale(0.92)' : 'scale(1)';
+          s1SendBtn.style.transform = (t >= 6.4 && t < 6.6) ? 'scale(0.92)' : 'scale(1)';
         } else {
-          virtualCursor.style.transform = `translate3d(640px, 360px, 0)`;
+          s1SendBtn.style.transform = 'scale(1)';
         }
       } else {
         // Morphing into centered pill: [Designing...] -> [Editing...]
@@ -611,10 +826,6 @@
         const queryP = Math.min(1, (t - 14.8) / 2.0);
         const chars = Math.floor(queryP * POPOVER_QUERY.length);
         s2PopoverText.textContent = POPOVER_QUERY.slice(0, chars);
-
-        // Move cursor to Tweaks button and popover Send
-        const curP = Math.min(1, (t - 14.5) / 1.0);
-        virtualCursor.style.transform = `translate3d(${1020 + curP * 40}px, ${95 + curP * 40}px, 0)`;
       } else if (t >= 17.5) {
         s2TweaksPopover.classList.add('hidden');
         s2TweaksDrawer.classList.remove('hidden');
@@ -635,12 +846,9 @@
           document.getElementById('tweak-val-rot').textContent = '11°/s';
           document.getElementById('slider-tweak-rot').value = 11;
         }
-
-        virtualCursor.style.transform = `translate3d(1220px, 280px, 0)`;
       } else {
         s2TweaksPopover.classList.add('hidden');
         s2TweaksDrawer.classList.add('hidden');
-        virtualCursor.style.transform = `translate3d(850px, 200px, 0)`;
       }
 
       const gWidth = globeCanvas.clientWidth || 1310;
@@ -703,13 +911,8 @@
         // 37.5s: Comment Pin drops on phone
         if (t >= 37.5 && t < 41.0) {
           s3PinBox.classList.remove('hidden');
-          virtualCursor.querySelector('.cursor-arrow').classList.add('hidden');
-          virtualCursor.querySelector('.cursor-crosshair').classList.remove('hidden');
-          virtualCursor.style.transform = `translate3d(680px, 290px, 0)`;
         } else {
           s3PinBox.classList.add('hidden');
-          virtualCursor.querySelector('.cursor-arrow').classList.remove('hidden');
-          virtualCursor.querySelector('.cursor-crosshair').classList.add('hidden');
         }
 
         // 41.0s: Dynamic Dark Mode Toggle inserted
@@ -744,7 +947,6 @@
         // 47.0s: Swap photo comment
         if (t >= 47.0 && t < 49.5) {
           s4SwapComment.classList.remove('hidden');
-          virtualCursor.style.transform = `translate3d(580px, 240px, 0)`;
         } else {
           s4SwapComment.classList.add('hidden');
         }
@@ -768,7 +970,6 @@
           s4RetreatTitle.style.fontSize = `${fontSize}px`;
           if (s4KnobPointer) s4KnobPointer.style.transform = `rotate(${-easeP * 60}deg)`;
           if (s4KnobReadout) s4KnobReadout.textContent = `${fontSize}px`;
-          virtualCursor.style.transform = `translate3d(1060px, 95px, 0)`;
         } else {
           s4KnobsBtn.classList.remove('highlight');
           if (s4KnobTickPopover) s4KnobTickPopover.classList.add('hidden');
@@ -784,7 +985,6 @@
         // 56.5s: Comment "Make this a line graph instead?"
         if (t >= 56.5 && t < 58.5) {
           s4ChartCommentBox.classList.remove('hidden');
-          virtualCursor.style.transform = `translate3d(850px, 260px, 0)`;
         } else {
           s4ChartCommentBox.classList.add('hidden');
         }
@@ -846,7 +1046,6 @@
       // 01:03 - 01:07: Export dropdown opens
       if (t >= 64.0 && t < 73.0) {
         s5ExportMenu.classList.add('active');
-        virtualCursor.style.transform = `translate3d(1220px, 80px, 0)`;
       } else {
         s5ExportMenu.classList.remove('active');
       }
@@ -882,15 +1081,52 @@
 
       // 01:16 - 01:22: Finale Outro Screen
       const s5Window = document.getElementById('s5-export-window');
+      const finaleLockup = document.querySelector('.finale-lockup');
       if (t >= 76.5) {
         if (s5Window) s5Window.classList.add('hidden');
         if (s5MontageGrid) s5MontageGrid.classList.add('hidden');
         s5FinaleOutro.classList.remove('hidden');
-        virtualCursor.style.display = 'none';
+
+        // Damped harmonic spring outro bounce: scales from 0 to 1 with overshoot & settling
+        const outroScale = dampedSpring(t, 76.5, 0.65, 7.5);
+        if (finaleLockup) {
+          finaleLockup.style.transform = `scale(${Math.max(0, outroScale).toFixed(4)})`;
+          finaleLockup.style.opacity = `${Math.min(1, (t - 76.5) / 0.35).toFixed(3)}`;
+        }
       } else {
         if (s5Window) s5Window.classList.remove('hidden');
         s5FinaleOutro.classList.add('hidden');
-        virtualCursor.style.display = 'block';
+        if (finaleLockup) {
+          finaleLockup.style.transform = 'scale(0)';
+          finaleLockup.style.opacity = '0';
+        }
+      }
+    }
+
+    // ==========================================================
+    // GLOBAL KINEMATIC CURSOR & CLICK SOLVER
+    // ==========================================================
+    const cursorState = solveCursor(t);
+    if (cursorState.opacity <= 0 || t >= 76.5) {
+      virtualCursor.style.opacity = '0';
+      virtualCursor.style.display = 'none';
+    } else {
+      virtualCursor.style.display = 'block';
+      virtualCursor.style.opacity = `${cursorState.opacity}`;
+      virtualCursor.style.transform = `translate3d(${cursorState.pos.x.toFixed(1)}px, ${cursorState.pos.y.toFixed(1)}px, 0)`;
+      if (cursorState.isPressed) {
+        virtualCursor.classList.add('pressed');
+      } else {
+        virtualCursor.classList.remove('pressed');
+      }
+      const arrowEl = virtualCursor.querySelector('.cursor-arrow');
+      const crosshairEl = virtualCursor.querySelector('.cursor-crosshair');
+      if (cursorState.isCrosshair) {
+        if (arrowEl) arrowEl.classList.add('hidden');
+        if (crosshairEl) crosshairEl.classList.remove('hidden');
+      } else {
+        if (arrowEl) arrowEl.classList.remove('hidden');
+        if (crosshairEl) crosshairEl.classList.add('hidden');
       }
     }
   }
