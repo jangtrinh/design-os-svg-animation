@@ -45,13 +45,18 @@ body {
 }
 
 /* --- CLEAN EXPORT FULL-BLEED MODE (For Headless Video Rendering) --- */
+html.clean-export,
 body.clean-export {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
   background: #000000 !important;
 }
 body.clean-export .video-toolbar {
   display: none !important;
 }
 body.clean-export .video-stage-wrapper {
+  margin-top: 0 !important;
   padding: 0 !important;
   background: #000000 !important;
   width: 1920px !important;

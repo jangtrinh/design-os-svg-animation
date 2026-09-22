@@ -94,6 +94,10 @@ layout: null
             </button>
             <button class="carousel-tab" role="tab" aria-selected="false" data-slide="1">
               <span class="carousel-tab-dot" aria-hidden="true"></span>
+              SaaS Short (11.5s)
+            </button>
+            <button class="carousel-tab" role="tab" aria-selected="false" data-slide="2">
+              <span class="carousel-tab-dot" aria-hidden="true"></span>
               OpenAI Codex App (38s)
             </button>
           </div>
@@ -119,8 +123,19 @@ layout: null
             </figcaption>
           </div>
 
-          <!-- Slide 1: OpenAI Codex App -->
+          <!-- Slide 1: SaaS Short -->
           <div class="carousel-slide" data-index="1">
+            <div class="ds-card-stage capture-stage" style="display:flex; justify-content:center;">
+              <img src="assets/example-2-saas-motion-engine.gif" width="220" height="391" alt="SaaS 9:16 Vector Motion Short with shared element morph and Phosphor icons" loading="lazy">
+            </div>
+            <figcaption class="case-plate-caption">
+              <p>11.5-second vertical SaaS product demo short featuring shared-element card-to-pill morphing, smooth typewriter caret glide, cascading processing cards with Phosphor vectors, and centered OpenAI spring outro. <a href="promo/saas-short.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+              <cite>fixtures/saas-short.motion.json · 120fps virtual clock</cite>
+            </figcaption>
+          </div>
+
+          <!-- Slide 2: OpenAI Codex App -->
+          <div class="carousel-slide" data-index="2">
             <div class="ds-card-stage capture-stage">
               <img src="assets/example-3-codex-app-promo.gif" width="640" height="360" alt="OpenAI Codex App 38s Master Promo with multi-agent orchestration, interactive code diff review, and live photobooth preview" loading="lazy">
             </div>
@@ -193,6 +208,7 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
         <div class="register-row" data-icon="none"><h3><code>scripts/jev-svg-auditor.py</code></h3><p>Audits SVG paths and vector trees for animatability, coordinate safety, and sub-pixel precision.</p></div>
         <div class="register-row" data-icon="none"><h3><code>schemas/motion-ir.schema.json</code></h3><p>Canonical JSON schema governing keyframe tracks, easing curves, and element bindings.</p></div>
         <div class="register-row" data-icon="none"><h3><code>promo/claude-design-promo.html</code></h3><p>Standalone 82-second interactive promo featuring 3D globe, Great-Circle arcs, inline editing, and 16-project vector gallery montage outro.</p></div>
+        <div class="register-row" data-icon="none"><h3><code>promo/saas-short.html</code></h3><p>Standalone 11.5-second vertical 9:16 interactive demo with shared-element card-to-pill morphing, Phosphor vectors, and centered OpenAI spring outro.</p></div>
         <div class="register-row" data-icon="none"><h3><code>promo/codex-app-promo.html</code></h3><p>Standalone 38-second high-tempo promo featuring macOS dark window morph, multi-agent streaming execution, interactive code diff resolution, live photobooth preview, and organic outro spring bounce.</p></div>
       </div>
     </section>

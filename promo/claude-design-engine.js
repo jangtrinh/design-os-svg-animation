@@ -9,6 +9,7 @@
   const TOTAL_DURATION = 82.0;
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('clean') === 'true' || urlParams.get('render') === 'true') {
+    document.documentElement.classList.add('clean-export');
     document.body.classList.add('clean-export');
   }
   let currentTime = parseFloat(urlParams.get('t') || '0');

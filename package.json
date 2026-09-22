@@ -11,7 +11,8 @@
     "guard:fix": "python3 scripts/motion-preflight-guard.py --fix",
     "audit:anti-flop": "python3 scripts/anti-flop-gate.py",
     "audit:knowledge": "python3 scripts/jev-svg-curator.py audit-catalog",
-    "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples"
+    "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples",
+    "export:video:60fps": "node scripts/export-60fps-video.mjs"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
@@ -31,6 +32,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@types/three": "^0.186.0",
+    "puppeteer-core": "^25.11.0",
     "svgo": "4.0.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.4"
