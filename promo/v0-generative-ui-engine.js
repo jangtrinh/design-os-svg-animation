@@ -15,9 +15,9 @@
   const videoStage = document.getElementById('video-stage');
   const cameraWorld = document.getElementById('camera-world');
   const virtualCursor = document.getElementById('virtual-cursor');
-  const cursorSvgArrow = document.getElementById('cursor-svg-arrow');
-  const cursorSvgHand = document.getElementById('cursor-svg-hand');
   const clickRipple = document.getElementById('click-ripple');
+  const btnFloatingEdit = document.getElementById('btn-floating-edit');
+  const radioStealthPublic = document.getElementById('radio-stealth-public');
   const videoScrubber = document.getElementById('video-scrubber');
   const timecodeDisplay = document.getElementById('timecode');
   const sceneNameDisplay = document.getElementById('scene-name');
@@ -76,6 +76,19 @@
   const vercelOutroTriangle = document.getElementById('vercel-outro-triangle');
   const vercelOutroWordmark = document.getElementById('vercel-outro-wordmark');
 
+  // --- Tactile Click Events Catalog (Exact Unscaled World Contact Centers) ---
+  const CLICK_EVENTS = [
+    { id: 'enter',    targetId: 'btn-prompt-enter',     t: 12.80, x: 1313, y: 540,  el: btnPromptEnter, color: '#0070F3', label: 'Submit Prompt' },
+    { id: 'sparkle',  targetId: 'btn-floating-edit',    t: 16.70, x: 1239, y: 1028, el: btnFloatingEdit, color: '#0070F3', label: 'Click & Edit Sparkle' },
+    { id: 'inspect',  targetId: 'acme-brand-wrap',      t: 19.40, x: 159,  y: 177,   el: acmeBrandWrap, color: '#0070F3', label: 'Inspect Acme Brand' },
+    { id: 'update',   targetId: 'btn-popover-update',   t: 23.50, x: 667,  y: 269,   el: btnPopoverUpdate, color: '#0070F3', label: 'Update Component' },
+    { id: 'code',     targetId: 'btn-toggle-code',      t: 26.50, x: 1816, y: 102,   el: btnToggleCode, color: '#0070F3', label: 'Toggle Code View' },
+    { id: 'canvas',   targetId: 'btn-toggle-code',      t: 32.00, x: 1816, y: 102,   el: btnToggleCode, color: '#0070F3', label: 'Return to Canvas' },
+    { id: 'stealth',  targetId: 'badge-stealth-toggle', t: 33.80, x: 465,  y: 44,    el: badgeStealthToggle, color: '#D97706', label: 'Open Stealth Dialog' },
+    { id: 'public',   targetId: 'radio-stealth-public', t: 35.80, x: 694,  y: 179,   el: radioStealthPublic, color: '#059669', label: 'Select Public Mode' }
+  ];
+  window.__CLICK_EVENTS = CLICK_EVENTS;
+
   // --- State ---
   let currentTime = 0;
   let isPlaying = false;
@@ -123,35 +136,55 @@
     return a + (b - a) * t;
   }
 
-  // --- Trigger Visual Click Ripple ---
-  function setRipple(x, y, progress) {
-    if (progress <= 0 || progress >= 1) {
-      clickRipple.style.opacity = '0';
-      clickRipple.style.transform = 'translate3d(-100px, -100px, 0) scale(0)';
-      return;
-    }
-    const scale = lerp(0.2, 2.2, smootherstep(progress));
-    const opacity = lerp(0.85, 0, progress);
-    clickRipple.style.opacity = opacity.toFixed(3);
-    clickRipple.style.transform = `translate3d(${x - 22}px, ${y - 22}px, 0) scale(${scale.toFixed(3)})`;
-  }
-
-  // --- Set Cursor Position & Style ---
-  function setCursor(x, y, visible = true, isHand = false) {
+  // --- Set Cursor Position & Pressed State (Tip strictly at 0,0) ---
+  function setCursor(x, y, visible = true, isPressed = false) {
     if (!visible) {
       virtualCursor.style.opacity = '0';
       return;
     }
     virtualCursor.style.opacity = '1';
-    virtualCursor.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-
-    if (isHand) {
-      cursorSvgArrow.style.display = 'none';
-      cursorSvgHand.style.display = 'block';
+    virtualCursor.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+    if (isPressed) {
+      virtualCursor.classList.add('pressed');
     } else {
-      cursorSvgArrow.style.display = 'block';
-      cursorSvgHand.style.display = 'none';
+      virtualCursor.classList.remove('pressed');
     }
+  }
+
+  // --- Render Tactile Click Ripples (Concentric Hotspot Alignment) ---
+  function renderClickRipples(t) {
+    let activeEvent = null;
+    let isPressed = false;
+
+    CLICK_EVENTS.forEach(evt => {
+      if (evt.el) evt.el.classList.remove('pressed');
+    });
+
+    for (let evt of CLICK_EVENTS) {
+      if (t >= evt.t - 0.08 && t < evt.t + 0.16) {
+        isPressed = true;
+        if (evt.el) evt.el.classList.add('pressed');
+      }
+      if (t >= evt.t && t < evt.t + 0.45 && !activeEvent) {
+        activeEvent = evt;
+      }
+    }
+
+    if (activeEvent && clickRipple) {
+      const q = (t - activeEvent.t) / 0.45;
+      const progress = smootherstep(clamp(q));
+      const scale = 1.0 + 4.5 * progress;
+      const opacity = Math.max(0, 0.9 * (1.0 - progress));
+      clickRipple.style.display = 'block';
+      clickRipple.style.transform = `translate3d(${activeEvent.x}px, ${activeEvent.y}px, 0) translate(-50%, -50%) scale(${scale.toFixed(2)})`;
+      clickRipple.style.opacity = opacity.toFixed(3);
+      clickRipple.style.borderColor = activeEvent.color;
+      clickRipple.style.boxShadow = `0 0 16px ${activeEvent.color}88, inset 0 0 6px ${activeEvent.color}66`;
+    } else if (clickRipple) {
+      clickRipple.style.display = 'none';
+    }
+
+    return isPressed;
   }
 
   // --- Master Timecode Renderer ---
@@ -170,9 +203,7 @@
 
     // Default cursor & camera
     let cursorVisible = false;
-    let isHand = false;
     let cursorX = -100, cursorY = -100;
-    let rippleProgress = 0, rippleX = 0, rippleY = 0;
     let camScale = 1.0;
     let camX = 0, camY = 0;
 
@@ -276,19 +307,21 @@
         reelTextBottom.style.opacity = '0.7';
       }
 
-      // Cursor movement & click on Submit button (11.5s - 13.5s)
+      // Cursor movement & click on Submit button (11.2s - 13.5s)
       if (t >= 11.2 && t < 13.5) {
         cursorVisible = true;
-        const curP = clamp((t - 11.2) / 1.4);
-        cursorX = lerp(1480, 1315, smootherstep(curP));
-        cursorY = lerp(780, 540, smootherstep(curP));
+        if (t < 12.8) {
+          const curP = clamp((t - 11.2) / 1.4);
+          cursorX = lerp(1480, 1313, smootherstep(curP));
+          cursorY = lerp(780, 540, smootherstep(curP));
+        } else {
+          cursorX = 1313;
+          cursorY = 540;
+        }
 
-        // Click at 12.8s
-        if (t >= 12.65 && t <= 13.05) {
-          const clickP = (t - 12.65) / 0.4;
-          rippleProgress = clickP;
-          rippleX = 1315;
-          rippleY = 540;
+        // Button click compression
+        if (t >= 12.72 && t <= 13.05) {
+          const clickP = (t - 12.72) / 0.33;
           btnPromptEnter.style.transform = `scale(${lerp(0.92, 1.0, smootherstep(clickP))})`;
         } else {
           btnPromptEnter.style.transform = 'scale(1.0)';
@@ -317,25 +350,22 @@
       btnCodeLabel.textContent = 'Code </>';
       btnCodeIcon.innerHTML = '<use href="#icon-code"></use>';
 
-      // Scene 4: Hover bottom edit button & show "Click & Edit" tooltip (15.5s - 17.2s)
-      if (t >= 15.2 && t < 17.4) {
+      // Scene 4: Hover bottom edit button & show "Click & Edit" tooltip (15.2s - 17.2s)
+      if (t >= 15.2 && t < 17.2) {
         cursorVisible = true;
-        const cp = clamp((t - 15.2) / 1.2);
-        cursorX = lerp(1100, 1226, smootherstep(cp));
-        cursorY = lerp(800, 1024, smootherstep(cp));
+        if (t < 16.7) {
+          const cp = clamp((t - 15.2) / 1.3);
+          cursorX = lerp(1050, 1239, smootherstep(cp));
+          cursorY = lerp(850, 1028, smootherstep(cp));
+        } else {
+          cursorX = 1239;
+          cursorY = 1028;
+        }
 
         if (t >= 16.0 && t < 17.1) {
           tooltipClickEdit.style.opacity = '1';
-          isHand = true;
         } else {
           tooltipClickEdit.style.opacity = '0';
-        }
-
-        // Click Edit button at 16.7s
-        if (t >= 16.65 && t <= 17.0) {
-          rippleProgress = (t - 16.65) / 0.35;
-          rippleX = 1226;
-          rippleY = 1024;
         }
       } else {
         tooltipClickEdit.style.opacity = '0';
@@ -356,23 +386,20 @@
           camY = lerp(120, 0, smootherstep(unzoomP));
         }
 
-        // Cursor hovers over Acme Inc logo at 18.0s - 19.5s
-        if (t >= 17.5 && t < 24.5) {
+        // Cursor hovers over Acme Inc logo at (159, 177), clicks at 19.4s, then moves to Update button (667, 269)
+        if (t >= 17.2 && t < 24.5) {
           cursorVisible = true;
           if (t < 19.4) {
-            const cp = clamp((t - 17.5) / 1.4);
-            cursorX = lerp(1226, 200, smootherstep(cp));
-            cursorY = lerp(1024, 276, smootherstep(cp));
-            if (t >= 18.4) isHand = true;
+            const cp = clamp((t - 17.2) / 1.6);
+            cursorX = lerp(1239, 159, smootherstep(cp));
+            cursorY = lerp(1028, 177, smootherstep(cp));
           } else if (t >= 19.4 && t < 23.5) {
-            // Move to Update button in popover at (682, 370)
-            const upP = clamp((t - 19.8) / 1.2);
-            cursorX = lerp(200, 682, smootherstep(upP));
-            cursorY = lerp(276, 370, smootherstep(upP));
-            if (t >= 22.8) isHand = true;
+            const upP = clamp((t - 19.8) / 1.4);
+            cursorX = lerp(159, 667, smootherstep(upP));
+            cursorY = lerp(177, 269, smootherstep(upP));
           } else {
-            cursorX = 682;
-            cursorY = 370;
+            cursorX = 667;
+            cursorY = 269;
           }
         }
 
@@ -383,13 +410,6 @@
         } else {
           componentInspectBox.style.opacity = '0';
           componentInspectBox.style.transform = 'scale(0.96)';
-        }
-
-        // Click Logo at 19.4s
-        if (t >= 19.35 && t <= 19.75) {
-          rippleProgress = (t - 19.35) / 0.4;
-          rippleX = 200;
-          rippleY = 276;
         }
 
         // Popover Dialog Springs Open (19.5s – 24.8s)
@@ -425,13 +445,6 @@
           popoverUpdateIcon.innerHTML = '<use href="#icon-return"></use>';
         }
 
-        // Click Update Button at 23.5s
-        if (t >= 23.45 && t <= 23.85) {
-          rippleProgress = (t - 23.45) / 0.4;
-          rippleX = 682;
-          rippleY = 370;
-        }
-
         // Blue Logo Morph at 24.8s!
         if (t >= 24.8) {
           acmeBrandWrap.classList.add('is-blue');
@@ -452,19 +465,16 @@
         if (sceneNameDisplay && t >= 13.5 && t < 17.0) sceneNameDisplay.textContent = 'Scene 4: Acme Dashboard Canvas & Click-Edit';
       }
 
-      // Cursor movement to Header Code button at 26.0s
-      if (t >= 25.8 && t < 26.8) {
+      // Cursor movement from Update button to Code button at 26.5s
+      if (t >= 24.8 && t < 26.8) {
         cursorVisible = true;
-        const codeP = clamp((t - 25.8) / 0.8);
-        cursorX = lerp(640, 1820, smootherstep(codeP));
-        cursorY = lerp(260, 86, smootherstep(codeP));
-        isHand = true;
-
-        // Click Code at 26.5s
-        if (t >= 26.45 && t <= 26.75) {
-          rippleProgress = (t - 26.45) / 0.3;
-          rippleX = 1820;
-          rippleY = 86;
+        if (t < 26.5) {
+          const codeP = clamp((t - 24.8) / 1.4);
+          cursorX = lerp(667, 1816, smootherstep(codeP));
+          cursorY = lerp(269, 102, smootherstep(codeP));
+        } else {
+          cursorX = 1816;
+          cursorY = 102;
         }
       }
     } else {
@@ -486,7 +496,7 @@
       codeInspectorCard.style.pointerEvents = 'auto';
 
       primaryAppCard.style.opacity = '0.15';
-      btnCodeLabel.textContent = 'Canvas 🖵';
+      btnCodeLabel.textContent = 'Canvas';
       btnCodeIcon.innerHTML = '<use href="#icon-canvas"></use>';
 
       // Cursor moves across code card then back to Canvas button
@@ -494,20 +504,15 @@
         cursorVisible = true;
         if (t < 30.5) {
           const cp = clamp((t - 27.5) / 2.0);
-          cursorX = lerp(1820, 680, smootherstep(cp));
-          cursorY = lerp(86, 280, smootherstep(cp));
+          cursorX = lerp(1816, 750, smootherstep(cp));
+          cursorY = lerp(102, 350, smootherstep(cp));
+        } else if (t < 32.0) {
+          const cp2 = clamp((t - 30.5) / 1.4);
+          cursorX = lerp(750, 1816, smootherstep(cp2));
+          cursorY = lerp(350, 102, smootherstep(cp2));
         } else {
-          const cp2 = clamp((t - 30.5) / 1.5);
-          cursorX = lerp(680, 1820, smootherstep(cp2));
-          cursorY = lerp(280, 86, smootherstep(cp2));
-          isHand = true;
-        }
-
-        // Click Canvas button at 32.0s
-        if (t >= 31.95 && t <= 32.3) {
-          rippleProgress = (t - 31.95) / 0.35;
-          rippleX = 1820;
-          rippleY = 86;
+          cursorX = 1816;
+          cursorY = 102;
         }
       }
 
@@ -535,31 +540,21 @@
       }
 
       // Cursor moves to Stealth/Private badge at top breadcrumb
-      if (t >= 32.8 && t < 36.5) {
+      if (t >= 32.6 && t < 36.5) {
         cursorVisible = true;
-        if (t < 34.0) {
-          const spP = clamp((t - 32.8) / 1.0);
-          cursorX = lerp(1820, 430, smootherstep(spP));
-          cursorY = lerp(86, 44, smootherstep(spP));
-          isHand = true;
-        } else if (t >= 34.0 && t < 35.8) {
-          // Move down to Public option in stealth dialog at (675, 230)
-          const pubP = clamp((t - 34.2) / 1.0);
-          cursorX = lerp(430, 675, smootherstep(pubP));
-          cursorY = lerp(44, 230, smootherstep(pubP));
-          isHand = true;
+        if (t < 33.8) {
+          const spP = clamp((t - 32.6) / 1.0);
+          cursorX = lerp(1816, 465, smootherstep(spP));
+          cursorY = lerp(102, 44, smootherstep(spP));
+        } else if (t >= 33.8 && t < 35.8) {
+          // Move down to Public option in stealth dialog at (694, 179)
+          const pubP = clamp((t - 34.2) / 1.2);
+          cursorX = lerp(465, 694, smootherstep(pubP));
+          cursorY = lerp(44, 179, smootherstep(pubP));
         } else {
-          cursorX = 675;
-          cursorY = 230;
-          isHand = true;
+          cursorX = 694;
+          cursorY = 179;
         }
-      }
-
-      // Click Badge at 33.8s
-      if (t >= 33.75 && t <= 34.1) {
-        rippleProgress = (t - 33.75) / 0.35;
-        rippleX = 430;
-        rippleY = 44;
       }
 
       // Stealth Popover Opens at 33.9s
@@ -570,13 +565,6 @@
       } else {
         stealthPopoverDialog.style.opacity = '0';
         stealthPopoverDialog.style.transform = 'scale(0.94) translateY(-10px)';
-      }
-
-      // Click Public Option at 35.8s
-      if (t >= 35.75 && t <= 36.1) {
-        rippleProgress = (t - 35.75) / 0.35;
-        rippleX = 675;
-        rippleY = 230;
       }
 
       // Selection Toggle to Public at 35.8s
@@ -664,9 +652,9 @@
     // Apply Camera Transform
     cameraWorld.style.transform = `scale(${camScale.toFixed(4)}) translate3d(${camX.toFixed(1)}px, ${camY.toFixed(1)}px, 0)`;
 
-    // Apply Cursor & Ripple
-    setCursor(cursorX, cursorY, cursorVisible, isHand);
-    setRipple(rippleX, rippleY, rippleProgress);
+    // Apply Cursor & Concentric Click Ripple
+    const isPressed = renderClickRipples(t);
+    setCursor(cursorX, cursorY, cursorVisible, isPressed);
 
     // Update active scene pill button
     pillBtns.forEach(btn => {

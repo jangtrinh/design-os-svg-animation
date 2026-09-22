@@ -649,16 +649,13 @@
           </div>
         </div>
 
-        <!-- Virtual Cursor & Click Ripple -->
-        <div id="virtual-cursor" class="virtual-cursor-arrow">
-          <svg id="cursor-svg-arrow" width="28" height="28" viewBox="0 0 24 24" fill="none">
-            <path d="M4 2L20 9L12 12L9 20L4 2Z" fill="#000000" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
-          </svg>
-          <svg id="cursor-svg-hand" width="28" height="28" viewBox="0 0 256 256" style="display: none;">
-            <path fill="#000000" stroke="#FFFFFF" stroke-width="12" d="M128 32a24 24 0 0 0-24 24v56h-8a24 24 0 0 0-24 24v16a24 24 0 0 0-24 24v16a24 24 0 0 0 48 0v-8h8v16a24 24 0 0 0 48 0v-8h8v8a24 24 0 0 0 48 0V88a24 24 0 0 0-24-24 23.83 23.83 0 0 0-16 6.13V56a24 24 0 0 0-24-24Zm0 16a8 8 0 0 1 8 8v64h-16V56a8 8 0 0 1 8-8Z"/>
+        <!-- Virtual Cursor & Click Ripple (Canonical Tip strictly at 0,0) -->
+        <div id="virtual-cursor" class="virtual-cursor">
+          <svg class="cursor-arrow" viewBox="0 0 24 24">
+            <path d="M0 0 L14 14 L7 15 L4 21 L0 0 Z" fill="#000000" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
           </svg>
         </div>
-        <div id="click-ripple"></div>
+        <div id="click-ripple" class="click-ripple"></div>
 
       </div> <!-- /camera-world -->
 

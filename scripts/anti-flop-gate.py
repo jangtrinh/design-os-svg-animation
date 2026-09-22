@@ -8,6 +8,8 @@ Audits SVG animations, UI styling, and component integrity to prevent design flo
   [Gate 3] Modular Spacing & Tactile Depth: Ensures shadows and 8pt/4pt layout grid compliance.
   [Gate 4] Accessibility (A11y) & Reduced Motion: Confirms @media (prefers-reduced-motion) and ARIA metadata.
   [Gate 5] Security & Determinism: Blocks XSS, inline handlers, NaN coordinates, and verifies Motion IR schema.
+  [Gate 6] Cursor Tip & Click Hotspot Concentricity: Verifies pointer tip is strictly at (0,0),
+           distance to ripple center <= 1.0px, and contact point hits interactive target bounds.
 
 Exit code 0 indicates 100% anti-flop certification.
 """
@@ -210,6 +212,27 @@ def test_gate_5_security_and_motion_ir():
     print("✅ GATE 5 PASSED: Motion IR validated, zero vulnerabilities, 100% deterministic.")
 
 
+def test_gate_6_cursor_click_hotspots():
+    banner("Gate 6: Cursor Tip & Click Hotspot Concentric Alignment Gate")
+    script_path = ROOT_DIR / "scripts/audit-cursor-click-hotspots.mjs"
+    assert script_path.exists(), "scripts/audit-cursor-click-hotspots.mjs must exist!"
+
+    proc = subprocess.run(
+        ["node", str(script_path)],
+        cwd=ROOT_DIR,
+        capture_output=True,
+        text=True
+    )
+    if proc.returncode != 0:
+        print(proc.stdout)
+        print(proc.stderr)
+        assert proc.returncode == 0, "Gate 6 Hotspot alignment audit failed!"
+
+    # Print stdout for transparency
+    print(proc.stdout)
+    print("✅ GATE 6 PASSED: 100% of cursor tips and click ripples are concentric (Δ <= 1.0px).")
+
+
 def main():
     print("=" * 70)
     print(" 🚀 RUNNING FULL DESIGN:OS ANTI-FLOP AUDIT")
@@ -221,6 +244,7 @@ def main():
     test_gate_3_modular_spacing_and_shadows()
     test_gate_4_a11y_and_reduced_motion()
     test_gate_5_security_and_motion_ir()
+    test_gate_6_cursor_click_hotspots()
 
     print("\n" + "=" * 70)
     print(" 🛡️ 100% DESIGN:OS ANTI-FLOP GATES PASSED — ZERO FLOP PENALTIES")

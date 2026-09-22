@@ -153,6 +153,7 @@
     { id: 'drag',     t: 25.80, x: 620,  y: 650, el: polaroidCard, color: '#10B981', label: 'Drag Photo 1' },
     { id: 'close',    t: 33.80, x: 219,  y: 154, el: liveWindowClose || mainWindowClose, color: '#EF4444', label: 'Close Window' }
   ];
+  window.__CLICK_EVENTS = CLICK_EVENTS;
 
   // --- Dynamic Virtual Camera Trajectory (Cinematic Continuous Motion) ---
   // [seconds, centerX, centerY, scale]
