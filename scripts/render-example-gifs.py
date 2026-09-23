@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-render-example-gifs.py — Render high-quality 5s GIFs for README examples:
-1. Example 1: Claude Design 3D Globe & Interactive Tweaks (from claude-design-promo.mp4, 8s to 13s)
-2. Example 2: SaaS Vector Animation Engine (from saas-short.html, 2.0s to 7.0s)
+render-example-gifs.py — Render high-quality GIFs for README examples:
+1. Example 1: Claude Design 3D Globe & Interactive Tweaks (from claude-design-promo.html, 12.5s to 17.5s)
+2. Example 2: OpenAI Codex App Promo (from codex-app-promo.html, 0.5s to 4.5s)
 """
 
 import os
@@ -60,30 +60,30 @@ def render_example_1():
     print(f"Generated: {out_gif} ({os.path.getsize(out_gif)} bytes)")
 
 def render_example_2():
-    print("\n=== Rendering Example 2: SaaS Vector Motion Short (5s) ===")
-    if os.path.exists(TMP_FRAMES_DIR):
-        shutil.rmtree(TMP_FRAMES_DIR)
-    os.makedirs(TMP_FRAMES_DIR, exist_ok=True)
+    print("\n=== Rendering Example 2: OpenAI Codex App Promo (4s) ===")
+    tmp_dir = "/tmp/codex_gif_frames"
+    if os.path.exists(tmp_dir):
+        shutil.rmtree(tmp_dir)
+    os.makedirs(tmp_dir, exist_ok=True)
     
-    out_gif = os.path.join(ASSETS_DIR, "example-2-saas-motion-engine.gif")
+    out_gif = os.path.join(ASSETS_DIR, "example-3-codex-app-promo.gif")
     
-    # 5 seconds: 2.0s to 7.0s at 12 fps = 60 frames
     fps = 12
-    start_t = 2.0
-    duration = 5.0
+    start_t = 0.5
+    duration = 4.0
     total_frames = int(fps * duration)
     
-    print(f"Capturing {total_frames} frames from saas-short.html...")
+    print(f"Capturing {total_frames} frames from codex-app-promo.html...")
     for i in range(total_frames):
         t_sec = start_t + (i / fps)
-        frame_path = os.path.join(TMP_FRAMES_DIR, f"frame_{i:04d}.png")
-        url = f"http://localhost:3033/saas-short.html?clean=true&t={t_sec:.3f}&autoplay=false"
+        frame_path = os.path.join(tmp_dir, f"frame_{i:04d}.png")
+        url = f"http://localhost:3033/codex-app-promo.html?clean=true&t={t_sec:.3f}&autoplay=false"
         
         cmd = [
             CHROME_BIN,
             "--headless",
             "--disable-gpu",
-            "--window-size=540,960",
+            "--window-size=1920,1080",
             f"--screenshot={frame_path}",
             url
         ]
@@ -95,8 +95,8 @@ def render_example_2():
     cmd_ffmpeg = [
         FFMPEG_BIN, "-y",
         "-framerate", str(fps),
-        "-i", os.path.join(TMP_FRAMES_DIR, "frame_%04d.png"),
-        "-vf", "scale=360:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer",
+        "-i", os.path.join(tmp_dir, "frame_%04d.png"),
+        "-vf", "scale=640:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=128[p];[s1][p]paletteuse=dither=bayer",
         out_gif
     ]
     subprocess.run(cmd_ffmpeg, check=True)

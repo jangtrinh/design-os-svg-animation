@@ -26,15 +26,6 @@ const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome
 const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
 
 const TARGETS = {
-  saas: {
-    name: 'SaaS Short Master (9:16 Vertical)',
-    url: 'http://localhost:3033/saas-short.html?clean=true&autoplay=false',
-    duration: 11.5,
-    fps: 60,
-    width: 1080,
-    height: 1920,
-    outputFilename: 'saas-short.mp4'
-  },
   codex: {
     name: 'OpenAI Codex App Promo',
     url: 'http://localhost:3033/codex-app-promo.html?clean=true&autoplay=false',
@@ -194,10 +185,6 @@ async function renderTarget(key, config) {
 
 async function main() {
   const targetArg = process.argv[2] || 'all';
-
-  if (targetArg === 'saas' || targetArg === 'all') {
-    await renderTarget('saas', TARGETS.saas);
-  }
 
   if (targetArg === 'codex' || targetArg === 'all') {
     await renderTarget('codex', TARGETS.codex);

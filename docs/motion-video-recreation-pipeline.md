@@ -117,7 +117,7 @@ Storyboards are expressed as strongly typed JSON structures. Never generate unre
 ### Stage 3: Unified Studio Runner UI & Decoupled Parity Verification
 
 #### Standard 1: Unified Dark Studio Runner Specification
-Every interactive showcase runner (`claude-design-promo.html`, `codex-app-promo.html`, `v0-generative-ui.html`, `saas-short.html`) must strictly adhere to the unified Studio Runner design system (`studio-runner.css`):
+Every interactive showcase runner (`claude-design-promo.html`, `codex-app-promo.html`, `v0-generative-ui.html`) must strictly adhere to the unified Studio Runner design system (`studio-runner.css`):
 1. **Studio Header Bar (`.studio-topbar`)**: Sticky 52px dark header (`rgba(11,11,12,0.88)` blur 12px) featuring brand logo, resolution/framerate/duration metadata badge, 1x/2x speed toggles, and direct MP4 download action.
 2. **Stage Frame (`.studio-stage-frame`)**: 14px rounded canvas container with 1px border (`#222225`), deep drop shadow (`0 30px 80px -40px rgba(0,0,0,0.95)`), and clean headless isolation (`.clean-export`).
 3. **Transport Bar (`.studio-transport-bar`)**: Docked controls below the stage providing restart (`↤`), play/pause, tabular-nums timecode, continuous slider scrubber, scene jump pills with active highlight, and fullscreen (`⛶`).

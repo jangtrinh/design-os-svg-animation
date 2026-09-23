@@ -70,6 +70,7 @@
   // --- Clean Export Mode Detection ---
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('clean') === 'true' || urlParams.get('render') === 'true') {
+    document.documentElement.classList.add('clean-export');
     document.body.classList.add('clean-export');
   }
 

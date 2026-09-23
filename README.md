@@ -19,15 +19,15 @@
 
 ## Visual Showcase & Promo Demos (v2.0 Upgraded)
 
-| Metric / Demo | Example 1: Claude Design Master Promo | Example 2: SaaS 9:16 Vector Short | Example 3: OpenAI Codex App Promo | Example 4: Vercel v0 Generative UI |
-| :--- | :---: | :---: | :---: | :---: |
-| **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![SaaS Vector Motion](docs/assets/example-2-saas-motion-engine.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) | ![Vercel v0 Generative UI](docs/assets/example-4-v0-generative-ui.gif) |
-| **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [📱 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/saas-short.html) ([local](promo/saas-short.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) | [▲ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui.html) ([local](promo/v0-generative-ui.html)) |
-| **1:1 Dual-Layer Sync** | [🪞 Launch 1:1 Split Sync](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html?split=true) | Built-in Motion IR sync | [🪞 Launch 1:1 Split Sync](promo/codex-app-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/v0-generative-ui.html?split=true) |
-| **Deconstruction Assets** | [Contact Sheet](promo/claude-design-promo.contact-sheet.jpg) · [Waveform](promo/claude-design-promo.wave.json) | [Cuts JSON](docs/saas-short.cuts.json) · [Waveform](promo/saas-short.wave.json) | [Contact Sheet](promo/codex-app-promo.contact-sheet.jpg) · [Waveform](promo/codex-app-promo.wave.json) | [Contact Sheet](docs/v0-generative-ui.contact-sheet.jpg) · [Waveform](promo/v0-generative-ui.wave.json) |
-| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080x1920 60fps MP4 (0.5 MB)](promo/saas-short.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4 (2.4 MB)](promo/v0-generative-ui.mp4) |
-| **Aspect & Duration** | 16:9 · 82.0 seconds | 9:16 Vertical · 11.5 seconds | 16:9 · 38.0 seconds | 16:9 · 47.5 seconds |
-| **Key Motion Features** | Specular Glossy Pill, 2.5D CSS mini-bars, 3D Globe with Great-Circle arcs, live Tweaks, and audio-reactive aura | Shared-element card-to-pill morph, Phosphor vectors, C¹ continuous lerp camera zoom & zero blank frames | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
+| Metric / Demo | Example 1: Claude Design Master Promo | Example 2: OpenAI Codex App Promo | Example 3: Vercel v0 Generative UI |
+| :--- | :---: | :---: | :---: |
+| **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) | ![Vercel v0 Generative UI](docs/assets/example-4-v0-generative-ui.gif) |
+| **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) | [▲ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui.html) ([local](promo/v0-generative-ui.html)) |
+| **1:1 Dual-Layer Sync** | [🪞 Launch 1:1 Split Sync](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/codex-app-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/v0-generative-ui.html?split=true) |
+| **Deconstruction Assets** | [Contact Sheet](promo/claude-design-promo.contact-sheet.jpg) · [Waveform](promo/claude-design-promo.wave.json) | [Contact Sheet](promo/codex-app-promo.contact-sheet.jpg) · [Waveform](promo/codex-app-promo.wave.json) | [Contact Sheet](docs/v0-generative-ui.contact-sheet.jpg) · [Waveform](promo/v0-generative-ui.wave.json) |
+| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4 (2.4 MB)](promo/v0-generative-ui.mp4) |
+| **Aspect & Duration** | 16:9 · 82.0 seconds | 16:9 · 38.0 seconds | 16:9 · 47.5 seconds |
+| **Key Motion Features** | Specular Glossy Pill, 2.5D CSS mini-bars, 3D Globe with Great-Circle arcs, live Tweaks, and audio-reactive aura | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
 
 ---
 
@@ -125,24 +125,21 @@ npm install
    # Demo 1: Claude Design 82s Promo (16:9, 1080p 60fps)
    python3 scripts/export-promo-video.py
 
-   # Demo 2: SaaS Short 11.5s Motion Engine (9:16 Vertical, 1080x1920 60fps)
-   python3 scripts/export-promo-video.py --url http://localhost:3033/saas-short.html --output promo/saas-short.mp4 --width 1080 --height 1920 --fps 60 --duration 11.5
-
-   # Demo 3: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
+   # Demo 2: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
    python3 scripts/export-promo-video.py --url http://localhost:3033/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
 
-   # Demo 4: Vercel v0 Generative UI 47.5s Official Video (16:9, 1080p 60fps)
+   # Demo 3: Vercel v0 Generative UI 47.5s Official Video (16:9, 1080p 60fps)
    node scripts/export-60fps-video.mjs v0
    ```
 3. **Run Proactive Pre-Flight & Anti-Flop Audits**:
    ```bash
    npm run guard          # Proactive pre-flight invariant check
-   npm run audit:anti-flop # 6-Gate Design:OS quality verification
+   npm run audit:anti-flop # 7-Gate Design:OS quality verification
    # Both must exit with code 0
    ```
 
 ### Workflow B: Compiling Motion IR to Production Code
-1. Inspect or modify animation storyboard: `fixtures/saas-short.motion.json`.
+1. Inspect or modify animation storyboard: `fixtures/opacity.motion.json`.
 2. Compile to pure CSS keyframes & GSAP timeline:
    ```bash
    npx tsx scripts/motion-ir-compiler-demo.ts
@@ -180,14 +177,14 @@ design-os-svg-animation/
 │   ├── claude-design-promo.mp4         # 1080p 60fps Broadcast Video Output (13 MB)
 │   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine (Claude Design)
 │   ├── claude-design.css               # Dynamic dark/light theme & easing tokens
-│   ├── saas-short.html                 # 11.5s 9:16 Vertical Interactive Web Player (SaaS Product Demo)
-│   ├── saas-short.mp4                  # 1080x1920 60fps Broadcast Video Output (0.5 MB)
-│   ├── saas-short-engine.js            # Virtual Clock Engine (Continuous Camera Lerp, Phosphor Icons)
-│   ├── saas-short.css                  # High-DPI mobile phone bezel & layout styles
 │   ├── codex-app-promo.html            # 38s Interactive Web Player (OpenAI Codex App)
 │   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output (10 MB)
 │   ├── codex-app-engine.js             # High-tempo macOS window & multi-agent engine
-│   └── codex-app.css                   # macOS Sonoma dark theme & terminal styling
+│   ├── codex-app.css                   # macOS Sonoma dark theme & terminal styling
+│   ├── v0-generative-ui.html           # 47.5s Interactive Web Player (Vercel v0 Generative UI)
+│   ├── v0-generative-ui.mp4            # 1080p 60fps Broadcast Video Output (2.4 MB)
+│   ├── v0-generative-ui-engine.js      # Virtual Camera & Phosphor vector kinetics
+│   └── v0-generative-ui.css            # Dark skeuomorphic UI styles
 ├── src/components/                     # Production React Three Fiber Suite
 │   ├── InteractiveGlobeWorkspace.tsx   # 3D Orthographic Globe + Great-Circle Arcs
 │   ├── ExpandingInput.tsx              # Morphing pill-to-form + Claude star spinner

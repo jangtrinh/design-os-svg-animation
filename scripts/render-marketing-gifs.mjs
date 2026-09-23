@@ -33,18 +33,6 @@ const DEMOS = [
     viewport: { width: 1920, height: 1080 }
   },
   {
-    id: 'example-2-saas-motion-engine',
-    name: 'SaaS Short Vector Motion',
-    url: 'http://localhost:3033/saas-short.html?clean=true&autoplay=false',
-    start: 2.0,
-    duration: 4.0,
-    fps: 15,
-    width: 220,
-    height: 391,
-    scale: '240:-1',
-    viewport: { width: 1080, height: 1920 }
-  },
-  {
     id: 'example-3-codex-app-promo',
     name: 'OpenAI Codex App Promo',
     url: 'http://localhost:3033/codex-app-promo.html?clean=true&autoplay=false',

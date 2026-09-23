@@ -78,7 +78,7 @@ async function main() {
     console.log(`✓ Saved ${p1}`);
   }
 
-  // 2. Click Tab 1 (SaaS Short 11.5s)
+  // 2. Click Tab 1 (OpenAI Codex App 38s)
   await page.evaluate(() => {
     const tab1 = document.querySelectorAll('.carousel-tab')[1];
     if (tab1) tab1.click();
@@ -86,12 +86,12 @@ async function main() {
   await new Promise((r) => setTimeout(r, 600));
 
   if (heroEl) {
-    const p2 = path.join(ARTIFACTS_DIR, 'proof_marketing_hero_saas.png');
+    const p2 = path.join(ARTIFACTS_DIR, 'proof_marketing_hero_codex.png');
     await heroEl.screenshot({ path: p2 });
     console.log(`✓ Saved ${p2}`);
   }
 
-  // 3. Click Tab 2 (OpenAI Codex App 38s)
+  // 3. Click Tab 2 (Vercel v0 47.5s)
   await page.evaluate(() => {
     const tab2 = document.querySelectorAll('.carousel-tab')[2];
     if (tab2) tab2.click();
@@ -99,7 +99,7 @@ async function main() {
   await new Promise((r) => setTimeout(r, 600));
 
   if (heroEl) {
-    const p3 = path.join(ARTIFACTS_DIR, 'proof_marketing_hero_codex.png');
+    const p3 = path.join(ARTIFACTS_DIR, 'proof_marketing_hero_v0.png');
     await heroEl.screenshot({ path: p3 });
     console.log(`✓ Saved ${p3}`);
   }
@@ -118,11 +118,15 @@ async function main() {
   }
 
   // 5. Full Top Header + Hero Capture
-  const topHeader = await page.screenshot({
-    path: path.join(ARTIFACTS_DIR, 'proof_marketing_page_full_hero.png'),
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+  });
+  await new Promise((r) => setTimeout(r, 300));
+  await page.screenshot({
+    path: path.join(ARTIFACTS_DIR, 'proof_mkt_showcase_3_demos.png'),
     clip: { x: 0, y: 0, width: 1440, height: 1100 }
   });
-  console.log(`✓ Saved full hero viewport proof`);
+  console.log(`✓ Saved proof_mkt_showcase_3_demos.png`);
 
   await browser.close();
   server.close();
