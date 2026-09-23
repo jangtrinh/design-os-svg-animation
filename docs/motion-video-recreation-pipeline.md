@@ -38,9 +38,9 @@ The **Motion Video Recreation Pipeline** is an end-to-end engineering methodolog
                                      │
                                      ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│ Stage 3: Dual-Layer Reference vs. Draft Synchronization                 │
-│ - Split-view runner (video.currentTime locked to GSAP master timeline)  │
-│ - Deterministic frame-accurate scrubber validation                      │
+│ Stage 3: Unified Studio Runner UI & Decoupled Parity Verification       │
+│ - Standardized dark Studio Runner UI (studio-runner.css + stage frame)  │
+│ - Decoupled 1:1 ground-truth video parity on docs/index.html            │
 └────────────────────────────────────┬────────────────────────────────────┘
                                      │
                                      ▼
@@ -114,7 +114,18 @@ Storyboards are expressed as strongly typed JSON structures. Never generate unre
 }
 ```
 
-### Stage 3: Dual-Target Implementation
+### Stage 3: Unified Studio Runner UI & Decoupled Parity Verification
+
+#### Standard 1: Unified Dark Studio Runner Specification
+Every interactive showcase runner (`claude-design-promo.html`, `codex-app-promo.html`, `v0-generative-ui.html`, `saas-short.html`) must strictly adhere to the unified Studio Runner design system (`studio-runner.css`):
+1. **Studio Header Bar (`.studio-topbar`)**: Sticky 52px dark header (`rgba(11,11,12,0.88)` blur 12px) featuring brand logo, resolution/framerate/duration metadata badge, 1x/2x speed toggles, and direct MP4 download action.
+2. **Stage Frame (`.studio-stage-frame`)**: 14px rounded canvas container with 1px border (`#222225`), deep drop shadow (`0 30px 80px -40px rgba(0,0,0,0.95)`), and clean headless isolation (`.clean-export`).
+3. **Transport Bar (`.studio-transport-bar`)**: Docked controls below the stage providing restart (`↤`), play/pause, tabular-nums timecode, continuous slider scrubber, scene jump pills with active highlight, and fullscreen (`⛶`).
+4. **Keyboard Shortcuts**: `Space` (Play/Pause), `ArrowLeft`/`ArrowRight` (Step 250ms / Shift: 2s), `Home`/`0` (Restart), `KeyF` (Fullscreen).
+
+#### Standard 2: Decoupled 1:1 Parity Verification (HARDRULE)
+- Interactive runners must **NEVER** embed split-view side-by-side reference video comparison widgets. Split-view drags down RAF framerates and distorts responsive stage geometry.
+- 1:1 Ground-Truth vs. Recreated Video Parity verification belongs exclusively to marketing landing pages and documentation (`docs/index.html#parity-comparison`), allowing side-by-side synchronized hardware video playback without impacting interactive runner performance.
 
 #### Target A: Virtual-Clock Web Engine (`promo/claude-design-promo.html`)
 The engine decouples playback speed from hardware capabilities by exposing a deterministic global time hook:

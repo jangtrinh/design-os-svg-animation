@@ -37,6 +37,7 @@ This skill is certified across three primary AI coding runtimes:
 6. **GPU-Composited Transforms Only**: Strictly limit active continuous animations to `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Avoid layout thrashing (`width`, `height`, `top`, `left`, `d`).
 7. **Mandatory A11y Reduced Motion**: All animations must feature `@media (prefers-reduced-motion: reduce)` fallbacks.
 8. **Zero Design Flop**: Generated assets and videos must pass `npm run audit:all` with exit code 0.
+9. **Unified Studio Runner UI & Parity Decoupling (HARDRULE)**: All interactive showcase runners MUST uniformly adopt the dark Studio Runner UI (`studio-runner.css`: `.studio-body`, `.studio-topbar`, rounded stage frame with `#222225` border, and docked `.studio-transport-bar` with restart `↤`, play/pause, tabular timecode, smooth scrubber, scene jump pills, speed toggles, fullscreen `⛶`, and keyboard shortcuts). Interactive runners must **NEVER** contain split-view side-by-side video comparison widgets (split view degrades viewport geometry and runner responsiveness). All 1:1 ground-truth vs. recreated video comparisons belong exclusively to marketing landing pages and documentation (`docs/index.html#parity-comparison`).
 
 ---
 
@@ -57,10 +58,10 @@ This skill is certified across three primary AI coding runtimes:
    - `text`, `logo`, `input`, `chat`, `window`, `phone`, `cards`, `list`, `chart`, `notify`, `icons`, `hub`, `cloud`, `collage`, `logos`, `shape`, `burst`, `grid`, `split`, `face`.
 2. **Monochrome Layout Focus**: Keep drafts in dark/monochrome tones (`--color-paper: oklch(14% 0.012 255)`) to lock timing and spatial proportions before asset styling.
 
-### Stage 3: Dual-Layer Reference vs. Draft Synchronization
-1. Open the dual-layer sync runner (`promo/runner.html?mode=split`).
-2. Lock reference video `currentTime` to the draft GSAP master timeline.
-3. Scrub the unified timeline slider to verify frame-accurate alignment across every scene transition.
+### Stage 3: Unified Studio Runner UI & Decoupled Parity Verification
+1. Mount the recreation engine into the standardized Studio Runner UI (`studio-runner.css`, `.studio-topbar`, rounded stage frame `#222225`, and `.studio-transport-bar`).
+2. Verify pure interactive performance: interactive runners must focus purely on live engine execution without split-view video widgets.
+3. Conduct 1:1 Ground-Truth video parity verification on the documentation/marketing parity deck (`docs/index.html#parity-comparison`), comparing reference vs. recreated MP4 side-by-side.
 
 ### Stage 4: High-Fidelity Dressing & Kinematic Polishing
 1. **Obsidian Specular Buttons**: Apply dark gradient pills with inset specular top highlight caps (`border-radius: 999px 999px 60% 60% / 999px 999px 80% 80%`).

@@ -56,7 +56,7 @@ Our recreation pipeline has been upgraded with core architectural breakthroughs:
 
 If you are an AI coding agent reading this codebase, follow these rules and directives strictly:
 
-### 1. The 8 Immutable Agent Invariants
+### 1. The 9 Immutable Agent Invariants
 1. **Mandatory Product Designer Skill (MUST-CALL)**: Before designing, creating, or modifying any animation scene, UI mockup, or video layout, agents MUST activate and consult [`skills/product-designer/SKILL.md`](skills/product-designer/SKILL.md) for EaseUI tactile depth, 1px subtle borders, authentic SVGL marks, and undistorted 3D projections.
 2. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
 3. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
@@ -65,6 +65,7 @@ If you are an AI coding agent reading this codebase, follow these rules and dire
 6. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
 7. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components. Sourced brand marks must come from SVGL (`https://svgl.app/`).
 8. **Gate 6 Hotspot Concentricity (`Δ <= 1.0px`)**: Pointer tip coordinates must match button centroids precisely. All assets must pass `npm run audit:all` with exit code `0`.
+9. **Unified Studio Runner UI & Parity Decoupling (HARDRULE)**: All interactive showcase runners MUST uniformly adopt the dark Studio Runner UI (`studio-runner.css`: `.studio-body`, `.studio-topbar`, rounded stage frame `#222225`, and `.studio-transport-bar` with restart, play/pause, timecode, scrubber, scene jump pills, speed toggles, fullscreen `⛶`, and keyboard shortcuts). Interactive runners must **NEVER** contain split-view side-by-side video comparison widgets (split view degrades viewport geometry and runner responsiveness). All 1:1 ground-truth vs. recreated video comparisons belong exclusively to marketing landing pages and documentation (`docs/index.html#parity-comparison`).
 
 ---
 

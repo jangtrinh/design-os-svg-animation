@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Introducing v0: Generative UI — Official Recreation (00:00 – 00:47.5)</title>
+  <link rel="stylesheet" href="studio-runner.css">
   <link rel="stylesheet" href="v0-generative-ui.css">
   <script>
     (function() {
@@ -17,7 +18,7 @@
     })();
   </script>
 </head>
-<body>
+<body class="studio-body">
 
   <!-- SVG Sprite Definitions (Official Marks & Phosphor Icons) -->
   <svg style="display: none;">
@@ -109,61 +110,36 @@
     </defs>
   </svg>
 
-  <!-- Top Floating Playback Toolbar & Scrubber -->
-  <header class="video-toolbar">
-    <div class="brand-badge">
-      <svg class="brand-logo-svg" viewBox="0 0 16 16">
-        <use href="#icon-v0"></use>
-      </svg>
-      <span class="brand-title">v0: Generative UI</span>
-      <span class="brand-tag">47.5s Launch Recreation</span>
+  <!-- Top Floating Studio Toolbar -->
+  <header class="studio-topbar">
+    <div class="studio-brand-group">
+      <a href="../docs/index.html" class="studio-logo" title="Back to Showcase">
+        <svg class="brand-logo-svg" viewBox="0 0 16 16" style="width: 20px; height: 20px;">
+          <use href="#icon-v0"></use>
+        </svg>
+        <span>v0: Generative UI</span>
+      </a>
+      <span class="studio-meta-tag">1920 × 1080 · 60fps · 00:47.5</span>
     </div>
 
-    <!-- Play / Pause & Scrubber -->
-    <div class="playback-controls">
-      <button id="btn-play-pause" class="btn-ctrl" title="Play/Pause (Space)">
-        <span id="play-icon">
-          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-        </span>
-      </button>
-
-      <div class="timeline-container">
-        <input type="range" id="video-scrubber" min="0" max="47.5" step="0.05" value="0">
-        <div class="timeline-labels">
-          <span class="time-display" id="timecode">00:00.0 / 00:47.5</span>
-          <span class="scene-indicator" id="scene-name">Scene 1: v0 Wireframe Logo</span>
-        </div>
+    <div class="studio-top-actions">
+      <div class="studio-speed-group">
+        <button class="studio-speed-btn speed-btn active" data-speed="1">1x</button>
+        <button class="studio-speed-btn speed-btn" data-speed="2">2x</button>
+        <button class="studio-speed-btn speed-btn" data-speed="4">4x</button>
       </div>
-
-      <div class="speed-selector">
-        <button class="speed-btn active" data-speed="1">1x</button>
-        <button class="speed-btn" data-speed="2">2x</button>
-        <button class="speed-btn" data-speed="4">4x</button>
-      </div>
-
-      <button id="btn-record-video" class="btn-ctrl" style="width: auto; padding: 0 12px; gap: 6px;" title="Export High-Res Video">
-        <span style="width: 8px; height: 8px; border-radius: 50%; background: #EF4444;"></span>
-        <span style="font-size: 11px; font-weight: 600;">Export</span>
-      </button>
-    </div>
-
-    <!-- Scene Jump Quick Nav -->
-    <div class="scene-jump-pills">
-      <button class="pill-btn active" data-seek="0.0">S1 Logo</button>
-      <button class="pill-btn" data-seek="3.2">S2 Title</button>
-      <button class="pill-btn" data-seek="6.5">S3 Reel</button>
-      <button class="pill-btn" data-seek="13.5">S4 App</button>
-      <button class="pill-btn" data-seek="17.0">S5 Edit</button>
-      <button class="pill-btn" data-seek="26.5">S6 Code</button>
-      <button class="pill-btn" data-seek="32.5">S7 Stealth</button>
-      <button class="pill-btn" data-seek="36.5">S8 Grid/v0</button>
-      <button class="pill-btn" data-seek="43.0">S9 Vercel</button>
+      <a href="v0-generative-ui.mp4" class="studio-action-btn primary" download>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>
+        <span>Download MP4</span>
+      </a>
     </div>
   </header>
 
-  <!-- Video Stage Wrapper (Auto-Scales to Fit Viewport) -->
-  <div class="video-stage-wrapper">
-    <div id="video-stage">
+  <!-- Master Video Stage -->
+  <main class="studio-stage-container">
+    <div id="video-stage-frame" class="studio-stage-frame" style="width: min(1120px, calc((100vh - 200px) * 16 / 9), calc(100vw - 48px)); aspect-ratio: 16/9;">
+      <div id="video-stage-wrapper" class="video-stage-wrapper" style="width: 100%; height: 100%; margin: 0; padding: 0; box-shadow: none; border-radius: 0;">
+        <div id="video-stage" class="video-stage">
       
       <!-- Continuous Virtual Camera World -->
       <div id="camera-world">
@@ -661,6 +637,48 @@
 
     </div> <!-- /video-stage -->
   </div> <!-- /video-stage-wrapper -->
+</div> <!-- /video-stage-frame -->
+
+    <!-- Unified Studio Transport Dock -->
+    <div class="studio-transport-bar">
+      <div class="studio-transport-row">
+        <div class="studio-transport-left">
+          <button id="btn-restart" class="studio-icon-button" title="Restart (Home)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M224,128a96,96,0,0,1-96,96,95.53,95.53,0,0,1-67.88-28.12L38.63,174.4A8,8,0,0,1,50,163.09l21.49,21.48A79.52,79.52,0,0,0,128,208a80,80,0,1,0-80-80,8,8,0,0,1-16,0,96,96,0,1,1,192,0Z"/></svg></button>
+          <button id="btn-play-pause" class="studio-icon-button primary" title="Play/Pause (Space)">
+            <span id="play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </span>
+          </button>
+          <div class="studio-timecode">
+            <strong id="timecode">00:00.0 / 00:47.5</strong>
+          </div>
+        </div>
+
+        <div class="studio-scrubber-lane">
+          <input type="range" id="video-scrubber" class="studio-scrubber" min="0" max="47.5" step="0.05" value="0" aria-label="Scrub video">
+        </div>
+
+        <div class="studio-transport-right">
+          <button id="btn-fullscreen" class="studio-icon-button" title="Toggle Fullscreen (F)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M216,48V88a8,8,0,0,1-16,0V56H168a8,8,0,0,1,0-16h40A8,8,0,0,1,216,48ZM88,200H56V168a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H88a8,8,0,0,0,0-16Zm120-40a8,8,0,0,0-8,8v32H168a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V168A8,8,0,0,0,208,160ZM48,96a8,8,0,0,0,8-8V56H88a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V88A8,8,0,0,0,48,96Z"/></svg></button>
+        </div>
+      </div>
+
+      <div class="studio-scenes-row">
+        <div class="studio-scene-pills">
+          <button class="studio-scene-pill pill-btn active" data-seek="0.0">S1 Logo</button>
+          <button class="studio-scene-pill pill-btn" data-seek="3.2">S2 Title</button>
+          <button class="studio-scene-pill pill-btn" data-seek="6.5">S3 Reel</button>
+          <button class="studio-scene-pill pill-btn" data-seek="13.5">S4 App</button>
+          <button class="studio-scene-pill pill-btn" data-seek="17.0">S5 Edit</button>
+          <button class="studio-scene-pill pill-btn" data-seek="26.5">S6 Code</button>
+          <button class="studio-scene-pill pill-btn" data-seek="32.5">S7 Stealth</button>
+          <button class="studio-scene-pill pill-btn" data-seek="36.5">S8 Grid/v0</button>
+          <button class="studio-scene-pill pill-btn" data-seek="43.0">S9 Vercel</button>
+        </div>
+        <span id="scene-name" style="color: var(--studio-muted); font-size: 11px;">Scene 1: v0 Wireframe Logo</span>
+      </div>
+    </div>
+  </main>
 
   <!-- Standalone Deterministic Virtual Clock Engine -->
   <script src="v0-generative-ui-engine.js"></script>

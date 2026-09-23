@@ -24,10 +24,8 @@
   const playBtn = document.getElementById('btn-play-pause');
   const playIcon = document.getElementById('play-icon');
   const virtualCursor = document.getElementById('virtual-cursor');
-  const stageWrapper = document.getElementById('video-stage-wrapper');
-  const splitBtn = document.getElementById('btn-split-sync');
-  const refVideo = document.getElementById('ref-video');
-  let isSplitMode = urlParams.get('split') === 'true';
+  const btnRestart = document.getElementById('btn-restart');
+  const btnFullscreen = document.getElementById('btn-fullscreen');
 
   // Audio Waveform Reactive State (50Hz PCM Envelope)
   let waveData = null;
@@ -743,12 +741,11 @@
     if (timecodeEl) timecodeEl.textContent = `${formatTime(t)} / 01:22`;
     if (scrubber) scrubber.value = t;
 
-    // Split Mode Video Synchronization (Dual-Layer Sync)
-    if (refVideo && isSplitMode) {
-      if (Math.abs(refVideo.currentTime - t) > 0.08) {
-        refVideo.currentTime = t;
-      }
-    }
+    // Active Scene Pill Highlight
+    document.querySelectorAll('.pill-btn, .studio-scene-pill').forEach(btn => {
+      const seek = parseFloat(btn.dataset.seek);
+      btn.classList.toggle('active', Math.abs(t - seek) < 6);
+    });
 
     // Audio Reactivity (50Hz PCM Waveform Envelope)
     if (waveData && waveData.peaks) {
@@ -1217,31 +1214,51 @@
     });
   });
 
-  // --- 1:1 DUAL-LAYER SPLIT-SYNC CONTROLLER ---
-  function setSplitMode(enable) {
-    isSplitMode = enable;
-    if (stageWrapper) stageWrapper.classList.toggle('split-mode', isSplitMode);
-    if (splitBtn) {
-      splitBtn.style.background = isSplitMode ? '#0284c7' : '#27272a';
-      splitBtn.style.color = '#ffffff';
-      splitBtn.style.borderColor = isSplitMode ? '#38bdf8' : '#38bdf844';
-    }
-    if (isSplitMode && refVideo) {
-      refVideo.currentTime = currentTime;
-      if (isPlaying) refVideo.play().catch(() => {});
-      else refVideo.pause();
-    }
-  }
-
-  if (splitBtn) {
-    splitBtn.addEventListener('click', () => {
-      setSplitMode(!isSplitMode);
+  // --- STUDIO RUNNER CONTROLS ---
+  if (btnRestart) {
+    btnRestart.addEventListener('click', () => {
+      currentTime = 0;
+      updateTimeline(0);
     });
   }
 
-  if (isSplitMode) {
-    setSplitMode(true);
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', () => {
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) {
+        frame.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    });
   }
+
+  // --- KEYBOARD SHORTCUTS ---
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      isPlaying = !isPlaying;
+      if (playIcon) playIcon.innerHTML = isPlaying ? PH_PAUSE_ICON : PH_PLAY_ICON;
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      currentTime = Math.min(TOTAL_DURATION, currentTime + (e.shiftKey ? 5 : 1));
+      updateTimeline(currentTime);
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      currentTime = Math.max(0, currentTime - (e.shiftKey ? 5 : 1));
+      updateTimeline(currentTime);
+    } else if (e.code === 'Home' || e.key === '0') {
+      e.preventDefault();
+      currentTime = 0;
+      updateTimeline(0);
+    } else if (e.code === 'KeyF') {
+      e.preventDefault();
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    }
+  });
 
   // --- DETERMINISTIC VIRTUAL CLOCK INTERFACE ---
   window.__seekToTime = function(sec) {

@@ -4,26 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Design OS SVG Animation — 11.5s SaaS Product Demo (9:16 Short)</title>
+  <link rel="stylesheet" href="studio-runner.css">
   <link rel="stylesheet" href="saas-short.css">
 </head>
-<body>
+<body class="studio-body">
 
-  <!-- Top Navigation -->
-  <header class="nav-header">
-    <div class="brand-badge">
-      <span class="pill">DESIGN OS</span>
-      <span>SVG Animation Engine</span>
+  <!-- Top Floating Studio Toolbar -->
+  <header class="studio-topbar">
+    <div class="studio-brand-group">
+      <a href="../docs/index.html" class="studio-logo" title="Back to Showcase">
+        <svg viewBox="0 0 256 256" style="width: 20px; height: 20px; fill: #38bdf8;"><rect width="256" height="256" rx="40" fill="#18181b"/><path d="M128 64v128M64 128h128" stroke="#38bdf8" stroke-width="24" stroke-linecap="round"/></svg>
+        <span>Design OS: SaaS Short (9:16)</span>
+      </a>
+      <span class="studio-meta-tag">1080 × 1920 · 60fps · 00:11.5</span>
     </div>
-    <a href="index.html" class="nav-link">← Switch to 16:9 Architecture Promo</a>
+
+    <div class="studio-top-actions">
+      <div class="studio-speed-group">
+        <button class="studio-speed-btn speed-btn active" data-speed="1">1x</button>
+        <button class="studio-speed-btn speed-btn" data-speed="2">2x</button>
+      </div>
+      <a href="saas-short.mp4" class="studio-action-btn primary" download>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>
+        <span>Download MP4</span>
+      </a>
+    </div>
   </header>
 
-  <!-- 9:16 Mobile Phone Frame Mockup -->
-  <main class="phone-mockup-wrapper">
-    <!-- Dynamic Island Bezel -->
-    <div class="phone-island">
-      <div class="island-camera"></div>
-      <div class="island-sensor"></div>
-    </div>
+  <!-- Master Video Stage -->
+  <main class="studio-stage-container">
+    <div id="video-stage-frame" class="studio-stage-frame phone-mockup-wrapper" style="height: min(calc(100vh - 210px), 640px); aspect-ratio: 9 / 16; width: auto; max-width: 90vw; background: #000000; border: 3px solid #3f3f46; border-radius: 36px; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1px var(--studio-line), 0 30px 80px -40px rgba(0, 0, 0, 0.95);">
+      <!-- Dynamic Island Bezel -->
+      <div class="phone-island">
+        <div class="island-camera"></div>
+        <div class="island-sensor"></div>
+      </div>
 
     <!-- Master 9:16 SVG Canvas (1080 x 1920) -->
     <div class="svg-canvas-container">
@@ -391,53 +406,46 @@
           </g>
         </g>
       </svg>
-    </div>
-  </main>
+    </div> <!-- /svg-canvas-container -->
+  </div> <!-- /video-stage-frame -->
 
-  <!-- Player Controls Card -->
-  <section class="controls-card">
-    <!-- Timeline Scrubber -->
-    <div class="scrubber-track" id="scrubber">
-      <!-- Scene Markers on Scrubber -->
-      <div class="marker" style="left: 0%;" title="S1: Dropdown (0s)"></div>
-      <div class="marker" style="left: 13.04%;" title="S2: Input Bar (1.5s)"></div>
-      <div class="marker" style="left: 30.43%;" title="S3: Kinetic Typo (3.5s)"></div>
-      <div class="marker" style="left: 47.82%;" title="S4: Cards Stack (5.5s)"></div>
-      <div class="marker" style="left: 65.21%;" title="S5: GenAI Stream (7.5s)"></div>
-      <div class="marker" style="left: 86.95%;" title="S6: CTA Outro (10s)"></div>
-
-      <div class="scrubber-progress" id="progress"></div>
-      <div class="scrubber-handle" id="handle"></div>
-    </div>
-
-    <!-- Actions & Scene Jump Buttons -->
-    <div class="actions-row">
-      <div class="left-btns">
-        <button class="btn btn-primary" id="btn-play">
-          <span id="play-icon">▶</span> <span id="play-label">Play</span>
+  <!-- Unified Studio Transport Dock -->
+  <div class="studio-transport-bar" style="max-width: 580px;">
+    <div class="studio-transport-row">
+      <div class="studio-transport-left">
+        <button id="btn-restart" class="studio-icon-button" title="Restart (Home)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M224,128a96,96,0,0,1-96,96,95.53,95.53,0,0,1-67.88-28.12L38.63,174.4A8,8,0,0,1,50,163.09l21.49,21.48A79.52,79.52,0,0,0,128,208a80,80,0,1,0-80-80,8,8,0,0,1-16,0,96,96,0,1,1,192,0Z"/></svg></button>
+        <button id="btn-play-pause" class="studio-icon-button primary" title="Play/Pause (Space)">
+          <span id="play-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </span>
         </button>
-        <button class="btn" id="btn-replay">↺ Replay</button>
+        <div class="studio-timecode">
+          <strong id="tc-current">00:00.0</strong> / <span id="tc-total">00:11.5</span>
+        </div>
       </div>
 
-      <!-- Quick Scene Jumps -->
-      <div class="scene-buttons">
-        <button class="scene-btn" data-time="0">S1</button>
-        <button class="scene-btn" data-time="1500">S2</button>
-        <button class="scene-btn" data-time="3500">S3</button>
-        <button class="scene-btn" data-time="5500">S4</button>
-        <button class="scene-btn" data-time="7500">S5</button>
-        <button class="scene-btn" data-time="10000">S6</button>
+      <div class="studio-scrubber-lane">
+        <input type="range" id="video-scrubber" class="studio-scrubber" min="0" max="11.5" step="0.05" value="0" aria-label="Scrub video">
+      </div>
+
+      <div class="studio-transport-right">
+        <button id="btn-fullscreen" class="studio-icon-button" title="Toggle Fullscreen (F)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M216,48V88a8,8,0,0,1-16,0V56H168a8,8,0,0,1,0-16h40A8,8,0,0,1,216,48ZM88,200H56V168a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H88a8,8,0,0,0,0-16Zm120-40a8,8,0,0,0-8,8v32H168a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V168A8,8,0,0,0,208,160ZM48,96a8,8,0,0,0,8-8V56H88a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V88A8,8,0,0,0,48,96Z"/></svg></button>
       </div>
     </div>
 
-    <!-- HUD Metadata -->
-    <div class="hud-meta">
-      <div class="hud-timecode">
-        <span class="current" id="tc-current">00:00.000</span> / <span id="tc-total">00:11.500</span>
+    <div class="studio-scenes-row">
+      <div class="studio-scene-pills">
+        <button class="studio-scene-pill pill-btn active" data-time="0">S1 Dropdown</button>
+        <button class="studio-scene-pill pill-btn" data-time="1500">S2 Input</button>
+        <button class="studio-scene-pill pill-btn" data-time="3500">S3 Kinetic</button>
+        <button class="studio-scene-pill pill-btn" data-time="5500">S4 Stack</button>
+        <button class="studio-scene-pill pill-btn" data-time="7500">S5 GenAI</button>
+        <button class="studio-scene-pill pill-btn" data-time="10000">S6 CTA</button>
       </div>
-      <div class="hud-status">HYPERFRAMES 120FPS VIRTUAL CLOCK</div>
+      <span id="scene-name" style="color: var(--studio-muted); font-size: 11px;">Scene 1: Dropdown</span>
     </div>
-  </section>
+  </div>
+</main>
 
   <script src="saas-short-engine.js"></script>
   <script>
@@ -448,64 +456,86 @@
       window.__seekToTime = (sec) => engine.seek(sec * 1000);
 
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('clean') === 'true') {
+      if (urlParams.get('clean') === 'true' || urlParams.get('render') === 'true') {
+        document.documentElement.classList.add('clean-export');
         document.body.classList.add('clean-export');
       }
       const initialSec = parseFloat(urlParams.get('t') || '0');
       const shouldAutoplay = urlParams.get('autoplay') === 'true';
 
-      const btnPlay = document.getElementById('btn-play');
-      const btnReplay = document.getElementById('btn-replay');
+      const btnPlayPause = document.getElementById('btn-play-pause');
+      const btnRestart = document.getElementById('btn-restart');
+      const btnFullscreen = document.getElementById('btn-fullscreen');
       const playIcon = document.getElementById('play-icon');
-      const playLabel = document.getElementById('play-label');
-      const progressEl = document.getElementById('progress');
-      const handleEl = document.getElementById('handle');
-      const scrubberEl = document.getElementById('scrubber');
+      const scrubber = document.getElementById('video-scrubber');
       const tcCurrent = document.getElementById('tc-current');
-      const sceneBtns = document.querySelectorAll('.scene-btn');
+      const sceneNameEl = document.getElementById('scene-name');
+      const sceneBtns = document.querySelectorAll('.studio-scene-pill');
+      const speedBtns = document.querySelectorAll('.studio-speed-btn');
+
+      const sceneNames = [
+        { time: 0, name: "Scene 1: Model Dropdown" },
+        { time: 1500, name: "Scene 2: Input Bar Expansion" },
+        { time: 3500, name: "Scene 3: Kinetic Typo & Waves" },
+        { time: 5500, name: "Scene 4: Dynamic Card Stack" },
+        { time: 7500, name: "Scene 5: GenAI Document Streaming" },
+        { time: 10000, name: "Scene 6: OpenAI Rosette & CTA" }
+      ];
 
       function formatTime(ms) {
-        const sec = Math.floor(ms / 1000);
-        const mins = String(Math.floor(sec / 60)).padStart(2, '0');
-        const secs = String(sec % 60).padStart(2, '0');
-        const millis = String(Math.floor(ms % 1000)).padStart(3, '0');
-        return mins + ':' + secs + '.' + millis;
+        const totalSec = ms / 1000;
+        const mins = String(Math.floor(totalSec / 60)).padStart(2, '0');
+        const secs = (totalSec % 60).toFixed(1).padStart(4, '0');
+        return mins + ':' + secs;
       }
 
       function updateActiveScene(t) {
+        let currentScene = sceneNames[0];
+        for (let i = sceneNames.length - 1; i >= 0; i--) {
+          if (t >= sceneNames[i].time) {
+            currentScene = sceneNames[i];
+            break;
+          }
+        }
+        if (sceneNameEl) sceneNameEl.textContent = currentScene.name;
         sceneBtns.forEach(btn => {
           const time = parseInt(btn.getAttribute('data-time'), 10);
-          btn.classList.toggle('active', Math.abs(t - time) < 1500);
+          btn.classList.toggle('active', time === currentScene.time);
         });
       }
 
       engine.on('update', (t) => {
-        const pct = (t / engine.durationMs) * 100;
-        progressEl.style.width = pct + '%';
-        handleEl.style.left = pct + '%';
+        scrubber.value = (t / 1000).toFixed(2);
         tcCurrent.textContent = formatTime(t);
 
         if (engine.isPlaying) {
-          playIcon.textContent = '❚❚';
-          playLabel.textContent = 'Pause';
+          playIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>';
         } else {
-          playIcon.textContent = '▶';
-          playLabel.textContent = 'Play';
+          playIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
         }
 
         updateActiveScene(t);
       });
 
       engine.on('ended', () => {
-        playIcon.textContent = '▶';
-        playLabel.textContent = 'Play';
+        playIcon.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
       });
 
-      btnPlay.addEventListener('click', () => engine.togglePlay());
-      btnReplay.addEventListener('click', () => {
+      btnPlayPause.addEventListener('click', () => engine.togglePlay());
+      btnRestart.addEventListener('click', () => {
         engine.seek(0);
-        engine.play();
       });
+
+      if (btnFullscreen) {
+        btnFullscreen.addEventListener('click', () => {
+          const frame = document.getElementById('video-stage-frame') || document.documentElement;
+          if (!document.fullscreenElement) {
+            frame.requestFullscreen().catch(() => {});
+          } else {
+            document.exitFullscreen().catch(() => {});
+          }
+        });
+      }
 
       sceneBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -514,34 +544,40 @@
         });
       });
 
-      // Scrubber Interaction
-      let isDragging = false;
-      function handleScrub(e) {
-        const rect = scrubberEl.getBoundingClientRect();
-        const pos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-        engine.seek(pos * engine.durationMs);
-      }
+      scrubber.addEventListener('input', (e) => {
+        const sec = parseFloat(e.target.value);
+        engine.seek(sec * 1000);
+      });
 
-      scrubberEl.addEventListener('mousedown', (e) => {
-        isDragging = true;
-        handleScrub(e);
-      });
-      window.addEventListener('mousemove', (e) => {
-        if (isDragging) handleScrub(e);
-      });
-      window.addEventListener('mouseup', () => {
-        isDragging = false;
+      speedBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          speedBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          const speed = parseFloat(btn.getAttribute('data-speed')) || 1;
+          engine.playbackRate = speed;
+        });
       });
 
       // Keyboard Shortcuts
       window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         if (e.code === 'Space') {
           e.preventDefault();
           engine.togglePlay();
         } else if (e.code === 'ArrowRight') {
-          engine.seek(engine.currentTimeMs + 250);
+          e.preventDefault();
+          engine.seek(engine.currentTimeMs + (e.shiftKey ? 2000 : 250));
         } else if (e.code === 'ArrowLeft') {
-          engine.seek(engine.currentTimeMs - 250);
+          e.preventDefault();
+          engine.seek(engine.currentTimeMs - (e.shiftKey ? 2000 : 250));
+        } else if (e.code === 'Home' || e.key === '0') {
+          e.preventDefault();
+          engine.seek(0);
+        } else if (e.code === 'KeyF') {
+          e.preventDefault();
+          const frame = document.getElementById('video-stage-frame') || document.documentElement;
+          if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+          else document.exitFullscreen().catch(() => {});
         }
       });
 

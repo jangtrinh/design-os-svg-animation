@@ -19,6 +19,7 @@ class SaasShortEngine {
     this.durationMs = 11500;
     this.currentTimeMs = 0;
     this.isPlaying = false;
+    this.playbackRate = 1;
     this.lastTimestamp = null;
     this.rafId = null;
 
@@ -178,7 +179,7 @@ class SaasShortEngine {
 
   tick(timestamp) {
     if (!this.isPlaying) return;
-    const delta = timestamp - this.lastTimestamp;
+    const delta = (timestamp - this.lastTimestamp) * (this.playbackRate || 1);
     this.lastTimestamp = timestamp;
 
     this.currentTimeMs += delta;

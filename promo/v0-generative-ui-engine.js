@@ -200,6 +200,10 @@
       const s = (t % 60).toFixed(1).padStart(4, '0');
       timecodeDisplay.textContent = `0${m}:${s} / 00:${DURATION.toFixed(1)}`;
     }
+    document.querySelectorAll('.pill-btn, .studio-scene-pill').forEach(btn => {
+      const seek = parseFloat(btn.dataset.seek);
+      btn.classList.toggle('active', Math.abs(t - seek) < 2.5);
+    });
 
     // Default cursor & camera
     let cursorVisible = false;
@@ -735,6 +739,23 @@
   }
 
   // --- Event Listeners ---
+  const btnRestart = document.getElementById('btn-restart');
+  if (btnRestart) {
+    btnRestart.addEventListener('click', () => {
+      pause();
+      window.__seekToTime(0.0);
+    });
+  }
+
+  const btnFullscreen = document.getElementById('btn-fullscreen');
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', () => {
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+  }
+
   if (btnPlayPause) {
     btnPlayPause.addEventListener('click', togglePlayPause);
   }
@@ -768,10 +789,19 @@
       togglePlayPause();
     } else if (e.code === 'ArrowRight') {
       e.preventDefault();
-      window.__seekToTime(currentTime + 1.0);
+      window.__seekToTime(currentTime + (e.shiftKey ? 5.0 : 1.0));
     } else if (e.code === 'ArrowLeft') {
       e.preventDefault();
-      window.__seekToTime(currentTime - 1.0);
+      window.__seekToTime(currentTime - (e.shiftKey ? 5.0 : 1.0));
+    } else if (e.code === 'Home' || e.key === '0') {
+      e.preventDefault();
+      pause();
+      window.__seekToTime(0.0);
+    } else if (e.code === 'KeyF') {
+      e.preventDefault();
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
     }
   });
 

@@ -345,6 +345,10 @@
     // Scrubber & Timecode
     if (videoScrubber) videoScrubber.value = currentTime;
     if (timecodeDisplay) timecodeDisplay.textContent = formatTimecode(currentTime);
+    document.querySelectorAll('.pill-btn, .studio-scene-pill').forEach(btn => {
+      const seek = parseFloat(btn.dataset.seek || btn.getAttribute('data-seek'));
+      btn.classList.toggle('active', Math.abs(currentTime - seek) < 3.5);
+    });
 
     // Virtual Camera Transform
     renderCamera(currentTime);
@@ -677,14 +681,46 @@
   }
 
   // --- Event Listeners ---
+  const btnRestart = document.getElementById('btn-restart');
+  if (btnRestart) {
+    btnRestart.addEventListener('click', () => {
+      isPlaying = false;
+      renderFrame(0);
+    });
+  }
+
+  const btnFullscreen = document.getElementById('btn-fullscreen');
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', () => {
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+  }
+
   if (btnPlayPause) {
     btnPlayPause.addEventListener('click', togglePlayPause);
   }
 
   window.addEventListener('keydown', (e) => {
-    if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.code === 'Space') {
       e.preventDefault();
       togglePlayPause();
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      renderFrame(Math.min(38.0, currentTime + (e.shiftKey ? 5 : 1)));
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      renderFrame(Math.max(0, currentTime - (e.shiftKey ? 5 : 1)));
+    } else if (e.code === 'Home' || e.key === '0') {
+      e.preventDefault();
+      renderFrame(0);
+    } else if (e.code === 'KeyF') {
+      e.preventDefault();
+      const frame = document.getElementById('video-stage-frame') || document.querySelector('.video-stage-wrapper') || document.documentElement;
+      if (!document.fullscreenElement) frame.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
     }
   });
 
