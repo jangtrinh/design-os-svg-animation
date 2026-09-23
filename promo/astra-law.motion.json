@@ -1,0 +1,54 @@
+{
+  "version": "0.1.0",
+  "scene": {
+    "viewBox": [0, 0, 1920, 1080],
+    "nodes": [{
+      "id": "bluePoint",
+      "parentId": null,
+      "path": {
+        "fillRule": "nonzero",
+        "contours": [{
+          "id": "outline",
+          "closed": true,
+          "vertices": [
+            { "p": [960, 522], "in": [-9.94, 0], "out": [9.94, 0] },
+            { "p": [978, 540], "in": [0, -9.94], "out": [0, 9.94] },
+            { "p": [960, 558], "in": [9.94, 0], "out": [-9.94, 0] },
+            { "p": [942, 540], "in": [0, 9.94], "out": [0, -9.94] }
+          ]
+        }]
+      },
+      "transform": { "translate": [0, 0], "scale": [1, 1], "rotate": 0, "pivot": [960, 540] },
+      "style": { "fill": [0.055, 0.46, 0.92, 1], "opacity": 0 }
+    }]
+  },
+  "timeline": { "durationMs": 77594, "iterations": 1, "direction": "normal", "fill": "both" },
+  "tracks": [
+    {
+      "id": "pointVisibility",
+      "targetId": "bluePoint",
+      "property": "opacity",
+      "keyframes": [
+        { "timeMs": 0, "value": 0, "ease": { "kind": "hold" } },
+        { "timeMs": 3900, "value": 0, "ease": { "kind": "linear" } },
+        { "timeMs": 4550, "value": 1, "ease": { "kind": "linear" } },
+        { "timeMs": 6650, "value": 1, "ease": { "kind": "linear" } },
+        { "timeMs": 7450, "value": 0, "ease": { "kind": "linear" } }
+      ]
+    },
+    {
+      "id": "pointScale",
+      "targetId": "bluePoint",
+      "property": "scale",
+      "keyframes": [
+        { "timeMs": 0, "value": [1, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 4500, "value": [1, 1], "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 } },
+        { "timeMs": 7450, "value": [2.5, 2.5], "ease": { "kind": "linear" } }
+      ]
+    }
+  ],
+  "accessibility": {
+    "label": "Blue point opens the Astra for Law sequence",
+    "reducedMotion": { "mode": "static", "atMs": 75000 }
+  }
+}

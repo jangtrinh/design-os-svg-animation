@@ -31,6 +31,19 @@
 
 ---
 
+## Astra for Law recreation (local)
+
+The [77.594-second Studio Runner](promo/astra-law-promo.html) recreates the [OpenAI reference video](https://www.youtube.com/watch?v=YeeGHCixr7o) with a seekable virtual clock, Motion IR geometry, procedural starfield, and reduced-motion fallback. Run it through a local server from the repository root:
+
+```bash
+python3 -m http.server 3033
+# Open http://localhost:3033/promo/astra-law-promo.html
+```
+
+Validate the player with `node scripts/export-astra-law-video.mjs --verify`, capture frames with `--proof`, or export a silent 1080p/30 fps MP4 with `node scripts/export-astra-law-video.mjs`. The output goes to ignored `.cache/astra-for-law/`. The reference download and its soundtrack are kept local; see [the recreation record](plans/astra-for-law-recreation.md) for scene anchors and visual limits.
+
+---
+
 ## ⚡ What's New in v2.0 (HyperFrames Architecture Upgrade)
 
 Our recreation pipeline has been upgraded with core architectural breakthroughs:
