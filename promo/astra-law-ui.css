@@ -16,7 +16,38 @@
 .file-card button{color:#111}
 .studio-scene-pills{overflow-x:auto}.studio-scene-pill{white-space:nowrap}
 
-#composer-camera{position:absolute;inset:0;transform-origin:0 0;will-change:transform}
+/* The S-1 viewer keeps the reference's two-tier chrome and page rhythm. */
+.word-window-topbar{position:relative;justify-content:flex-start;gap:15px;padding:0 16px;background:#fafafa;color:#4e4e50;font-size:13px}
+.word-window-topbar img{width:17px;height:17px;opacity:.62}
+.word-browser-left,.word-browser-right{display:flex;align-items:center;gap:18px}
+.word-browser-left{width:300px}.word-browser-right{margin-left:auto;gap:17px}
+.word-tab{height:34px;align-self:flex-end;width:255px;padding:0 13px;display:flex;align-items:center;gap:8px;background:#fff;border:1px solid #e8e8e8;border-bottom:0;border-radius:10px 10px 0 0;white-space:nowrap}
+.word-tab span{margin-left:auto;color:#999;font-size:18px}.word-new-tab{font-size:20px;color:#888}
+.word-window aside{padding:0 24px;font-size:14px;line-height:1.43}
+.word-chat-title{height:37px;display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:600}
+.word-chat-title img{width:18px;height:18px;opacity:.55}
+.word-chat{position:absolute;top:24px;left:91px;width:215px;box-sizing:border-box;margin:0;padding:10px 12px;border-radius:14px;background:#f4f4f5;font-size:14px;line-height:1.36}
+.word-window aside .worked{position:absolute;top:94px;left:24px;margin:0;font-size:14px}
+.word-answer{position:absolute;top:126px;left:24px;right:22px;margin:0;font-size:14px;line-height:1.47}
+.word-mini-file{position:absolute;top:260px;left:21px;right:21px;height:51px;box-sizing:border-box;margin:0;padding:7px 9px;gap:9px;font-size:12px;border-radius:9px}
+.word-mini-file img{width:23px;height:23px}.word-mini-file span{margin:0;color:#2f3033;line-height:1.25;overflow:hidden;text-overflow:ellipsis}.word-mini-file small{display:block;color:#9a9a9a;font-size:10px}.word-mini-file b{margin-left:auto;color:#777;font-size:11px;font-weight:400;white-space:nowrap}
+.word-feedback{position:absolute;top:329px;left:24px;display:flex;gap:14px}.word-feedback img{width:16px;height:16px;opacity:.5}
+.word-window article{padding:0;background:#f7f7f8}.word-window article .word-toolbar{height:37px;box-sizing:border-box;padding:0 18px;display:flex;align-items:center;justify-content:space-between;font-size:14px;background:#fff}.word-document-title span:last-child{display:flex;align-items:center;color:#777;font-size:12px}.word-document-title img{width:16px;height:16px;margin-left:12px;opacity:.6}
+.document-paper{position:relative;box-sizing:border-box;height:calc(100% - 59px);margin:22px 22px 0 0;padding:0;border:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#151515;text-align:center;font-weight:700;overflow:hidden}
+.document-preface{position:absolute;top:42px;left:61px;right:52px;text-align:center;font-size:13px;line-height:2.05}
+.document-registration{position:absolute;top:104px;right:42px;font-size:13px}
+.document-paper .document-rule{position:absolute;top:125px;left:55px;right:50px;height:3px;margin:0;background:#121212}
+.document-paper .document-agency{position:absolute;top:202px;left:0;right:0;margin:0;font-size:31px;line-height:1.27}
+.document-washington{position:absolute;top:291px;left:0;right:0;margin:0;font-size:18px}
+.document-paper .document-form{position:absolute;top:329px;left:0;right:0;margin:0;font-size:35px}
+.document-paper .document-statement{position:absolute;top:374px;left:0;right:0;margin:0;font-size:22px;line-height:1.42}
+.document-paper hr{position:absolute;top:503px;left:32%;width:36%;margin:0;border:0;border-top:1px solid #999}
+.document-paper .document-company{position:absolute;top:535px;left:0;right:0;margin:0;font-size:34px;line-height:1.2}
+.document-caption{position:absolute;top:586px;left:0;right:0;font-size:13px}
+.document-meta{position:absolute;top:633px;left:6%;right:6%;margin:0;padding-top:14px}
+#word-scene{background:radial-gradient(ellipse at 9% 104%,#a68ac4 0%,#c6a2c4 20%,transparent 47%),radial-gradient(ellipse at 66% -9%,#ff823c 0%,#ffab7a 47%,transparent 72%),#ffc4bb}
+
+#composer-camera{position:absolute;inset:0;transform-origin:0 0}
 #response-scene .early-response{position:absolute;left:445px;top:345px;width:1060px;font-size:43px;line-height:1.45}
 #response-scene .early-response .worked{font-size:22px;color:#929292;margin:0 0 28px}
 #response-scene .early-response p:last-child{margin:0}

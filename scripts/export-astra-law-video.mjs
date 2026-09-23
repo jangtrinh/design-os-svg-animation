@@ -7,6 +7,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
+import { seekFrame } from './astra-law-capture.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DURATION = 77.594;
@@ -73,10 +74,10 @@ async function verifyPlayer(page) {
   await page.evaluate(() => window.__seekToTime(66));
   assert.equal(await page.$eval('#earned-scene h1', element => element.textContent.trim()), 'So you');
   for (const time of [8.5, 18.8, 21, 24.8, 45, 50, 66]) {
-    await page.evaluate(value => window.__seekToTime(value), time);
+    await seekFrame(page, time);
     const first = createHash('sha256').update(await page.screenshot({ type: 'png' })).digest('hex');
-    await page.evaluate(value => window.__seekToTime(value), 63);
-    await page.evaluate(value => window.__seekToTime(value), time);
+    await seekFrame(page, 63);
+    await seekFrame(page, time);
     const second = createHash('sha256').update(await page.screenshot({ type: 'png' })).digest('hex');
     assert.equal(first, second, `out-of-order seek changed frame at ${time}s`);
   }
@@ -127,7 +128,7 @@ async function verifyRunner(browser, port) {
 }
 
 async function writeFrame(page, output, second) {
-  await page.evaluate(time => window.__seekToTime(time), second);
+  await seekFrame(page, second);
   await page.screenshot({ path: output, type: 'png' });
 }
 
@@ -148,7 +149,7 @@ async function exportVideo(page, audio) {
   });
   try {
     for (let frame = 0; frame < FRAMES; frame++) {
-      await page.evaluate(time => window.__seekToTime(time), frame / FPS);
+      await seekFrame(page, frame / FPS);
       const jpeg = await page.screenshot({ type: 'jpeg', quality: 94 });
       if (!encoder.stdin.write(jpeg)) await new Promise(resolve => encoder.stdin.once('drain', resolve));
       if (frame % 300 === 0 || frame === FRAMES - 1) process.stdout.write(`\rframes ${frame + 1}/${FRAMES}`);

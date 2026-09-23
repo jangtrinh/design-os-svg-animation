@@ -120,7 +120,10 @@ export function createSceneRenderer(renderIR) {
     composerChars.forEach((span, index) => { span.style.opacity = index < chars ? '1' : '0'; });
     document.getElementById('composer-text').dataset.placeholder = chars === 0 ? 'Work on anything' : '';
     const [scale, cameraX, cameraY] = still ? [1, 0, 0] : cameraAt(time);
-    document.getElementById('composer-camera').style.transform = 'translate3d(' + cameraX.toFixed(1) + 'px,' + cameraY.toFixed(1) + 'px,0) scale(' + scale.toFixed(4) + ')';
+    const camera = document.getElementById('composer-camera');
+    // Layout zoom keeps macro text crisp after arbitrary seeks; translation remains a transform.
+    camera.style.zoom = scale.toFixed(4);
+    camera.style.transform = 'translate3d(' + (cameraX / scale).toFixed(1) + 'px,' + (cameraY / scale).toFixed(1) + 'px,0)';
     const composerCard = document.querySelector('#composer-scene .composer-card');
     composerCard.style.boxShadow = scale > 2 ? 'none' : '';
     composerCard.style.borderTopColor = scale > 2 ? 'transparent' : '';
