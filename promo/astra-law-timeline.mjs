@@ -41,8 +41,8 @@ export function randomGenerator(seed) {
 
 export function cameraAt(time) {
   const keys = [
-    [18.65, 1.36, -580, -250], [19.35, 1.36, -580, -250],
-    [20, 4, -2080, -1210], [21.15, 4.3, -3800, -1480],
+    [18.65, 1.83, -788, -222], [19.0, 1.83, -788, -222],
+    [20, 4, -2080, -1210], [21.15, 4.3, -3620, -1440],
     [22.15, 1, 350, 0], [24.3, 1.83, -796, -429],
     [25.38, 1.83, -796, -429]
   ];
@@ -51,6 +51,20 @@ export function cameraAt(time) {
   const a = keys[right - 1], b = keys[right];
   const amount = progress(time, a[0], b[0]);
   return [mix(a[1], b[1], amount), mix(a[2], b[2], amount), mix(a[3], b[3], amount)];
+}
+
+export function composerLayoutAt(time) {
+  const keys = [
+    [18.65, 126, 43, 479, 47, 24, 20],
+    [19.0, 126, 43, 479, 47, 24, 20],
+    [21.15, 235, 115, 590, 70, 26, 26],
+    [24.3, 274, 160, 628, 80, 28, 30]
+  ];
+  const right = keys.findIndex(key => key[0] > time);
+  if (right < 1) return keys[right < 0 ? keys.length - 1 : 0].slice(1);
+  const a = keys[right - 1], b = keys[right];
+  const amount = progress(time, a[0], b[0]);
+  return a.slice(1).map((value, index) => mix(value, b[index + 1], amount));
 }
 
 export function beatOpacity(beat, time) {

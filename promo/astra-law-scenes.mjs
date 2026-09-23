@@ -1,26 +1,5 @@
-import { BEATS, beatOpacity, cameraAt, clamp, mix, progress, randomGenerator } from './astra-law-timeline.mjs';
-function createGalaxy() {
-  const root = document.getElementById('spiral-stars');
-  const random = randomGenerator(20260917);
-  const stars = [];
-  for (let index = 0; index < 2700; index++) {
-    const field = index >= 2540;
-    const radius = 22 + Math.pow(random(), 1.1) * 470;
-    const arm = index % 3;
-    const angle = arm * Math.PI * 2 / 3 + radius * 0.0128 + (random() - 0.5) * 0.27;
-    const burstAngle = (index % 2 ? Math.PI / 2 : -Math.PI / 2) + (random() - 0.5) * 1.55;
-    const burstRadius = 75 + random() * 640;
-    const x = field ? random() * 1920 : 960 + Math.cos(angle) * radius * 0.72;
-    const y = field ? random() * 1080 : 540 + Math.sin(angle) * radius * 0.97;
-    const dot = document.createElement('i');
-    dot.className = 'star';
-    dot.style.width = (field ? 1.6 : 1.5 + random() * 3.7) + 'px';
-    root.append(dot);
-    stars.push({ dot, x, y, field, burstAngle, burstRadius,
-      brightness: field ? 0.14 + random() * 0.55 : 0.7 + random() * 0.3 });
-  }
-  return stars;
-}
+import { BEATS, beatOpacity, cameraAt, clamp, composerLayoutAt, mix, progress } from './astra-law-timeline.mjs';
+import { createGalaxy, renderGalaxy } from './astra-law-galaxy.mjs';
 function createPartnerOrbit() {
   const root = document.getElementById('partner-orbit');
   const labels = ['', 'LECG', 'LegalQuants', 'Skills.law', 'Harvey', 'Legora', 'iManage', 'Intapp', 'DeepJudge', 'HighQ', 'Clio', 'Relativity', 'Box', 'Trellis', 'CourtListener', 'CoCounsel', 'Thomson Reuters', 'Microsoft Word', 'Latham & Watkins', 'Sullivan & Cromwell', 'Cooley', 'Skadden', 'Ropes & Gray', '', '', '', '', '', ''];
@@ -30,7 +9,7 @@ function createPartnerOrbit() {
     tile.textContent = label;
     if (!label) tile.classList.add(index ? 'orbit-neutral' : 'partner-placeholder');
     if (!label && index) { const icon = document.createElement('img'); icon.src = 'astra-law-icons/' + ['scales', 'briefcase', 'eye', 'wrench', 'chart-line-up', 'file-xls'][(index - 23) % 6] + '.svg'; icon.alt = ''; tile.append(icon); }
-    if (label.length > 14) tile.style.fontSize = '8px';
+    if (label.length > 14) tile.style.fontSize = '10px';
     root.append(tile);
     return { tile, index };
   });
@@ -98,24 +77,7 @@ export function createSceneRenderer(renderIR) {
       ? 'Access the legal tools<br>you know and trust'
       : time >= 43.24 ? 'Access the legal tools' : 'Access the';
     toolHeading.style.left = (still ? 50 : mix(34, 50, progress(time, 42.8, 44.02))).toFixed(2) + '%';
-    if (time >= 7.38 && time <= 10.65) {
-      const burst = still ? 1 : progress(time, 7.48, 8.08);
-      const spiral = still ? 1 : progress(time, 7.95, 8.9);
-      const drift = still ? 0 : (time - 9.1) * 0.05;
-      for (const star of galaxy) {
-        const bx = 960 + Math.cos(star.burstAngle) * star.burstRadius * burst;
-        const by = 540 + Math.sin(star.burstAngle) * star.burstRadius * burst;
-        const dx = star.x - 960, dy = star.y - 540;
-        const sx = 960 + dx * Math.cos(drift) - dy * Math.sin(drift);
-        const sy = 540 + dx * Math.sin(drift) + dy * Math.cos(drift);
-        const x = star.field ? star.x : mix(bx, sx, spiral);
-        const y = star.field ? star.y : mix(by, sy, spiral);
-        const length = star.field ? 1 : mix(14, 1, spiral);
-        const rotation = star.field ? 0 : star.burstAngle * 180 / Math.PI;
-        star.dot.style.transform = 'translate3d(' + x.toFixed(2) + 'px,' + y.toFixed(2) + 'px,0) rotate(' + rotation.toFixed(2) + 'deg) scaleX(' + length.toFixed(2) + ')';
-        star.dot.style.opacity = (star.brightness * (star.field ? 1 : mix(0.75, 1, spiral))).toFixed(3);
-      }
-    }
+    renderGalaxy(galaxy, time, still);
     const chars = still ? composerChars.length : Math.floor(clamp((time - 19.32) / 5.1) * composerChars.length);
     composerChars.forEach((span, index) => { span.style.opacity = index < chars ? '1' : '0'; });
     document.getElementById('composer-text').dataset.placeholder = chars === 0 ? 'Work on anything' : '';
@@ -125,6 +87,25 @@ export function createSceneRenderer(renderIR) {
     camera.style.zoom = scale.toFixed(4);
     camera.style.transform = 'translate3d(' + (cameraX / scale).toFixed(1) + 'px,' + (cameraY / scale).toFixed(1) + 'px,0)';
     const composerCard = document.querySelector('#composer-scene .composer-card');
+    const [height, textHeight, subbarTop, subbarHeight, paddingTop, paddingSide] = composerLayoutAt(time);
+    composerCard.style.height = `${height.toFixed(2)}px`;
+    composerCard.style.padding = `${paddingTop.toFixed(2)}px ${paddingSide.toFixed(2)}px 0`;
+    const introType = still ? 1 : progress(time, 18.95, 20);
+    const composerText = document.getElementById('composer-text');
+    composerText.style.height = `${textHeight.toFixed(2)}px`;
+    const detailZoom = still ? 0 : progress(time, 20, 20.9) * (1 - progress(time, 21.2, 22.2));
+    composerText.style.fontSize = `${(mix(18, 28, introType) + detailZoom * 11).toFixed(2)}px`;
+    const textRise = still ? 0 : mix(-9, 2, introType) * (1 - progress(time, 21.3, 22.3));
+    composerText.style.transform = `translate3d(${(detailZoom * 22).toFixed(2)}px,${textRise.toFixed(2)}px,0)`;
+    document.getElementById('composer-scene').style.setProperty('--detail-zoom', detailZoom.toFixed(3));
+    const modelLabel = document.querySelector('.model-label');
+    modelLabel.style.fontSize = `${(mix(17, 23, introType) + detailZoom * 7).toFixed(2)}px`;
+    modelLabel.style.transform = `translate3d(${(detailZoom * 55).toFixed(2)}px,${(detailZoom * 8).toFixed(2)}px,0)`;
+    document.querySelector('.composer-plus').style.fontSize = `${mix(25, 34, introType).toFixed(2)}px`;
+    const subbar = document.querySelector('#composer-scene .composer-subbar');
+    subbar.style.top = `${subbarTop.toFixed(2)}px`;
+    subbar.style.height = `${subbarHeight.toFixed(2)}px`;
+    subbar.style.fontSize = `${mix(17, 20, introType).toFixed(2)}px`;
     composerCard.style.boxShadow = scale > 2 ? 'none' : '';
     composerCard.style.borderTopColor = scale > 2 ? 'transparent' : '';
     const early = document.querySelector('.early-response');
@@ -145,9 +126,9 @@ export function createSceneRenderer(renderIR) {
     for (const partner of partners) {
       const angle = -0.08 + partner.index * Math.PI * 2 / partners.length;
       const appearance = still ? 1 : progress(time, 44.84 + partner.index * 0.082, 45.24 + partner.index * 0.082);
-      const x = 960 + Math.cos(angle) * mix(665, 760, appearance);
+      const x = 960 + Math.cos(angle) * mix(760, 855, appearance);
       const y = 540 + Math.sin(angle) * mix(345, 400, appearance);
-      partner.tile.style.transform = 'translate3d(' + (x - 42).toFixed(2) + 'px,' + (y - 42).toFixed(2) + 'px,0) scale(' + mix(0.35, 1, appearance).toFixed(3) + ')';
+      partner.tile.style.transform = 'translate3d(' + (x - 50).toFixed(2) + 'px,' + (y - 50).toFixed(2) + 'px,0) scale(' + mix(0.35, 1, appearance).toFixed(3) + ')';
       partner.tile.style.opacity = appearance.toFixed(3);
     }
     const skillCount = still || time >= 52 ? 40 : time < 50.45 ? 27 : time < 51 ? Math.round(mix(27, 36, progress(time, 50.45, 51))) : Math.round(mix(36, 40, progress(time, 51, 52)));
@@ -165,9 +146,10 @@ export function createSceneRenderer(renderIR) {
       tile.style.opacity = amount.toFixed(3);
       tile.style.transform = 'translate3d(' + (entry[0] * slide).toFixed(1) + 'px,' + (entry[1] * slide + (1 - amount) * 16).toFixed(1) + 'px,0) scale(' + mix(0.84, 1, amount).toFixed(3) + ')';
     });
-    const first = 'Your data stays private.';
+    const first = 'Your data stays private';
     const second = 'Zero data retention.';
-    document.getElementById('privacy-first').textContent = still ? first : first.slice(0, Math.floor(clamp((time - 58.05) / 1.9) * first.length));
+    const firstText = still ? first : first.slice(0, Math.floor(clamp((time - 58.05) / 1.9) * first.length));
+    document.getElementById('privacy-first').textContent = firstText + (still || time >= 60.25 ? '.' : '');
     const secondText = still ? second : second.slice(0, Math.floor(clamp((time - 60.35) / 0.72) * second.length));
     document.getElementById('privacy-second').textContent = secondText;
     document.getElementById('privacy-break').style.display = secondText ? '' : 'none';

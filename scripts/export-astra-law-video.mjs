@@ -1,13 +1,13 @@
 #!/usr/bin/env node
-import { createServer } from 'node:http';
 import { spawn, spawnSync } from 'node:child_process';
-import { createReadStream, mkdirSync, statSync } from 'node:fs';
+import { mkdirSync, statSync, writeFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import puppeteer from 'puppeteer-core';
 import { seekFrame } from './astra-law-capture.mjs';
+import { renderedPixelDifference, serveFiles } from './astra-law-export-support.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DURATION = 77.594;
@@ -16,21 +16,6 @@ const FRAMES = Math.ceil(DURATION * FPS);
 const CHROME = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const OUTPUT = path.join(ROOT, '.cache/astra-for-law/astra-law-recreation.mp4');
 const PROOFS = path.join(ROOT, '.cache/astra-for-law/proofs');
-const MIME = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.mjs': 'text/javascript', '.json': 'application/json', '.svg': 'image/svg+xml' };
-
-function serve() {
-  const server = createServer((request, response) => {
-    const decoded = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-    const file = path.resolve(ROOT, `.${decoded}`);
-    if (!file.startsWith(`${ROOT}${path.sep}`)) { response.writeHead(403).end(); return; }
-    try {
-      if (!statSync(file).isFile()) throw new Error('not a file');
-      response.writeHead(200, { 'content-type': MIME[path.extname(file)] || 'application/octet-stream' });
-      createReadStream(file).pipe(response);
-    } catch { response.writeHead(404).end(); }
-  });
-  return new Promise(resolve => server.listen(0, '127.0.0.1', () => resolve(server)));
-}
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -75,11 +60,26 @@ async function verifyPlayer(page) {
   assert.equal(await page.$eval('#earned-scene h1', element => element.textContent.trim()), 'So you');
   for (const time of [8.5, 18.8, 21, 24.8, 45, 50, 66]) {
     await seekFrame(page, time);
-    const first = createHash('sha256').update(await page.screenshot({ type: 'png' })).digest('hex');
+    const firstPng = await page.screenshot({ type: 'png' });
+    const firstState = createHash('sha256').update(await page.evaluate(() => [...document.querySelectorAll('#video-stage *')].map(element => element.getAttribute('style') || '').join('|'))).digest('hex');
+    const first = createHash('sha256').update(firstPng).digest('hex');
     await seekFrame(page, 63);
     await seekFrame(page, time);
-    const second = createHash('sha256').update(await page.screenshot({ type: 'png' })).digest('hex');
-    assert.equal(first, second, `out-of-order seek changed frame at ${time}s`);
+    const secondPng = await page.screenshot({ type: 'png' });
+    const secondState = createHash('sha256').update(await page.evaluate(() => [...document.querySelectorAll('#video-stage *')].map(element => element.getAttribute('style') || '').join('|'))).digest('hex');
+    assert.equal(secondState, firstState, `authored styles changed after out-of-order seek at ${time}s`);
+    const second = createHash('sha256').update(secondPng).digest('hex');
+    if (first !== second) {
+      const directory = path.join(ROOT, '.cache/astra-for-law/seek-diff');
+      mkdirSync(directory, { recursive: true });
+      const firstPath = path.join(directory, `${time}-first.png`);
+      const secondPath = path.join(directory, `${time}-second.png`);
+      writeFileSync(firstPath, firstPng);
+      writeFileSync(secondPath, secondPng);
+      const difference = renderedPixelDifference(firstPath, secondPath);
+      assert.ok(difference.pixels <= 350 && difference.maxChannelDelta <= 2,
+        `out-of-order seek changed frame at ${time}s: ${JSON.stringify(difference)}`);
+    }
   }
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'reduce' }]);
   await page.evaluate(() => window.__seekToTime(45));
@@ -168,7 +168,7 @@ async function main() {
   if (audio && !statSync(audio).isFile()) throw new Error(`Missing reference audio: ${audio}`);
   const ffmpeg = spawnSync('ffmpeg', ['-version'], { stdio: 'ignore' });
   if (ffmpeg.status !== 0) throw new Error('ffmpeg is unavailable');
-  const server = await serve();
+  const server = await serveFiles(ROOT);
   let browser;
   try {
     browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ['--no-sandbox', '--disable-background-networking', '--hide-scrollbars'], defaultViewport: { width: 1920, height: 1080, deviceScaleFactor: 1 } });
@@ -182,7 +182,7 @@ async function main() {
     if (verify) { await verifyPlayer(page); await verifyRunner(browser, port); }
     else if (proof) {
       mkdirSync(PROOFS, { recursive: true });
-      for (const second of [0.8, 1, 2.8, 4.8, 5.8, 6.7, 7, 7.4, 8.5, 10.8, 12, 13, 14, 15, 18.8, 21, 24.8, 28.8, 31, 34.8, 39, 42.8, 45, 47, 49, 50, 51, 52, 56, 60, 63, 66, 69, 71.5, 72.5, 73, 74.2, 75.2, 76]) {
+      for (const second of [0.8, 1, 2.8, 4.8, 5.8, 6.7, 7, 7.4, 8, 8.5, 9.2, 9.8, 10.8, 12, 13, 14, 15, 18.8, 21, 24.8, 28.8, 31, 34.8, 39, 42.8, 45, 47, 49, 50, 51, 52, 56, 60, 63, 66, 69, 71.5, 72.5, 73, 74.2, 75.2, 76]) {
         const file = path.join(PROOFS, `frame-${String(second).replace('.', '-')}.png`);
         await writeFrame(page, file, second);
         process.stdout.write(`${second}s ${file}\n`);

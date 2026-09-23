@@ -31,17 +31,22 @@ html.clean-export body{width:1920px;height:1080px;overflow:hidden}.clean-export 
 
 /* Reference-matched states are driven by the virtual clock in astra-law-scenes.mjs. */
 #powered-scene h1{font-size:112px}
-#galaxy-scene{background:#020305}
+#galaxy-scene{background:radial-gradient(ellipse at center,#000 60%,#030506 80%,#0c1216 110%)}
 #spiral-stars .star{height:2px;border-radius:50%;background:#f8fbff;box-shadow:none;transform-origin:center center;will-change:auto}
+#spiral-stars .star-glint{box-shadow:0 0 18px 5px #b8c8ff55}
+#spiral-stars .star-glint::before,#spiral-stars .star-glint::after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-45deg);pointer-events:none}
+#spiral-stars .star-glint::before{width:76px;height:4px;background:linear-gradient(90deg,transparent,#ced6ff88 48%,#fff 50%,#ced6ff88 52%,transparent)}
+#spiral-stars .star-glint::after{width:4px;height:76px;background:linear-gradient(transparent,#ced6ff88 48%,#fff 50%,#ced6ff88 52%,transparent)}
 #methods-scene #method-keyword{color:#d3b7ec}
 #firm-scene h1{top:43%}
-#tools-scene .partner-tile{width:84px;min-width:84px;height:84px;box-sizing:border-box;padding:5px;border-radius:11px;font-size:12px;letter-spacing:-.025em;line-height:1.03;text-align:center;overflow:hidden;white-space:normal;box-shadow:0 1px 2px #0002,0 5px 10px -4px #0002}
+#tools-scene .partner-tile{width:100px;min-width:100px;height:100px;box-sizing:border-box;padding:5px;border-radius:18px;font-size:15px;letter-spacing:-.025em;line-height:1.03;text-align:center;overflow:hidden;white-space:normal;box-shadow:0 1px 2px #0002,0 7px 16px -4px #0002}
 #tools-scene .partner-tile:nth-child(4n+1){background:#10244a;color:#fff}
 #tools-scene .partner-tile:nth-child(7n+2){background:#bc1327;color:#fff}
 #tools-scene .partner-tile:nth-child(9n+3){background:#fff;color:#151515}
 #tools-scene .partner-tile.partner-placeholder{width:38px;min-width:38px;height:38px;background:#e76723;border-color:#f4c3a8}
 #skills-scene .skill-cloud span{font-size:23px;padding:12px 18px;border-radius:11px;box-shadow:0 1px 2px #0000000c,0 8px 18px -8px #00000017}
-#privacy-scene h1{font-size:110px}
+#privacy-scene h1{font-size:120px;top:48%}
+#ambitions-scene h1{left:44%;top:49%}
 #private-doc-scene .blurred-document{left:22%;width:56%}
 #privacy-caret{display:inline-block;width:4px;height:.84em;margin-left:4px;vertical-align:-.07em;background:#141414}
 #tools-scene .partner-tile.orbit-neutral{background:#fff;color:#4a5968;border-color:#ededed}
@@ -73,14 +78,13 @@ html.clean-export body{width:1920px;height:1080px;overflow:hidden}.clean-export 
 #with-openai-scene h1{z-index:2;font-size:116px}
 #with-openai-scene h1 span{color:#0d7ee9}
 .closing-artifacts>img{position:absolute;width:116px;height:116px;opacity:.85}
-.closing-artifacts>img:nth-child(1){top:2%;left:11%;width:340px;height:230px;filter:invert(46%) sepia(68%) saturate(1100%) hue-rotate(165deg)}
-.closing-artifacts>img:nth-child(2){top:9%;right:10%;filter:invert(53%) sepia(59%) saturate(600%) hue-rotate(350deg)}
-.closing-artifacts>img:nth-child(3){top:48%;right:2%;width:72px;height:72px;filter:invert(57%) sepia(71%) saturate(480%) hue-rotate(84deg)}
+.closing-artifacts>img:nth-child(1){top:315px;left:-5px;width:220px;height:300px;mix-blend-mode:multiply;filter:contrast(1.08) brightness(1.03);opacity:1}
+.closing-artifacts>img:nth-child(2){top:96px;left:1390px;width:240px;height:215px;opacity:1}
+.closing-artifacts>img:nth-child(3){top:48%;right:2%;width:72px;height:72px}
 .closing-artifacts>img:nth-child(4){bottom:3%;left:8%;width:84px;height:84px;filter:invert(40%) sepia(90%) saturate(900%) hue-rotate(174deg)}
 .closing-artifacts>img:nth-child(5){bottom:2%;right:11%;width:320px;height:230px;filter:invert(80%) sepia(7%) saturate(210%) hue-rotate(158deg)}
 #outro-scene img{width:284px;height:284px}
-.closing-artifacts>img:nth-child(1),.closing-artifacts>img:nth-child(4),.closing-artifacts>img:nth-child(5){display:none}
-.closing-artifacts>img:nth-child(2){top:7%;right:15%;width:230px;height:230px}
+.closing-artifacts>img:nth-child(4),.closing-artifacts>img:nth-child(5){display:none}
 .closing-bars{position:absolute;left:113px;top:-56px;width:671px;height:301px;border-radius:0 0 8px 8px;background:#f1f7ff;overflow:hidden}
 .closing-bars-axis{position:absolute;left:49px;top:104px;height:152px;display:flex;flex-direction:column;justify-content:space-between;color:#798490;font-size:13px}
 .closing-bars-values{position:absolute;left:135px;right:53px;top:-15px;bottom:41px;display:flex;align-items:flex-start;justify-content:space-around;border-bottom:1px solid #c3cbd4}
