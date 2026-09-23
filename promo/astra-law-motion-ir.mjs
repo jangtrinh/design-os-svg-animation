@@ -69,7 +69,9 @@ export async function loadMotionIR(svg) {
       const values = Object.fromEntries(tracks.map(track => [track.property, sampleTrack(track, milliseconds)]));
       const [x, y] = values.translate || node.transform.translate;
       const [scaleX, scaleY] = values.scale || node.transform.scale;
+      const fill = values.fill || node.style.fill;
       path.style.transform = `translate3d(${x}px,${y}px,0) scale(${scaleX},${scaleY}) rotate(${values.rotate || node.transform.rotate}deg)`;
+      path.style.fill = `rgb(${fill.slice(0, 3).map(value => Math.round(value * 255)).join(' ')})`;
       path.style.opacity = values.opacity ?? node.style.opacity;
     }
   };

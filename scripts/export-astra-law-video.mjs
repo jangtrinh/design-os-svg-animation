@@ -55,7 +55,24 @@ async function verifyPlayer(page) {
     const opacity = await page.$eval(`#${id}`, element => Number(getComputedStyle(element).opacity));
     assert.ok(opacity > 0.9, `${id} opacity ${opacity} at ${time}s`);
   }
-  for (const time of [8.5, 21, 45]) {
+  await page.evaluate(() => window.__seekToTime(18.8));
+  assert.ok(await page.$eval('#composer-scene', element => Number(getComputedStyle(element).opacity)) > 0.95);
+  assert.ok(await page.$eval('#firm-scene', element => Number(getComputedStyle(element).opacity)) < 0.05);
+  assert.equal(await page.$eval('#composer-text', element => element.dataset.placeholder), 'Work on anything');
+  await page.evaluate(() => window.__seekToTime(24.8));
+  const composer = await page.$eval('#composer-scene .composer-card', element => {
+    const rect = element.getBoundingClientRect();
+    return { left: rect.left, width: rect.width, height: rect.height };
+  });
+  assert.ok(composer.left < 250 && composer.width > 1400 && composer.height > 350,
+    `24.8s composer crop differs from reference: ${JSON.stringify(composer)}`);
+  await page.evaluate(() => window.__seekToTime(50));
+  assert.equal(await page.$eval('#skill-count', element => element.textContent), '27+');
+  assert.ok(await page.$eval('#skill-phrase', element => Number(getComputedStyle(element).opacity)) < 0.05,
+    '50s source shows the counter before the phrase');
+  await page.evaluate(() => window.__seekToTime(66));
+  assert.equal(await page.$eval('#earned-scene h1', element => element.textContent.trim()), 'So you');
+  for (const time of [8.5, 18.8, 21, 24.8, 45, 50, 66]) {
     await page.evaluate(value => window.__seekToTime(value), time);
     const first = createHash('sha256').update(await page.screenshot({ type: 'png' })).digest('hex');
     await page.evaluate(value => window.__seekToTime(value), 63);
@@ -68,9 +85,13 @@ async function verifyPlayer(page) {
   assert.equal(await page.$eval('#tools-scene', element => Number(getComputedStyle(element).opacity)), 1);
   await page.evaluate(() => window.__seekToTime(4.5));
   assert.equal(await page.$eval('#motion-ir-stage path', element => Number(getComputedStyle(element).opacity)), 0);
-  await page.evaluate(() => window.__seekToTime(1.9));
+  await page.evaluate(() => window.__seekToTime(3));
   assert.equal(await page.$eval('#frontier-scene h1', element => Number(getComputedStyle(element).opacity)), 1);
   await page.emulateMediaFeatures([{ name: 'prefers-reduced-motion', value: 'no-preference' }]);
+  await page.evaluate(() => window.__seekToTime(6.7));
+  assert.equal(await page.$eval('#motion-ir-stage path', element => getComputedStyle(element).fill), 'rgb(3, 183, 76)');
+  await page.evaluate(() => window.__seekToTime(7));
+  assert.equal(await page.$eval('#motion-ir-stage path', element => getComputedStyle(element).fill), 'rgb(3, 133, 253)');
   await page.evaluate(() => { window.__seekToTime(12); document.getElementById('btn-play-pause').click(); });
   await page.waitForFunction(() => Number(document.getElementById('video-scrubber').value) > 12.05);
   await page.evaluate(() => document.getElementById('btn-play-pause').click());
@@ -160,7 +181,7 @@ async function main() {
     if (verify) { await verifyPlayer(page); await verifyRunner(browser, port); }
     else if (proof) {
       mkdirSync(PROOFS, { recursive: true });
-      for (const second of [0.8, 2.8, 8.5, 15, 21, 31, 39, 45, 51, 56, 60, 63, 66, 69, 73, 76]) {
+      for (const second of [0.8, 1, 2.8, 4.8, 5.8, 6.7, 7, 7.4, 8.5, 10.8, 12, 13, 14, 15, 18.8, 21, 24.8, 28.8, 31, 34.8, 39, 42.8, 45, 47, 49, 50, 51, 52, 56, 60, 63, 66, 69, 71.5, 72.5, 73, 74.2, 75.2, 76]) {
         const file = path.join(PROOFS, `frame-${String(second).replace('.', '-')}.png`);
         await writeFrame(page, file, second);
         process.stdout.write(`${second}s ${file}\n`);

@@ -3,7 +3,7 @@
   "scene": {
     "viewBox": [0, 0, 1920, 1080],
     "nodes": [{
-      "id": "bluePoint",
+      "id": "colorPoint",
       "parentId": null,
       "path": {
         "fillRule": "nonzero",
@@ -19,36 +19,52 @@
         }]
       },
       "transform": { "translate": [0, 0], "scale": [1, 1], "rotate": 0, "pivot": [960, 540] },
-      "style": { "fill": [0.055, 0.46, 0.92, 1], "opacity": 0 }
+      "style": { "fill": [1, 0.451, 0.086, 1], "opacity": 0 }
     }]
   },
   "timeline": { "durationMs": 77594, "iterations": 1, "direction": "normal", "fill": "both" },
   "tracks": [
     {
       "id": "pointVisibility",
-      "targetId": "bluePoint",
+      "targetId": "colorPoint",
       "property": "opacity",
       "keyframes": [
         { "timeMs": 0, "value": 0, "ease": { "kind": "hold" } },
-        { "timeMs": 3900, "value": 0, "ease": { "kind": "linear" } },
-        { "timeMs": 4550, "value": 1, "ease": { "kind": "linear" } },
-        { "timeMs": 6650, "value": 1, "ease": { "kind": "linear" } },
-        { "timeMs": 7450, "value": 0, "ease": { "kind": "linear" } }
+        { "timeMs": 6380, "value": 0, "ease": { "kind": "hold" } },
+        { "timeMs": 6440, "value": 1, "ease": { "kind": "linear" } },
+        { "timeMs": 7530, "value": 1, "ease": { "kind": "hold" } },
+        { "timeMs": 7600, "value": 0, "ease": { "kind": "linear" } }
       ]
     },
     {
       "id": "pointScale",
-      "targetId": "bluePoint",
+      "targetId": "colorPoint",
       "property": "scale",
       "keyframes": [
         { "timeMs": 0, "value": [1, 1], "ease": { "kind": "hold" } },
-        { "timeMs": 4500, "value": [1, 1], "ease": { "kind": "cubic-bezier", "x1": 0.16, "y1": 1, "x2": 0.3, "y2": 1 } },
-        { "timeMs": 7450, "value": [2.5, 2.5], "ease": { "kind": "linear" } }
+        { "timeMs": 6440, "value": [1.35, 1.35], "ease": { "kind": "hold" } },
+        { "timeMs": 7250, "value": [1.2, 1.2], "ease": { "kind": "linear" } },
+        { "timeMs": 7400, "value": [4.1, 4.1], "ease": { "kind": "cubic-bezier", "x1": 0.2, "y1": 0, "x2": 0.7, "y2": 1 } },
+        { "timeMs": 7570, "value": [40, 40], "ease": { "kind": "cubic-bezier", "x1": 0.4, "y1": 0, "x2": 1, "y2": 1 } }
+      ]
+    },
+    {
+      "id": "pointColor",
+      "targetId": "colorPoint",
+      "property": "fill",
+      "keyframes": [
+        { "timeMs": 0, "value": [1, 0.451, 0.086, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6530, "value": [0.804, 0.686, 0.98, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6680, "value": [0.012, 0.718, 0.298, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6830, "value": [0.996, 0.827, 0.259, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6930, "value": [0.012, 0.522, 0.992, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 7080, "value": [0.02, 0.02, 0.02, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 77594, "value": [0.02, 0.02, 0.02, 1], "ease": { "kind": "hold" } }
       ]
     }
   ],
   "accessibility": {
-    "label": "Blue point opens the Astra for Law sequence",
+    "label": "Color-changing point opens the Astra for Law sequence",
     "reducedMotion": { "mode": "static", "atMs": 75000 }
   }
 }

@@ -18,7 +18,6 @@
 .partner-tile:nth-child(5n+1){background:#10244a;color:#fff}.partner-tile:nth-child(6n+2){background:#c30a27;color:#fff}.partner-tile:nth-child(7n+4){background:#e6f4ff;color:#155db1}.partner-tile:nth-child(8n+6){background:#203e33;color:#fff}
 #skills-scene h1{z-index:2;font-size:120px}
 .skill-cloud span{position:absolute;padding:16px 22px;border-radius:16px;background:#fff;box-shadow:0 1px 2px #0001,0 8px 18px -8px #0002;font-size:26px;white-space:nowrap}
-.skill-cloud span:nth-child(1){left:5%;top:27%}.skill-cloud span:nth-child(2){left:29%;top:12%}.skill-cloud span:nth-child(3){right:5%;top:16%}.skill-cloud span:nth-child(4){left:3%;bottom:18%}.skill-cloud span:nth-child(5){right:4%;bottom:19%}.skill-cloud span:nth-child(6){left:27%;bottom:8%}.skill-cloud span:nth-child(7){right:17%;top:34%}.skill-cloud span:nth-child(8){left:12%;top:44%}
 #trust-scene h1,#privacy-scene h1,#safeguards-scene h1,#earned-scene h1{font-size:118px}
 #ambitions-scene h1{font-size:118px}
 .blurred-document{position:absolute;left:27%;top:8%;width:46%;height:90%;padding:90px 70px;filter:blur(20px);background:#fff;box-shadow:0 8px 45px #0002;opacity:.8}
@@ -29,3 +28,54 @@
 #outro-scene img{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:116px;height:116px}
 html.clean-export body{width:1920px;height:1080px;overflow:hidden}.clean-export .studio-topbar,.clean-export .studio-transport-bar{display:none!important}.clean-export .studio-stage-container{width:1920px;max-width:none;height:1080px;padding:0;margin:0}.clean-export .studio-stage-frame{width:1920px;height:1080px;aspect-ratio:auto;border:0;border-radius:0;box-shadow:none}.clean-export #video-stage{transform:none!important}
 @media(prefers-reduced-motion:reduce){.scene,.star,.partner-tile{transition:none!important;animation:none!important;will-change:auto}}
+
+/* Reference-matched states are driven by the virtual clock in astra-law-scenes.mjs. */
+#powered-scene h1{font-size:112px}
+#galaxy-scene{background:#020305}
+#spiral-stars .star{height:2px;border-radius:50%;background:#f8fbff;box-shadow:none;transform-origin:center center;will-change:auto}
+#methods-scene #method-keyword{color:#d3b7ec}
+#firm-scene h1{top:43%}
+#tools-scene .partner-tile{width:84px;min-width:84px;height:84px;box-sizing:border-box;padding:5px;border-radius:11px;font-size:12px;letter-spacing:-.025em;line-height:1.03;text-align:center;overflow:hidden;white-space:normal;box-shadow:0 1px 2px #0002,0 5px 10px -4px #0002}
+#tools-scene .partner-tile:nth-child(4n+1){background:#10244a;color:#fff}
+#tools-scene .partner-tile:nth-child(7n+2){background:#bc1327;color:#fff}
+#tools-scene .partner-tile:nth-child(9n+3){background:#fff;color:#151515}
+#tools-scene .partner-tile.partner-placeholder{width:38px;min-width:38px;height:38px;background:#e76723;border-color:#f4c3a8}
+#skills-scene .skill-cloud span{font-size:23px;padding:12px 18px;border-radius:11px;box-shadow:0 1px 2px #0000000c,0 8px 18px -8px #00000017}
+#privacy-scene h1{font-size:110px}
+#private-doc-scene .blurred-document{left:22%;width:56%}
+#privacy-caret{display:inline-block;width:4px;height:.84em;margin-left:4px;vertical-align:-.07em;background:#141414}
+#tools-scene .partner-tile.orbit-neutral{background:#fff;color:#4a5968;border-color:#ededed}
+#tools-scene .partner-tile.orbit-neutral img{width:48px;height:48px;opacity:.75}
+#skills-scene h1{left:24.5%;top:50%;text-align:left}
+#earned-scene h1{left:16%;text-align:left}
+#skills-scene .skill-cloud span{left:auto;right:auto;top:auto;bottom:auto;font-size:23px;padding:12px 21px;box-shadow:0 10px 30px #00000014}
+#skills-scene .skill-cloud span:nth-child(1){left:15.5%;top:14.3%}
+#skills-scene .skill-cloud span:nth-child(2){left:29.2%;top:8.5%}
+#skills-scene .skill-cloud span:nth-child(3){left:53.5%;top:9%;font-size:40px;padding:24px 45px;border-radius:25px}
+#skills-scene .skill-cloud span:nth-child(4){left:6.5%;top:61%}
+#skills-scene .skill-cloud span:nth-child(5){left:77.3%;top:71.9%}
+#skills-scene .skill-cloud span:nth-child(6){left:27.5%;top:86.9%}
+#skills-scene .skill-cloud span:nth-child(7){right:11%;top:32%}
+#skills-scene .skill-cloud span:nth-child(8){left:14.2%;top:75.9%}
+#skills-scene .skill-cloud span:nth-child(9){left:6.7%;top:26.4%}
+#skills-scene .skill-cloud span:nth-child(10){right:17%;top:21%}
+#skills-scene .skill-cloud span:nth-child(11){left:56.8%;top:89.2%;font-size:23px}
+#skills-scene .skill-cloud span:nth-child(12){left:69.7%;top:80.6%;font-size:23px}
+.skill-pictograms img{position:absolute;width:50px;height:50px;padding:10px;box-sizing:border-box;border-radius:14px;background:#fff;box-shadow:0 8px 26px #00000013}
+.skill-pictograms img:nth-child(1){left:8%;top:13%}
+.skill-pictograms img:nth-child(2){left:22%;top:2%}
+.skill-pictograms img:nth-child(3){right:5%;top:45%}
+.skill-pictograms img:nth-child(4){right:9%;bottom:13%}
+.skill-pictograms img:nth-child(5){left:7%;bottom:22%}
+#closing-point-scene .closing-point,#outro-scene .outro-point{position:absolute;left:50%;top:50%;display:block;border-radius:50%;transform:translate(-50%,-50%)}
+#closing-point-scene .closing-point{width:150px;height:150px;background:#ffd341}
+#outro-scene .outro-point{width:90px;height:90px;background:#080808}
+#with-openai-scene h1{z-index:2;font-size:116px}
+#with-openai-scene h1 span{color:#0d7ee9}
+.closing-artifacts img{position:absolute;width:116px;height:116px;opacity:.85}
+.closing-artifacts img:nth-child(1){top:2%;left:11%;width:340px;height:230px;filter:invert(46%) sepia(68%) saturate(1100%) hue-rotate(165deg)}
+.closing-artifacts img:nth-child(2){top:9%;right:10%;filter:invert(53%) sepia(59%) saturate(600%) hue-rotate(350deg)}
+.closing-artifacts img:nth-child(3){top:48%;right:2%;width:72px;height:72px;filter:invert(57%) sepia(71%) saturate(480%) hue-rotate(84deg)}
+.closing-artifacts img:nth-child(4){bottom:3%;left:8%;width:84px;height:84px;filter:invert(40%) sepia(90%) saturate(900%) hue-rotate(174deg)}
+.closing-artifacts img:nth-child(5){bottom:2%;right:11%;width:320px;height:230px;filter:invert(80%) sepia(7%) saturate(210%) hue-rotate(158deg)}
+#outro-scene img{width:284px;height:284px}
