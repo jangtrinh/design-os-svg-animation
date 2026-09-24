@@ -23,8 +23,8 @@ Guidance for AI agents (Antigravity, Codex, Claude Code) working inside `design-
 
 ## Standards & Skills
 - **Product Designer (MUST-CALL)**: `skills/product-designer/SKILL.md` (EaseUI & Linear/Stripe-caliber UI craft)
-- Motion Video Recreation Pipeline: `docs/motion-video-recreation-pipeline.md`
+- **Reference Recreation Contract (MUST-READ)**: `docs/motion-video-recreation-pipeline.md`. It owns the source evidence, scene/transition ledger, HyperFrames v2 staging, export review, acceptance states, and session handoff. Technical gates do not establish visual parity.
+- Lessons and review method: `docs/motion-video-recreation-workflow-guide.md`
 - Portable Universal Skill: `skills/motion-video-recreation/SKILL.md`
 - Standalone Promo Player: `promo/claude-design-promo.html`
 - Production R3F Suite: `src/components/`
-

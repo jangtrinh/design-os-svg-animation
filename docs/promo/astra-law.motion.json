@@ -1,0 +1,75 @@
+{
+  "version": "0.1.0",
+  "scene": {
+    "viewBox": [0, 0, 1920, 1080],
+    "nodes": [{
+      "id": "colorPoint",
+      "parentId": null,
+      "path": {
+        "fillRule": "nonzero",
+        "contours": [{
+          "id": "outline",
+          "closed": true,
+          "vertices": [
+            { "p": [960, 522], "in": [-9.94, 0], "out": [9.94, 0] },
+            { "p": [978, 540], "in": [0, -9.94], "out": [0, 9.94] },
+            { "p": [960, 558], "in": [9.94, 0], "out": [-9.94, 0] },
+            { "p": [942, 540], "in": [0, 9.94], "out": [0, -9.94] }
+          ]
+        }]
+      },
+      "transform": { "translate": [0, 0], "scale": [1, 1], "rotate": 0, "pivot": [960, 540] },
+      "style": { "fill": [1, 0.451, 0.086, 1], "opacity": 0 }
+    }]
+  },
+  "timeline": { "durationMs": 77594, "iterations": 1, "direction": "normal", "fill": "both" },
+  "tracks": [
+    {
+      "id": "pointVisibility",
+      "targetId": "colorPoint",
+      "property": "opacity",
+      "keyframes": [
+        { "timeMs": 0, "value": 0, "ease": { "kind": "hold" } },
+        { "timeMs": 6380, "value": 0, "ease": { "kind": "hold" } },
+        { "timeMs": 6440, "value": 1, "ease": { "kind": "linear" } },
+        { "timeMs": 7650, "value": 1, "ease": { "kind": "hold" } },
+        { "timeMs": 7660, "value": 0, "ease": { "kind": "hold" } }
+      ]
+    },
+    {
+      "id": "pointScale",
+      "targetId": "colorPoint",
+      "property": "scale",
+      "keyframes": [
+        { "timeMs": 0, "value": [1, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6440, "value": [1.35, 1.35], "ease": { "kind": "hold" } },
+        { "timeMs": 7250, "value": [1.2, 1.2], "ease": { "kind": "linear" } },
+        { "timeMs": 7400, "value": [4.15, 4.15], "ease": { "kind": "cubic-bezier", "x1": 0.2, "y1": 0, "x2": 0.7, "y2": 1 } },
+        { "timeMs": 7500, "value": [13.3, 13.3], "ease": { "kind": "linear" } },
+        { "timeMs": 7550, "value": [29.5, 29.5], "ease": { "kind": "linear" } },
+        { "timeMs": 7567, "value": [29.5, 29.5], "ease": { "kind": "hold" } },
+        { "timeMs": 7600, "value": [48.3, 48.3], "ease": { "kind": "linear" } },
+        { "timeMs": 7640, "value": [67, 67], "ease": { "kind": "linear" } },
+        { "timeMs": 7660, "value": [75, 75], "ease": { "kind": "linear" } }
+      ]
+    },
+    {
+      "id": "pointColor",
+      "targetId": "colorPoint",
+      "property": "fill",
+      "keyframes": [
+        { "timeMs": 0, "value": [1, 0.451, 0.086, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6530, "value": [0.804, 0.686, 0.98, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6680, "value": [0.012, 0.718, 0.298, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6830, "value": [0.996, 0.827, 0.259, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 6930, "value": [0.012, 0.522, 0.992, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 7080, "value": [0.02, 0.02, 0.02, 1], "ease": { "kind": "hold" } },
+        { "timeMs": 77594, "value": [0.02, 0.02, 0.02, 1], "ease": { "kind": "hold" } }
+      ]
+    }
+  ],
+  "accessibility": {
+    "label": "Color-changing point opens the Astra for Law sequence",
+    "reducedMotion": { "mode": "static", "atMs": 75000 }
+  }
+}
