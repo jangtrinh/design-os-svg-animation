@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
+    "test": "node --test tests/*.test.mjs",
     "demo": "tsx scripts/motion-ir-compiler-demo.ts",
     "guard": "python3 scripts/motion-preflight-guard.py",
     "guard:fix": "python3 scripts/motion-preflight-guard.py --fix",
@@ -16,6 +17,8 @@
     "audit:svg": "python3 scripts/jev-svg-auditor.py audit-dir ./examples",
     "detect:cuts": "node scripts/detect-scene-cuts.mjs",
     "extract:waveform": "node scripts/extract-audio-waveform.mjs",
+    "sync:astra-pages": "node scripts/sync-astra-law-pages.mjs --write",
+    "verify:astra-pages": "node scripts/sync-astra-law-pages.mjs --check",
     "analyze:ref": "node scripts/detect-scene-cuts.mjs && node scripts/extract-audio-waveform.mjs",
     "export:video:60fps": "node scripts/export-60fps-video.mjs"
   },
