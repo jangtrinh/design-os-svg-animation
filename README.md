@@ -23,9 +23,9 @@
 | :--- | :---: | :---: | :---: |
 | **Preview** | ![Claude Design 3D Globe](docs/assets/example-1-claude-design-globe.gif) | ![OpenAI Codex App Promo](docs/assets/example-3-codex-app-promo.gif) | ![Vercel v0 Generative UI](docs/assets/example-4-v0-generative-ui.gif) |
 | **Interactive Runner** | [🚀 Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html) ([local](promo/claude-design-promo.html)) | [⚡ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app-promo.html) ([local](promo/codex-app-promo.html)) | [▲ Launch Web Player](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui.html) ([local](promo/v0-generative-ui.html)) |
-| **1:1 Dual-Layer Sync** | [🪞 Launch 1:1 Split Sync](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/codex-app-promo.html?split=true) | [🪞 Launch 1:1 Split Sync](promo/v0-generative-ui.html?split=true) |
+| **Split comparison** | [🪞 Open split view](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design-promo.html?split=true) | [🪞 Open split view](promo/codex-app-promo.html?split=true) | [🪞 Open split view](promo/v0-generative-ui.html?split=true) |
 | **Deconstruction Assets** | [Contact Sheet](promo/claude-design-promo.contact-sheet.jpg) · [Waveform](promo/claude-design-promo.wave.json) | [Contact Sheet](promo/codex-app-promo.contact-sheet.jpg) · [Waveform](promo/codex-app-promo.wave.json) | [Contact Sheet](docs/v0-generative-ui.contact-sheet.jpg) · [Waveform](promo/v0-generative-ui.wave.json) |
-| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080p 30fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4 (2.4 MB)](promo/v0-generative-ui.mp4) |
+| **Broadcast Video** | [🎬 1080p 60fps MP4 (13 MB)](promo/claude-design-promo.mp4) | [🎬 1080p 60fps MP4 (10 MB)](promo/codex-app-promo.mp4) | [🎬 1080p 60fps MP4 (2.4 MB)](promo/v0-generative-ui.mp4) |
 | **Aspect & Duration** | 16:9 · 82.0 seconds | 16:9 · 38.0 seconds | 16:9 · 47.5 seconds |
 | **Key Motion Features** | Specular Glossy Pill, 2.5D CSS mini-bars, 3D Globe with Great-Circle arcs, live Tweaks, and audio-reactive aura | Native macOS window kinematics, multi-agent streaming execution, tactile diff review & photobooth preview | Official v0 wireframe drawing, reel prompt cycle, component popover edit, 3D code perspective card, Stealth Mode toggle, Vercel outro |
 
@@ -124,7 +124,7 @@ design-os-svg-animation/
 │   ├── claude-design-engine.js         # Deterministic Virtual Clock Engine (Claude Design)
 │   ├── claude-design.css               # Dynamic dark/light theme & easing tokens
 │   ├── codex-app-promo.html            # 38s Interactive Web Player (OpenAI Codex App)
-│   ├── codex-app-promo.mp4             # 1080p 30fps Broadcast Video Output (10 MB)
+│   ├── codex-app-promo.mp4             # 1080p 60fps Broadcast Video Output (10 MB)
 │   ├── codex-app-engine.js             # High-tempo macOS window & multi-agent engine
 │   ├── codex-app.css                   # macOS Sonoma dark theme & terminal styling
 │   ├── v0-generative-ui.html           # 47.5s Interactive Web Player (Vercel v0 Generative UI)
