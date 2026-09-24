@@ -32,8 +32,8 @@
         { "timeMs": 0, "value": 0, "ease": { "kind": "hold" } },
         { "timeMs": 6380, "value": 0, "ease": { "kind": "hold" } },
         { "timeMs": 6440, "value": 1, "ease": { "kind": "linear" } },
-        { "timeMs": 7530, "value": 1, "ease": { "kind": "hold" } },
-        { "timeMs": 7600, "value": 0, "ease": { "kind": "linear" } }
+        { "timeMs": 7650, "value": 1, "ease": { "kind": "hold" } },
+        { "timeMs": 7660, "value": 0, "ease": { "kind": "hold" } }
       ]
     },
     {
@@ -44,8 +44,13 @@
         { "timeMs": 0, "value": [1, 1], "ease": { "kind": "hold" } },
         { "timeMs": 6440, "value": [1.35, 1.35], "ease": { "kind": "hold" } },
         { "timeMs": 7250, "value": [1.2, 1.2], "ease": { "kind": "linear" } },
-        { "timeMs": 7400, "value": [4.1, 4.1], "ease": { "kind": "cubic-bezier", "x1": 0.2, "y1": 0, "x2": 0.7, "y2": 1 } },
-        { "timeMs": 7570, "value": [40, 40], "ease": { "kind": "cubic-bezier", "x1": 0.4, "y1": 0, "x2": 1, "y2": 1 } }
+        { "timeMs": 7400, "value": [4.15, 4.15], "ease": { "kind": "cubic-bezier", "x1": 0.2, "y1": 0, "x2": 0.7, "y2": 1 } },
+        { "timeMs": 7500, "value": [13.3, 13.3], "ease": { "kind": "linear" } },
+        { "timeMs": 7550, "value": [29.5, 29.5], "ease": { "kind": "linear" } },
+        { "timeMs": 7567, "value": [29.5, 29.5], "ease": { "kind": "hold" } },
+        { "timeMs": 7600, "value": [48.3, 48.3], "ease": { "kind": "linear" } },
+        { "timeMs": 7640, "value": [67, 67], "ease": { "kind": "linear" } },
+        { "timeMs": 7660, "value": [75, 75], "ease": { "kind": "linear" } }
       ]
     },
     {

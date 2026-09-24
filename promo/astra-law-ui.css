@@ -47,7 +47,9 @@
 .document-paper .document-company{position:absolute;top:535px;left:0;right:0;margin:0;font-size:34px;line-height:1.2}
 .document-caption{position:absolute;top:586px;left:0;right:0;font-size:13px}
 .document-meta{position:absolute;top:633px;left:6%;right:6%;margin:0;padding-top:14px}
-#word-scene{background:radial-gradient(ellipse at 9% 104%,#a68ac4 0%,#c6a2c4 20%,transparent 47%),radial-gradient(ellipse at 66% -9%,#ff823c 0%,#ffab7a 47%,transparent 72%),#ffc4bb}
+#word-scene{background:#fff}
+#word-scene::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 9% 104%,#a68ac4 0%,#c6a2c4 20%,transparent 47%),radial-gradient(ellipse at 66% -9%,#ff823c 0%,#ffab7a 47%,transparent 72%),#ffc4bb;opacity:var(--word-gradient-opacity,0);pointer-events:none}
+#safeguards-scene{background:transparent}
 
 #composer-camera{position:absolute;inset:0;transform-origin:0 0}
 #response-scene .early-response{position:absolute;left:445px;top:345px;width:1060px;font-size:43px;line-height:1.45}

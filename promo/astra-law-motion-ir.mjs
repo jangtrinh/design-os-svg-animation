@@ -15,6 +15,14 @@ function contourPath(contour) {
   return commands.join(' ');
 }
 
+function circlePath(cx, cy, radius) {
+  const handle = radius * 0.5522847498307936;
+  return `M${cx} ${cy - radius} C${cx + handle} ${cy - radius} ${cx + radius} ${cy - handle} ${cx + radius} ${cy} `
+    + `C${cx + radius} ${cy + handle} ${cx + handle} ${cy + radius} ${cx} ${cy + radius} `
+    + `C${cx - handle} ${cy + radius} ${cx - radius} ${cy + handle} ${cx - radius} ${cy} `
+    + `C${cx - radius} ${cy - handle} ${cx - handle} ${cy - radius} ${cx} ${cy - radius} Z`;
+}
+
 function bezier(progress, { x1, y1, x2, y2 }) {
   const curve = (a, b, t) => 3 * a * (1 - t) ** 2 * t + 3 * b * (1 - t) * t ** 2 + t ** 3;
   let low = 0;
@@ -70,7 +78,14 @@ export async function loadMotionIR(svg) {
       const [x, y] = values.translate || node.transform.translate;
       const [scaleX, scaleY] = values.scale || node.transform.scale;
       const fill = values.fill || node.style.fill;
-      path.style.transform = `translate3d(${x}px,${y}px,0) scale(${scaleX},${scaleY}) rotate(${values.rotate || node.transform.rotate}deg)`;
+      if (node.id === 'colorPoint' && scaleX === scaleY) {
+        // Redraw this large iris from Motion IR's sampled scale so Chromium
+        // cannot enlarge a cached low-resolution texture at the handoff.
+        path.setAttribute('d', circlePath(node.transform.pivot[0], node.transform.pivot[1], 18 * scaleX));
+        path.style.transform = `translate3d(${x}px,${y}px,0)`;
+      } else {
+        path.style.transform = `translate3d(${x}px,${y}px,0) scale(${scaleX},${scaleY}) rotate(${values.rotate || node.transform.rotate}deg)`;
+      }
       path.style.fill = `rgb(${fill.slice(0, 3).map(value => Math.round(value * 255)).join(' ')})`;
       path.style.opacity = values.opacity ?? node.style.opacity;
     }
