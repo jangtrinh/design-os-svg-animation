@@ -31,68 +31,36 @@
 
 ---
 
-## Astra for Law recreation (local)
+## Astra for Law motion study
 
-The [77.594-second Studio Runner](promo/astra-law-promo.html) recreates the [OpenAI reference video](https://www.youtube.com/watch?v=YeeGHCixr7o) with a seekable virtual clock, Motion IR geometry, procedural starfield, and reduced-motion fallback. Run it through a local server from the repository root:
+The [interactive player](https://jangtrinh.github.io/design-os-svg-animation/promo/astra-law-promo.html) is an in-progress, 77.6-second recreation study of the [OpenAI reference video](https://www.youtube.com/watch?v=YeeGHCixr7o). It uses a seekable virtual clock, Motion IR geometry, HyperFrames timing presets, a procedural starfield, and a reduced-motion fallback. The partner logo identities are deliberate SVGL stand-ins; visual acceptance remains open. Read the [reference recreation contract](docs/motion-video-recreation-pipeline.md) before continuing it. Run the source player locally from the repository root:
 
 ```bash
 python3 -m http.server 3033
 # Open http://localhost:3033/promo/astra-law-promo.html
 ```
 
-Validate the player with `node scripts/export-astra-law-video.mjs --verify`, capture frames with `--proof`, or export a silent 1080p/30 fps MP4 with `node scripts/export-astra-law-video.mjs`. The output goes to ignored `.cache/astra-for-law/`. The reference download and its soundtrack are kept local; see [the recreation record](plans/astra-for-law-recreation.md) for scene anchors and visual limits.
+Validate the player with `node scripts/export-astra-law-video.mjs --verify`, capture browser frames with `--proof`, or export a local 1080p/30 fps MP4 with `node scripts/export-astra-law-video.mjs`. The output goes to ignored `.cache/astra-for-law/`; the reference video, its soundtrack, and the local MP4 are not published. After player edits, run `npm run sync:astra-pages` and `npm run verify:astra-pages` to keep the public browser copy in `docs/promo/` aligned. See [the recreation record](plans/astra-for-law-recreation.md) for scene anchors, owner decisions, and open visual gaps. An exported video is not a visual acceptance claim.
 
 ---
 
-## ⚡ What's New in v2.0 (HyperFrames Architecture Upgrade)
+## Reference recreation in v2
 
-Our recreation pipeline has been upgraded with core architectural breakthroughs:
-
-1. **Automated Cut & Waveform Analysis (`npm run analyze:ref`)**:
-   - Automated FFmpeg scene transition scoring (`select='gt(scene,0.18)'`) divides videos into logical scenes and renders 2-column contact sheets.
-   - Raw 16-bit PCM mono audio extraction at 4000Hz aggregates into 50Hz peak envelopes (`.wave.json`), powering procedural `--audio-energy` reactive visuals.
-2. **20 Declarative HyperFrames Beats (`src/runtime/hyperframes-engine.mjs`)**:
-   - 20 high-speed atomic primitives (`text`, `logo`, `input`, `chat`, `window`, `phone`, `cards`, `list`, `chart`, `notify`, `icons`, `hub`, `cloud`, `collage`, `logos`, `shape`, `burst`, `grid`, `split`, `face`) to stage rough drafts in minutes.
-3. **1:1 Dual-Layer Reference vs. Draft Synchronizer**:
-   - Side-by-side split screen locking reference MP4 playback with live SVG/HTML canvas timelines for sub-frame verification.
-4. **Obsidian Specular Tokens & 2.5D CSS Extrusions**:
-   - High-gloss pill buttons with top specular highlight caps (`border-radius: 999px 999px 60% 60% / 999px 999px 80% 80%`) and 105° glint sweep.
-   - 2.5D isometric pseudo-element extrusions (`skewY(-34deg)`) providing physical depth without Three.js overhead.
-5. **Gate 6: Hotspot Concentricity (`npm run audit:hotspots`)**:
-   - Automated physical alignment gate verifying that cursor tips hit exact button centroids within `Δ <= 1.0px`.
-6. **In-Browser WebCodecs MP4 Exporter**:
-   - Client-side hardware `VideoEncoder` (`avc1.640033`, 24Mbps, 60fps) + `mp4-muxer` with queue backpressure (`queue.length >= 2`).
+The [contract](docs/motion-video-recreation-pipeline.md) requires source-indexed scene and transition analysis, mandatory HyperFrames staging and timing presets, deterministic rendering, and comparison of the **encoded** export. Cut and waveform tools accelerate ingestion but cannot find every soft transition. Styling techniques and exporter choices depend on the reference; the technical audit does not grade visual similarity.
 
 ---
 
 ## AI Agent Quick Reference & Ingestion Guide
 
-If you are an AI coding agent reading this codebase, follow these rules and directives strictly:
+Read [`AGENTS.md`](AGENTS.md) for repository rules and the [reference recreation contract](docs/motion-video-recreation-pipeline.md) for a video task. The contract owns source evidence, HyperFrames v2, transition and camera analysis, final export review, and acceptance. Consult the [Product Designer skill](skills/product-designer/SKILL.md) before scene, animation, or UI work.
 
-### 1. The 9 Immutable Agent Invariants
-1. **Mandatory Product Designer Skill (MUST-CALL)**: Before designing, creating, or modifying any animation scene, UI mockup, or video layout, agents MUST activate and consult [`skills/product-designer/SKILL.md`](skills/product-designer/SKILL.md) for EaseUI tactile depth, 1px subtle borders, authentic SVGL marks, and undistorted 3D projections.
-2. **Never generate raw SVG path animations directly**: Always pass through the [Motion IR Schema](schemas/motion-ir.schema.json) and deterministic geometric compilation (`svgo`, `flubber`).
-3. **Deterministic First**: Decouple temporal progression via the Virtual Clock (`window.__seekToTime(t)`). Never rely on non-deterministic real-time screen recordings.
-4. **Finite Authored Timelines**: Child timelines MUST NOT contain infinite repeating tweens (`repeat: -1`). Unbounded timelines break deterministic Chromium seeking and WebCodecs encoders.
-5. **GPU-Composited Transforms Only**: Animate `transform` (`translate3d`, `scale`, `rotate`) and `opacity`. Strictly avoid animating layout-thrashing attributes (`width`, `height`, `top`, `left`, `d`) during continuous motion.
-6. **Mandatory A11y & Reduced Motion**: Every generated CSS/JS animation must provide `@media (prefers-reduced-motion: reduce)` fallbacks.
-7. **Zero Emojis / Official Vector Icons Only (HARDRULE)**: Never use raw Unicode emojis as UI icons, button graphics, or status badges. Always use official Phosphor Icons (`@phosphor-icons/core`) or Lucide Icons (`lucide-react`) via SVG `<defs>` + `<use>` or React icon components. Sourced brand marks must come from SVGL (`https://svgl.app/`).
-8. **Gate 6 Hotspot Concentricity (`Δ <= 1.0px`)**: Pointer tip coordinates must match button centroids precisely. All assets must pass `npm run audit:all` with exit code `0`.
-9. **Unified Studio Runner UI & Parity Decoupling (HARDRULE)**: All interactive showcase runners MUST uniformly adopt the dark Studio Runner UI (`studio-runner.css`: `.studio-body`, `.studio-topbar`, rounded stage frame `#222225`, and `.studio-transport-bar` with restart, play/pause, timecode, scrubber, scene jump pills, speed toggles, fullscreen `⛶`, and keyboard shortcuts). Interactive runners must **NEVER** contain split-view side-by-side video comparison widgets (split view degrades viewport geometry and runner responsiveness). All 1:1 ground-truth vs. recreated video comparisons belong exclusively to marketing landing pages and documentation (`docs/index.html#parity-comparison`).
+Use the [live Motion IR schema](schemas/motion-ir.schema.json) for vector intent and deterministic geometry tooling for paths. Keep timelines seekable and finite, provide reduced-motion content, prefer composited properties, and use approved vector icons and sourced marks. Document and verify source-driven exceptions such as layout sizing for crisp text. `npm run audit:all` checks technical rules; it does not certify visual similarity.
 
 ---
 
-## Multi-Agent Runtime Commands & Mappings
+## Runtime commands
 
-| Action | Claude Code (`.claude`) | Codex Native (`Codex CLI`) | Antigravity (`Gemini Agentic`) |
-| :--- | :--- | :--- | :--- |
-| **Product Designer (MUST-CALL)** | `/product-designer` | Role in `AGENTS.md` | `ak:product-designer` |
-| **Motion Video Skill** | `/motion-video-recreation` | Task referenced in `AGENTS.md` | `ak:motion-video-recreation` |
-| **Pre-Flight Guard & Auto-Fix** | `bash: npm run guard:fix` | `shell: npm run guard:fix` | `run_command: npm run guard:fix` |
-| **Verify Anti-Flop Gates** | `bash: npm run audit:anti-flop` | `shell: npm run audit:anti-flop` | `run_command: npm run audit:anti-flop` |
-| **Export MP4 Video**| `bash: python3 scripts/export-promo-video.py` | `shell: python3 scripts/export-promo-video.py` | `run_command: python3 scripts/export-promo-video.py` |
-| **Compile Motion IR**| `bash: npx tsx scripts/motion-ir-compiler-demo.ts` | `shell: npx tsx scripts/motion-ir-compiler-demo.ts` | `run_command: npx tsx scripts/motion-ir-compiler-demo.ts` |
-| **Audit SVGs / AST**| `bash: python3 scripts/jev-svg-auditor.py` | `shell: python3 scripts/jev-svg-auditor.py` | `run_command: python3 scripts/jev-svg-auditor.py` |
+Use the scripts in [`package.json`](package.json) and the case-specific exporter identified by the [contract](docs/motion-video-recreation-pipeline.md). Verify the active runtime's installed commands before invoking a skill or agent; this README does not define a second orchestration or approval process.
 
 ---
 
@@ -128,45 +96,10 @@ npm install
 
 ## Deterministic AI Agent Workflows
 
-### Workflow A: Recreating Promo Video with 99% Parity
-1. **Start Virtual-Clock Local Server**:
-   ```bash
-   python3 -m http.server 3033 --directory ./promo &
-   ```
-2. **Capture Deterministic Frames & Assemble Broadcast MP4**:
-   ```bash
-   # Demo 1: Claude Design 82s Promo (16:9, 1080p 60fps)
-   python3 scripts/export-promo-video.py
+- **Recreate a reference video:** follow the [v2 contract](docs/motion-video-recreation-pipeline.md) from source intake through HyperFrames draft, transition review, final encoded export, and acceptance. Read the [Astra lessons](docs/motion-video-recreation-workflow-guide.md) for concrete failure cases. Select the case-specific exporter named in that case plan; the Claude, Codex App, v0, and Astra exporters are not interchangeable.
+- **Compile Motion IR:** inspect the [live schema](schemas/motion-ir.schema.json), then run `npx tsx scripts/motion-ir-compiler-demo.ts` for the existing compiler demo. The schema and compiler own valid fields and output.
 
-   # Demo 2: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
-   python3 scripts/export-promo-video.py --url http://localhost:3033/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
-
-   # Demo 3: Vercel v0 Generative UI 47.5s Official Video (16:9, 1080p 60fps)
-   node scripts/export-60fps-video.mjs v0
-   ```
-3. **Run Proactive Pre-Flight & Anti-Flop Audits**:
-   ```bash
-   npm run guard          # Proactive pre-flight invariant check
-   npm run audit:anti-flop # 7-Gate Design:OS quality verification
-   # Both must exit with code 0
-   ```
-
-### Workflow B: Compiling Motion IR to Production Code
-1. Inspect or modify animation storyboard: `fixtures/opacity.motion.json`.
-2. Compile to pure CSS keyframes & GSAP timeline:
-   ```bash
-   npx tsx scripts/motion-ir-compiler-demo.ts
-   ```
-
-### Workflow C: Universal 5-Phase Motion Video Recreation Pipeline
-For any UI/UX or product launch video (e.g. OpenAI Codex App, Apple Keynote, Stripe Sessions):
-1. **Consult Full Guide**: [`docs/motion-video-recreation-workflow-guide.md`](docs/motion-video-recreation-workflow-guide.md)
-2. **Review Session Learnings**: [`plans/journals/2026-09-22-codex-app-promo-pipeline.md`](plans/journals/2026-09-22-codex-app-promo-pipeline.md)
-3. **Auto-Fix & Verify Before Commit**:
-   ```bash
-   npm run guard:fix
-   npm run audit:anti-flop
-   ```
+Technical checks use the repository scripts in [`package.json`](package.json). Their success does not imply that a recreation matches its source.
 
 ---
 
@@ -175,8 +108,8 @@ For any UI/UX or product launch video (e.g. OpenAI Codex App, Apple Keynote, Str
 ```
 design-os-svg-animation/
 ├── docs/                               # Canonical Engineering Specifications
-│   ├── motion-video-recreation-workflow-guide.md # Universal 5-Phase Pipeline & Architectural Invariants Guide
-│   ├── motion-video-recreation-pipeline.md  # 5-Stage Universal Motion Pipeline Spec
+│   ├── motion-video-recreation-workflow-guide.md # Lessons and review examples
+│   ├── motion-video-recreation-pipeline.md  # Normative recreation contract
 │   ├── architecture-overview.md        # 7-Stage Hybrid Engine Architecture
 │   ├── motion-ir-specification.md      # Formal Motion IR Schema Spec
 │   └── quality-and-safety-gates.md     # JEV System One & A11y Standards
