@@ -14,7 +14,7 @@ import time
 
 CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ARTIFACTS_DIR = "/Users/jang/.gemini/antigravity/brain/f89cf83b-4c7a-4c1f-be9d-65a033a2abd3"
-BASE_URL = "http://localhost:3033/codex-app-promo.html"
+BASE_URL = "http://127.0.0.1:4323/codex-app-promo.html"
 
 FRAMES = [
     ("evidence_beat1_prompt_submit.png", 0.95, "Beat 1: Instant Hook — Prompt Card & Submit Click"),

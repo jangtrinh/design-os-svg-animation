@@ -3,6 +3,7 @@ import http from 'http';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { LOCAL_SERVER_PORT, LOCAL_SERVER_HOST, LOCAL_SERVER_ORIGIN, resolvePathInsideRoot } from './local-server-config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,7 +11,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 const DOCS_DIR = path.join(ROOT_DIR, 'docs');
 const ARTIFACTS_DIR = '/Users/jang/.gemini/antigravity/brain/f89cf83b-4c7a-4c1f-be9d-65a033a2abd3';
 const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const PORT = 3036;
+const PORT = LOCAL_SERVER_PORT;
 
 // Simple static file server
 function startServer() {
@@ -26,11 +27,10 @@ function startServer() {
   };
 
   const server = http.createServer((req, res) => {
-    let reqPath = req.url.split('?')[0].split('#')[0];
-    if (reqPath === '/' || reqPath === '') reqPath = '/index.html';
-    const filePath = path.join(DOCS_DIR, reqPath);
+    const reqPath = req.url.split('?')[0].split('#')[0];
+    const filePath = resolvePathInsideRoot(DOCS_DIR, reqPath === '/' || reqPath === '' ? '/index.html' : req.url);
 
-    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+    if (filePath && fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
       const ext = path.extname(filePath).toLowerCase();
       res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
       fs.createReadStream(filePath).pipe(res);
@@ -41,8 +41,8 @@ function startServer() {
   });
 
   return new Promise((resolve) => {
-    server.listen(PORT, () => {
-      console.log(`Docs static server listening on http://localhost:${PORT}`);
+    server.listen(PORT, LOCAL_SERVER_HOST, () => {
+      console.log(`Docs static server listening on ${LOCAL_SERVER_ORIGIN}`);
       resolve(server);
     });
   });
@@ -67,8 +67,8 @@ async function main() {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 1200, deviceScaleFactor: 2 });
 
-  console.log(`Navigating to http://localhost:${PORT}/index.html...`);
-  await page.goto(`http://localhost:${PORT}/index.html`, { waitUntil: 'networkidle0' });
+  console.log(`Navigating to ${LOCAL_SERVER_ORIGIN}/index.html...`);
+  await page.goto(`${LOCAL_SERVER_ORIGIN}/index.html`, { waitUntil: 'networkidle0' });
 
   // 1. Capture Hero Carousel Slide 0 (Claude Design)
   const heroEl = await page.$('#hero-carousel');

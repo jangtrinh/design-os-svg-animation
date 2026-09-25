@@ -1,0 +1,435 @@
+/**
+ * studio-player.css — Design OS Canonical Universal Studio Player Stylesheet
+ * 
+ * Standardized UI Shell for all motion deliverables, interactive runners,
+ * and export environments across 16:9, 9:16, and 1:1 aspect ratios.
+ */
+
+:root {
+  color-scheme: dark;
+  --studio-bg: #0b0b0c;
+  --studio-surface: #121214;
+  --studio-surface-elevated: #1a1a1e;
+  --studio-line: #222225;
+  --studio-line-subtle: rgba(255, 255, 255, 0.08);
+  --studio-text: #ededee;
+  --studio-muted: #7d7d83;
+  --studio-faint: #45454a;
+  --studio-accent: #007AFF;
+  --studio-accent-hover: #005ecb;
+  --studio-radius: 14px;
+  --studio-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --studio-mono: "JetBrains Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.studio-body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--studio-bg);
+  color: var(--studio-text);
+  font-family: var(--studio-font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* --- Studio Header Bar --- */
+.studio-topbar {
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(11, 11, 12, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--studio-line);
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
+.studio-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.studio-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--studio-text);
+  text-decoration: none;
+}
+
+.studio-logo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.studio-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-family: var(--studio-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.studio-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-speed-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.studio-speed-btn {
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-family: var(--studio-mono);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-speed-btn:hover {
+  color: var(--studio-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.studio-speed-btn.active {
+  background: var(--studio-surface-elevated);
+  color: var(--studio-text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.studio-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.studio-action-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #3f3f46;
+}
+
+.studio-action-btn.primary {
+  background: var(--studio-text);
+  color: var(--studio-bg);
+  border-color: transparent;
+}
+
+.studio-action-btn.primary:hover {
+  background: #ffffff;
+  opacity: 0.92;
+}
+
+/* --- Master Studio Stage Container --- */
+.studio-stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 16px;
+  width: 100%;
+  max-width: 1240px;
+}
+
+/* Responsive Outer Frame */
+.studio-stage-frame {
+  position: relative;
+  border-radius: var(--studio-radius);
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 0 0 1px var(--studio-line), 0 30px 80px -40px rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Guaranteed Centering Inner Wrapper */
+.video-stage-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Native Coordinate Canvas */
+.video-stage {
+  position: relative;
+  transform-origin: center center;
+  overflow: hidden;
+  user-select: none;
+  flex: none;
+}
+
+/* --- Transport Controls Dock --- */
+.studio-transport-bar {
+  width: 100%;
+  max-width: 960px;
+  margin-top: 18px;
+  padding: 10px 16px;
+  background: rgba(18, 18, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  border: 1px solid var(--studio-line);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.studio-transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.studio-transport-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-icon-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--studio-line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--studio-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+}
+
+.studio-icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #52525b;
+}
+
+.studio-icon-button.primary {
+  background: #27272a;
+  border-color: #3f3f46;
+}
+
+.studio-icon-button.primary:hover {
+  background: #3f3f46;
+}
+
+.studio-timecode {
+  font-family: var(--studio-mono);
+  font-size: 12px;
+  color: var(--studio-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.studio-timecode strong {
+  color: var(--studio-text);
+  font-weight: 500;
+}
+
+.studio-scrubber-lane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.studio-scrubber {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.1s ease;
+}
+
+.studio-scrubber:hover {
+  height: 8px;
+}
+
+.studio-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--studio-text);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.studio-scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.studio-transport-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Scene Pills Row */
+.studio-scenes-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+}
+
+.studio-scene-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.studio-scene-pill {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.studio-scene-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--studio-text);
+}
+
+.studio-scene-pill.active {
+  background: rgba(0, 122, 255, 0.15);
+  border-color: var(--studio-accent);
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.studio-scene-name {
+  color: var(--studio-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+/* --- Clean Export Mode (Headless / Video Capture) --- */
+html.clean-export,
+body.clean-export {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+html.clean-export .studio-topbar,
+body.clean-export .studio-topbar,
+html.clean-export .studio-transport-bar,
+body.clean-export .studio-transport-bar {
+  display: none !important;
+}
+
+html.clean-export .studio-stage-container,
+body.clean-export .studio-stage-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+html.clean-export .studio-stage-frame,
+body.clean-export .studio-stage-frame {
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+}
+
+html.clean-export .video-stage-wrapper,
+body.clean-export .video-stage-wrapper {
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html.clean-export .video-stage,
+body.clean-export .video-stage {
+  transform: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}

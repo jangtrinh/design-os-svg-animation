@@ -15,6 +15,7 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,7 +29,7 @@ const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
 const TARGETS = {
   codex: {
     name: 'OpenAI Codex App Promo',
-    url: 'http://localhost:3033/codex-app-promo.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/codex-app-promo.html?clean=true&autoplay=false`,
     duration: 38.0,
     fps: 60,
     width: 1920,
@@ -37,7 +38,7 @@ const TARGETS = {
   },
   claude: {
     name: 'Claude Design Master Promo',
-    url: 'http://localhost:3033/claude-design-promo.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/claude-design-promo.html?clean=true&autoplay=false`,
     duration: 82.0,
     fps: 60,
     width: 1920,
@@ -46,12 +47,21 @@ const TARGETS = {
   },
   v0: {
     name: 'Vercel v0: Generative UI Launch Video',
-    url: 'http://localhost:3033/v0-generative-ui.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true&autoplay=false`,
     duration: 47.5,
     fps: 60,
     width: 1920,
     height: 1080,
     outputFilename: 'v0-generative-ui.mp4'
+  },
+  tutorial: {
+    name: 'Design OS Tutorial Explainer (OpenAI Templates Edition)',
+    url: `${LOCAL_SERVER_ORIGIN}/design-os-tutorial.html?clean=true&autoplay=false`,
+    duration: 30.0,
+    fps: 60,
+    width: 1920,
+    height: 1080,
+    outputFilename: 'design-os-tutorial.mp4'
   }
 };
 
@@ -196,6 +206,10 @@ async function main() {
 
   if (targetArg === 'v0' || targetArg === 'all') {
     await renderTarget('v0', TARGETS.v0);
+  }
+
+  if (targetArg === 'tutorial' || targetArg === 'all') {
+    await renderTarget('tutorial', TARGETS.tutorial);
   }
 
   console.log('\n🎉 ALL 60FPS VIDEO EXPORTS COMPLETED SUCCESSFULLY!\n');

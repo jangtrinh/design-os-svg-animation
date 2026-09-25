@@ -10,6 +10,7 @@ import { spawn } from 'child_process';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,7 @@ const DEMOS = [
   {
     id: 'example-1-claude-design-globe',
     name: 'Claude Design 3D Globe',
-    url: 'http://localhost:3033/claude-design-promo.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/claude-design-promo.html?clean=true&autoplay=false`,
     start: 12.5,
     duration: 4.0,
     fps: 15,
@@ -35,7 +36,7 @@ const DEMOS = [
   {
     id: 'example-3-codex-app-promo',
     name: 'OpenAI Codex App Promo',
-    url: 'http://localhost:3033/codex-app-promo.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/codex-app-promo.html?clean=true&autoplay=false`,
     start: 0.5,
     duration: 4.0,
     fps: 15,
@@ -47,7 +48,7 @@ const DEMOS = [
   {
     id: 'example-4-v0-generative-ui',
     name: 'Vercel v0 Generative UI',
-    url: 'http://localhost:3033/v0-generative-ui.html?clean=true&autoplay=false',
+    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true&autoplay=false`,
     start: 12.0,
     duration: 4.0,
     fps: 15,

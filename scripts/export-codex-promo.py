@@ -14,7 +14,7 @@ import shutil
 import concurrent.futures
 import time
 
-PROMO_URL_BASE = "http://localhost:3033/codex-app-promo.html"
+PROMO_URL_BASE = "http://127.0.0.1:4323/codex-app-promo.html"
 FRAMES_DIR = "/tmp/codex_promo_frames"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "codex-app-promo.mp4"))

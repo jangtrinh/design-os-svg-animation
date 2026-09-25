@@ -1,18 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Plus, 
-  Lock, 
-  Mic, 
-  ArrowUp, 
-  GitBranch, 
-  Folder, 
-  Check, 
-  ChevronDown, 
-  Gamepad2, 
-  Search, 
-  FileText 
-} from 'lucide-react';
+import { Plus, Lock, Microphone, ArrowUp, GitBranch, Folder, Check, CaretDown, GameController, MagnifyingGlass, FileText } from '@phosphor-icons/react';
 
 export interface CodexHeroInputProps {
   initialWorkspace?: string;
@@ -79,7 +67,7 @@ export const CodexHeroInput: React.FC<CodexHeroInputProps> = ({
           className="flex items-center gap-2 text-3xl font-normal text-zinc-500 hover:text-zinc-800 transition-colors mt-1 focus:outline-none"
         >
           <span>{workspace}</span>
-          <ChevronDown className={`w-6 h-6 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          <CaretDown className={`w-6 h-6 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
         {/* Dropdown Popover */}
@@ -142,11 +130,11 @@ export const CodexHeroInput: React.FC<CodexHeroInputProps> = ({
             </button>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-700 text-sm font-medium cursor-pointer hover:bg-zinc-200/70 transition-colors">
               <span>GPT-5.2-Codex</span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+              <CaretDown className="w-3.5 h-3.5 text-zinc-400" />
             </div>
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-100 text-zinc-700 text-sm font-medium cursor-pointer hover:bg-zinc-200/70 transition-colors">
               <span>Extra high</span>
-              <ChevronDown className="w-3.5 h-3.5 text-zinc-400" />
+              <CaretDown className="w-3.5 h-3.5 text-zinc-400" />
             </div>
           </div>
 
@@ -155,7 +143,7 @@ export const CodexHeroInput: React.FC<CodexHeroInputProps> = ({
               <Lock className="w-4 h-4" />
             </button>
             <button className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors">
-              <Mic className="w-4 h-4" />
+              <Microphone className="w-4 h-4" />
             </button>
             <button 
               onClick={handleSubmit}
@@ -199,11 +187,11 @@ export const CodexHeroInput: React.FC<CodexHeroInputProps> = ({
       {/* Suggestion Cards Row */}
       <div className="grid grid-cols-3 gap-4 w-full mt-8">
         <div className="p-4 bg-white/80 border border-zinc-200/70 rounded-2xl shadow-sm hover:border-zinc-300 transition-all cursor-pointer">
-          <Gamepad2 className="w-5 h-5 text-zinc-600 mb-3" />
+          <GameController className="w-5 h-5 text-zinc-600 mb-3" />
           <p className="text-sm font-medium text-zinc-800">Create a classic snake game</p>
         </div>
         <div className="p-4 bg-white/80 border border-zinc-200/70 rounded-2xl shadow-sm hover:border-zinc-300 transition-all cursor-pointer">
-          <Search className="w-5 h-5 text-zinc-600 mb-3" />
+          <MagnifyingGlass className="w-5 h-5 text-zinc-600 mb-3" />
           <p className="text-sm font-medium text-zinc-800">Find and fix a bugs in my code</p>
         </div>
         <div className="p-4 bg-white/80 border border-zinc-200/70 rounded-2xl shadow-sm hover:border-zinc-300 transition-all cursor-pointer">

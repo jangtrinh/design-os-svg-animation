@@ -36,8 +36,8 @@
 The [interactive player](https://jangtrinh.github.io/design-os-svg-animation/promo/astra-law-promo.html) is an in-progress, 77.6-second recreation study of the [OpenAI reference video](https://www.youtube.com/watch?v=YeeGHCixr7o). It uses a seekable virtual clock, Motion IR geometry, HyperFrames timing presets, a procedural starfield, and a reduced-motion fallback. The partner logo identities are deliberate SVGL stand-ins; visual acceptance remains open. Read the [reference recreation contract](docs/motion-video-recreation-pipeline.md) before continuing it. Run the source player locally from the repository root:
 
 ```bash
-python3 -m http.server 3033
-# Open http://localhost:3033/promo/astra-law-promo.html
+npm run dev
+# Open http://127.0.0.1:4323/promo/astra-law-promo.html
 ```
 
 Validate the player with `node scripts/export-astra-law-video.mjs --verify`, capture browser frames with `--proof`, or export a local 1080p/30 fps MP4 with `node scripts/export-astra-law-video.mjs`. The output goes to ignored `.cache/astra-for-law/`; the reference video, its soundtrack, and the local MP4 are not published. After player edits, run `npm run sync:astra-pages` and `npm run verify:astra-pages` to keep the public browser copy in `docs/promo/` aligned. See [the recreation record](plans/astra-for-law-recreation.md) for scene anchors, owner decisions, and open visual gaps. An exported video is not a visual acceptance claim.

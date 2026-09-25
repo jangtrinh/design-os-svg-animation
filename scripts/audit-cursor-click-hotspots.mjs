@@ -14,10 +14,11 @@ import puppeteer from 'puppeteer-core';
 import http from 'http';
 import fs from 'fs';
 import path from 'path';
+import { LOCAL_SERVER_PORT, LOCAL_SERVER_HOST, LOCAL_SERVER_ORIGIN, resolvePathInsideRoot } from './local-server-config.mjs';
 
 const CHROME_BIN = process.env.CHROME_BIN || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const PORT = 3033;
-const BASE_URL = `http://localhost:${PORT}`;
+const PORT = LOCAL_SERVER_PORT;
+const BASE_URL = LOCAL_SERVER_ORIGIN;
 
 const TARGET_PAGES = [
   {
@@ -32,7 +33,7 @@ const TARGET_PAGES = [
 
 function checkServer(port) {
   return new Promise((resolve) => {
-    const req = http.get(`http://localhost:${port}/`, (res) => {
+    const req = http.get(`http://${LOCAL_SERVER_HOST}:${port}/`, (res) => {
       resolve(true);
     });
     req.on('error', () => resolve(false));
@@ -55,10 +56,9 @@ function startStaticServer(port, staticDir) {
   };
 
   const server = http.createServer((req, res) => {
-    let reqPath = req.url.split('?')[0];
-    if (reqPath === '/') reqPath = '/index.html';
-    const filePath = path.join(staticDir, reqPath);
-    if (!fs.existsSync(filePath)) {
+    const reqUrl = req.url.split('?')[0] === '/' ? '/index.html' : req.url;
+    const filePath = resolvePathInsideRoot(staticDir, reqUrl);
+    if (!filePath || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       res.writeHead(404);
       res.end('Not found');
       return;
@@ -70,7 +70,7 @@ function startStaticServer(port, staticDir) {
   });
 
   return new Promise((resolve, reject) => {
-    server.listen(port, () => resolve(server));
+    server.listen(port, LOCAL_SERVER_HOST, () => resolve(server));
     server.on('error', reject);
   });
 }

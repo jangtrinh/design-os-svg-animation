@@ -1,9 +1,10 @@
 import puppeteer from 'puppeteer-core';
 import path from 'path';
+import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 
 const ARTIFACTS_DIR = '/Users/jang/.gemini/antigravity/brain/f89cf83b-4c7a-4c1f-be9d-65a033a2abd3';
 const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const URL = 'http://localhost:3033/v0-generative-ui.html?clean=true';
+const URL = `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true`;
 
 const HOTSPOT_CLICKS = [
   { t: 12.88, name: 'proof_hotspot_click_1_enter.png', desc: 'Click 1: Submit Prompt button (enter)' },

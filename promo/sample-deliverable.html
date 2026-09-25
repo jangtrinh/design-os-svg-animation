@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anti-Flop Gate 9 Test Deliverable</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+/**
+ * studio-player.css — Design OS Canonical Universal Studio Player Stylesheet
+ * 
+ * Standardized UI Shell for all motion deliverables, interactive runners,
+ * and export environments across 16:9, 9:16, and 1:1 aspect ratios.
+ */
+
+:root {
+  color-scheme: dark;
+  --studio-bg: #0b0b0c;
+  --studio-surface: #121214;
+  --studio-surface-elevated: #1a1a1e;
+  --studio-line: #222225;
+  --studio-line-subtle: rgba(255, 255, 255, 0.08);
+  --studio-text: #ededee;
+  --studio-muted: #7d7d83;
+  --studio-faint: #45454a;
+  --studio-accent: #007AFF;
+  --studio-accent-hover: #005ecb;
+  --studio-radius: 14px;
+  --studio-font: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --studio-mono: "JetBrains Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body.studio-body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--studio-bg);
+  color: var(--studio-text);
+  font-family: var(--studio-font);
+  font-size: 13px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* --- Studio Header Bar --- */
+.studio-topbar {
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(11, 11, 12, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--studio-line);
+  position: sticky;
+  top: 0;
+  z-index: 10000;
+}
+
+.studio-brand-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.studio-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--studio-text);
+  text-decoration: none;
+}
+
+.studio-logo svg {
+  width: 20px;
+  height: 20px;
+}
+
+.studio-meta-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-family: var(--studio-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.studio-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-speed-group {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--studio-line);
+  border-radius: 8px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.studio-speed-btn {
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-family: var(--studio-mono);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.studio-speed-btn:hover {
+  color: var(--studio-text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.studio-speed-btn.active {
+  background: var(--studio-surface-elevated);
+  color: var(--studio-text);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.studio-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-text);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.studio-action-btn:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #3f3f46;
+}
+
+.studio-action-btn.primary {
+  background: var(--studio-text);
+  color: var(--studio-bg);
+  border-color: transparent;
+}
+
+.studio-action-btn.primary:hover {
+  background: #ffffff;
+  opacity: 0.92;
+}
+
+/* --- Master Studio Stage Container --- */
+.studio-stage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 20px 16px;
+  width: 100%;
+  max-width: 1240px;
+}
+
+/* Responsive Outer Frame */
+.studio-stage-frame {
+  position: relative;
+  border-radius: var(--studio-radius);
+  overflow: hidden;
+  background: #000000;
+  box-shadow: 0 0 0 1px var(--studio-line), 0 30px 80px -40px rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Guaranteed Centering Inner Wrapper */
+.video-stage-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+
+/* Native Coordinate Canvas */
+.video-stage {
+  position: relative;
+  transform-origin: center center;
+  overflow: hidden;
+  user-select: none;
+  flex: none;
+}
+
+/* --- Transport Controls Dock --- */
+.studio-transport-bar {
+  width: 100%;
+  max-width: 960px;
+  margin-top: 18px;
+  padding: 10px 16px;
+  background: rgba(18, 18, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  border: 1px solid var(--studio-line);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.studio-transport-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.studio-transport-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.studio-icon-button {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid var(--studio-line);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--studio-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 14px;
+}
+
+.studio-icon-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #52525b;
+}
+
+.studio-icon-button.primary {
+  background: #27272a;
+  border-color: #3f3f46;
+}
+
+.studio-icon-button.primary:hover {
+  background: #3f3f46;
+}
+
+.studio-timecode {
+  font-family: var(--studio-mono);
+  font-size: 12px;
+  color: var(--studio-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.studio-timecode strong {
+  color: var(--studio-text);
+  font-weight: 500;
+}
+
+.studio-scrubber-lane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.studio-scrubber {
+  width: 100%;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 99px;
+  outline: none;
+  cursor: pointer;
+  transition: height 0.1s ease;
+}
+
+.studio-scrubber:hover {
+  height: 8px;
+}
+
+.studio-scrubber::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--studio-text);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.studio-scrubber::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.studio-transport-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Scene Pills Row */
+.studio-scenes-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  gap: 12px;
+}
+
+.studio-scene-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+}
+
+.studio-scene-pill {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--studio-line);
+  color: var(--studio-muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.studio-scene-pill:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--studio-text);
+}
+
+.studio-scene-pill.active {
+  background: rgba(0, 122, 255, 0.15);
+  border-color: var(--studio-accent);
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.studio-scene-name {
+  color: var(--studio-muted);
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 320px;
+}
+
+/* --- Clean Export Mode (Headless / Video Capture) --- */
+html.clean-export,
+body.clean-export {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  overflow: hidden !important;
+}
+
+html.clean-export .studio-topbar,
+body.clean-export .studio-topbar,
+html.clean-export .studio-transport-bar,
+body.clean-export .studio-transport-bar {
+  display: none !important;
+}
+
+html.clean-export .studio-stage-container,
+body.clean-export .studio-stage-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: none !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+html.clean-export .studio-stage-frame,
+body.clean-export .studio-stage-frame {
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+}
+
+html.clean-export .video-stage-wrapper,
+body.clean-export .video-stage-wrapper {
+  width: 100vw !important;
+  height: 100vh !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+html.clean-export .video-stage,
+body.clean-export .video-stage {
+  transform: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+
+</style>
+</head>
+<body class="studio-body">
+
+  
+  <svg style="display: none;" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <!-- Phosphor Lock -->
+      <symbol id="icon-lock" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M208 80h-32V56a48 48 0 0 0-96 0v24H48a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16Zm-112-24a32 32 0 0 1 64 0v24H96ZM48 96h160v112H48Z"/>
+      </symbol>
+      <!-- Phosphor Sparkle -->
+      <symbol id="icon-sparkle" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M213.66 122.34a8 8 0 0 0-11.32 0L176 148.69l-26.34-26.35a8 8 0 0 0-11.32 11.32L164.69 160l-26.35 26.34a8 8 0 0 0 11.32 11.32L176 171.31l26.34 26.35a8 8 0 0 0 11.32-11.32L187.31 160l26.35-26.34a8 8 0 0 0 0-11.32Zm-80-64a8 8 0 0 0-11.32 0L96 84.69 69.66 58.34a8 8 0 0 0-11.32 11.32L84.69 96 58.34 122.34a8 8 0 0 0 11.32 11.32L96 107.31l26.34 26.35a8 8 0 0 0 11.32-11.32L107.31 96l26.35-26.34a8 8 0 0 0 0-11.32Z"/>
+      </symbol>
+      <!-- Phosphor Code -->
+      <symbol id="icon-code" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M69.66 154.34a8 8 0 0 1 0 11.32l-48 48a8 8 0 0 1-11.32-11.32L52.69 160 10.34 117.66a8 8 0 0 1 11.32-11.32Zm176-48a8 8 0 0 0-11.32 0l-48 48a8 8 0 0 0 0 11.32l48 48a8 8 0 0 0 11.32-11.32L203.31 160l42.35-42.34a8 8 0 0 0 0-11.32Zm-88-64a8 8 0 0 0-10.12 5.06l-48 144a8 8 0 0 0 15.18 5.06l48-144a8 8 0 0 0-5.06-10.12Z"/>
+      </symbol>
+      <!-- Phosphor Check -->
+      <symbol id="icon-check" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 77.66a8 8 0 0 0-11.32-11.32L96 188.69l-58.34-58.35a8 8 0 0 0-11.32 11.32l64 64a8 8 0 0 0 11.32 0Z"/>
+      </symbol>
+      <!-- Phosphor Return -->
+      <symbol id="icon-return" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M224 88v64a16 16 0 0 1-16 16H83.31l34.35 34.34a8 8 0 0 1-11.32 11.32l-48-48a8 8 0 0 1 0-11.32l48-48a8 8 0 0 1 11.32 11.32L83.31 152H208V88a8 8 0 0 1 16 0Z"/>
+      </symbol>
+      <!-- Phosphor Search -->
+      <symbol id="icon-search" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/>
+      </symbol>
+      <!-- Phosphor Restart -->
+      <symbol id="icon-restart" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M224 128a96 96 0 0 1-96 96 95.53 95.53 0 0 1-67.88-28.12L38.63 174.4A8 8 0 0 1 50 163.09l21.49 21.48A79.52 79.52 0 0 0 128 208a80 80 0 1 0-80-80 8 8 0 0 1-16 0 96 96 0 1 1 192 0Z"/>
+      </symbol>
+      <!-- Phosphor Fullscreen -->
+      <symbol id="icon-fullscreen" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M216 48v40a8 8 0 0 1-16 0V56h-32a8 8 0 0 1 0-16h40a8 8 0 0 1 8 8ZM88 200H56v-32a8 8 0 0 0-16 0v40a8 8 0 0 0 8 8h40a8 8 0 0 0 0-16Zm120-40a8 8 0 0 0-8 8v32h-32a8 8 0 0 0 0 16h40a8 8 0 0 0 8-8v-40a8 8 0 0 0-8-8ZM48 96a8 8 0 0 0 8-8V56h32a8 8 0 0 0 0-16H48a8 8 0 0 0-8 8v40a8 8 0 0 0 8 8Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+
+  <!-- Studio Topbar -->
+  <header class="studio-topbar">
+    <div class="studio-brand-group">
+      <div class="studio-logo">
+        <svg viewBox="0 0 256 256" style="color: var(--studio-accent);"><use href="#icon-sparkle"></use></svg>
+        <span>Anti-Flop Gate 9 Test Deliverable</span>
+      </div>
+      <span class="studio-meta-tag">1920 × 1080 · 60fps · 00:15.0</span>
+    </div>
+
+    <div class="studio-top-actions">
+      <div class="studio-speed-group">
+        <button class="studio-speed-btn active" data-speed="1">1x</button>
+        <button class="studio-speed-btn" data-speed="2">2x</button>
+        <button class="studio-speed-btn" data-speed="4">4x</button>
+      </div>
+      <button class="studio-action-btn primary" onclick="alert('Ready for export: append ?clean=true to render at native 60fps')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>
+        <span>Export MP4</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Master Studio Stage Container -->
+  <main class="studio-stage-container">
+    <div id="video-stage-frame" class="studio-stage-frame" style="width: min(1120px, calc((100vh - 200px) * 16 / 9), calc(100vw - 48px)); aspect-ratio: 16/9;">
+      <div class="video-stage-wrapper">
+        <div id="video-stage" class="video-stage"
+             data-native-width="1920"
+             data-native-height="1080"
+             data-duration="15"
+             data-fps="60"
+             style="width: 1920px; height: 1080px;">
+          
+    <!-- Scene 1: Hero Card -->
+    <div id="scene-s1" class="scene-layer active" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: radial-gradient(ellipse at 20% 20%, #F5F7FB 0%, #EAEFF6 50%, #DEE4EE 100%);">
+      <div style="background: #FFFFFF; padding: 48px 64px; border-radius: 20px; box-shadow: 0 35px 100px rgba(0,0,0,0.12); text-align: center; border: 1px solid rgba(0,0,0,0.08); max-width: 960px;">
+        <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 99px; background: rgba(0, 122, 255, 0.08); color: #007AFF; font-size: 12px; font-weight: 600; margin-bottom: 20px;">
+          <svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+          CANONICAL STUDIO PLAYER DELIVERABLE
+        </span>
+        <h1 style="font-size: 42px; font-weight: 800; color: #0D0D0D; margin-bottom: 16px; letter-spacing: -0.02em;">
+          Zero Re-Implementation Invariant
+        </h1>
+        <p style="font-size: 18px; color: #52525B; line-height: 1.6;">
+          This deliverable was compiled directly by the Design OS pipeline.<br>
+          Viewport auto-scaling, transport dock, and keyboard navigation are 100% standardized.
+        </p>
+      </div>
+    </div>
+  
+        </div>
+      </div>
+    </div>
+
+    <!-- Transport Controls Dock -->
+    <div class="studio-transport-bar">
+      <div class="studio-transport-row">
+        <div class="studio-transport-left">
+          <button id="studio-btn-restart" class="studio-icon-button" title="Restart (Home)">
+            <svg viewBox="0 0 256 256" width="14" height="14"><use href="#icon-restart"></use></svg>
+          </button>
+          <button id="studio-btn-play" class="studio-icon-button primary" title="Play/Pause (Space)">
+            <span id="studio-play-icon">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </span>
+          </button>
+          <div class="studio-timecode">
+            <span id="studio-timecode-display"><strong>00:00.0</strong> / 00:15.0</span>
+          </div>
+        </div>
+
+        <div class="studio-scrubber-lane">
+          <input type="range" id="studio-video-scrubber" class="studio-scrubber" min="0" max="15" step="0.05" value="0" aria-label="Scrub video">
+        </div>
+
+        <div class="studio-transport-right">
+          <button id="studio-btn-fullscreen" class="studio-icon-button" title="Toggle Fullscreen (F)">
+            <svg viewBox="0 0 256 256" width="14" height="14"><use href="#icon-fullscreen"></use></svg>
+          </button>
+        </div>
+      </div>
+
+      
+      <div class="studio-scenes-row">
+        <div class="studio-scene-pills">
+          <button class="studio-scene-pill active" data-seek="0" data-name="Scene 1: Introduction & Contract">S1</button>
+          <button class="studio-scene-pill " data-seek="5" data-name="Scene 2: Core Walkthrough">S2</button>
+          <button class="studio-scene-pill " data-seek="11" data-name="Scene 3: Conversion Outro">S3</button>
+        </div>
+        <span id="studio-scene-name" class="studio-scene-name">Scene 1: Introduction & Contract</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Canonical Studio Player Runtime -->
+  <script>
+/**
+ * studio-player-runtime.js — Design OS Canonical Universal Player Runtime
+ * 
+ * Standardized client-side player controller:
+ * - Dynamic Viewport Auto-Scaler (zero skew, flexbox centered, aspect-ratio preserved)
+ * - Virtual Clock & Integer Frame Engine (window.__motionRuntime & window.__seekToTime)
+ * - Complete Transport Dock Controls (Play/Pause, Scrubber, Timecode, Scene Pills, Speed, Fullscreen)
+ * - Accessible Keyboard Shortcuts (Space, Home, Arrow Keys, 1/2/4, F)
+ * - Clean Export Bypass (?clean=true / ?render=true)
+ */
+
+(function() {
+  'use strict';
+
+  // --- Clean Export Mode Detection ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const isCleanExport = urlParams.get('clean') === 'true' || urlParams.get('render') === 'true';
+
+  if (isCleanExport) {
+    document.documentElement.classList.add('clean-export');
+    document.addEventListener('DOMContentLoaded', () => {
+      if (document.body) document.body.classList.add('clean-export');
+    });
+  }
+
+  // --- Configuration from DOM ---
+  function getPlayerConfig() {
+    const stage = document.getElementById('video-stage');
+    const nativeWidth = parseInt(stage?.dataset?.nativeWidth || '1920', 10);
+    const nativeHeight = parseInt(stage?.dataset?.nativeHeight || '1080', 10);
+    const duration = parseFloat(stage?.dataset?.duration || '10.0');
+    const fps = parseInt(stage?.dataset?.fps || '60', 10);
+
+    return {
+      nativeWidth,
+      nativeHeight,
+      duration,
+      fps,
+      totalFrames: Math.round(duration * fps)
+    };
+  }
+
+  // --- State ---
+  let isPlaying = false;
+  let currentTime = 0.0;
+  let playbackRate = 1.0;
+  let lastRafTimestamp = null;
+
+  // --- DOM Elements ---
+  const videoStage = document.getElementById('video-stage');
+  const stageWrapper = document.querySelector('.video-stage-wrapper');
+  const timecodeEl = document.getElementById('studio-timecode-display');
+  const scrubberEl = document.getElementById('studio-video-scrubber');
+  const playBtn = document.getElementById('studio-btn-play');
+  const playIcon = document.getElementById('studio-play-icon');
+  const restartBtn = document.getElementById('studio-btn-restart');
+  const fullscreenBtn = document.getElementById('studio-btn-fullscreen');
+  const sceneNameEl = document.getElementById('studio-scene-name');
+  const speedBtns = document.querySelectorAll('.studio-speed-btn');
+  const scenePills = document.querySelectorAll('.studio-scene-pill');
+
+  // --- Viewport Auto-Scaling Engine ---
+  function updateViewportScale() {
+    if (!stageWrapper || !videoStage) return;
+
+    if (document.body.classList.contains('clean-export') || document.documentElement.classList.contains('clean-export')) {
+      videoStage.style.transform = 'none';
+      return;
+    }
+
+    const { nativeWidth, nativeHeight } = getPlayerConfig();
+    const availableWidth = stageWrapper.clientWidth;
+    const availableHeight = stageWrapper.clientHeight;
+
+    const scaleX = availableWidth / nativeWidth;
+    const scaleY = availableHeight / nativeHeight;
+    const scale = Math.min(scaleX, scaleY, 1.0);
+
+    videoStage.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('resize', updateViewportScale);
+  if (typeof ResizeObserver !== 'undefined' && stageWrapper) {
+    const ro = new ResizeObserver(updateViewportScale);
+    ro.observe(stageWrapper);
+  }
+  document.addEventListener('DOMContentLoaded', updateViewportScale);
+  setTimeout(updateViewportScale, 50);
+
+  // --- Timecode Formatter ---
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    const tenths = Math.floor((seconds % 1) * 10);
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${tenths}`;
+  }
+
+  function updateTransportUI() {
+    const { duration } = getPlayerConfig();
+    if (timecodeEl) {
+      timecodeEl.innerHTML = `<strong>${formatTime(currentTime)}</strong> / ${formatTime(duration)}`;
+    }
+    if (scrubberEl) {
+      scrubberEl.value = currentTime.toFixed(2);
+    }
+    if (playIcon) {
+      if (isPlaying) {
+        // Pause icon
+        playIcon.innerHTML = `
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <rect x="6" y="4" width="4" height="16" rx="1.5" />
+            <rect x="14" y="4" width="4" height="16" rx="1.5" />
+          </svg>
+        `;
+      } else {
+        // Play icon
+        playIcon.innerHTML = `
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+            <polygon points="5 3 19 12 5 21 5 3" />
+          </svg>
+        `;
+      }
+    }
+
+    // Update active scene pill
+    let currentSceneTitle = '';
+    scenePills.forEach(pill => {
+      const seekTime = parseFloat(pill.dataset.seek || '0');
+      const nextPill = pill.nextElementSibling;
+      const nextSeekTime = nextPill ? parseFloat(nextPill.dataset.seek || '9999') : 9999;
+
+      if (currentTime >= seekTime && currentTime < nextSeekTime) {
+        pill.classList.add('active');
+        currentSceneTitle = pill.dataset.name || pill.textContent;
+      } else {
+        pill.classList.remove('active');
+      }
+    });
+
+    if (sceneNameEl && currentSceneTitle) {
+      sceneNameEl.textContent = currentSceneTitle;
+    }
+  }
+
+  // --- Master Frame Seeking Logic ---
+  function seekToTime(seconds) {
+    const { duration, fps, totalFrames } = getPlayerConfig();
+    currentTime = Math.max(0, Math.min(seconds, duration));
+    const frameIndex = Math.min(Math.round(currentTime * fps), totalFrames - 1);
+
+    // Call scene animation driver hook if supplied
+    if (typeof window.__onRenderFrame === 'function') {
+      window.__onRenderFrame(frameIndex, currentTime);
+    }
+
+    updateTransportUI();
+  }
+
+  // --- Playback RAF Loop ---
+  function tick(timestamp) {
+    if (!isPlaying) return;
+
+    if (lastRafTimestamp !== null) {
+      const deltaSec = ((timestamp - lastRafTimestamp) / 1000) * playbackRate;
+      const { duration } = getPlayerConfig();
+      currentTime += deltaSec;
+
+      if (currentTime >= duration) {
+        currentTime = duration;
+        isPlaying = false;
+        seekToTime(currentTime);
+        lastRafTimestamp = null;
+        return;
+      }
+
+      seekToTime(currentTime);
+    }
+
+    lastRafTimestamp = timestamp;
+    requestAnimationFrame(tick);
+  }
+
+  function togglePlayPause() {
+    const { duration } = getPlayerConfig();
+    if (currentTime >= duration) {
+      currentTime = 0.0;
+    }
+    isPlaying = !isPlaying;
+    if (isPlaying) {
+      lastRafTimestamp = null;
+      requestAnimationFrame(tick);
+    } else {
+      lastRafTimestamp = null;
+    }
+    updateTransportUI();
+  }
+
+  // --- Event Listeners ---
+  if (playBtn) playBtn.addEventListener('click', togglePlayPause);
+  if (restartBtn) {
+    restartBtn.addEventListener('click', () => {
+      isPlaying = false;
+      seekToTime(0.0);
+    });
+  }
+
+  if (scrubberEl) {
+    scrubberEl.addEventListener('input', (e) => {
+      const wasPlaying = isPlaying;
+      isPlaying = false;
+      seekToTime(parseFloat(e.target.value));
+      if (wasPlaying) {
+        isPlaying = true;
+        requestAnimationFrame(tick);
+      }
+    });
+  }
+
+  scenePills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const seekTime = parseFloat(pill.dataset.seek || '0');
+      seekToTime(seekTime);
+    });
+  });
+
+  speedBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      speedBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      playbackRate = parseFloat(btn.dataset.speed || '1.0');
+    });
+  });
+
+  if (fullscreenBtn) {
+    fullscreenBtn.addEventListener('click', () => {
+      const frame = document.getElementById('video-stage-frame') || stageWrapper;
+      if (!document.fullscreenElement) {
+        if (frame.requestFullscreen) frame.requestFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    });
+  }
+
+  // --- Keyboard Shortcuts ---
+  window.addEventListener('keydown', (e) => {
+    if (['input', 'textarea'].includes(document.activeElement?.tagName?.toLowerCase())) return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      togglePlayPause();
+    } else if (e.code === 'Home') {
+      e.preventDefault();
+      isPlaying = false;
+      seekToTime(0.0);
+    } else if (e.code === 'ArrowLeft') {
+      e.preventDefault();
+      const step = e.shiftKey ? 0.5 : 0.05;
+      seekToTime(currentTime - step);
+    } else if (e.code === 'ArrowRight') {
+      e.preventDefault();
+      const step = e.shiftKey ? 0.5 : 0.05;
+      seekToTime(currentTime + step);
+    } else if (e.key === '1') {
+      playbackRate = 1.0;
+      speedBtns.forEach(b => b.classList.toggle('active', b.dataset.speed === '1'));
+    } else if (e.key === '2') {
+      playbackRate = 2.0;
+      speedBtns.forEach(b => b.classList.toggle('active', b.dataset.speed === '2'));
+    } else if (e.key === '4') {
+      playbackRate = 4.0;
+      speedBtns.forEach(b => b.classList.toggle('active', b.dataset.speed === '4'));
+    } else if (e.code === 'KeyF') {
+      if (fullscreenBtn) fullscreenBtn.click();
+    }
+  });
+
+  // --- Expose Universal Public APIs ---
+  window.__seekToTime = seekToTime;
+
+  window.__motionRuntime = {
+    ready: true,
+    manifest: {
+      engine: 'design-os-universal-player',
+      version: '0.2.0'
+    },
+    seekToFrame: function(frameIndex) {
+      const { fps } = getPlayerConfig();
+      seekToTime(frameIndex / fps);
+      return { frame: frameIndex, timeSeconds: currentTime };
+    },
+    getFrameReceipt: function(frameIndex) {
+      return {
+        frame: frameIndex,
+        timeSeconds: currentTime,
+        status: 'ready'
+      };
+    },
+    getManifest: function() {
+      const cfg = getPlayerConfig();
+      return {
+        fps: cfg.fps,
+        durationSeconds: cfg.duration,
+        totalFrames: cfg.totalFrames,
+        width: cfg.nativeWidth,
+        height: cfg.nativeHeight
+      };
+    }
+  };
+
+  // Initial UI Render
+  document.addEventListener('DOMContentLoaded', () => {
+    updateViewportScale();
+    seekToTime(0.0);
+  });
+})();
+
+</script>
+
+  <!-- Animation Choreography Engine -->
+  <script>
+    
+    // Standalone Animation Choreographer Hook
+    window.__onRenderFrame = function(frameIndex, timeSeconds) {
+      // Custom animation hooks can be declared here
+    };
+  
+  </script>
+</body>
+</html>

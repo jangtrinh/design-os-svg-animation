@@ -49,5 +49,17 @@ export function validateMotionIR(input) {
     }
   }
   if (input.accessibility.reducedMotion.atMs > input.timeline.durationMs) errors.push('reducedMotion.atMs outside timeline');
+  for (const field of ['viewport', 'camera', 'parameterBindings', 'hotspots']) {
+    if (input.version === '0.1.0' && field in input) errors.push(`${field}: requires version 0.2.0`);
+  }
+  const [minX, minY, width, height] = input.scene.viewBox;
+  const hotspotIds = new Set();
+  for (const hotspot of input.hotspots ?? []) {
+    if (hotspotIds.has(hotspot.id)) errors.push(`${hotspot.id}: duplicate hotspot ID`);
+    hotspotIds.add(hotspot.id);
+    if (hotspot.targetElement !== undefined && !nodes.has(hotspot.targetElement)) errors.push(`${hotspot.id}: unbound hotspot target ${hotspot.targetElement}`);
+    const [x, y] = hotspot.center;
+    if (x < minX || y < minY || x > minX + width || y > minY + height) errors.push(`${hotspot.id}: hotspot center outside viewBox`);
+  }
   return { valid: errors.length === 0, errors };
 }

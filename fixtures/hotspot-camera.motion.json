@@ -1,0 +1,174 @@
+{
+  "version": "0.2.0",
+  "scene": {
+    "viewBox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "nodes": [
+      {
+        "id": "tile",
+        "parentId": null,
+        "path": {
+          "fillRule": "nonzero",
+          "contours": [
+            {
+              "id": "outer",
+              "closed": true,
+              "vertices": [
+                {
+                  "p": [
+                    16,
+                    16
+                  ],
+                  "in": [
+                    0,
+                    0
+                  ],
+                  "out": [
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "p": [
+                    112,
+                    16
+                  ],
+                  "in": [
+                    0,
+                    0
+                  ],
+                  "out": [
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "p": [
+                    112,
+                    112
+                  ],
+                  "in": [
+                    0,
+                    0
+                  ],
+                  "out": [
+                    0,
+                    0
+                  ]
+                },
+                {
+                  "p": [
+                    16,
+                    112
+                  ],
+                  "in": [
+                    0,
+                    0
+                  ],
+                  "out": [
+                    0,
+                    0
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "transform": {
+          "translate": [
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1
+          ],
+          "rotate": 0,
+          "pivot": [
+            64,
+            64
+          ]
+        },
+        "style": {
+          "fill": [
+            0.2,
+            0.4,
+            0.9,
+            1
+          ],
+          "opacity": 0
+        }
+      }
+    ]
+  },
+  "timeline": {
+    "durationMs": 1000,
+    "iterations": 1,
+    "direction": "normal",
+    "fill": "both"
+  },
+  "tracks": [
+    {
+      "id": "reveal",
+      "targetId": "tile",
+      "property": "opacity",
+      "keyframes": [
+        {
+          "timeMs": 0,
+          "value": 0,
+          "ease": {
+            "kind": "linear"
+          }
+        },
+        {
+          "timeMs": 1000,
+          "value": 1,
+          "ease": {
+            "kind": "linear"
+          }
+        }
+      ]
+    }
+  ],
+  "accessibility": {
+    "label": "Blue tile appearing",
+    "reducedMotion": {
+      "mode": "static",
+      "atMs": 1000
+    }
+  },
+  "viewport": {
+    "aspect": "16:9",
+    "safeZone": {
+      "top": 0,
+      "bottom": 0,
+      "left": 0,
+      "right": 0
+    }
+  },
+  "camera": {
+    "zoom": 1,
+    "pan": [
+      0,
+      0
+    ]
+  },
+  "parameterBindings": {
+    "title": "Tile"
+  },
+  "hotspots": [
+    {
+      "id": "tile-center",
+      "targetElement": "tile",
+      "center": [
+        64,
+        64
+      ],
+      "radius": 12
+    }
+  ]
+}

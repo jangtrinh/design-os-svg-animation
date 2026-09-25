@@ -33,8 +33,17 @@ export type Track = {
     keyframes: { timeMs: number; value: PropertyValues[P]; ease: Ease }[];
   }
 }[keyof PropertyValues];
+export interface Hotspot { id: string; targetElement?: string; center: Vec2; radius?: number }
 export interface MotionIR {
-  version: '0.1.0';
+  version: '0.1.0' | '0.2.0';
+  /** 0.2.0+: output aspect and pixel safe-zone insets. */
+  viewport?: { aspect: '16:9' | '9:16' | '1:1'; safeZone?: { top?: number; bottom?: number; left?: number; right?: number } };
+  /** 0.2.0+: static camera framing. */
+  camera?: { zoom?: number; pan?: Vec2 };
+  /** 0.2.0+: named template parameters mapped to string values. */
+  parameterBindings?: Record<string, string>;
+  /** 0.2.0+: click/cursor contact points; targetElement must name a scene node. */
+  hotspots?: Hotspot[];
   scene: { viewBox: [number, number, number, number]; nodes: SceneNode[] };
   timeline: {
     durationMs: number;
