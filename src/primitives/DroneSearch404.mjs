@@ -27,7 +27,7 @@ const BEAM_FOOT_HALF_WIDTH = 330;
 
 export const DRONE_SEGMENT_LENGTHS = SEGMENTS.map(s => s.length);
 // Reference frame widened for the search flight and extended below for the beam's floor.
-export const DRONE_VIEWBOX = [-300, 110, W + 640, H + 110]; // fits the measured flight envelope (x -263 … 2318)
+export const DRONE_VIEWBOX = [-300, 60, W + 640, H + 160]; // measured envelope x -263…2302, y 77…948 (+ floor 1170); asserted in tests/minipro-404.test.mjs
 
 const drawnPath = seg => `<path d="${seg.d}" pathLength="1" data-order="${seg.order}"/>`;
 const partPaths = part => SEGMENTS.filter(s => s.part === part).map(drawnPath).join('');
