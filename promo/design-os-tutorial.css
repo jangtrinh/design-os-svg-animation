@@ -1,0 +1,590 @@
+/**
+ * design-os-tutorial.css — Design OS Explainer & Walkthrough Master Styling
+ * 
+ * Codex Light Theme / OpenAI "Templates" Edition:
+ * - Pure Apple/Codex Light Palette (#FFFFFF, #F5F6F8, #ECEEF2, #0D0D0D)
+ * - Deep 3-tier tactile shadows:
+ *     0 1px 2px rgb(0 0 0 / 4%),
+ *     0 8px 24px -8px rgb(0 0 0 / 8%),
+ *     0 32px 80px -24px rgb(0 0 0 / 12%)
+ * - 24px outer border-radius, 1px rim border rgba(0, 0, 0, 0.08)
+ * - SF Pro / Inter typography with WCAG 2.2 AAA contrast
+ * - 100% Zero raw emojis, official Phosphor icons
+ * - Full-bleed clean export for 1920x1080 rendering
+ */
+
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+
+  /* OpenAI / Codex Light Palette */
+  --bg-canvas: #ECEEF2;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F8F9FA;
+  --bg-sidebar: #F4F5F8;
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.05);
+  --border-focus: #007AFF;
+
+  --text-primary: #0D0D0D;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
+  --text-dim: #A1A1AA;
+
+  --accent-blue: #007AFF;
+  --accent-blue-subtle: #EBF5FF;
+  --accent-green: #10B981;
+  --accent-green-subtle: #D1FAE5;
+  --accent-amber: #F59E0B;
+  --accent-persimmon: #FF5F56;
+
+  --shadow-window: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -8px rgba(0, 0, 0, 0.08), 0 35px 90px -20px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -8px rgba(0, 0, 0, 0.08), 0 24px 60px -20px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.06), 0 16px 40px -10px rgba(0, 0, 0, 0.14), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  --shadow-callout: 0 20px 45px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.studio-body {
+  background-color: #E2E6EC;
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  user-select: none;
+}
+
+/* Master Video Stage Canvas (1920x1080 native coordinate space) */
+.video-stage-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  overflow: hidden;
+  position: relative;
+}
+
+.video-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background: radial-gradient(ellipse at 20% 20%, #F5F7FB 0%, #EAEFF6 50%, #DEE4EE 100%);
+  transform-origin: center center;
+  overflow: hidden;
+  user-select: none;
+  flex: none;
+}
+
+#camera-world {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Scene Layers */
+.scene-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-layer.active {
+  display: flex;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Common Surface Card (OpenAI Templates Standard) */
+.scene-board {
+  background: var(--bg-surface);
+  padding: 48px 64px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-window);
+  border: 1px solid var(--border-light);
+  text-align: center;
+  position: relative;
+}
+
+.scene-title {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.scene-subtitle {
+  font-size: 19px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.45;
+  margin-bottom: 36px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Codex / OpenAI Pill Badge */
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-blue-subtle);
+  border: 1px solid rgba(0, 122, 255, 0.25);
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-blue);
+  margin-bottom: 24px;
+  box-shadow: 0 2px 6px rgba(0, 122, 255, 0.08);
+}
+
+/* Scene 1: Split Layout */
+.hero-split-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+  max-width: 1400px;
+}
+
+.hero-poster-frame {
+  position: relative;
+  width: 380px;
+  height: 506px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--border-light);
+  background: #FFFFFF;
+  flex: none;
+}
+
+.hero-poster-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-poster-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hero-poster-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0D0D0D;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.hero-poster-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #007AFF;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 122, 255, 0.15);
+  width: fit-content;
+}
+
+.hero-copy-block {
+  text-align: left;
+  max-width: 680px;
+}
+
+.hero-headline {
+  font-size: 68px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  margin-bottom: 24px;
+  color: var(--text-primary);
+}
+
+.hero-headline-accent {
+  color: var(--accent-blue);
+}
+
+.hero-subtext {
+  font-size: 22px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 36px;
+}
+
+.kinetic-words-dock {
+  display: flex;
+  gap: 12px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Scene 2: Template Discovery Gallery */
+.template-gallery {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  align-items: stretch;
+  margin-top: 16px;
+}
+
+.tmpl-card {
+  width: 380px;
+  background: #FFFFFF;
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+  position: relative;
+}
+
+.tmpl-card.selected {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px var(--accent-blue), 0 20px 48px -12px rgba(0, 122, 255, 0.25);
+  transform: translateY(-8px) scale(1.02);
+}
+
+.tmpl-card-media {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  background: #F4F5F8;
+}
+
+.tmpl-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tmpl-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.tmpl-badge.active {
+  background: var(--accent-blue);
+  color: #FFFFFF;
+  border-color: var(--accent-blue);
+}
+
+.tmpl-card-body {
+  padding: 20px 24px;
+  text-align: left;
+}
+
+.tmpl-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.tmpl-card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Scene 4: Audio Breathing Stage */
+.audio-poster-stage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.audio-breathing-card {
+  background: #FFFFFF;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  will-change: transform;
+}
+
+.audio-poster-meta {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 4px;
+}
+
+/* Scene 5: Multi-Aspect Responsive Gallery */
+.multi-aspect-gallery {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-end;
+  margin-top: 12px;
+}
+
+.aspect-device-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.aspect-device-frame {
+  background: #FFFFFF;
+  border-radius: 16px;
+  border: 2px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  position: relative;
+  overflow: hidden;
+}
+
+.aspect-device-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.aspect-device-frame.aspect-16-9 {
+  width: 360px;
+  height: 202px;
+  border-color: var(--accent-blue);
+}
+
+.aspect-device-frame.aspect-9-16 {
+  width: 168px;
+  height: 300px;
+  border-color: var(--accent-green);
+  border-radius: 22px;
+}
+
+.aspect-device-frame.aspect-1-1 {
+  width: 230px;
+  height: 230px;
+  border-color: var(--accent-amber);
+}
+
+.safe-zone-overlay {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  border: 1.5px dashed rgba(0, 122, 255, 0.85);
+  border-radius: 8px;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.safe-zone-overlay.vertical-safe {
+  top: 15%;
+  height: 70%;
+  border-color: rgba(16, 185, 129, 0.85);
+}
+
+.safe-zone-overlay.square-safe {
+  top: 7.5%;
+  left: 7.5%;
+  width: 85%;
+  height: 85%;
+  border-color: rgba(245, 158, 11, 0.85);
+}
+
+.safe-zone-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: #0D0D0D;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 3px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.aspect-device-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.aspect-device-label strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.aspect-device-label span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Scene 6: Outro CTA */
+.outro-thumb-strip {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.outro-thumb-strip img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.outro-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #007AFF;
+  color: #FFFFFF;
+  padding: 16px 36px;
+  border-radius: 999px;
+  font-size: 17px;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(0, 122, 255, 0.3);
+}
+
+.outro-install-badge {
+  background: #F4F5F8;
+  border: 1px solid var(--border-light);
+  padding: 16px 28px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: #0D0D0D;
+}
+
+/* Synthetic Cursor on stage */
+#tutorial-cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0;
+  transform-origin: 0 0;
+}
+
+#tutorial-ripple {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 999;
+  border: 2.5px solid var(--accent-blue);
+  background: rgba(0, 122, 255, 0.15);
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+}
+
+/* Clean Export Full-Bleed Overrides */
+html.clean-export,
+body.clean-export {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  background: #ECEEF2 !important;
+}
+
+html.clean-export .studio-topbar,
+body.clean-export .studio-topbar,
+html.clean-export .studio-transport-bar,
+body.clean-export .studio-transport-bar {
+  display: none !important;
+}
+
+html.clean-export .studio-stage-frame,
+body.clean-export .studio-stage-frame {
+  width: 1920px !important;
+  height: 1080px !important;
+  max-width: none !important;
+  aspect-ratio: auto !important;
+}
+
+html.clean-export .video-stage-wrapper,
+body.clean-export .video-stage-wrapper {
+  width: 1920px !important;
+  height: 1080px !important;
+}
+
+html.clean-export .video-stage,
+body.clean-export .video-stage {
+  width: 1920px !important;
+  height: 1080px !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
