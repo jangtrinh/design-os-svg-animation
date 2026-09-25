@@ -1,6 +1,6 @@
 # Line art to motion: reference drawing → animated, interactive SVG
 
-A repeatable pipeline for turning one reference drawing or vector render (line art, a logo, a sketch) into a faithful, animated, interactive SVG page with video exports. It was distilled from the single-line drone 404 case (`plans/drone-404-svg-animation.md`, PR #6) and then run a second time on a 3D-rendered vector drone (the MiniPro A8mini, kept private; its numbers are quoted below). Each stage below lists the artifact it produces and the gate it must pass before the next stage starts.
+A repeatable pipeline for turning one reference drawing or vector render (line art, a logo, a sketch) into a faithful, animated, interactive SVG page with video exports. It was distilled from the single-line drone 404 case (`plans/drone-404-svg-animation.md`, PR #6). Each stage below lists the artifact it produces and the gate it must pass before the next stage starts.
 
 > Fidelity rule: the drawing's geometry comes from its pixels, never from hand-typed paths. Motion may deform a part only while that part is moving, so the resting pose always equals the reference.
 
@@ -8,7 +8,7 @@ A repeatable pipeline for turning one reference drawing or vector render (line a
 
 ```bash
 node scripts/new-line-art-case.mjs <case> --source raster     # a drawing to trace
-node scripts/new-line-art-case.mjs <case> --source flipbook   # a vector render with rotor poses
+node scripts/new-line-art-case.mjs <case> --source flipbook   # experimental: a vector render with rotor poses (§1b)
 ```
 
 This creates `research/<case>/case.json` (page, proofs, video, selectors, fidelity source, Pages modules), a part-map template for raster sources, and `plans/<case>.md` with the intake table and acceptance list. It then prints the exact next commands. Every later script takes `--case <case>`:
@@ -43,9 +43,12 @@ python3 scripts/trace-line-art-centerline.py research/<case>/reference.png resea
 - **Gate (on ink, not canvas):** at least 98% of the reference's ink lies within 2 px of the trace (recall), and at least 98% of the trace's ink lies within 2 px of the reference (precision). Zoomed crops must also show no fused parallel lines. The drone scored 99.70% / 99.95% at threshold 110. Never normalise by the canvas: ink is about 2% of it, so a blank render would score "98%".
 - Use centerlines, not filled outlines: only strokes can draw on, split into parts and move.
 
-## 1b. Vector source with a rotor flipbook (instead of tracing)
+## 1b. Vector source with a rotor flipbook (instead of tracing) — experimental
 
-When the source is already vector, such as a Blender Freestyle render of the 3D model, skip tracing. If it ships N rendered rotor poses, **do not ship the poses**: each one repeats the whole airframe (the MiniPro flipbook is 12 MB). Keep only what changes:
+> **Status: experimental.** The only case built this way (a 3D-rendered quadcopter, 2026-09-25) was rejected by the owner and removed. The tooling below works and is tested, but it has not yet produced an accepted page. The traced path (§1) is the proven one. Before reusing this branch, record in the case plan what the owner expects to differ.
+
+
+When the source is already vector, such as a Blender Freestyle render of the 3D model, skip tracing. If it ships N rendered rotor poses, **do not ship the poses**: each one repeats the whole airframe (the trial flipbook was 12 MB). Keep only what changes:
 
 ```bash
 python3 scripts/build-flipbook-rotor-geometry.py <flipbook.svg> research/<case>/<case>-geometry.json --origin <body x,y> \
@@ -53,7 +56,7 @@ python3 scripts/build-flipbook-rotor-geometry.py <flipbook.svg> research/<case>/
   --silhouette <silhouette.json> --module src/primitives/<case>-geometry.mjs --export <NAME>
 ```
 
-- **Presence split:** presence is the share of other poses that still draw a stroke. On MiniPro it is sharply bimodal: blades 0–0.3, airframe 0.7–1.0, and the few in between are hub rims and struts that blades often hide. Blades are below 0.3, airframe is 0.3 and above. Airframe hidden by pose-0 blades is recovered from other poses (≥ 0.7 only).
+- **Presence split:** presence is the share of other poses that still draw a stroke. On the trial case it was sharply bimodal: blades 0–0.3, airframe 0.7–1.0, and the few in between are hub rims and struts that blades often hide. Blades are below 0.3, airframe is 0.3 and above. Airframe hidden by pose-0 blades is recovered from other poses (≥ 0.7 only).
 - **Result:** 324 KB instead of 12 MB. Against the source flipbook at 6 poses: recall 98.2–100%, precision 95–98.5%. Against the blueprint (pose 0): recall 100%, precision 98.6%.
 - **Renderer pattern:** draw-on the airframe chunks (`pathLength="1"` dashes, skipping untouched chunks); give each blade pose its own `<path>` and show only the current one plus 2 trailing poses (opacity 0.32 and 0.14 × spin) as motion blur; show blades only once the pen finishes. Pick the pose from the shared rotor angle, with a whole number of flipbook cycles per loop so the loop stays seamless. Scale the shared timeline's reference px by one unit factor (art width ÷ 1,865), and convert pointer coordinates back the same way for the hover layer.
 - **What failed first:** (a) fitting an affine rotor plane from swept points; occluded body lines flicker too, and twisted blades are not planar. (b) "Gone at both quarter turns" tests, which aliased or symmetric flipbooks defeat. Measure the presence histogram before choosing thresholds.

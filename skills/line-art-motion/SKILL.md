@@ -16,7 +16,7 @@ metadata:
 **Read [the pipeline](../../docs/line-art-to-motion-pipeline.md) before work.** It defines the stages, the artifact and gate of each stage, and the pitfalls already paid for. The worked case is `plans/drone-404-svg-animation.md` (PR #6).
 
 ## Start
-`node scripts/new-line-art-case.mjs <case> --source raster|flipbook` creates the case files and prints the next commands. Every script then takes `--case <case>`.
+`node scripts/new-line-art-case.mjs <case> --source raster` creates the case files and prints the next commands (`--source flipbook` is experimental: its only trial case was rejected). Every script then takes `--case <case>`.
 
 ## Preconditions
 1. Activate `skills/product-designer/SKILL.md` and `es-designer` before any UI or motion code.
