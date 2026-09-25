@@ -38,3 +38,6 @@ jobs:
 
       - name: Verify Astra Pages mirror
         run: npm run verify:astra-pages
+
+      - name: Verify drone 404 Pages mirror
+        run: node scripts/sync-drone-404-pages.mjs --check

@@ -1,0 +1,4 @@
+at rest: translate(1.6 -39.57) translate(1010 520) rotate(0.25) scale(1) translate(-1010 -520)
+interaction-1-spotted.png: translate(1.56 -39.43) translate(1010 520) rotate(0.26) scale(1) translate(-1010 -520)
+interaction-2-too-close.png: translate(43.57 -45.12) translate(1010 520) rotate(-3.23) scale(1) translate(-1010 -520)
+interaction-3-settled-away.png: translate(48.74 -41.62) translate(1010 520) rotate(0.25) scale(1) translate(-1010 -520)

@@ -35,25 +35,25 @@
 
 ![Single-line drone 404: the drone draws itself, lifts off in front of a bold 404 and scans for the missing page](docs/assets/example-5-drone-404.gif)
 
-A black-and-white 404 page built from one reference drawing: a continuous single-line drone, front view. The geometry comes from the drawing's pixels, not from redrawn paths. Traced strokes differ from the reference in 0.37% of pixels.
+A black-and-white 404 page built from one reference drawing: a continuous single-line drone, front view. The geometry comes from the drawing's pixels, not from redrawn paths. 99.7% of the reference's ink lies within 2 px of the traced strokes, and 99.95% the other way round (gated in the exporter).
 
 - **[Open the live page](https://jangtrinh.github.io/design-os-svg-animation/promo/drone-404.html)** ([local](promo/drone-404.html)). Hover the stage: the camera and scan beam follow you. Get close and the drone dodges, then levels out. Hovering a button lights it up. The top-right button switches light/dark with a circular reveal.
 - **[Demo video](promo/drone-search-404.mp4)**: 1080p, 60 fps, 24 s (intro + two 10 s search loops).
-- **Motion model**: a simulated flight controller, not keyframes. The drone tilts before it moves, overshoots slightly on arrival, settles in about 0.3 s, and wobbles gently while hovering. A gust knocks it once per loop. The camera gimbal counter-rotates. Deterministic: 240 Hz simulation, cached per loop, seekable through `window.__seekToTime(t)`.
+- **Motion model**: a simulated flight controller, not keyframes. The drone tilts before it moves, swings back once as it brakes (under 1.5° within 0.35 s), and wobbles gently in turbulence while hovering. A gust knocks it once per loop. The camera gimbal counter-rotates. Deterministic: 240 Hz simulation, cached per loop, seekable through `window.__seekToTime(t)`.
 - **Depth**: the bold 404 sits behind the drone. A silhouette traced from the drawing lets the airframe hide it, and it stays visible through the spinning props.
 
 ```bash
 # Rebuild from the reference (tracing needs a throwaway venv: numpy pillow scikit-image scipy skan)
 python3 scripts/trace-line-art-centerline.py research/drone-404/reference-single-line-drone.png research/drone-404/drone-centerline-trace.json --ignore 1960,0,2000,40 --spur 12 --epsilon 0.5 --threshold 110
-node scripts/build-drone-404-geometry.mjs --airframe-svg airframe.svg   # then render it to airframe.png (headless Chrome, 2000x1120)
+node scripts/build-line-art-geometry.mjs research/drone-404/drone-parts.json --airframe-svg airframe.svg   # then render it to airframe.png (headless Chrome, 2000x1120)
 python3 scripts/extract-line-art-silhouette.py airframe.png research/drone-404/drone-airframe-silhouette.json
-node scripts/build-drone-404-geometry.mjs            # parts, Beziers, pen order, silhouette -> src/primitives/drone-404-line-art-geometry.mjs
+node scripts/build-line-art-geometry.mjs research/drone-404/drone-parts.json  # parts, Beziers, pen order, silhouette -> src/primitives/drone-404-line-art-geometry.mjs
 node scripts/build-drone-404-motion-ir.mjs           # Motion IR 0.2.0 sampled from the same timeline
 node scripts/render-drone-404-deliverable.mjs        # fidelity diff, keyframes, page shots, hover proofs, MP4 + GIF (needs npm run dev)
 node scripts/sync-drone-404-pages.mjs --write        # publish to docs/promo (--check verifies)
 ```
 
-The build record, with owner decisions per revision and evidence, is [plans/drone-404-svg-animation.md](plans/drone-404-svg-animation.md). Proofs are in `promo/drone-404-proofs/`.
+To animate another drawing, follow the reusable [line-art-to-motion pipeline](docs/line-art-to-motion-pipeline.md) (skill: `skills/line-art-motion`). The build record, with owner decisions per revision and evidence, is [plans/drone-404-svg-animation.md](plans/drone-404-svg-animation.md). Proofs are in `promo/drone-404-proofs/`.
 
 ---
 

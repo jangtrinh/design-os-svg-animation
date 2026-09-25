@@ -125,6 +125,13 @@
     /* Fallback where View Transitions are missing: a plain colour cross-fade. */
     .theme-fading, .theme-fading * { transition: background-color 320ms ease-out, color 320ms ease-out, border-color 320ms ease-out, fill 320ms ease-out !important; }
 
+    /* Reduced motion: state changes stay (colour, icon swap) but nothing moves. */
+    @media (prefers-reduced-motion: reduce) {
+      .theme-toggle, .theme-toggle svg, .btn { transition: none; }
+      .theme-toggle svg { transform: none !important; }
+      .btn:active, .theme-toggle:active { transform: none; }
+    }
+
     .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
     /* Export framing: stage only, centred in a 16:9 frame. */

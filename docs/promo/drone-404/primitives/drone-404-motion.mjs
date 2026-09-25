@@ -12,7 +12,8 @@
  *   4.0 s ->      search mission, period 10 s: hover, fly left and away, scan,
  *                 swoop right and closer, scan, get knocked by a gust, return.
  *                 A simulated flight controller (drone-404-flight-controller.mjs) flies
- *                 it: tilt leads motion, arrivals overshoot and settle, hover wobbles.
+ *                 it: tilt leads motion, arrivals settle with one small counter-swing,
+ *                 hover wobbles in turbulence.
  */
 
 import { sampleHyperFrameProgress, sampleHyperFrameCarry } from '../runtime/hyperframes-motion-presets.mjs';
@@ -84,8 +85,11 @@ function liftOffset(t) {
   return -LIFT_HEIGHT * (step + (1 - step) * settle);
 }
 
-/** What the pilot asks for at loop time u in [0, P): the controller has to make it happen. */
-function command(u) {
+/**
+ * What the pilot asks for at loop time u in [0, P): the controller has to make it happen.
+ * `turbulence: false` exists so tests can prove the hover wobble comes from the air, not from ringing.
+ */
+export function missionCommand(u, { turbulence = true } = {}) {
   const P = DRONE_TIMING.loopPeriod;
   const path = samplePath(u, P, LEGS, v => v[0]);
   const drift = harmonics(DRIFT, u, P);
@@ -102,11 +106,13 @@ function command(u) {
     y: samplePath(u, P, LEGS, v => v[1]).p + harmonics(HEAVE, u, P).p,
     depth: samplePath(u, P, LEGS, v => v[2]).p,
     look,
-    gust: GUST.accel * pulse(u - GUST.at, GUST.width) + harmonics(TURBULENCE, u, P).p,
+    gust: GUST.accel * pulse(u - GUST.at, GUST.width) + (turbulence ? harmonics(TURBULENCE, u, P).p : 0),
   };
 }
 
-const flight = createFlightController({ period: DRONE_TIMING.loopPeriod, gravity: GRAVITY, command });
+export const FLIGHT_CONFIG = Object.freeze({ period: DRONE_TIMING.loopPeriod, gravity: GRAVITY });
+export const MISSION = Object.freeze({ legs: LEGS, scans: SCANS, gustAt: GUST.at });
+const flight = createFlightController({ ...FLIGHT_CONFIG, command: missionCommand });
 
 /**
  * @param {number} t seconds
