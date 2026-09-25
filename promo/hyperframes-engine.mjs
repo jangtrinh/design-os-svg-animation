@@ -7,6 +7,10 @@
  * reduction, and zero-defect anti-flop compliance.
  */
 
+import { EXTRA_BEAT_KINDS } from './hyperframes-extra-beats.mjs';
+export { sampleHyperFrameProgress, sampleHyperFrameStagger, sampleHyperFrameCarry,
+  sampleHyperFramePulse, sampleHyperFrameKeyframes } from './hyperframes-motion-presets.mjs';
+
 const W = 640, H = 360;
 
 function el(parent, css, text) {
@@ -203,7 +207,8 @@ export const BEAT_KINDS = {
       const caption = words(b, t, 40, c, 'left:340px;transform:translateY(-50%);width:270px;justify-content:flex-start;text-align:left');
       tl.from(caption.children, { opacity: 0, y: 12, stagger: 0.08, duration: 0.35 }, 0.4);
     }
-  }
+  },
+  ...EXTRA_BEAT_KINDS
 };
 
 export const luminance = (hex) => {
@@ -221,10 +226,17 @@ export function colors(palette = {}, override = {}) {
 }
 
 export function buildHyperFramesDraft(root, beats, duration, palette = {}, starts = beats.map((_, i) => (duration * i) / beats.length)) {
+  if (beats.length !== starts.length || !Number.isFinite(duration) || duration <= 0
+    || starts.some((start, index) => !Number.isFinite(start) || start < 0 || start >= duration || (index && start <= starts[index - 1]))) {
+    throw new RangeError('HyperFrames draft requires increasing beat starts within its duration');
+  }
+  const unknown = beats.find(([kind]) => !Object.hasOwn(BEAT_KINDS, kind));
+  if (unknown) throw new RangeError(`Unknown HyperFrames beat kind: ${unknown[0]}`);
+  if (typeof gsap === 'undefined') throw new Error('HyperFrames draft requires GSAP');
+  root.replaceChildren();
   const base = colors(palette);
   root.style.cssText += `;background:${base.bg};color:${base.fg};font-family:Inter,-apple-system,system-ui,sans-serif;overflow:hidden;-webkit-font-smoothing:antialiased`;
-  const tl = typeof gsap !== 'undefined' ? gsap.timeline({ paused: true }) : null;
-  if (!tl) return null;
+  const tl = gsap.timeline({ paused: true });
 
   beats.forEach(([kind, text = '', options = {}], index) => {
     const begin = starts[index],
@@ -232,7 +244,7 @@ export function buildHyperFramesDraft(root, beats, duration, palette = {}, start
     const c = colors(palette, options);
     const beat = el(root, `left:0;top:0;width:${W}px;height:${H}px;overflow:hidden;background:${c.bg};color:${c.fg}`);
     const local = gsap.timeline();
-    (BEAT_KINDS[kind] || BEAT_KINDS.text)(beat, text, options, c, local, span);
+    BEAT_KINDS[kind](beat, text, options, c, local, span);
     if (local.duration() < span) local.to({}, { duration: span - local.duration() });
     tl.add(local, begin);
     if (index) {

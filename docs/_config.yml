@@ -9,8 +9,8 @@ wordmark: JANG<span>®</span>
 eyebrow: design:os
 logo: /assets/example-1-claude-design-globe.gif
 nav:
-  - { title: Motion Pipeline, url: /motion-video-recreation-pipeline.html }
-  - { title: Workflow Guide, url: /motion-video-recreation-workflow-guide.html }
+  - { title: Recreation Contract, url: /motion-video-recreation-pipeline.html }
+  - { title: Recreation Lessons, url: /motion-video-recreation-workflow-guide.html }
   - { title: Architecture, url: /architecture-overview.html }
   - { title: Motion IR Spec, url: /motion-ir-specification.html }
   - { title: Quality Gates, url: /quality-and-safety-gates.html }

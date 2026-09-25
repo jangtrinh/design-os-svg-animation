@@ -6,14 +6,14 @@ layout: null
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>design-os-svg-animation — Deterministic SVG animation &amp; 1080p 60fps video pipeline for AI agents</title>
-<meta name="description" content="Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents. Motion IR compiler, virtual clock quantizing, and 5 anti-flop verification gates.">
+<title>design-os-svg-animation — Deterministic SVG animation and reference video recreation</title>
+<meta name="description" content="Build seekable SVG animations and reference video studies with Motion IR, HyperFrames v2, a virtual clock, and source-to-export review.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <link rel="canonical" href="https://jangtrinh.github.io/design-os-svg-animation/">
 <link rel="alternate" type="text/plain" href="https://jangtrinh.github.io/design-os-svg-animation/llms.txt" title="LLM documentation">
 <meta property="og:type" content="website">
-<meta property="og:title" content="design-os-svg-animation — Deterministic SVG animation &amp; 1080p 60fps video pipeline for AI agents">
-<meta property="og:description" content="Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents. Motion IR compiler, virtual clock quantizing, and 5 anti-flop verification gates.">
+<meta property="og:title" content="design-os-svg-animation — Deterministic SVG animation and reference video recreation">
+<meta property="og:description" content="Build seekable SVG animations and reference video studies with Motion IR, HyperFrames v2, a virtual clock, and source-to-export review.">
 <meta property="og:url" content="https://jangtrinh.github.io/design-os-svg-animation/">
 <meta property="og:image" content="https://jangtrinh.github.io/design-os-svg-animation/assets/example-1-claude-design-globe.gif">
 <meta name="twitter:card" content="summary_large_image">
@@ -39,7 +39,7 @@ layout: null
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "How does deterministic virtual clock recording work?", "acceptedAnswer": { "@type": "Answer", "text": "Instead of screen recording with dropped frames, headless Chromium advances time via window.__seekToTime(t) in exact 1/60s increments, capturing full-raster raw frames for FFmpeg encoding." } },
+        { "@type": "Question", "name": "How does deterministic virtual clock recording work?", "acceptedAnswer": { "@type": "Answer", "text": "Instead of relying on wall-clock screen recording, the renderer seeks the virtual clock at each configured output frame and captures frames for FFmpeg encoding." } },
         { "@type": "Question", "name": "Why are raw Unicode emojis strictly banned?", "acceptedAnswer": { "@type": "Answer", "text": "System emojis render inconsistently across platforms, break geometry matching, and flag anti-flop gates. All iconography must use official Phosphor regular vectors." } },
         { "@type": "Question", "name": "Which coding agents are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Claude Code, Codex Native, and Antigravity. Portable skills map directly to each harness's toolchain." } },
         { "@type": "Question", "name": "Does this require a paid GPU or cloud rendering farm?", "acceptedAnswer": { "@type": "Answer", "text": "No. Rendering runs locally on macOS or Linux using headless Chromium hardware acceleration and FFmpeg libx264." } },
@@ -61,7 +61,7 @@ layout: null
       <a class="ds-tab" href="#install">Install</a>
       <a class="ds-tab" href="#loop">Loop</a>
       <a class="ds-tab" href="#showcase">Showcase</a>
-      <a class="ds-tab" href="#parity-comparison">1:1 Parity</a>
+      <a class="ds-tab" href="#parity-comparison">Compare</a>
       <a class="ds-tab" href="#faq">FAQ</a>
       <a class="ds-tab" href="motion-video-recreation-pipeline.html">Docs</a>
       <a class="ds-tab" href="https://github.com/jangtrinh/design-os-svg-animation"><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/></svg>GitHub <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a>
@@ -71,8 +71,8 @@ layout: null
   <main id="main" class="ds-shell-main">
     <section aria-labelledby="title">
       <p class="ds-heading eyebrow" data-level="3">design:os · SVG Animation Engine &amp; Video Pipeline · v0.2.0</p>
-      <h1 id="title" class="ds-heading" data-level="1">Deterministic vector animation and 1080p 60fps motion video for AI coding agents.</h1>
-      <p class="lede">A motion engineering pipeline for Claude Code, Codex, and Antigravity: automated scene cuts, 50Hz audio envelopes, 1:1 dual-layer split sync, 20 HyperFrames beats, and 7 anti-flop verification gates.</p>
+      <h1 id="title" class="ds-heading" data-level="1">Deterministic vector animation and reference video recreation.</h1>
+      <p class="lede">A motion engineering pipeline for Claude Code, Codex, and Antigravity: source-indexed scene analysis, HyperFrames v2 staging, Motion IR, a seekable virtual clock, and review of the encoded video against its reference.</p>
       <p class="badges"><img src="https://img.shields.io/badge/release-v0.2.0--hyperframes-202020?style=for-the-badge" alt="Release: v0.2.0" height="28" onerror="this.onerror=null;this.hidden=true">
         <img src="https://img.shields.io/badge/license-MIT-202020?style=for-the-badge" alt="License: MIT" height="28" onerror="this.onerror=null;this.hidden=true">
         <img src="https://img.shields.io/badge/three.js-0.186-black?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js 0.186" height="28" onerror="this.onerror=null;this.hidden=true">
@@ -120,7 +120,7 @@ layout: null
               <img src="assets/example-1-claude-design-globe.gif" width="640" height="360" alt="Claude Design 3D Globe with Great-Circle arcs and live Tweaks interaction" loading="eager">
             </div>
             <figcaption class="case-plate-caption">
-              <p>Scene 2 of the 82-second Claude Design promo: orthographic Three.js globe with Great-Circle arcs, live tweak sliders, and deterministic virtual-clock quantizing. <a href="promo/claude-design-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="#parity-comparison" class="text-link">1:1 Video Parity</a> · <a href="promo/claude-design-promo.mp4" class="text-link" download>Download 60fps MP4</a></p>
+              <p>Scene 2 of the 82-second Claude Design promo: orthographic Three.js globe with Great-Circle arcs, live tweak sliders, and deterministic virtual-clock quantizing. <a href="promo/claude-design-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="#parity-comparison" class="text-link">Compare videos</a> · <a href="promo/claude-design-promo.mp4" class="text-link" download>Download 60fps MP4</a></p>
               <cite>shipping build · 60fps recording · HyperFrames v2.0</cite>
             </figcaption>
           </div>
@@ -131,8 +131,8 @@ layout: null
               <img src="assets/example-3-codex-app-promo.gif" width="640" height="360" alt="OpenAI Codex App 38s Master Promo with multi-agent orchestration, interactive code diff review, and live photobooth preview" loading="lazy">
             </div>
             <figcaption class="case-plate-caption">
-              <p>38-second high-tempo OpenAI Codex App promo featuring native macOS window kinematics, multi-agent streaming execution, tactile code diff inline review, live photobooth drag-and-swap preview, and SVGL brand lockup with spring physics. <a href="promo/codex-app-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="promo/codex-app-promo.mp4" class="text-link" download>Download 30fps MP4</a></p>
-              <cite>promo/codex-app-promo.mp4 · 1080p 30fps · HyperFrames v2.0</cite>
+              <p>38-second high-tempo OpenAI Codex App promo featuring native macOS window kinematics, multi-agent streaming execution, tactile code diff inline review, live photobooth drag-and-swap preview, and SVGL brand lockup with spring physics. <a href="promo/codex-app-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="promo/codex-app-promo.mp4" class="text-link" download>Download 60fps MP4</a></p>
+              <cite>promo/codex-app-promo.mp4 · 1080p 60fps · HyperFrames v2.0</cite>
             </figcaption>
           </div>
 
@@ -217,7 +217,7 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
 
     <section id="showcase" data-pace="chapter" aria-labelledby="showcase-h">
       <h2 id="showcase-h" class="ds-heading" data-level="2">Showcase builds</h2>
-      <p>Tested motion packages generated through the deterministic pipeline.</p>
+      <p>Interactive motion builds and a reference recreation study. The Astra study remains open for visual review.</p>
       <figure class="ds-card branch-page-media">
         <div class="ds-card-stage capture-stage">
           <img src="assets/example-1-claude-design-globe.gif" width="640" height="360" alt="Claude Design 3D Globe with Great-Circle arcs and 16-project gallery outro" loading="lazy" onerror="this.onerror=null;this.closest('figure').hidden=true">
@@ -233,8 +233,8 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
           <img src="assets/example-3-codex-app-promo.gif" width="640" height="360" alt="OpenAI Codex App 38s Master Promo with multi-agent orchestration, interactive code diff review, and live photobooth preview" loading="lazy" onerror="this.onerror=null;this.closest('figure').hidden=true">
         </div>
         <figcaption class="case-plate-caption">
-          <p>Example 2: 38-second high-tempo OpenAI Codex App promo featuring native macOS window kinematics, multi-agent streaming execution, tactile code diff inline review, live photobooth drag-and-swap preview, and SVGL brand lockup with spring physics. <a href="promo/codex-app-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="promo/codex-app-promo.mp4" class="text-link" download>Download 30fps MP4 (10MB)</a></p>
-          <cite>promo/codex-app-promo.html · 1080p 30fps</cite>
+          <p>Example 2: 38-second high-tempo OpenAI Codex App promo featuring native macOS window kinematics, multi-agent streaming execution, tactile code diff inline review, live photobooth drag-and-swap preview, and SVGL brand lockup with spring physics. <a href="promo/codex-app-promo.html" class="text-link" target="_blank" rel="noopener">Interactive Runner <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a> · <a href="promo/codex-app-promo.mp4" class="text-link" download>Download 60fps MP4 (10MB)</a></p>
+          <cite>promo/codex-app-promo.html · 1080p 60fps</cite>
         </figcaption>
       </figure>
 
@@ -247,18 +247,28 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
           <cite>promo/v0-generative-ui.html · 1080p 60fps</cite>
         </figcaption>
       </figure>
+
+      <figure class="ds-card branch-page-media" style="margin-top:var(--s-6);">
+        <div class="ds-card-stage capture-stage">
+          <img src="assets/astra-law-study.jpg" width="640" height="360" alt="Astra for Law motion study with a starfield and centered title" loading="lazy">
+        </div>
+        <figcaption class="case-plate-caption">
+          <p>Astra for Law: a 77.6-second reference recreation study using source-indexed scene and transition analysis, HyperFrames timing presets, Motion IR, and deterministic browser playback. Visual review is still open; partner logos are declared SVGL stand-ins. <a href="promo/astra-law-promo.html" class="text-link" target="_blank" rel="noopener">Open interactive player</a> · <a href="motion-video-recreation-pipeline.html" class="text-link">Read the recreation contract</a></p>
+          <cite>Work in progress · browser player · 1080p 30fps</cite>
+        </figcaption>
+      </figure>
     </section>
 
-    <!-- 1:1 Ground-Truth Video Parity Section -->
+    <!-- Source and recreation comparison -->
     <section id="parity-comparison" data-pace="chapter" aria-labelledby="parity-h">
-      <h2 id="parity-h" class="ds-heading" data-level="2">1:1 Ground-Truth Video Parity Comparison</h2>
-      <p>Compare the original official production launch videos against our deterministic recreated motion video engine side-by-side. Every kinematic bezier, camera pan, character typewriter glide, and SVG asset achieves 99%+ spatial and temporal parity at 60fps.</p>
+      <h2 id="parity-h" class="ds-heading" data-level="2">Reference and Recreation Comparison</h2>
+      <p>Compare the original launch videos with the recreated motion output side by side. Review scene timing, camera motion, transitions, type and assets against the source; technical export checks alone do not establish visual similarity.</p>
 
       <div class="parity-container" style="margin-top:var(--s-6);background:var(--c-surface-1, #121214);border:1px solid var(--c-line, #222225);border-radius:14px;padding:20px;box-shadow:0 20px 50px -20px rgba(0,0,0,0.8);">
         <div class="parity-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
           <div class="parity-title-group" style="display:flex;align-items:center;gap:10px;">
             <span style="font-weight:700;font-size:14px;color:var(--c-gray-1000, #ededee);">OpenAI Codex App Promo (00:00 – 00:38)</span>
-            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.25);">99.4% Spatiotemporal Parity</span>
+            <span style="font-size:11px;padding:2px 8px;border-radius:99px;background:rgba(56,189,248,0.12);color:#38bdf8;border:1px solid rgba(56,189,248,0.25);">Side by side review</span>
           </div>
           <div style="display:flex;align-items:center;gap:8px;">
             <a href="promo/codex-app-promo.html" target="_blank" rel="noopener" class="text-link" style="font-size:12px;display:inline-flex;align-items:center;gap:4px;">
@@ -336,8 +346,8 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
       <h2 id="read-h" class="ds-heading" data-level="3">Read next</h2>
       <div class="link-list">
         <a class="ds-icon-row" href="https://github.com/jangtrinh/design-os-svg-animation#readme"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24A40,40,0,0,0,8,136a8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48A8,8,0,0,0,80,73.83a43.81,43.81,0,0,1,.79-33.58,43.88,43.88,0,0,1,32.32,20.06A8,8,0,0,0,119.82,64h32.35a8,8,0,0,0,6.74-3.69,43.87,43.87,0,0,1,32.32-20.06A43.81,43.81,0,0,1,192,73.83a8.09,8.09,0,0,0,1,7.65A41.72,41.72,0,0,1,200,104Z"/></svg><span class="ds-icon-row-label">README: install, first safe use, comparison</span><span class="ds-icon-row-meta">github</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a>
-        <a class="ds-icon-row" href="motion-video-recreation-pipeline.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,48H40A16,16,0,0,0,24,64V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48Zm0,144H40V64H216V192Z"/></svg><span class="ds-icon-row-label">5-Stage Universal Motion Pipeline</span><span class="ds-icon-row-meta">docs</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
-        <a class="ds-icon-row" href="motion-video-recreation-workflow-guide.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H48A16,16,0,0,0,32,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H48V56H216V200ZM72,80a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,80Zm0,32a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,112Zm0,32a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H80A8,8,0,0,1,72,144Z"/></svg><span class="ds-icon-row-label">Universal Motion Video Workflow Guide &amp; Pre-Flight Guard</span><span class="ds-icon-row-meta">guide</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
+        <a class="ds-icon-row" href="motion-video-recreation-pipeline.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,48H40A16,16,0,0,0,24,64V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V64A16,16,0,0,0,216,48Zm0,144H40V64H216V192Z"/></svg><span class="ds-icon-row-label">Reference Recreation Contract</span><span class="ds-icon-row-meta">docs</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
+        <a class="ds-icon-row" href="motion-video-recreation-workflow-guide.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H48A16,16,0,0,0,32,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H48V56H216V200ZM72,80a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,80Zm0,32a8,8,0,0,1,8-8h96a8,8,0,0,1,0,16H80A8,8,0,0,1,72,112Zm0,32a8,8,0,0,1,8-8h64a8,8,0,0,1,0,16H80A8,8,0,0,1,72,144Z"/></svg><span class="ds-icon-row-label">Recreation Lessons and Review Guide</span><span class="ds-icon-row-meta">guide</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
         <a class="ds-icon-row" href="architecture-overview.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M226.76,69a8,8,0,0,0-12.84-2.88l-40.3,37.19-17.23-3.7-3.7-17.23,37.19-40.3A8,8,0,0,0,187,29.24,72,72,0,0,0,88,96,72.34,72.34,0,0,0,94,124.94L33.79,177c-.15.12-.29.26-.43.39a32,32,0,0,0,45.26,45.26c.13-.13.27-.28.39-.42L131.06,162A72,72,0,0,0,232,96,71.56,71.56,0,0,0,226.76,69ZM160,152a56.14,56.14,0,0,1-27.07-7,8,8,0,0,0-9.92,1.77L67.11,211.51a16,16,0,0,1-22.62-22.62L109.18,133a8,8,0,0,0,1.77-9.93,56,56,0,0,1,58.36-82.31l-31.2,33.81a8,8,0,0,0-1.94,7.1L141.83,108a8,8,0,0,0,6.14,6.14l26.35,5.66a8,8,0,0,0,7.1-1.94l33.81-31.2A56.06,56.06,0,0,1,160,152Z"/></svg><span class="ds-icon-row-label">7-Stage Hybrid Engine Architecture</span><span class="ds-icon-row-meta">docs</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
         <a class="ds-icon-row" href="motion-ir-specification.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64Z"/></svg><span class="ds-icon-row-label">Formal Motion IR Schema Specification</span><span class="ds-icon-row-meta">docs</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
         <a class="ds-icon-row" href="quality-and-safety-gates.html"><svg class="ph" data-lead="true" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z"/></svg><span class="ds-icon-row-label">Anti-Flop Gates &amp; Standards</span><span class="ds-icon-row-meta">docs</span><svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M221.66,133.66l-72,72a8,8,0,0,1-11.32-11.32L196.69,136H40a8,8,0,0,1,0-16H196.69L138.34,61.66a8,8,0,0,1,11.32-11.32l72,72A8,8,0,0,1,221.66,133.66Z"/></svg></a>
