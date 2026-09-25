@@ -40,4 +40,4 @@ jobs:
         run: npm run verify:astra-pages
 
       - name: Verify drone 404 Pages mirror
-        run: node scripts/sync-drone-404-pages.mjs --check
+        run: node scripts/sync-line-art-pages.mjs --case drone-404 --check

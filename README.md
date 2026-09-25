@@ -50,7 +50,7 @@ python3 scripts/extract-line-art-silhouette.py airframe.png research/drone-404/d
 node scripts/build-line-art-geometry.mjs research/drone-404/drone-parts.json  # parts, Beziers, pen order, silhouette -> src/primitives/drone-404-line-art-geometry.mjs
 node scripts/build-drone-404-motion-ir.mjs           # Motion IR 0.2.0 sampled from the same timeline
 node scripts/render-drone-404-deliverable.mjs        # fidelity diff, keyframes, page shots, hover proofs, MP4 + GIF (needs npm run dev)
-node scripts/sync-drone-404-pages.mjs --write        # publish to docs/promo (--check verifies)
+node scripts/sync-line-art-pages.mjs --case drone-404 --write   # publish to docs/promo (--check verifies)
 ```
 
 To animate another drawing, follow the reusable [line-art-to-motion pipeline](docs/line-art-to-motion-pipeline.md) (skill: `skills/line-art-motion`). The build record, with owner decisions per revision and evidence, is [plans/drone-404-svg-animation.md](plans/drone-404-svg-animation.md). Proofs are in `promo/drone-404-proofs/`.
