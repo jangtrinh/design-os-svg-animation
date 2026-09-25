@@ -118,7 +118,7 @@ npm install
 ### Workflow A: Recreating Promo Video with 99% Parity
 1. **Start Virtual-Clock Local Server**:
    ```bash
-   python3 -m http.server 3033 --directory ./promo &
+   npm run dev &
    ```
 2. **Capture Deterministic Frames & Assemble Broadcast MP4**:
    ```bash
@@ -126,7 +126,7 @@ npm install
    python3 scripts/export-promo-video.py
 
    # Demo 2: OpenAI Codex App 38s Master Promo (16:9, 1080p 30fps)
-   python3 scripts/export-promo-video.py --url http://localhost:3033/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
+   python3 scripts/export-promo-video.py --url http://127.0.0.1:4323/codex-app-promo.html --output promo/codex-app-promo.mp4 --fps 30 --duration 38
 
    # Demo 3: Vercel v0 Generative UI 47.5s Official Video (16:9, 1080p 60fps)
    node scripts/export-60fps-video.mjs v0

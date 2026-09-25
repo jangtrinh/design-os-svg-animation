@@ -5,3 +5,6 @@ dist/
 .env
 .env.local
 .cache/
+__pycache__/
+artifacts/
+scratch/

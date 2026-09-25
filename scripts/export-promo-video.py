@@ -10,7 +10,7 @@ import time
 import subprocess
 import shutil
 
-PROMO_URL_BASE = "http://localhost:3033/claude-design-promo.html"
+PROMO_URL_BASE = "http://127.0.0.1:4323/claude-design-promo.html"
 FRAMES_DIR = "/tmp/claude_promo_frames"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "claude-design-promo.mp4"))

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, ArrowUp, RotateCcw, Plus, Check } from 'lucide-react';
+import { Chat, ArrowUp, ArrowCounterClockwise, Plus, Check } from '@phosphor-icons/react';
 
 export interface CodexDiffViewerProps {
   onStageAll?: () => void;
@@ -39,7 +39,7 @@ export const CodexDiffViewer: React.FC<CodexDiffViewerProps> = ({
         {/* Input Bar with 1 comment chip */}
         <div className="mt-4 pt-4 border-t border-zinc-100">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-zinc-100 rounded-md text-xs font-semibold text-zinc-800 mb-2">
-            <MessageSquare className="w-3.5 h-3.5 text-zinc-600" />
+            <Chat className="w-3.5 h-3.5 text-zinc-600" />
             <span>1 comment</span>
           </div>
 
@@ -115,7 +115,7 @@ export const CodexDiffViewer: React.FC<CodexDiffViewerProps> = ({
             onClick={onRevertAll}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-200 text-xs font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <ArrowCounterClockwise className="w-3.5 h-3.5" />
             <span>Revert all</span>
           </button>
           <button 

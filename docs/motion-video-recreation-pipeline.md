@@ -151,14 +151,14 @@ Translates the visual assets into production React code:
 Run the deterministic headless exporter (`scripts/export-promo-video.py`):
 ```bash
 # 1. Start local server serving the virtual-clock player
-python3 -m http.server 3033 --directory ./promo &
+npm run dev &
 
 # 2. Capture deterministic frames via Chrome DevTools
 # For each timestamp t_k, run Chrome Headless screenshot
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
   --headless --disable-gpu --window-size=1920,1080 \
   --screenshot="/tmp/frames/frame_0001.png" \
-  "http://localhost:3033/claude-design-promo.html?clean=true&t=0.5&autoplay=false"
+  "http://127.0.0.1:4323/claude-design-promo.html?clean=true&t=0.5&autoplay=false"
 
 # 3. Compile high-profile MP4 via FFmpeg
 ffmpeg -y -framerate 30 -i /tmp/frames/frame_%04d.png \

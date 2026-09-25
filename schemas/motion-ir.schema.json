@@ -4,7 +4,94 @@
   "type": "object",
   "properties": {
     "version": {
-      "const": "0.1.0"
+      "enum": [
+        "0.1.0",
+        "0.2.0"
+      ]
+    },
+    "viewport": {
+      "type": "object",
+      "properties": {
+        "aspect": {
+          "enum": [
+            "16:9",
+            "9:16",
+            "1:1"
+          ]
+        },
+        "safeZone": {
+          "type": "object",
+          "properties": {
+            "top": {
+              "type": "number",
+              "minimum": 0
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 0
+            },
+            "left": {
+              "type": "number",
+              "minimum": 0
+            },
+            "right": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "aspect"
+      ]
+    },
+    "camera": {
+      "type": "object",
+      "properties": {
+        "zoom": {
+          "type": "number",
+          "minimum": 0.1
+        },
+        "pan": {
+          "$ref": "#/$defs/vec2"
+        }
+      },
+      "additionalProperties": false
+    },
+    "parameterBindings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "hotspots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "targetElement": {
+            "type": "string"
+          },
+          "center": {
+            "$ref": "#/$defs/vec2"
+          },
+          "radius": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "id",
+          "center"
+        ],
+        "additionalProperties": false
+      }
     },
     "scene": {
       "type": "object",

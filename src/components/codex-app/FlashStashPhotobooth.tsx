@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Pin } from 'lucide-react';
+import { PushPin } from '@phosphor-icons/react';
 
 export const FlashStashPhotobooth: React.FC = () => {
   const [headingScale, setHeadingScale] = useState<number>(1);
@@ -101,7 +101,7 @@ export const FlashStashPhotobooth: React.FC = () => {
             <span className="w-2.5 h-2.5 rounded-full bg-[#27C93F]" />
           </div>
           <span className="font-semibold text-zinc-800">Photobooth polish</span>
-          <Pin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
+          <PushPin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
         </div>
 
         <div className="p-3 flex flex-col gap-2.5 max-h-72 overflow-y-auto">

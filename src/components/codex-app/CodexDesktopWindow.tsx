@@ -1,23 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  Plus, 
-  PenSquare, 
-  Clock, 
-  LayoutGrid, 
-  Pin, 
-  Folder, 
-  Play, 
-  Code, 
-  Laptop, 
-  GitBranch, 
-  ChevronRight, 
-  Lock, 
-  Mic, 
-  Square,
-  ArrowUpRight,
-  MoreHorizontal
-} from 'lucide-react';
+import { Plus, NotePencil, Clock, SquaresFour, PushPin, Folder, Play, Code, Laptop, GitBranch, CaretRight, Lock, Microphone, Square, ArrowUpRight, DotsThree } from '@phosphor-icons/react';
 
 export interface CodexDesktopWindowProps {
   onReviewChanges?: () => void;
@@ -54,7 +37,7 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
         {/* Top Navigation */}
         <div className="flex flex-col gap-1 mb-5">
           <div className="flex items-center gap-3 px-2.5 py-1.5 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100/80 cursor-pointer">
-            <PenSquare className="w-4 h-4 text-zinc-500" />
+            <NotePencil className="w-4 h-4 text-zinc-500" />
             <span>New thread</span>
           </div>
           <div className="flex items-center gap-3 px-2.5 py-1.5 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100/80 cursor-pointer">
@@ -62,7 +45,7 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
             <span>Automations</span>
           </div>
           <div className="flex items-center gap-3 px-2.5 py-1.5 rounded-lg text-sm font-medium text-zinc-700 hover:bg-zinc-100/80 cursor-pointer">
-            <LayoutGrid className="w-4 h-4 text-zinc-500" />
+            <SquaresFour className="w-4 h-4 text-zinc-500" />
             <span>Skills</span>
           </div>
         </div>
@@ -71,14 +54,14 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
         <div className="flex flex-col gap-1 mb-4">
           <div className="flex items-center justify-between px-2.5 py-1 rounded-md text-xs text-zinc-600 hover:bg-zinc-100 cursor-pointer">
             <div className="flex items-center gap-2 truncate">
-              <Pin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
+              <PushPin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
               <span className="truncate">Photobooth polish</span>
             </div>
             <span className="text-[10px] text-zinc-400 font-mono">3d</span>
           </div>
           <div className="flex items-center justify-between px-2.5 py-1 rounded-md text-xs text-zinc-600 hover:bg-zinc-100 cursor-pointer">
             <div className="flex items-center gap-2 truncate">
-              <Pin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
+              <PushPin className="w-3.5 h-3.5 text-zinc-400 rotate-45" />
               <span className="truncate">Create a video game</span>
             </div>
             <span className="text-[10px] text-zinc-400 font-mono">2d</span>
@@ -128,7 +111,7 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
           <div className="flex items-center gap-3">
             <h3 className="text-sm font-semibold text-zinc-900">Add drag and drop to gallery photos</h3>
             <span className="text-xs text-zinc-400">photobooth</span>
-            <MoreHorizontal className="w-4 h-4 text-zinc-400 cursor-pointer" />
+            <DotsThree className="w-4 h-4 text-zinc-400 cursor-pointer" />
           </div>
 
           <div className="flex items-center gap-2">
@@ -166,7 +149,7 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
           <div className="flex flex-col gap-1.5 font-mono text-xs max-w-xl">
             {steps.map((step, idx) => (
               <div key={idx} className={`flex items-center gap-2 ${step.isCode ? 'text-emerald-600' : 'text-zinc-500'}`}>
-                <ChevronRight className="w-3.5 h-3.5 text-zinc-400" />
+                <CaretRight className="w-3.5 h-3.5 text-zinc-400" />
                 <span>{step.label}</span>
               </div>
             ))}
@@ -219,7 +202,7 @@ export const CodexDesktopWindow: React.FC<CodexDesktopWindowProps> = ({
               </div>
               <div className="flex items-center gap-2">
                 <Lock className="w-3.5 h-3.5 text-zinc-400" />
-                <Mic className="w-3.5 h-3.5 text-zinc-400" />
+                <Microphone className="w-3.5 h-3.5 text-zinc-400" />
                 <button className="w-7 h-7 rounded-lg bg-zinc-900 text-white flex items-center justify-center">
                   <Square className="w-3 h-3 fill-current" />
                 </button>

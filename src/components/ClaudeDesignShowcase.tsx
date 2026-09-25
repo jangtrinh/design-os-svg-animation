@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { CaretLeft, CaretRight } from "@phosphor-icons/react";
 import { ExpandingInput } from "./ExpandingInput";
 import { InteractiveGlobeWorkspace } from "./InteractiveGlobeWorkspace";
 import { MeditationAppWorkspace } from "./MeditationAppWorkspace";
@@ -58,7 +58,7 @@ export const ClaudeDesignShowcase: React.FC = () => {
             onClick={() => setCurrentScene((prev) => Math.max(1, prev - 1) as SceneId)}
             className="px-2.5 py-1 text-[11px] text-[#A1A1AA] hover:text-white disabled:opacity-30 cursor-pointer flex items-center gap-1"
           >
-            <ChevronLeft className="w-3.5 h-3.5" />
+            <CaretLeft className="w-3.5 h-3.5" />
             <span>Prev</span>
           </button>
           <button
@@ -67,7 +67,7 @@ export const ClaudeDesignShowcase: React.FC = () => {
             className="px-2.5 py-1 text-[11px] text-[#D96B43] hover:text-white disabled:opacity-30 font-medium cursor-pointer flex items-center gap-1"
           >
             <span>Next</span>
-            <ChevronRight className="w-3.5 h-3.5" />
+            <CaretRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </nav>

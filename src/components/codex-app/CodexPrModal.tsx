@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { GitCommit, Check, Loader2, X } from 'lucide-react';
+import { GitCommit, Check, CircleNotch, X } from '@phosphor-icons/react';
 
 export interface CodexPrModalProps {
   isOpen: boolean;
@@ -82,7 +82,7 @@ export const CodexPrModal: React.FC<CodexPrModalProps> = ({
             <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
               step > 2 ? 'bg-emerald-100 text-emerald-600' : step === 2 ? 'text-blue-600' : 'bg-zinc-100 text-zinc-400'
             }`}>
-              {step > 2 ? <Check className="w-3 h-3" /> : step === 2 ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />}
+              {step > 2 ? <Check className="w-3 h-3" /> : step === 2 ? <CircleNotch className="w-3.5 h-3.5 animate-spin" /> : <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />}
             </div>
             <span className={step >= 2 ? 'text-zinc-900 font-medium' : 'text-zinc-400'}>
               Pushing to branch codex/add-drag-and-drop-to-gallery-photos
@@ -94,7 +94,7 @@ export const CodexPrModal: React.FC<CodexPrModalProps> = ({
             <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
               step >= 4 ? 'bg-emerald-100 text-emerald-600' : step === 3 ? 'text-blue-600' : 'bg-zinc-100 text-zinc-400'
             }`}>
-              {step >= 4 ? <Check className="w-3 h-3" /> : step === 3 ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />}
+              {step >= 4 ? <Check className="w-3 h-3" /> : step === 3 ? <CircleNotch className="w-3.5 h-3.5 animate-spin" /> : <span className="w-1.5 h-1.5 rounded-full bg-zinc-300" />}
             </div>
             <span className={step >= 3 ? 'text-zinc-900 font-medium' : 'text-zinc-400'}>
               Creating a pull request

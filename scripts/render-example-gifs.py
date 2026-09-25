@@ -34,7 +34,7 @@ def render_example_1():
     for i in range(total_frames):
         t_sec = start_t + (i / fps)
         frame_path = os.path.join(TMP_S2_DIR, f"frame_{i:04d}.png")
-        url = f"http://localhost:3033/claude-design-promo.html?clean=true&t={t_sec:.3f}&autoplay=false"
+        url = f"http://127.0.0.1:4323/claude-design-promo.html?clean=true&t={t_sec:.3f}&autoplay=false"
         
         cmd = [
             CHROME_BIN,
@@ -77,7 +77,7 @@ def render_example_2():
     for i in range(total_frames):
         t_sec = start_t + (i / fps)
         frame_path = os.path.join(tmp_dir, f"frame_{i:04d}.png")
-        url = f"http://localhost:3033/codex-app-promo.html?clean=true&t={t_sec:.3f}&autoplay=false"
+        url = f"http://127.0.0.1:4323/codex-app-promo.html?clean=true&t={t_sec:.3f}&autoplay=false"
         
         cmd = [
             CHROME_BIN,

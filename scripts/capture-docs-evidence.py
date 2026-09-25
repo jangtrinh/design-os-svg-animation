@@ -20,14 +20,14 @@ def main():
     
     # Start local http server for docs
     server_proc = subprocess.Popen(
-        [sys.executable, "-m", "http.server", "3035", "--directory", DOCS_DIR],
+        [sys.executable, "-m", "http.server", "4323", "--bind", "127.0.0.1", "--directory", DOCS_DIR],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
     time.sleep(1.0)
     
     try:
-        url = "http://localhost:3035/index.html#showcase"
+        url = "http://127.0.0.1:4323/index.html#showcase"
         cmd = [
             CHROME_BIN,
             "--headless",

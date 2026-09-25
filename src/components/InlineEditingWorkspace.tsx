@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Trees, Waves, Sliders, X } from "lucide-react";
+import { Tree, Waves, Sliders, X } from "@phosphor-icons/react";
 
 const EASE_SPRING = [0.16, 1, 0.3, 1] as const;
 
@@ -126,7 +126,7 @@ export const InlineEditingWorkspace: React.FC<InlineEditingWorkspaceProps> = ({
                     {photoType === "forest" ? (
                       /* Misty Forest Mock Art */
                       <div className="w-full h-full bg-gradient-to-b from-[#1E293B] via-[#0F172A] to-[#022c22] flex flex-col items-center justify-center p-6 text-center">
-                        <Trees className="w-10 h-10 text-[#10B981] mb-2" />
+                        <Tree className="w-10 h-10 text-[#10B981] mb-2" />
                         <span className="text-[13px] text-[#94A3B8] font-mono">
                           Misty Pine Forest Canopy • North Coast
                         </span>
