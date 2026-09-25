@@ -73,11 +73,11 @@ export function encodedContactSheet(video, times, file, workDir) {
  * agreement black) and fidelity-metric.txt. Throws below `minimum`.
  */
 export async function fidelity(browser, { geometry, reference, outDir, tolerancePx = 2, minimum = 0.98 }) {
-  const { width, height, segments, strokeWidth = 2.2 } = geometry;
+  const { width, height, segments, strokeWidth = 2.2, viewBox = [0, 0, width, height] } = geometry;
   const render = path.join(outDir, 'fidelity-trace-render.png');
   const page = await browser.newPage();
   await page.setViewport({ width, height, deviceScaleFactor: 1 });
-  await page.setContent(`<body style="margin:0;background:#fff"><svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" fill="none" stroke="#000" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${segments.map(s => `<path d="${s.d}"/>`).join('')}</svg></body>`);
+  await page.setContent(`<body style="margin:0;background:#fff"><svg viewBox="${viewBox.join(' ')}" width="${width}" height="${height}" fill="none" stroke="#000" stroke-width="${strokeWidth}" stroke-linecap="round" stroke-linejoin="round">${segments.map(s => `<path d="${s.d}"/>`).join('')}</svg></body>`);
   await page.screenshot({ path: render });
   await page.close();
   execFileSync('magick', [

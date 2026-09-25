@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * render-drone-404-deliverable.mjs — proofs + exports for the single-line 404 drone.
+ * render-drone-404-deliverable.mjs — proofs + exports for an animated line-art 404 case.
+ * A case (page, proof dir, selectors, fidelity source) is research/<case>/case.json.
  *
  * Needs the dev server (`npm run dev`, port from local-server-config.mjs). Steps:
  *   1. fidelity   rasterise the traced geometry alone and diff it against the reference
@@ -11,7 +12,7 @@
  *   5. gif        seamless 10 s search loop, 720 px, 20 fps
  *   6. checks     flight bank profile chart; contact sheet decoded from the encoded MP4
  *
- * Usage: node scripts/render-drone-404-deliverable.mjs [--skip-video]
+ * Usage: node scripts/render-drone-404-deliverable.mjs [--case <research folder>] [--skip-video]
  */
 
 import puppeteer from 'puppeteer-core';
@@ -20,21 +21,20 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
-import { DRONE_LINE_ART } from '../src/primitives/drone-404-line-art-geometry.mjs';
 import { DRONE_TIMING } from '../src/primitives/drone-404-motion.mjs';
 import { clearStaleProofs, fidelity, flightProfile, encodedContactSheet } from './drone-404-proof-checks.mjs';
+import { caseName, loadCase } from './line-art-cases.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PROMO_DIR = path.join(ROOT_DIR, 'promo');
-const PROOF_DIR = path.join(PROMO_DIR, 'drone-404-proofs');
-const REFERENCE = path.join(ROOT_DIR, 'research/drone-404/reference-single-line-drone.png');
-const PAGE_URL = `${LOCAL_SERVER_ORIGIN}/promo/drone-404.html`;
+const CASE = loadCase(caseName(process.argv), ROOT_DIR);
+const PROOF_DIR = CASE.proofDir;
+const PAGE_URL = `${LOCAL_SERVER_ORIGIN}/${CASE.page}`;
 const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
 const skipVideo = process.argv.includes('--skip-video');
 
 const out = name => path.join(PROOF_DIR, name);
-const log = msg => console.log(`[drone-404] ${msg}`);
+const log = msg => console.log(`[${CASE.label}] ${msg}`);
 
 async function openPage(browser, { width = 1920, height = 1080, scheme = 'light', reducedMotion = false, clean = false } = {}) {
   const page = await browser.newPage();
@@ -110,16 +110,16 @@ async function interaction(browser) {
     addEventListener('pointermove', e => { dot.style.left = `${e.clientX}px`; dot.style.top = `${e.clientY}px`; });
   });
   const wait = ms => new Promise(r => setTimeout(r, ms));
-  const drone = await page.evaluate(() => {
-    const box = document.querySelector('.d404-silhouette').getBoundingClientRect();
+  const drone = await page.evaluate(sel => {
+    const box = document.querySelector(sel).getBoundingClientRect();
     return { x: box.left + box.width / 2, y: box.top + box.height / 2, w: box.width };
-  });
+  }, CASE.selectors.silhouette);
   const shots = [
     ['interaction-1-spotted.png', drone.x + drone.w * 0.55, drone.y + 190, 900],
     ['interaction-2-too-close.png', drone.x - drone.w * 0.12, drone.y, 260],
     ['interaction-3-settled-away.png', drone.x - drone.w * 0.12, drone.y, 1300],
   ];
-  const pose = () => page.evaluate(() => document.querySelector('.d404-drone').getAttribute('transform'));
+  const pose = () => page.evaluate(sel => document.querySelector(sel).getAttribute('transform'), CASE.selectors.body);
   const rest = await pose();
   const measurements = [`at rest: ${rest}`];
   for (const [name, x, y, settle] of shots) {
@@ -163,7 +163,11 @@ async function main() {
 
   const browser = await puppeteer.launch({ executablePath: CHROME_BIN, headless: 'new', args: ['--hide-scrollbars'] });
   try {
-    const fit = await fidelity(browser, { geometry: DRONE_LINE_ART, reference: REFERENCE, outDir: PROOF_DIR });
+    const geometry = await CASE.fidelityGeometry();
+    if (CASE.referenceSvg && !fs.existsSync(CASE.reference)) { // vector source: rasterise it once at the fidelity frame size
+      execFileSync(CHROME_BIN, ['--headless=new', '--disable-gpu', '--hide-scrollbars', `--window-size=${geometry.width},${geometry.height}`, `--screenshot=${CASE.reference}`, `file://${CASE.referenceSvg}`], { stdio: 'ignore' });
+    }
+    const fit = await fidelity(browser, { geometry, reference: CASE.reference, outDir: PROOF_DIR });
     log(`fidelity: recall ${(fit.recall * 100).toFixed(2)}%, precision ${(fit.precision * 100).toFixed(2)}% (ink within 2 px)`);
     await frames(browser);
     await pages(browser);
@@ -174,15 +178,15 @@ async function main() {
     if (!skipVideo) {
       const loopEnd = DRONE_TIMING.seamlessFrom + DRONE_TIMING.loopPeriod;
       await encode(browser, {
-        file: path.join(PROMO_DIR, 'drone-search-404.mp4'), from: 0, to: loopEnd, fps: 60,
+        file: CASE.video, from: 0, to: loopEnd, fps: 60,
         filters: ['-c:v', 'libx264', '-profile:v', 'high', '-pix_fmt', 'yuv420p', '-crf', '22', '-preset', 'slow', '-movflags', '+faststart'],
       });
       await encode(browser, {
-        file: path.join(PROMO_DIR, 'drone-search-404.gif'), from: DRONE_TIMING.seamlessFrom, to: loopEnd, fps: 20,
+        file: CASE.gif, from: DRONE_TIMING.seamlessFrom, to: loopEnd, fps: 20,
         filters: ['-filter_complex', '[0:v]scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=32[p];[b][p]paletteuse=dither=none', '-loop', '0'],
       });
       const times = [3.0, 5.4, 6.2, 7.3, 9.9, 10.4, 11.1, 13.0];
-      encodedContactSheet(path.join(PROMO_DIR, 'drone-search-404.mp4'), times, out('mp4-contact-sheet.png'), path.join(ROOT_DIR, '.cache', 'drone-404-mp4-frames'));
+      encodedContactSheet(CASE.video, times, out('mp4-contact-sheet.png'), path.join(ROOT_DIR, '.cache', `${CASE.label}-mp4-frames`));
       log('mp4 contact sheet from the encoded video');
     }
   } finally {
@@ -191,6 +195,6 @@ async function main() {
 }
 
 main().catch(error => {
-  console.error(`[drone-404] export failed: ${error.message}`);
+  console.error(`[${CASE.label}] export failed: ${error.message}`);
   process.exit(1);
 });

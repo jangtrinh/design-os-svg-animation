@@ -1,0 +1,25 @@
+{
+  "label": "drone-404",
+  "page": "promo/drone-404.html",
+  "proofDir": "promo/drone-404-proofs",
+  "video": "promo/drone-search-404.mp4",
+  "gif": "promo/drone-search-404.gif",
+  "selectors": { "silhouette": ".d404-silhouette", "body": ".d404-drone" },
+  "fidelity": {
+    "reference": "research/drone-404/reference-single-line-drone.png",
+    "module": "src/primitives/drone-404-line-art-geometry.mjs",
+    "export": "DRONE_LINE_ART",
+    "segments": ["segments"]
+  },
+  "publish": {
+    "modules": [
+      "src/primitives/DroneSearch404.mjs",
+      "src/primitives/drone-404-motion.mjs",
+      "src/primitives/drone-404-flight-physics.mjs",
+      "src/primitives/drone-404-flight-controller.mjs",
+      "src/primitives/drone-404-interaction.mjs",
+      "src/primitives/drone-404-line-art-geometry.mjs",
+      "src/runtime/hyperframes-motion-presets.mjs"
+    ]
+  }
+}

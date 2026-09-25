@@ -1,0 +1,8 @@
+# Python tools of the line-art-to-motion pipeline (tracing, silhouettes, flipbook split).
+# Build-time only, never a runtime dependency. Use a throwaway venv:
+#   python3 -m venv .cache/line-art-venv && .cache/line-art-venv/bin/pip install -r scripts/requirements-line-art.txt
+numpy>=2
+pillow>=10
+scikit-image>=0.24
+scipy>=1.13
+skan>=0.13
