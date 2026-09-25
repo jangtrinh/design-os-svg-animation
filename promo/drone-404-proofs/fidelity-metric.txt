@@ -1,0 +1,1 @@
+pixels differing (fuzz 30%): 8247 of 2240000 = 0.368%
