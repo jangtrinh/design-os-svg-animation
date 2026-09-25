@@ -7,8 +7,9 @@
  *   2. frames     timeline keyframes via window.__seekToTime -> contact sheet
  *   3. pages      page screenshots at 375 / 768 / 1440, dark scheme, reduced motion, theme switch
  *   3b. hover     live pointer interaction (spotted, too close, settled, CTA hover)
- *   4. video      1920x1080 60 fps MP4 (intro + one full search loop)
- *   5. gif        seamless 8 s search loop, 720 px, 20 fps
+ *   4. video      1920x1080 60 fps MP4 (intro + two search loops)
+ *   5. gif        seamless 10 s search loop, 720 px, 20 fps
+ *   6. checks     flight bank profile chart; contact sheet decoded from the encoded MP4
  *
  * Usage: node scripts/render-drone-404-deliverable.mjs [--skip-video]
  */
@@ -21,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 import { DRONE_LINE_ART } from '../src/primitives/drone-404-line-art-geometry.mjs';
 import { DRONE_TIMING } from '../src/primitives/drone-404-motion.mjs';
+import { clearStaleProofs, fidelity, flightProfile, encodedContactSheet } from './drone-404-proof-checks.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PROMO_DIR = path.join(ROOT_DIR, 'promo');
@@ -48,33 +50,6 @@ async function openPage(browser, { width = 1920, height = 1080, scheme = 'light'
 }
 
 const seek = (page, t) => page.evaluate(time => window.__seekToTime(time), t);
-
-async function fidelity(browser) {
-  const { width, height, segments } = DRONE_LINE_ART;
-  const paths = segments.map(s => `<path d="${s.d}"/>`).join('');
-  const page = await browser.newPage();
-  await page.setViewport({ width, height, deviceScaleFactor: 1 });
-  await page.setContent(`<body style="margin:0;background:#fff"><svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg></body>`);
-  await page.screenshot({ path: out('fidelity-trace-render.png') });
-  await page.close();
-  // Overlay: reference ink red, traced ink cyan. Where they coincide the multiply turns black,
-  // so any red or cyan left visible is a mismatch.
-  execFileSync('magick', [
-    '(', REFERENCE, '-fuzz', '60%', '-fill', 'red', '-opaque', 'black', ')',
-    '(', out('fidelity-trace-render.png'), '-fuzz', '60%', '-fill', 'cyan', '-opaque', 'black', ')',
-    '-compose', 'multiply', '-composite', out('fidelity-overlay.png'),
-  ]);
-  let metric = '';
-  try {
-    execFileSync('magick', ['compare', '-metric', 'AE', '-fuzz', '30%', REFERENCE, out('fidelity-trace-render.png'), 'null:'], { stdio: 'pipe' });
-  } catch (error) {
-    metric = String(error.stderr); // `compare` exits 1 when images differ at all; the metric is on stderr
-  }
-  const changed = Number(metric.split(' ')[0]);
-  const ratio = changed / (width * height);
-  fs.writeFileSync(out('fidelity-metric.txt'), `pixels differing (fuzz 30%): ${changed} of ${width * height} = ${(ratio * 100).toFixed(3)}%\n`);
-  log(`fidelity: ${(ratio * 100).toFixed(3)}% of reference pixels differ (fuzz 30%)`);
-}
 
 async function frames(browser) {
   const page = await openPage(browser, { clean: true });
@@ -146,13 +121,14 @@ async function interaction(browser) {
   ];
   const pose = () => page.evaluate(() => document.querySelector('.d404-drone').getAttribute('transform'));
   const rest = await pose();
+  const measurements = [`at rest: ${rest}`];
   for (const [name, x, y, settle] of shots) {
     await page.mouse.move(x, y, { steps: 12 });
     await wait(settle);
     await page.screenshot({ path: out(name) });
-    log(`${name}: drone transform ${await pose()}`);
+    measurements.push(`${name}: ${await pose()}`);
   }
-  log(`at rest: ${rest}`);
+  fs.writeFileSync(out('interaction-measurements.txt'), `${measurements.join('\n')}\n`);
   await page.hover('.btn-primary');
   await wait(1200);
   await page.screenshot({ path: out('interaction-4-back-home.png') });
@@ -180,15 +156,21 @@ async function encode(browser, { file, from, to, fps, filters }) {
 
 async function main() {
   fs.mkdirSync(PROOF_DIR, { recursive: true });
+  // Video proofs survive a --skip-video run; everything else is regenerated from scratch.
+  log(`cleared ${clearStaleProofs(PROOF_DIR, { keep: skipVideo ? ['mp4-contact-sheet.png'] : [] })} stale proofs`);
   const probe = await fetch(PAGE_URL).catch(() => null);
   if (!probe?.ok) throw new Error(`Dev server not reachable at ${PAGE_URL}. Start it with: npm run dev`);
 
   const browser = await puppeteer.launch({ executablePath: CHROME_BIN, headless: 'new', args: ['--hide-scrollbars'] });
   try {
-    await fidelity(browser);
+    const fit = await fidelity(browser, { geometry: DRONE_LINE_ART, reference: REFERENCE, outDir: PROOF_DIR });
+    log(`fidelity: recall ${(fit.recall * 100).toFixed(2)}%, precision ${(fit.precision * 100).toFixed(2)}% (ink within 2 px)`);
     await frames(browser);
     await pages(browser);
     await interaction(browser);
+    const maxBank = await flightProfile(browser, out('flight-bank-profile.png'));
+    if (maxBank > 14) throw new Error(`max bank ${maxBank.toFixed(1)} deg exceeds the owner-accepted ~12 deg`);
+    log(`flight profile: max |bank| ${maxBank.toFixed(1)} deg`);
     if (!skipVideo) {
       const loopEnd = DRONE_TIMING.seamlessFrom + DRONE_TIMING.loopPeriod;
       await encode(browser, {
@@ -199,6 +181,9 @@ async function main() {
         file: path.join(PROMO_DIR, 'drone-search-404.gif'), from: DRONE_TIMING.seamlessFrom, to: loopEnd, fps: 20,
         filters: ['-filter_complex', '[0:v]scale=720:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=32[p];[b][p]paletteuse=dither=none', '-loop', '0'],
       });
+      const times = [3.0, 5.4, 6.2, 7.3, 9.9, 10.4, 11.1, 13.0];
+      encodedContactSheet(path.join(PROMO_DIR, 'drone-search-404.mp4'), times, out('mp4-contact-sheet.png'), path.join(ROOT_DIR, '.cache', 'drone-404-mp4-frames'));
+      log('mp4 contact sheet from the encoded video');
     }
   } finally {
     await browser.close();

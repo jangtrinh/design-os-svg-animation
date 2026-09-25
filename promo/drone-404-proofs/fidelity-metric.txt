@@ -1,1 +1,3 @@
-pixels differing (fuzz 30%): 8247 of 2240000 = 0.368%
+reference ink within 2px of the trace (recall): 99.70%
+trace ink within 2px of the reference (precision): 99.95%
+reference ink 53707px, trace ink 40542px, minimum 98%

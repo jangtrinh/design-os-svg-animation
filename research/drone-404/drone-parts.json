@@ -1,0 +1,360 @@
+{
+ "description": "Part map for the single-line drone. Coordinates are reference pixels; stroke indices refer to the trace file.",
+ "reference": "research/drone-404/reference-single-line-drone.png",
+ "trace": "research/drone-404/drone-centerline-trace.json",
+ "silhouette": "research/drone-404/drone-airframe-silhouette.json",
+ "output": "src/primitives/drone-404-line-art-geometry.mjs",
+ "exportName": "DRONE_LINE_ART",
+ "strokeWidth": 2.2,
+ "defaultPart": "airframe",
+ "penOrigin": [
+  1010,
+  500
+ ],
+ "penAxisWeight": [
+  0.8,
+  1
+ ],
+ "strokeParts": {
+  "airframe": [
+   3,
+   4,
+   7,
+   10,
+   18,
+   19,
+   20,
+   26,
+   31,
+   32,
+   34,
+   36,
+   41,
+   43,
+   55,
+   56,
+   60,
+   62,
+   66,
+   75,
+   77,
+   79,
+   80,
+   81
+  ],
+  "lens-frame": [
+   22,
+   27
+  ],
+  "lens-eye": [
+   53,
+   58
+  ]
+ },
+ "regions": [
+  {
+   "part": "blades:rotor-top-left",
+   "poly": [
+    [
+     232,
+     268
+    ],
+    [
+     330,
+     262
+    ],
+    [
+     452,
+     283
+    ],
+    [
+     462,
+     300
+    ],
+    [
+     440,
+     312
+    ],
+    [
+     300,
+     360
+    ],
+    [
+     230,
+     352
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-top-left",
+   "poly": [
+    [
+     523,
+     300
+    ],
+    [
+     530,
+     252
+    ],
+    [
+     600,
+     188
+    ],
+    [
+     690,
+     170
+    ],
+    [
+     725,
+     184
+    ],
+    [
+     705,
+     222
+    ],
+    [
+     600,
+     282
+    ],
+    [
+     545,
+     310
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-top-right",
+   "poly": [
+    [
+     1288,
+     238
+    ],
+    [
+     1400,
+     250
+    ],
+    [
+     1480,
+     278
+    ],
+    [
+     1478,
+     296
+    ],
+    [
+     1440,
+     305
+    ],
+    [
+     1300,
+     345
+    ],
+    [
+     1284,
+     300
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-top-right",
+   "poly": [
+    [
+     1574,
+     268
+    ],
+    [
+     1700,
+     274
+    ],
+    [
+     1795,
+     294
+    ],
+    [
+     1795,
+     345
+    ],
+    [
+     1640,
+     345
+    ],
+    [
+     1574,
+     322
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-bottom-left",
+   "poly": [
+    [
+     40,
+     372
+    ],
+    [
+     150,
+     378
+    ],
+    [
+     260,
+     430
+    ],
+    [
+     300,
+     470
+    ],
+    [
+     298,
+     500
+    ],
+    [
+     200,
+     490
+    ],
+    [
+     40,
+     450
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-bottom-left",
+   "poly": [
+    [
+     378,
+     478
+    ],
+    [
+     470,
+     470
+    ],
+    [
+     560,
+     495
+    ],
+    [
+     640,
+     555
+    ],
+    [
+     632,
+     592
+    ],
+    [
+     575,
+     590
+    ],
+    [
+     470,
+     540
+    ],
+    [
+     390,
+     500
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-bottom-right",
+   "poly": [
+    [
+     1368,
+     540
+    ],
+    [
+     1420,
+     490
+    ],
+    [
+     1520,
+     470
+    ],
+    [
+     1600,
+     480
+    ],
+    [
+     1604,
+     505
+    ],
+    [
+     1520,
+     535
+    ],
+    [
+     1400,
+     568
+    ],
+    [
+     1368,
+     560
+    ]
+   ]
+  },
+  {
+   "part": "blades:rotor-bottom-right",
+   "poly": [
+    [
+     1702,
+     505
+    ],
+    [
+     1760,
+     420
+    ],
+    [
+     1850,
+     372
+    ],
+    [
+     1905,
+     385
+    ],
+    [
+     1900,
+     450
+    ],
+    [
+     1760,
+     505
+    ],
+    [
+     1722,
+     515
+    ]
+   ]
+  }
+ ],
+ "extras": {
+  "rotors": {
+   "rotor-top-left": {
+    "cx": 492,
+    "cy": 298,
+    "rx": 228,
+    "ry": 26,
+    "direction": 1
+   },
+   "rotor-top-right": {
+    "cx": 1527,
+    "cy": 300,
+    "rx": 238,
+    "ry": 26,
+    "direction": -1
+   },
+   "rotor-bottom-left": {
+    "cx": 342,
+    "cy": 493,
+    "rx": 292,
+    "ry": 38,
+    "direction": -1
+   },
+   "rotor-bottom-right": {
+    "cx": 1662,
+    "cy": 505,
+    "rx": 262,
+    "ry": 38,
+    "direction": 1
+   }
+  }
+ }
+}

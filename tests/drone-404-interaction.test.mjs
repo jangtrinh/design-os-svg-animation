@@ -28,6 +28,15 @@ test('after the pointer leaves, the drone returns level to its mission pose', ()
   const s = run(layer, 3);
   assert.ok(Math.abs(s.drone.x) < 1 && Math.abs(s.drone.y) < 1, `still displaced: ${s.drone.x}, ${s.drone.y}`);
   assert.ok(Math.abs(s.drone.rotate) < 0.2, `still tilted: ${s.drone.rotate}`);
+});
+
+test('released from a push, the tilt settles within about a second', () => {
+  const layer = createDroneInteraction({ bodyPivot: PIVOT });
+  layer.setPointer({ x: PIVOT[0] - 150, y: PIVOT[1] });
+  run(layer, 0.6);
+  layer.setPointer(null);
+  const s = run(layer, 1.0);
+  assert.ok(Math.abs(s.drone.rotate) < 0.5, `tilt ${s.drone.rotate.toFixed(2)} deg one second after release`);
   assert.ok(s.beam.opacity < 0.05, 'attention should fade once the visitor leaves');
 });
 
@@ -55,7 +64,10 @@ test('first sighting makes the drone hop once; a huge frame gap cannot blow it u
   layer.step(1 / 60, pose());
   const hop = layer.apply(blank()).drone.y;
   assert.ok(hop < 0, 'expected an upward hop');
+  const twin = createDroneInteraction({ bodyPivot: PIVOT });
+  twin.setPointer({ x: 3000, y: 3000 });
+  twin.step(1 / 60, pose());
   layer.step(5, pose()); // tab was hidden for 5 s
-  const s = layer.apply(blank());
-  assert.ok(Object.values(s.drone).every(Number.isFinite) && Math.abs(s.drone.y) < 20);
+  twin.step(1 / 30, pose()); // what the clamp should have turned it into
+  assert.deepEqual(layer.apply(blank()), twin.apply(blank()), 'a 5 s gap must advance exactly one clamped step');
 });

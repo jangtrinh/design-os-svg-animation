@@ -4,7 +4,7 @@
  * Why simulate: keyframed motion starts, stops and turns all channels in lockstep,
  * which reads as rigid. A quadrotor cannot do that. It must tilt first, and the tilt
  * then produces acceleration. So the drone lags its commanded path a little,
- * overshoots on arrival, and corrects. Here that happens for real:
+ * swings back once as it brakes, and levels out. Here that happens for real:
  *
  *   command     minimum-jerk mission path (+ slow station-keeping drift)
  *   position    PD loop -> desired tilt = atan(a_cmd / g)
