@@ -16,8 +16,8 @@ Scope: read-only review of the working tree (HEAD 6b09d56 + uncommitted changes)
 5. **Dependency hygiene** — unused: `three`, `@react-three/fiber`, `@react-three/drei`, `flubber`, `paper`, `@phosphor-icons/core` (0 imports). `lucide-react` used in 10 components → conflicts with CLAUDE.md "Official Phosphor vectors only". `svgo` declared twice (`^3.3.2` deps, `4.0.0` dev). `react` used but undeclared. `main: dist/index.js` points to nothing.
 
 ## Later
-6. Duplication: `promo/hyperframes-engine.mjs` identical to `src/runtime/hyperframes-engine.mjs`; 4 MP4s duplicated in `promo/` and `docs/promo/` (~29 MB each set); `.git` = 78 MB → consider Git LFS or a single source.
-7. Size: `promo/claude-design-engine.js` 1275 lines, `v0-generative-ui-engine.js` 820, `codex-app-engine.js` 764, 3 TSX >400; `docs/system-architecture.md` 1927 lines (> docs.maxLoc 800).
+6. Duplication: `promo/shared/hyperframes-engine.mjs` identical to `src/runtime/hyperframes-engine.mjs`; 4 MP4s duplicated in `promo/` and `docs/promo/` (~29 MB each set); `.git` = 78 MB → consider Git LFS or a single source.
+7. Size: `promo/claude-design/claude-design-engine.js` 1275 lines, `v0-generative-ui/v0-generative-ui-engine.js` 820, `codex-app/codex-app-engine.js` 764, 3 TSX >400; `docs/architecture/system-architecture.md` 1927 lines (> docs.maxLoc 800).
 8. Gate strength: Gate 1/9 mostly string-presence checks (`"updateViewportScale" in content`) — pass even if logic breaks. Capture scripts hardcode macOS Chrome path (only hotspot audit reads `CHROME_BIN`).
 9. ~25 untracked files (player, primitives, recipes, tutorial promo) — large uncommitted surface.
 

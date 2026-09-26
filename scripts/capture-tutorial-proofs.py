@@ -15,7 +15,7 @@ from PIL import Image
 CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 ARTIFACTS_DIR = "/Users/jang/.gemini/antigravity/brain/f89cf83b-4c7a-4c1f-be9d-65a033a2abd3"
 ROOT_DIR = Path(__file__).resolve().parent.parent
-TUTORIAL_HTML = str(ROOT_DIR / "promo" / "design-os-tutorial.html")
+TUTORIAL_HTML = str(ROOT_DIR / "promo" / "design-os-tutorial/design-os-tutorial.html")
 
 FRAMES = [
     ("tutorial_beat1_hook.png", 1.2, "Beat 1: Instant Hook & Kinetic Text"),
@@ -91,7 +91,7 @@ async function run() {
 
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
-  const htmlPath = path.join(ROOT_DIR, 'promo', 'design-os-tutorial.html');
+  const htmlPath = path.join(ROOT_DIR, 'promo', 'design-os-tutorial/design-os-tutorial.html');
   await page.goto(`file://${htmlPath}?clean=true`, { waitUntil: 'networkidle0' });
 
   for (const [filename, timeSec] of FRAMES) {

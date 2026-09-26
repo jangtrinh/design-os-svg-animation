@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design OS Animation — Official Explainer &amp; Walkthrough (OpenAI Templates Edition)</title>
+  <link rel="stylesheet" href="../shared/studio-runner.css">
+  <link rel="stylesheet" href="design-os-tutorial.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      if (p.get('clean') === 'true' || p.get('render') === 'true') {
+        document.documentElement.classList.add('clean-export');
+        document.addEventListener('DOMContentLoaded', () => {
+          if (document.body) document.body.classList.add('clean-export');
+        });
+      }
+    })();
+  </script>
+</head>
+<body class="studio-body">
+
+  <!-- SVG Sprite Definitions (Official Phosphor Icons) -->
+  <svg style="display: none;">
+    <defs>
+      <!-- Phosphor Lock -->
+      <symbol id="icon-lock" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M208 80h-32V56a48 48 0 0 0-96 0v24H48a16 16 0 0 0-16 16v112a16 16 0 0 0 16 16h160a16 16 0 0 0 16-16V96a16 16 0 0 0-16-16Zm-112-24a32 32 0 0 1 64 0v24H96ZM48 96h160v112H48Z"/>
+      </symbol>
+      <!-- Phosphor Sparkle -->
+      <symbol id="icon-sparkle" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M213.66 122.34a8 8 0 0 0-11.32 0L176 148.69l-26.34-26.35a8 8 0 0 0-11.32 11.32L164.69 160l-26.35 26.34a8 8 0 0 0 11.32 11.32L176 171.31l26.34 26.35a8 8 0 0 0 11.32-11.32L187.31 160l26.35-26.34a8 8 0 0 0 0-11.32Zm-80-64a8 8 0 0 0-11.32 0L96 84.69 69.66 58.34a8 8 0 0 0-11.32 11.32L84.69 96 58.34 122.34a8 8 0 0 0 11.32 11.32L96 107.31l26.34 26.35a8 8 0 0 0 11.32-11.32L107.31 96l26.35-26.34a8 8 0 0 0 0-11.32Z"/>
+      </symbol>
+      <!-- Phosphor Code -->
+      <symbol id="icon-code" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M69.66 154.34a8 8 0 0 1 0 11.32l-48 48a8 8 0 0 1-11.32-11.32L52.69 160 10.34 117.66a8 8 0 0 1 11.32-11.32Zm176-48a8 8 0 0 0-11.32 0l-48 48a8 8 0 0 0 0 11.32l48 48a8 8 0 0 0 11.32-11.32L203.31 160l42.35-42.34a8 8 0 0 0 0-11.32Zm-88-64a8 8 0 0 0-10.12 5.06l-48 144a8 8 0 0 0 15.18 5.06l48-144a8 8 0 0 0-5.06-10.12Z"/>
+      </symbol>
+      <!-- Phosphor Check -->
+      <symbol id="icon-check" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 77.66a8 8 0 0 0-11.32-11.32L96 188.69l-58.34-58.35a8 8 0 0 0-11.32 11.32l64 64a8 8 0 0 0 11.32 0Z"/>
+      </symbol>
+      <!-- Phosphor Return -->
+      <symbol id="icon-return" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M224 88v64a16 16 0 0 1-16 16H83.31l34.35 34.34a8 8 0 0 1-11.32 11.32l-48-48a8 8 0 0 1 0-11.32l48-48a8 8 0 0 1 11.32 11.32L83.31 152H208V88a8 8 0 0 1 16 0Z"/>
+      </symbol>
+      <!-- Phosphor Search -->
+      <symbol id="icon-search" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M229.66 218.34l-50.07-50.06a88.11 88.11 0 1 0-11.31 11.31l50.06 50.07a8 8 0 0 0 11.32-11.32ZM40 112a72 72 0 1 1 72 72 72.08 72.08 0 0 1-72-72Z"/>
+      </symbol>
+      <!-- Phosphor Play -->
+      <symbol id="icon-play" viewBox="0 0 256 256">
+        <path fill="currentColor" d="M240 128a15.74 15.74 0 0 1-7.6 13.51L88.32 229.65a16 16 0 0 1-24.32-13.65V40a16 16 0 0 1 24.32-13.65L232.4 114.49A15.74 15.74 0 0 1 240 128Z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- Top Floating Studio Toolbar -->
+  <header class="studio-topbar">
+    <div class="studio-brand-group">
+      <a href="../../docs/index.html" class="studio-logo" title="Back to Showcase">
+        <svg class="brand-logo-svg" viewBox="0 0 256 256" style="width: 20px; height: 20px; color: #007AFF;">
+          <use href="#icon-sparkle"></use>
+        </svg>
+        <span>Design OS: Explainer (OpenAI Templates)</span>
+      </a>
+      <span class="studio-meta-tag">1920 × 1080 · 60fps · 00:30.0</span>
+    </div>
+
+    <div class="studio-top-actions">
+      <div class="studio-speed-group">
+        <button class="studio-speed-btn speed-btn active" data-speed="1">1x</button>
+        <button class="studio-speed-btn speed-btn" data-speed="2">2x</button>
+        <button class="studio-speed-btn speed-btn" data-speed="4">4x</button>
+      </div>
+      <button id="btn-export-proof" class="studio-action-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11m-5-5 5 5 5-5M5 20h14"/></svg>
+        <span>Exported MP4</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Master Video Stage -->
+  <main class="studio-stage-container">
+    <div id="video-stage-frame" class="studio-stage-frame" style="width: min(1120px, calc((100vh - 200px) * 16 / 9), calc(100vw - 48px)); aspect-ratio: 16/9;">
+      <div id="video-stage-wrapper" class="video-stage-wrapper" style="width: 100%; height: 100%; margin: 0; padding: 0; box-shadow: none; border-radius: 0;">
+        <div id="video-stage" class="video-stage">
+
+          <!-- Continuous Virtual Camera World -->
+          <div id="camera-world">
+
+            <!-- SCENE 1: Instant Hook (0.0s – 3.0s / [0, 180)) -->
+            <div id="scene-1-hook" class="scene-layer active">
+              <div class="hero-split-container">
+                <div class="hero-poster-frame">
+                  <img src="assets/hero-poster.jpg" alt="Design Festival Hero Poster" class="hero-poster-img">
+                  <div class="hero-poster-overlay">
+                    <span class="hero-poster-tag">FORM / IN MOTION</span>
+                    <span class="hero-poster-sub">60 FPS VECTOR</span>
+                  </div>
+                </div>
+                <div class="hero-copy-block">
+                  <div class="hero-badge-pill">
+                    <svg width="14" height="14" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+                    <span>DESIGN OS MOTION ENGINE v0.2.0</span>
+                  </div>
+                  <h1 class="hero-headline">
+                    Your ideas.<br><span class="hero-headline-accent">In motion.</span>
+                  </h1>
+                  <p class="hero-subtext">
+                    Deterministic, frame-accurate motion video for AI coding agents. Replace erratic screen recordings with pure SVG &amp; HTML5 rendering.
+                  </p>
+                  <div id="hook-karaoke" class="kinetic-words-dock"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCENE 2: Template Discovery (3.0s – 8.0s / [180, 480)) -->
+            <div id="scene-2-diagram" class="scene-layer">
+              <div class="scene-board" style="width: 1380px;">
+                <div class="hero-badge-pill">
+                  <svg width="14" height="14" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+                  <span>CURATED MOTION TEMPLATES</span>
+                </div>
+                <h2 class="scene-title">
+                  Start somewhere extraordinary.
+                </h2>
+                <p class="scene-subtitle">
+                  Professional art-directed templates ready for programmatic motion, camera choreography, and multi-format compilation.
+                </p>
+                <div id="template-gallery-container" class="template-gallery">
+                  <!-- 3 Coordinated Asset Cards -->
+                  <div id="tmpl-card-1" class="tmpl-card selected">
+                    <div class="tmpl-card-media">
+                      <img src="assets/hero-poster.jpg" alt="Festival Poster">
+                      <span id="tmpl-badge-1" class="tmpl-badge active"><svg width="12" height="12" fill="currentColor"><use href="#icon-check"></use></svg> Selected</span>
+                    </div>
+                    <div class="tmpl-card-body">
+                      <div class="tmpl-card-title">Design Festival Poster</div>
+                      <div class="tmpl-card-desc">4:5 Architectural Ribbon · Kinetic Typography</div>
+                    </div>
+                  </div>
+                  <div id="tmpl-card-2" class="tmpl-card">
+                    <div class="tmpl-card-media">
+                      <img src="assets/template-still-life.jpg" alt="Editorial Still Life">
+                      <span class="tmpl-badge">Publication</span>
+                    </div>
+                    <div class="tmpl-card-body">
+                      <div class="tmpl-card-title">Editorial Still Life</div>
+                      <div class="tmpl-card-desc">3:2 Ambient Lighting · Glass &amp; Aluminum</div>
+                    </div>
+                  </div>
+                  <div id="tmpl-card-3" class="tmpl-card">
+                    <div class="tmpl-card-media">
+                      <img src="assets/merch-collection.jpg" alt="Merch Showcase">
+                      <span class="tmpl-badge">E-Commerce</span>
+                    </div>
+                    <div class="tmpl-card-body">
+                      <div class="tmpl-card-title">Brand Merch Showcase</div>
+                      <div class="tmpl-card-desc">1:1 Heavyweight Cotton &amp; Stationery</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCENE 3: UI Walkthrough & Studio Runner (8.0s – 15.0s / [480, 900)) -->
+            <div id="scene-3-walkthrough" class="scene-layer">
+              <div id="walkthrough-app-window" style="width: 1400px; height: 820px; position: relative;">
+                <!-- Rendered AppFrame containing Studio UI inside -->
+              </div>
+            </div>
+
+            <!-- SCENE 4: Audio-Visual Sync & Waveform Binding (15.0s – 20.0s / [900, 1200)) -->
+            <div id="scene-4-audio" class="scene-layer">
+              <div class="scene-board" style="width: 1240px; padding: 40px 64px;">
+                <div class="hero-badge-pill">
+                  <svg width="14" height="14" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+                  <span>DETERMINISTIC AUDIO BINDING</span>
+                </div>
+                <h2 class="scene-title">
+                  Find your rhythm.
+                </h2>
+                <p class="scene-subtitle" style="margin-bottom: 20px;">
+                  Pre-decoded PCM amplitude envelope locked to integer 60fps frames. Zero audio drift.
+                </p>
+                <div class="audio-poster-stage">
+                  <div id="audio-breathing-poster" class="audio-breathing-card">
+                    <img src="assets/hero-poster.jpg" alt="Hero Poster" style="width: 240px; height: 300px; border-radius: 14px; object-fit: cover; box-shadow: 0 16px 40px rgba(0,0,0,0.12);">
+                    <div class="audio-poster-meta">
+                      <span style="font-family: var(--font-mono); font-size: 11px; font-weight: 600; color: #007AFF;">PCM 50Hz ENVELOPE</span>
+                      <span style="font-size: 12px; font-weight: 700; color: #0D0D0D;">FORM / IN MOTION</span>
+                    </div>
+                  </div>
+                </div>
+                <div id="audio-equalizer-container" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+                <div id="audio-karaoke-sub" style="margin-top: 20px;"></div>
+              </div>
+            </div>
+
+            <!-- SCENE 5: Multi-Aspect Responsive Ecosystem (20.0s – 26.0s / [1200, 1560)) -->
+            <div id="scene-5-multiaspect" class="scene-layer">
+              <div class="scene-board" style="width: 1400px; padding: 40px 64px;">
+                <div class="hero-badge-pill">
+                  <svg width="14" height="14" fill="currentColor"><use href="#icon-check"></use></svg>
+                  <span>MULTI-ASPECT ECOSYSTEM</span>
+                </div>
+                <h2 class="scene-title">
+                  Every format. One idea.
+                </h2>
+                <p class="scene-subtitle" style="margin-bottom: 24px;">
+                  Single declarative Motion IR compiles to 16:9 widescreen, 9:16 vertical shorts, and 1:1 square feeds.
+                </p>
+                <div id="multi-aspect-display" class="multi-aspect-gallery">
+                  <!-- 16:9 Widescreen -->
+                  <div class="aspect-device-wrapper">
+                    <div class="aspect-device-frame aspect-16-9">
+                      <img src="assets/template-still-life.jpg" alt="16:9 Still Life">
+                      <div class="safe-zone-overlay">
+                        <span class="safe-zone-tag">16:9 SAFE ZONE (90%)</span>
+                      </div>
+                    </div>
+                    <div class="aspect-device-label">
+                      <strong>16:9 Widescreen</strong>
+                      <span>YouTube · Desktop Web (1920×1080)</span>
+                    </div>
+                  </div>
+
+                  <!-- 9:16 Vertical -->
+                  <div class="aspect-device-wrapper">
+                    <div class="aspect-device-frame aspect-9-16">
+                      <img src="assets/motion-sculpture-vertical.jpg" alt="9:16 Sculpture">
+                      <div class="safe-zone-overlay vertical-safe">
+                        <span class="safe-zone-tag">9:16 SAFE ZONE (70%)</span>
+                      </div>
+                    </div>
+                    <div class="aspect-device-label">
+                      <strong>9:16 Vertical</strong>
+                      <span>TikTok · Reels · Shorts (1080×1920)</span>
+                    </div>
+                  </div>
+
+                  <!-- 1:1 Square -->
+                  <div class="aspect-device-wrapper">
+                    <div class="aspect-device-frame aspect-1-1">
+                      <img src="assets/merch-collection.jpg" alt="1:1 Merch Collection">
+                      <div class="safe-zone-overlay square-safe">
+                        <span class="safe-zone-tag">1:1 SAFE ZONE (85%)</span>
+                      </div>
+                    </div>
+                    <div class="aspect-device-label">
+                      <strong>1:1 Square</strong>
+                      <span>Instagram · X · LinkedIn (1080×1080)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCENE 6: Outro Conversion CTA (26.0s – 30.0s / [1560, 1800)) -->
+            <div id="scene-6-outro" class="scene-layer">
+              <div class="scene-board" style="max-width: 960px; padding: 48px 80px;">
+                <div class="hero-badge-pill" style="margin-bottom: 16px;">
+                  <svg width="14" height="14" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+                  <span>DESIGN OS MOTION ENGINE</span>
+                </div>
+                <h1 style="font-size: 52px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; color: #0D0D0D;">
+                  Make your next move.
+                </h1>
+                <p style="font-size: 19px; color: #52525B; margin-bottom: 24px; max-width: 720px; line-height: 1.45;">
+                  Build deterministic 60fps vector motion videos with AI coding agents. Free, open source, and anti-flop certified.
+                </p>
+
+                <!-- Asset preview strip -->
+                <div class="outro-thumb-strip">
+                  <img src="assets/hero-poster.jpg" alt="Hero Poster">
+                  <img src="assets/template-still-life.jpg" alt="Still Life">
+                  <img src="assets/merch-collection.jpg" alt="Merch">
+                  <img src="assets/motion-sculpture-vertical.jpg" alt="Vertical">
+                </div>
+
+                <!-- CTA & Install -->
+                <div style="display: flex; gap: 16px; align-items: center; justify-content: center; margin-top: 28px; margin-bottom: 20px;">
+                  <div class="outro-primary-btn">
+                    <svg width="18" height="18" fill="currentColor"><use href="#icon-sparkle"></use></svg>
+                    <span>Explore Templates</span>
+                  </div>
+                  <div class="outro-install-badge">
+                    <code>npx @design-os/motion-engine init</code>
+                  </div>
+                </div>
+
+                <div style="font-family: var(--font-mono); font-size: 13px; color: #71717A;">
+                  github.com/jangtrinh/design-os-svg-animation
+                </div>
+              </div>
+            </div>
+
+            <!-- Synthetic Cursor on Stage (Tip strictly at 0,0) -->
+            <div id="tutorial-cursor">
+              <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; overflow: visible;">
+                <path d="M 0,0 L 0,18.5 L 4.8,14.2 L 9.2,23.5 L 12.8,21.8 L 8.4,12.6 L 15.2,12.6 Z" 
+                      fill="#0D0D0D" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+              </svg>
+            </div>
+            <!-- Click Ripple (Concentric at 0,0) -->
+            <div id="tutorial-ripple"></div>
+
+          </div> <!-- /camera-world -->
+
+        </div> <!-- /video-stage -->
+      </div> <!-- /video-stage-wrapper -->
+    </div> <!-- /video-stage-frame -->
+
+    <!-- Unified Studio Transport Dock -->
+    <div class="studio-transport-bar">
+      <div class="studio-transport-row">
+        <div class="studio-transport-left">
+          <button id="btn-restart" class="studio-icon-button" title="Restart (Home)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M224,128a96,96,0,0,1-96,96,95.53,95.53,0,0,1-67.88-28.12L38.63,174.4A8,8,0,0,1,50,163.09l21.49,21.48A79.52,79.52,0,0,0,128,208a80,80,0,1,0-80-80,8,8,0,0,1-16,0,96,96,0,1,1,192,0Z"/></svg></button>
+          <button id="btn-play-pause" class="studio-icon-button primary" title="Play/Pause (Space)">
+            <span id="play-icon">
+              <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </span>
+          </button>
+          <div class="studio-timecode">
+            <strong id="timecode">00:00.0 / 00:30.0</strong>
+          </div>
+        </div>
+
+        <div class="studio-scrubber-lane">
+          <input type="range" id="video-scrubber" class="studio-scrubber" min="0" max="30.0" step="0.05" value="0" aria-label="Scrub video">
+        </div>
+
+        <div class="studio-transport-right">
+          <button id="btn-fullscreen" class="studio-icon-button" title="Toggle Fullscreen (F)"><svg viewBox="0 0 256 256" width="14" height="14" fill="currentColor"><path d="M216,48V88a8,8,0,0,1-16,0V56H168a8,8,0,0,1,0-16h40A8,8,0,0,1,216,48ZM88,200H56V168a8,8,0,0,0-16,0v40a8,8,0,0,0,8,8H88a8,8,0,0,0,0-16Zm120-40a8,8,0,0,0-8,8v32H168a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V168A8,8,0,0,0,208,160ZM48,96a8,8,0,0,0,8-8V56H88a8,8,0,0,0,0-16H48a8,8,0,0,0-8,8V88A8,8,0,0,0,48,96Z"/></svg></button>
+        </div>
+      </div>
+
+      <div class="studio-scenes-row">
+        <div class="studio-scene-pills">
+          <button class="studio-scene-pill pill-btn active" data-seek="0.0">S1 Hook</button>
+          <button class="studio-scene-pill pill-btn" data-seek="3.0">S2 Templates</button>
+          <button class="studio-scene-pill pill-btn" data-seek="8.0">S3 Walkthrough</button>
+          <button class="studio-scene-pill pill-btn" data-seek="15.0">S4 Audio Sync</button>
+          <button class="studio-scene-pill pill-btn" data-seek="20.0">S5 Multi-Aspect</button>
+          <button class="studio-scene-pill pill-btn" data-seek="26.0">S6 CTA Outro</button>
+        </div>
+        <span id="scene-name" style="color: var(--studio-muted); font-size: 11px;">Scene 1: Instant Hook &amp; Contract</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Deterministic Engine Script -->
+  <script src="design-os-tutorial-engine.js"></script>
+</body>
+</html>

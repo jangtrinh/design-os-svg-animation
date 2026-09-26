@@ -44,7 +44,7 @@ def test_gate_0_product_designer_skill():
 
 def test_gate_1_phosphor_icons():
     banner("Gate 1: Phosphor / Lucide Icons & Zero Emojis Hardrule Verification")
-    html_path = ROOT_DIR / "promo/v0-generative-ui.html"
+    html_path = ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui.html"
     content = html_path.read_text(encoding="utf-8")
 
     required_symbols = [
@@ -83,12 +83,12 @@ def test_gate_1_phosphor_icons():
     pseudo_icon_pattern = re.compile(r"[←→↻⤓↗▾≡▷‹›]")
 
     scanned_targets = [
-        ROOT_DIR / "promo/claude-design-promo.html",
-        ROOT_DIR / "promo/claude-design-engine.js",
-        ROOT_DIR / "promo/codex-app-promo.html",
-        ROOT_DIR / "promo/codex-app-engine.js",
-        ROOT_DIR / "promo/v0-generative-ui.html",
-        ROOT_DIR / "promo/v0-generative-ui-engine.js",
+        ROOT_DIR / "promo/claude-design/claude-design-promo.html",
+        ROOT_DIR / "promo/claude-design/claude-design-engine.js",
+        ROOT_DIR / "promo/codex-app/codex-app-promo.html",
+        ROOT_DIR / "promo/codex-app/codex-app-engine.js",
+        ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui.html",
+        ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui-engine.js",
         ROOT_DIR / "src/components"
     ]
 
@@ -112,12 +112,12 @@ def test_gate_1_phosphor_icons():
         sys.exit(1)
 
     # --- IMMUTABLE HARDRULE: AUTHENTIC SVGL (https://svgl.app/) BRAND MARKS ---
-    claude_html = (ROOT_DIR / "promo/claude-design-promo.html").read_text(encoding="utf-8")
+    claude_html = (ROOT_DIR / "promo/claude-design/claude-design-promo.html").read_text(encoding="utf-8")
     assert "m50.228 170.321" in claude_html and 'viewBox="0 0 256 257"' in claude_html, (
         "Claude brand mark must be sourced from SVGL (https://svgl.app/library/claude-ai-icon.svg)!"
     )
 
-    codex_html = (ROOT_DIR / "promo/codex-app-promo.html").read_text(encoding="utf-8")
+    codex_html = (ROOT_DIR / "promo/codex-app/codex-app-promo.html").read_text(encoding="utf-8")
     assert "252.794 108.802" in codex_html and 'viewBox="0 0 611 611"' in codex_html, (
         "OpenAI brand mark must be sourced from SVGL (https://svgl.app/library/openai.svg)!"
     )
@@ -125,7 +125,7 @@ def test_gate_1_phosphor_icons():
         "OpenAI wordmark must be sourced from SVGL (https://svgl.app/library/openai_wordmark_light.svg)!"
     )
 
-    v0_html = (ROOT_DIR / "promo/v0-generative-ui.html").read_text(encoding="utf-8")
+    v0_html = (ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui.html").read_text(encoding="utf-8")
     assert "M128 0L256 221.705H0L128 0Z" in v0_html and "icon-vercel-triangle" in v0_html, (
         "Vercel brand mark must be sourced from SVGL!"
     )
@@ -137,7 +137,7 @@ def test_gate_1_phosphor_icons():
 
 def test_gate_2_typography_and_smoothing():
     banner("Gate 2: Antialiased Smoothing & Typography Standards")
-    css_path = ROOT_DIR / "promo/studio-runner.css"
+    css_path = ROOT_DIR / "promo/shared/studio-runner.css"
     css = css_path.read_text(encoding="utf-8")
 
     assert "-webkit-font-smoothing: antialiased" in css, "Must include -webkit-font-smoothing: antialiased!"
@@ -150,7 +150,7 @@ def test_gate_2_typography_and_smoothing():
 
 def test_gate_3_modular_spacing_and_shadows():
     banner("Gate 3: Modular Spacing & Tactile Skeuomorphic Depth")
-    css_path = ROOT_DIR / "promo/studio-runner.css"
+    css_path = ROOT_DIR / "promo/shared/studio-runner.css"
     css = css_path.read_text(encoding="utf-8")
 
     # Tactile multi-layered shadows check
@@ -159,7 +159,7 @@ def test_gate_3_modular_spacing_and_shadows():
     # Check for anti-flop arbitrary odd spacing
     assert "margin: 7px" not in css and "padding: 13px" not in css, "Must not use odd non-modular spacing!"
 
-    html_path = ROOT_DIR / "promo/claude-design-promo.html"
+    html_path = ROOT_DIR / "promo/claude-design/claude-design-promo.html"
     html = html_path.read_text(encoding="utf-8")
     assert "feDropShadow" in html, "SVG must contain feDropShadow filters for vector lighting depth!"
 
@@ -168,12 +168,12 @@ def test_gate_3_modular_spacing_and_shadows():
 
 def test_gate_4_a11y_and_reduced_motion():
     banner("Gate 4: Accessibility & Reduced Motion Gate")
-    css_path = ROOT_DIR / "promo/studio-runner.css"
+    css_path = ROOT_DIR / "promo/shared/studio-runner.css"
     css = css_path.read_text(encoding="utf-8")
 
     assert "@media (prefers-reduced-motion: reduce)" in css, "CSS must provide prefers-reduced-motion: reduce media query!"
 
-    html_path = ROOT_DIR / "promo/claude-design-promo.html"
+    html_path = ROOT_DIR / "promo/claude-design/claude-design-promo.html"
     html = html_path.read_text(encoding="utf-8")
 
     assert '<title>' in html, "HTML must include a descriptive <title> tag!"
@@ -183,7 +183,7 @@ def test_gate_4_a11y_and_reduced_motion():
 
 def test_gate_5_security_and_motion_ir():
     banner("Gate 5: Security, Determinism & Motion IR Compliance")
-    html_path = ROOT_DIR / "promo/codex-app-promo.html"
+    html_path = ROOT_DIR / "promo/codex-app/codex-app-promo.html"
     html = html_path.read_text(encoding="utf-8")
 
     # Security checks
@@ -343,7 +343,7 @@ def test_gate_9_universal_player_standard():
     assert (player_dir / "studio-player-runtime.js").exists(), "studio-player-runtime.js must exist"
 
     # 2. Verify compilation of a test deliverable via CLI
-    sample_out = ROOT_DIR / "promo/sample-deliverable.html"
+    sample_out = ROOT_DIR / "promo/samples/sample-deliverable.html"
     cmd = [
         "node",
         str(ROOT_DIR / "scripts/export-player-deliverable.mjs"),

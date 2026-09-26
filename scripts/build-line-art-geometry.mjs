@@ -2,7 +2,7 @@
 /**
  * build-line-art-geometry.mjs — traced line art -> animatable geometry module.
  *
- * Stage 3 of the line-art-to-motion pipeline (docs/line-art-to-motion-pipeline.md).
+ * Stage 3 of the line-art-to-motion pipeline (docs/pipelines/line-art-to-motion-pipeline.md).
  * Input is a per-case part map (e.g. research/drone-404/drone-parts.json) that points
  * at the centerline trace. Every coordinate still comes from the traced pixels; this
  * script only:

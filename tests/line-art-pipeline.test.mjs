@@ -31,11 +31,11 @@ test('a new case is scaffolded in one command and is loadable', () => {
   fs.mkdirSync(path.join(root, 'research'));
   const out = execFileSync('node', [SCAFFOLD, 'robot-arm', '--root', root], { encoding: 'utf8' });
   assert.match(out, /created research\/robot-arm\//);
-  for (const file of ['research/robot-arm/case.json', 'research/robot-arm/robot-arm-parts.json', 'plans/robot-arm.md']) {
+  for (const file of ['research/robot-arm/case.json', 'research/robot-arm/robot-arm-parts.json', 'plans/cases/robot-arm.md']) {
     assert.ok(fs.existsSync(path.join(root, file)), `${file} missing`);
   }
   const spec = loadCase('robot-arm', root);
-  assert.equal(spec.page, 'promo/robot-arm.html');
+  assert.equal(spec.page, 'promo/robot-arm/robot-arm.html');
   assert.equal(spec.fidelity.export, 'ROBOT_ARM_GEOMETRY');
   const again = spawnSync('node', [SCAFFOLD, 'robot-arm', '--root', root], { encoding: 'utf8' });
   assert.equal(again.status, 1, 'must refuse to overwrite an existing case');

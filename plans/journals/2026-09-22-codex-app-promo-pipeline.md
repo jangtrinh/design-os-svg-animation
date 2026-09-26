@@ -4,7 +4,7 @@
 - **Author**: Lead Motion Engineer & System Architect (Antigravity AI)
 - **Collaborators**: Owner, Codex Web Pro, JEV System One
 - **Project**: `design-os-svg-animation`
-- **Output Artifacts**: `promo/codex-app-promo.mp4`, `docs/assets/example-3-codex-app-promo.gif`, `docs/index.html`
+- **Output Artifacts**: `promo/codex-app/codex-app-promo.mp4`, `docs/assets/example-3-codex-app-promo.gif`, `docs/index.html`
 
 ---
 

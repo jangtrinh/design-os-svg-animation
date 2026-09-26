@@ -62,8 +62,8 @@ def check_svg_stroke_padding(auto_fix: bool = False) -> List[Issue]:
     """Inspects SVGs for stroke clipping at viewBox boundaries (JEV invariant)."""
     issues = []
     targets = [
-        ROOT_DIR / "promo/codex-app-promo.html",
-        ROOT_DIR / "promo/claude-design-promo.html"
+        ROOT_DIR / "promo/codex-app/codex-app-promo.html",
+        ROOT_DIR / "promo/claude-design/claude-design-promo.html"
     ]
 
     for target in targets:
@@ -96,7 +96,7 @@ def check_svg_stroke_padding(auto_fix: bool = False) -> List[Issue]:
 def check_button_glyph_integrity(auto_fix: bool = False) -> List[Issue]:
     """Ensures buttons contain valid SVG symbols instead of raw rectangles (black box bug)."""
     issues = []
-    targets = [ROOT_DIR / "promo/codex-app-promo.html"]
+    targets = [ROOT_DIR / "promo/codex-app/codex-app-promo.html"]
 
     for target in targets:
         if not target.exists():
@@ -126,7 +126,7 @@ def check_button_glyph_integrity(auto_fix: bool = False) -> List[Issue]:
 def check_dom_hierarchy_decoupling(auto_fix: bool = False) -> List[Issue]:
     """Ensures screen-space overlays (#cursor-layer, #outro-stage) are decoupled from #camera-world."""
     issues = []
-    targets = [ROOT_DIR / "promo/codex-app-promo.html"]
+    targets = [ROOT_DIR / "promo/codex-app/codex-app-promo.html"]
 
     for target in targets:
         if not target.exists():
@@ -158,7 +158,7 @@ def check_dom_hierarchy_decoupling(auto_fix: bool = False) -> List[Issue]:
 def check_spring_kinematics() -> List[Issue]:
     """Validates that outro spring equations use damped harmonic oscillator with positive friction."""
     issues = []
-    target = ROOT_DIR / "promo/codex-app-engine.js"
+    target = ROOT_DIR / "promo/codex-app/codex-app-engine.js"
     if target.exists():
         content = target.read_text(encoding="utf-8")
         if "springGentle" in content:
@@ -217,8 +217,8 @@ def check_svgl_brand_integrity() -> List[Issue]:
     """Verifies that all brand marks originate from SVGL (https://svgl.app/) with zero raw emojis."""
     issues = []
     targets = [
-        ROOT_DIR / "promo/claude-design-promo.html",
-        ROOT_DIR / "promo/codex-app-promo.html"
+        ROOT_DIR / "promo/claude-design/claude-design-promo.html",
+        ROOT_DIR / "promo/codex-app/codex-app-promo.html"
     ]
     emoji_pattern = re.compile(r"[\U00010000-\U0010ffff\u2600-\u27bf\u2300-\u23ff\u2b50]")
 

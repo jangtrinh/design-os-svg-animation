@@ -31,7 +31,7 @@ async function renderGif() {
 
   const page = await browser.newPage();
   await page.setViewport({ width: 1920, height: 1080, deviceScaleFactor: 1 });
-  const htmlPath = path.join(ROOT_DIR, 'promo', 'design-os-tutorial.html');
+  const htmlPath = path.join(ROOT_DIR, 'promo', 'design-os-tutorial/design-os-tutorial.html');
   await page.goto(`file://${htmlPath}?clean=true`, { waitUntil: 'networkidle0' });
 
   const fps = 20;

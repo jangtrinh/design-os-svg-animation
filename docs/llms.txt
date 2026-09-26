@@ -7,11 +7,11 @@ A motion engineering pipeline that compiles Motion IR storyboards to CSS and GSA
 ## Documentation
 
 - [Overview & Dual Carousel Showcase](https://jangtrinh.github.io/design-os-svg-animation/): Interactive landing page with live animations and dual video showcase (Claude Design 82s & OpenAI Codex App 38s).
-- [Reference Recreation Contract](https://jangtrinh.github.io/design-os-svg-animation/motion-video-recreation-pipeline.html): Source evidence, HyperFrames staging, transition review, encoded-output checks, acceptance states, and session handoff.
-- [Recreation Lessons and Review Guide](https://jangtrinh.github.io/design-os-svg-animation/motion-video-recreation-workflow-guide.html): Astra case failures and evidence-based review method.
-- [Motion IR Specification](https://jangtrinh.github.io/design-os-svg-animation/motion-ir.html): Full specification for the intermediate representation.
-- [Architecture Overview](https://jangtrinh.github.io/design-os-svg-animation/architecture-overview.html): Multi-stage video rendering pipeline and virtual clock mechanism.
-- [Quality & Safety Gates](https://jangtrinh.github.io/design-os-svg-animation/quality-and-safety-gates.html): The 6 deterministic anti-flop validation criteria and pre-flight guard.
+- [Reference Recreation Contract](https://jangtrinh.github.io/design-os-svg-animation/pipelines/motion-video-recreation-pipeline.html): Source evidence, HyperFrames staging, transition review, encoded-output checks, acceptance states, and session handoff.
+- [Recreation Lessons and Review Guide](https://jangtrinh.github.io/design-os-svg-animation/pipelines/motion-video-recreation-workflow-guide.html): Astra case failures and evidence-based review method.
+- [Motion IR Specification](https://jangtrinh.github.io/design-os-svg-animation/reference/motion-ir.html): Full specification for the intermediate representation.
+- [Architecture Overview](https://jangtrinh.github.io/design-os-svg-animation/architecture/architecture-overview.html): Multi-stage video rendering pipeline and virtual clock mechanism.
+- [Quality & Safety Gates](https://jangtrinh.github.io/design-os-svg-animation/reference/quality-and-safety-gates.html): The 6 deterministic anti-flop validation criteria and pre-flight guard.
 - [GitHub Repository](https://github.com/jangtrinh/design-os-svg-animation): Source code, CLI commands, and test suites.
 
 ## Core Features & Workflow

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-purge-emojis.py — Replaces all raw Unicode emojis in claude-design-promo.html
+purge-emojis.py — Replaces all raw Unicode emojis in claude-design/claude-design-promo.html
 with certified, lightweight Phosphor SVG icons and clean SVG symbols.
 Enforces the Zero-Emoji hardrule.
 """
@@ -51,7 +51,7 @@ for old, new in REPLACEMENTS:
     content = content.replace(old, new)
 PROMO_HTML.write_text(content, encoding="utf-8")
 
-# Add .ph-icon CSS rule to claude-design.css if not present
+# Add .ph-icon CSS rule to claude-design/claude-design.css if not present
 css_content = PROMO_CSS.read_text(encoding="utf-8")
 if ".ph-icon" not in css_content:
     ph_css = """
@@ -66,4 +66,4 @@ if ".ph-icon" not in css_content:
 """
     PROMO_CSS.write_text(css_content + ph_css, encoding="utf-8")
 
-print("Done purging emojis from claude-design-promo.html and updating claude-design.css!")
+print("Done purging emojis from claude-design/claude-design-promo.html and updating claude-design/claude-design.css!")

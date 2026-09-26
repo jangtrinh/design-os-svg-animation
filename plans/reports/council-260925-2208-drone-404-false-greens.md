@@ -28,13 +28,13 @@ Scope: working tree (post-PR #6 + uncommitted refactor). `npm test` 60/60 pass; 
 
 | Item | Finding |
 |---|---|
-| `plans/drone-404-svg-animation.md:65` "`ui gate` PASS, axe 0 x3, render probe" | no script, artifact, or log in repo produces this; only `page-*.png` exist |
+| `plans/cases/drone-404-svg-animation.md:65` "`ui gate` PASS, axe 0 x3, render probe" | no script, artifact, or log in repo produces this; only `page-*.png` exist |
 | plan:59 "logged drone transforms (rest 1.6 -> pushed 48.7 px)" | stdout only (`render-drone-404-deliverable.mjs:128-130`), not persisted; unverifiable after the run |
 | plan:43 "counter-swing ~4 deg" | measured 2.45; chart PNG is the only evidence and is not machine-checked |
 | `promo/proof_drone_404_{active_scan,altitude_inspect,patrol_enter}.png` (untracked) | no producer anywhere in repo; orphan artifacts |
 | `promo/drone-404-proofs/marketing-card.png`, `pages-copy-live.png` | not in `GENERATED` regex (`proof-checks.mjs:17`), not produced by the exporter: survive `clearStaleProofs` forever, i.e. the exact stale-proof class the refactor was meant to kill |
-| `docs/line-art-to-motion-pipeline.md` untracked | referenced by `CLAUDE.md:20`, `README.md:56`, `skills/line-art-motion/SKILL.md:16`; dangling until committed |
-| `DRONE_LINE_ART.strokeWidth` (`build-line-art-geometry.mjs:119`) | emitted, read by nothing (page uses `fitStroke`, `drone-404.html:181-185`) |
+| `docs/pipelines/line-art-to-motion-pipeline.md` untracked | referenced by `CLAUDE.md:20`, `README.md:56`, `skills/line-art-motion/SKILL.md:16`; dangling until committed |
+| `DRONE_LINE_ART.strokeWidth` (`build-line-art-geometry.mjs:119`) | emitted, read by nothing (page uses `fitStroke`, `drone-404/drone-404.html:181-185`) |
 | `rotorAngle` export (`motion.mjs:71`) | only internal use; harmless |
 | Motion IR fixture (`build-drone-404-motion-ir.mjs:48`) | 100 ms linear keyframes of a 240 Hz controller; test only validates schema (`:12-16`), never fidelity to the timeline |
 
@@ -52,7 +52,7 @@ Scope: working tree (post-PR #6 + uncommitted refactor). `npm test` 60/60 pass; 
 
 | Question | Answer |
 |---|---|
-| Two renders of same t | identical in one process (pure lookup). Live path `drone-404.html:207-209` composes the interaction layer; `__seekToTime` :233 does not: intended, but `frames()`/`encode()` inherit the live-clock `render(0)` at :236 first (harmless). Cross-engine Node vs Chrome float drift: speculation, low risk |
+| Two renders of same t | identical in one process (pure lookup). Live path `drone-404/drone-404.html:207-209` composes the interaction layer; `__seekToTime` :233 does not: intended, but `frames()`/`encode()` inherit the live-clock `render(0)` at :236 first (harmless). Cross-engine Node vs Chrome float drift: speculation, low risk |
 | Loop closure at wrap (steady[end] vs steady[0]) | measured residual < 1e-10 px/deg (transient->steady boundary and wrap differ only by the 1e-9 s interpolation slope). Seamless in practice, **untested** (Q1 row 1) |
 | First loop vs steady at same phase | y differs 0.25 px, bank 0.001 deg: MP4 loops 1 and 2 not identical, invisible |
 | Grid interpolation | `k = min(steps-1, floor(local*HZ))` :95 safe at local -> period; `%` on floats fine for these values |
@@ -62,7 +62,7 @@ Scope: working tree (post-PR #6 + uncommitted refactor). `npm test` 60/60 pass; 
 | Path | Animates under `prefers-reduced-motion: reduce`? |
 |---|---|
 | timeline / hover layer | no: `tick` returns `render(0)` :202, rAF never started :237 |
-| theme icon swap `drone-404.html:107-116` | **yes**: 400 ms rotate(-90deg)+scale transform transition; no `@media (prefers-reduced-motion)` rule exists anywhere in the page |
+| theme icon swap `drone-404/drone-404.html:107-116` | **yes**: 400 ms rotate(-90deg)+scale transform transition; no `@media (prefers-reduced-motion)` rule exists anywhere in the page |
 | `.btn:active` / `.theme-toggle:active` transforms :87,96,105,118 | yes (120 ms translate/scale) |
 | reduce switched OFF mid-session | page stays frozen forever (:234 only handles on; :237 runs once) — dead state, not a violation |
 
@@ -72,7 +72,7 @@ Scope: working tree (post-PR #6 + uncommitted refactor). `npm test` 60/60 pass; 
 2. **Assert the owner's intent directly** (new test): after each leg end, `max|bank|` in [end, end+0.3] between 1.5 and 5 deg and `|bank| < 1.5` for all t in [end+0.35, end+1.0] except the gust window; overshoot test -> compare `drone.x` against the commanded path (export `command` or a min-x of LEGS+DRIFT), require controller overshoot > 0 px or delete the claim from plan:41. Hover test -> window [0,1.2] at HOME (spread 0.6..2). ~30 min; makes the three re-targeted thresholds unnecessary.
 3. **Gate fidelity on ink, not canvas** (`proof-checks.mjs:91-95`): `ratio = changed / referenceInkPixels` (count via `magick ... -threshold 50% -format %[fx:1-mean]`), throw if `metric === ''`, and throw above a threshold (e.g. 0.20). Add `sync:drone-404-pages` / `verify:drone-404-pages` scripts and put verify in `ci.yml` next to `:40`. ~20 min.
 
-Later: `@media (prefers-reduced-motion: reduce)` block disabling the icon/btn transitions; add `marketing-card|pages-copy-live` to `GENERATED` or delete them; commit `docs/line-art-to-motion-pipeline.md`; remove the three orphan `promo/proof_drone_404_*.png`.
+Later: `@media (prefers-reduced-motion: reduce)` block disabling the icon/btn transitions; add `marketing-card|pages-copy-live` to `GENERATED` or delete them; commit `docs/pipelines/line-art-to-motion-pipeline.md`; remove the three orphan `promo/proof_drone_404_*.png`.
 
 ## Assumptions
 - Working tree (not HEAD) is the review target — high. Thresholds cited match HEAD (tests unmodified since 5b68f69), so the three re-targets happened inside the PR branch — high.

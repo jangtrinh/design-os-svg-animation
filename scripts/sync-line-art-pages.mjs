@@ -2,11 +2,12 @@
 /**
  * sync-line-art-pages.mjs — publish a line-art-to-motion case to GitHub Pages (docs/).
  *
- * Reads research/<case>/case.json: the page, its demo video, and `publish.modules`
- * (repo-relative, under src/). Copies them to docs/promo/ with the Pages layout
- * docs/promo/<label>/<path under src>, rewriting what differs on Pages:
- *   - module imports:  '../src/  ->  './<label>/
- *   - "Back to home":  href="/" and location.href = '/'  ->  ../index.html (site lives under a sub-path)
+ * Reads research/<case>/case.json: the page (promo/<project>/...), its demo video, and
+ * `publish.modules` (repo-relative, under src/). Mirrors them into docs/promo/ with the same
+ * project layout, modules under docs/promo/<project>/lib/<path under src>, rewriting what
+ * differs on Pages:
+ *   - module imports:  '<to repo root>/src/  ->  './lib/
+ *   - "Back to home":  href="/" and location.href = '/'  ->  the site index (sub-path hosting)
  *
  * It also proves the copy is self-contained: every relative import in the page and in
  * each published module must resolve to a published file (a new import that was not added
@@ -32,21 +33,25 @@ function replaceExactly(text, from, to, times, what) {
   return text.split(from).join(to);
 }
 
+const pageDest = path.relative('promo', spec.page); // e.g. drone-404/drone-404.html
+const srcPrefix = `'${path.posix.relative(path.posix.dirname(spec.page), '.')}/src/`; // e.g. '../../src/
+const home = path.posix.relative(path.posix.dirname(path.posix.join('docs/promo', pageDest)), 'docs/index.html');
+
 function pageForPages(source) {
   let html = source.toString('utf8');
-  const imports = count(html, "'../src/");
-  if (!imports) throw new Error(`${spec.page}: no '../src/ imports found`);
-  html = replaceExactly(html, "'../src/", `'./${spec.label}/`, imports, spec.page);
-  html = replaceExactly(html, 'href="/"', 'href="../index.html"', 1, spec.page);
-  html = replaceExactly(html, "location.href = '/'", "location.href = '../index.html'", 1, spec.page);
+  const imports = count(html, srcPrefix);
+  if (!imports) throw new Error(`${spec.page}: no ${srcPrefix} imports found`);
+  html = replaceExactly(html, srcPrefix, "'./lib/", imports, spec.page);
+  html = replaceExactly(html, 'href="/"', `href="${home}"`, 1, spec.page);
+  html = replaceExactly(html, "location.href = '/'", `location.href = '${home}'`, 1, spec.page);
   return Buffer.from(html);
 }
 
 // [repo source, docs/promo destination, transform]
 const files = [
-  [spec.page, path.basename(spec.page), pageForPages],
-  [path.relative(ROOT, spec.video), path.basename(spec.video), b => b],
-  ...spec.publish.modules.map(m => [m, path.join(spec.label, path.relative('src', m)), b => b]),
+  [spec.page, pageDest, pageForPages],
+  [path.relative(ROOT, spec.video), path.relative(path.join(ROOT, 'promo'), spec.video), b => b],
+  ...spec.publish.modules.map(m => [m, path.join(path.dirname(pageDest), 'lib', path.relative('src', m)), b => b]),
 ];
 
 // Self-containment: relative imports must land on published files.

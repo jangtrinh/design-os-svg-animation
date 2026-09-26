@@ -13,7 +13,7 @@ import shutil
 PROMO_URL_BASE = "http://127.0.0.1:4323/claude-design-promo.html"
 FRAMES_DIR = "/tmp/claude_promo_frames"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "claude-design-promo.mp4"))
+OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "claude-design/claude-design-promo.mp4"))
 CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 def main():

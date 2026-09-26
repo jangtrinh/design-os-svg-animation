@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 render-example-gifs.py — Render high-quality GIFs for README examples:
-1. Example 1: Claude Design 3D Globe & Interactive Tweaks (from claude-design-promo.html, 12.5s to 17.5s)
-2. Example 2: OpenAI Codex App Promo (from codex-app-promo.html, 0.5s to 4.5s)
+1. Example 1: Claude Design 3D Globe & Interactive Tweaks (from claude-design/claude-design-promo.html, 12.5s to 17.5s)
+2. Example 2: OpenAI Codex App Promo (from codex-app/codex-app-promo.html, 0.5s to 4.5s)
 """
 
 import os
@@ -30,7 +30,7 @@ def render_example_1():
     duration = 5.0
     total_frames = int(fps * duration)
 
-    print(f"Capturing {total_frames} frames from claude-design-promo.html (t={start_t}s to {start_t+duration}s)...")
+    print(f"Capturing {total_frames} frames from claude-design/claude-design-promo.html (t={start_t}s to {start_t+duration}s)...")
     for i in range(total_frames):
         t_sec = start_t + (i / fps)
         frame_path = os.path.join(TMP_S2_DIR, f"frame_{i:04d}.png")
@@ -73,7 +73,7 @@ def render_example_2():
     duration = 4.0
     total_frames = int(fps * duration)
     
-    print(f"Capturing {total_frames} frames from codex-app-promo.html...")
+    print(f"Capturing {total_frames} frames from codex-app/codex-app-promo.html...")
     for i in range(total_frames):
         t_sec = start_t + (i / fps)
         frame_path = os.path.join(tmp_dir, f"frame_{i:04d}.png")

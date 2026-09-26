@@ -20,4 +20,4 @@
 
 A1/A2/A3: four architecture documents and structured records delivered; resolver and engine implementation explicitly separate future work. A4: folder/scripts/schema/fixtures/probe and complete package proposal delivered; offline checks passed, live manifest integration blocked by concurrent ownership and dependency gates blocked by network/missing packages.
 
-Read [architecture supplement](../../docs/architecture-supplement.md). Keep shared config untouched until the concurrent writer/owner settles integration; do not auto-promote or overwrite authoring v1.0.
+Read [architecture supplement](../../docs/architecture/architecture-supplement.md). Keep shared config untouched until the concurrent writer/owner settles integration; do not auto-promote or overwrite authoring v1.0.

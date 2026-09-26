@@ -20,7 +20,7 @@ Top buckets → proposals: artifact-only fix rounds (11), feel iterations (3), t
 
 | # | Proposal | For | Against | Verdict | Destination |
 |---|---|---|---|---|---|
-| A | Canonical pipeline doc: stages, artifact + gate per stage, pitfalls table | owner asked; 9 stages repeated with ad-hoc commands | doc rot | **Done** | `docs/line-art-to-motion-pipeline.md` |
+| A | Canonical pipeline doc: stages, artifact + gate per stage, pitfalls table | owner asked; 9 stages repeated with ad-hoc commands | doc rot | **Done** | `docs/pipelines/line-art-to-motion-pipeline.md` |
 | B | Generic geometry builder driven by a parts JSON | drone constants hard-coded in the builder | refactor risk | **Done with guard**: output byte-identical | `scripts/build-line-art-geometry.mjs`, `research/drone-404/drone-parts.json` |
 | C | Exporter clears stale proofs + builds MP4 sheet + flight plot itself | stale frames hit a contact sheet and a commit (2 incidents); 2 manual steps | — | **Done** | `scripts/drone-404-proof-checks.mjs` |
 | D | Project skill entry so agents pick the pipeline up | CLAUDE.md lists mandatory skills; none covered stills | skill sprawl | **Done**, thin: points at the doc | `skills/line-art-motion/SKILL.md`, CLAUDE.md line |
@@ -38,7 +38,7 @@ Top buckets → proposals: artifact-only fix rounds (11), feel iterations (3), t
 
 ## 4. Saved where
 
-- Pipeline: `docs/line-art-to-motion-pipeline.md` · `skills/line-art-motion/SKILL.md` · README link · CLAUDE.md pointer.
+- Pipeline: `docs/pipelines/line-art-to-motion-pipeline.md` · `skills/line-art-motion/SKILL.md` · README link · CLAUDE.md pointer.
 - Code: `scripts/build-line-art-geometry.mjs` (+ `research/drone-404/drone-parts.json`), `scripts/drone-404-proof-checks.mjs`.
 - Memory: `motion-feel-physics-over-keyframes`, `shell-and-render-gotchas`, `line-art-motion-pipeline`.
 - Ledger: 2 es-designer gaps (recorded, skill not edited).
@@ -65,7 +65,7 @@ Report: `council-260925-2208-drone-404-false-greens.md`. Verdict: DONE_WITH_CONC
 
 ## 7. Follow-ups (ROI order)
 
-1. `sync --check` compares bytes only and never loads the page. Add a headless load of `docs/promo/drone-404.html` in CI (~20 min; needs Chrome in CI).
+1. `sync --check` compares bytes only and never loads the page. Add a headless load of `docs/promo/drone-404/drone-404.html` in CI (~20 min; needs Chrome in CI).
 2. The Motion IR fixture is validated for schema only, not for fidelity to the timeline. Add a sampled-equality test (~15 min).
 3. Remove the 3 orphan `promo/proof_drone_404_*.png` files, which predate this work and are untracked. Owner call.
 4. Generalise the exporter once a second case (MiniPro) exists. Not before.

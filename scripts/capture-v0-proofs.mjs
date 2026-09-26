@@ -5,7 +5,7 @@ import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 
 const ARTIFACTS_DIR = '/Users/jang/.gemini/antigravity/brain/f89cf83b-4c7a-4c1f-be9d-65a033a2abd3';
 const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const URL = `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true`;
+const URL = `${LOCAL_SERVER_ORIGIN}/v0-generative-ui/v0-generative-ui.html?clean=true`;
 
 const KEYFRAMES = [
   { time: 2.0,  name: 'proof_v0_s1_wireframe_guidelines.png', desc: 'Scene 1: v0 Wireframe + Radiating Guidelines' },
