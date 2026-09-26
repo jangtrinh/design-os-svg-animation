@@ -1,0 +1,2 @@
+painted pixels matching the reference colour within 12% (edge tolerance 1px): 100.00%
+mismatched 2px of 319138px painted (reference 319030px), minimum 98%

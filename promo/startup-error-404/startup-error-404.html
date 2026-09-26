@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found (404)</title>
+  <meta name="description" content="Error 404. Something broke on the way here: the page you are looking for was moved, deleted, or never existed.">
+  <script>
+    // Apply a saved theme before first paint so the page never flashes the wrong one.
+    try { const saved = localStorage.getItem('se404-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light dark;
+      /* Warm neutrals and accents taken from the illustration (#882119 maroon, #FF8147 orange). */
+      --paper: #ffffff;
+      --ink: #2a1210;
+      --ink-muted: #6b4a45;
+      --hairline: #f0dcd5;
+      --accent: #882119;     /* primary action: the illustration's outline colour */
+      --accent-ink: #ffffff;
+      --accent-press: #6e1a14;
+      --numeral: #ffe2d4;    /* far layer: a pale wash of the orange reads as distance */
+      --sticker: #ffffff;    /* silhouette fill + edge; equals the paper in light mode */
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --space-1: 8px; --space-2: 16px; --space-3: 24px; --space-4: 32px; --space-6: 48px;
+      --radius: 999px;
+    }
+    /* Dark tokens: an explicit choice (data-theme) wins over the system setting. */
+    :root[data-theme="dark"] { color-scheme: dark; --paper: #150b0a; --ink: #f6e9e5; --ink-muted: #c4a6a0; --hairline: #3a2622; --accent: #ff8147; --accent-ink: #2a1210; --accent-press: #ff9a6b; --numeral: #2b1814; --sticker: #fff8f4; }
+    :root[data-theme="light"] { color-scheme: light; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --paper: #150b0a; --ink: #f6e9e5; --ink-muted: #c4a6a0; --hairline: #3a2622; --accent: #ff8147; --accent-ink: #2a1210; --accent-press: #ff9a6b; --numeral: #2b1814; --sticker: #fff8f4; }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100dvh;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+      display: grid;
+      place-items: center;
+      position: relative; /* anchors the icon sprite and screen-reader-only text */
+    }
+    ::selection { background: var(--ink); color: var(--paper); }
+
+    .page {
+      width: 100%;
+      max-width: 1040px;
+      padding: var(--space-6) var(--space-3);
+      display: grid;
+      justify-items: center;
+      gap: var(--space-4);
+    }
+
+    .stage {
+      /* Fit the stage and the copy in one screen: the stage gives up height first (viewBox is 2540:2300). */
+      width: 100%; max-width: min(720px, calc((100dvh - 330px) * 1.104)); min-width: min(100%, 300px);
+      margin: 0; --se404-sticker: var(--sticker);
+    }
+    .stage svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .se404-bubble { cursor: pointer; /* click a bubble to close it; it comes back */ }
+    .se404-numerals text {
+      font-family: var(--font);
+      font-weight: 800;
+      font-size: 1180px;
+      letter-spacing: -0.05em;
+      fill: var(--numeral);
+    }
+
+    .copy { display: grid; justify-items: center; gap: var(--space-2); text-align: center; max-width: 34rem; }
+    h1 {
+      margin: 0;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      text-wrap: balance;
+    }
+    .copy p { margin: 0; font-size: 16px; line-height: 1.55; color: var(--ink-muted); text-wrap: pretty; }
+
+    .actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: var(--space-2); }
+    .btn {
+      display: inline-flex; align-items: center; gap: var(--space-1);
+      min-height: 44px; padding: 0 22px;
+      border-radius: var(--radius);
+      font: 500 15px/1 var(--font); letter-spacing: -0.005em;
+      text-decoration: none; cursor: pointer;
+      border: 1px solid var(--ink);
+      transition: background-color 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out, transform 120ms ease-out;
+    }
+    .btn svg { width: 18px; height: 18px; flex: none; }
+    .btn-primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+    .btn-secondary { background: transparent; color: var(--ink); border-color: var(--hairline); }
+    @media (hover: hover) {
+      .btn-primary:hover { background: var(--accent-press); border-color: var(--accent-press); }
+      .btn-secondary:hover { border-color: var(--ink); }
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* Theme toggle: icon button, top right. */
+    .theme-toggle {
+      position: fixed; top: var(--space-2); right: var(--space-2); z-index: 10;
+      width: 44px; height: 44px; min-width: 44px; min-height: 44px; display: grid; place-items: center;
+      border-radius: 50%; border: 1px solid var(--hairline);
+      background: var(--paper); color: var(--ink); cursor: pointer;
+      transition: border-color 160ms ease-out, transform 120ms ease-out;
+    }
+    .theme-toggle svg { grid-area: 1 / 1; width: 20px; height: 20px;
+      transition: opacity 240ms cubic-bezier(0.23, 1, 0.32, 1), transform 400ms cubic-bezier(0.23, 1, 0.32, 1); }
+    /* The icon names the theme you will switch to: moon in light, sun in dark. */
+    .theme-toggle .icon-sun { opacity: 0; transform: rotate(-90deg) scale(0.6); }
+    :root[data-theme="dark"] .theme-toggle .icon-sun { opacity: 1; transform: none; }
+    :root[data-theme="dark"] .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.6); }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .icon-sun { opacity: 1; transform: none; }
+      :root:not([data-theme="light"]) .theme-toggle .icon-moon { opacity: 0; transform: rotate(90deg) scale(0.6); }
+    }
+    @media (hover: hover) { .theme-toggle:hover { border-color: var(--ink); } }
+    .theme-toggle:active { transform: scale(0.97); }
+    .theme-toggle:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    @media (min-width: 768px) { .theme-toggle { top: var(--space-3); right: var(--space-3); } }
+
+    /* Theme switch: the new theme grows as a circle from the toggle (View Transitions).
+       The reveal is driven from JS; here we only stop the default cross-fade. */
+    ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+    /* Fallback where View Transitions are missing: a plain colour cross-fade. */
+    .theme-fading, .theme-fading * { transition: background-color 320ms ease-out, color 320ms ease-out, border-color 320ms ease-out, fill 320ms ease-out !important; }
+
+    /* Reduced motion: state changes stay (colour, icon swap) but nothing moves. */
+    @media (prefers-reduced-motion: reduce) {
+      .theme-toggle, .theme-toggle svg, .btn { transition: none; }
+      .theme-toggle svg { transform: none !important; }
+      .btn:active, .theme-toggle:active { transform: none; }
+    }
+
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* Export framing: stage only, centred in a 16:9 frame. */
+    .clean-export .copy, .clean-export .theme-toggle { display: none; }
+    .clean-export .page { max-width: 1500px; padding: 0 var(--space-6); }
+    .clean-export .stage { max-width: 1000px; }
+    .clean-export { background: var(--paper); }
+
+    @media (max-width: 480px) {
+      .page { padding: var(--space-4) var(--space-2); gap: var(--space-3); }
+      .actions { width: 100%; }
+      .btn { flex: 1 1 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <!-- Phosphor regular: house, sun, moon, arrow-left (official @phosphor-icons/core paths) -->
+    <symbol id="icon-house" viewBox="0 0 256 256"><path fill="currentColor" d="M219.31,108.68l-80-80a16,16,0,0,0-22.62,0l-80,80A15.87,15.87,0,0,0,32,120v96a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V160h32v56a8,8,0,0,0,8,8h64a8,8,0,0,0,8-8V120A15.87,15.87,0,0,0,219.31,108.68ZM208,208H160V152a8,8,0,0,0-8-8H104a8,8,0,0,0-8,8v56H48V120l80-80,80,80Z"/></symbol>
+    <symbol id="icon-sun" viewBox="0 0 256 256"><path fill="currentColor" d="M120,40V16a8,8,0,0,1,16,0V40a8,8,0,0,1-16,0Zm72,88a64,64,0,1,1-64-64A64.07,64.07,0,0,1,192,128Zm-16,0a48,48,0,1,0-48,48A48.05,48.05,0,0,0,176,128ZM58.34,69.66A8,8,0,0,0,69.66,58.34l-16-16A8,8,0,0,0,42.34,53.66Zm0,116.68-16,16a8,8,0,0,0,11.32,11.32l16-16a8,8,0,0,0-11.32-11.32ZM192,72a8,8,0,0,0,5.66-2.34l16-16a8,8,0,0,0-11.32-11.32l-16,16A8,8,0,0,0,192,72Zm5.66,114.34a8,8,0,0,0-11.32,11.32l16,16a8,8,0,0,0,11.32-11.32ZM48,128a8,8,0,0,0-8-8H16a8,8,0,0,0,0,16H40A8,8,0,0,0,48,128Zm80,80a8,8,0,0,0-8,8v24a8,8,0,0,0,16,0V216A8,8,0,0,0,128,208Zm112-88H216a8,8,0,0,0,0,16h24a8,8,0,0,0,0-16Z"/></symbol>
+    <symbol id="icon-moon" viewBox="0 0 256 256"><path fill="currentColor" d="M233.54,142.23a8,8,0,0,0-8-2,88.08,88.08,0,0,1-109.8-109.8,8,8,0,0,0-10-10,104.84,104.84,0,0,0-52.91,37A104,104,0,0,0,136,224a103.09,103.09,0,0,0,62.52-20.88,104.84,104.84,0,0,0,37-52.91A8,8,0,0,0,233.54,142.23ZM188.9,190.34A88,88,0,0,1,65.66,67.11a89,89,0,0,1,31.4-26A106,106,0,0,0,96,56,104.11,104.11,0,0,0,200,160a106,106,0,0,0,14.92-1.06A89,89,0,0,1,188.9,190.34Z"/></symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 256 256"><path fill="currentColor" d="M224,128a8,8,0,0,1-8,8H59.31l58.35,58.34a8,8,0,0,1-11.32,11.32l-72-72a8,8,0,0,1,0-11.32l72-72a8,8,0,0,1,11.32,11.32L59.31,120H216A8,8,0,0,1,224,128Z"/></symbol>
+  </svg>
+
+  <button class="theme-toggle" type="button" id="theme-toggle" aria-label="Switch to dark theme">
+    <svg class="icon-moon" aria-hidden="true"><use href="#icon-moon"/></svg>
+    <svg class="icon-sun" aria-hidden="true"><use href="#icon-sun"/></svg>
+  </button>
+
+  <main class="page">
+    <figure class="stage" id="stage"></figure>
+    <section class="copy" aria-labelledby="heading">
+      <h1 id="heading"><span class="sr-only">Error 404: </span>Page not found</h1>
+      <p>Something broke on the way here. The page you are looking for was moved, deleted, or never existed.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/"><svg aria-hidden="true"><use href="#icon-house"/></svg>Back to home</a>
+        <button class="btn btn-secondary" type="button" id="go-back"><svg aria-hidden="true"><use href="#icon-arrow-left"/></svg>Go back</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { renderStartupErrorSVG, applyStartupErrorState, renderStartupErrorAt } from '../../src/primitives/startup-error-404-renderer.mjs';
+    import { sampleStartupErrorState } from '../../src/primitives/startup-error-404-motion.mjs';
+    import { createStartupErrorInteraction } from '../../src/primitives/startup-error-404-interaction.mjs';
+
+    const params = new URLSearchParams(location.search);
+    if (params.get('clean') === 'true') document.documentElement.classList.add('clean-export');
+
+    const stage = document.getElementById('stage');
+    stage.innerHTML = renderStartupErrorSVG();
+    const svg = stage.querySelector('svg');
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+    // One deterministic timeline, sampled at the display's own refresh rate: live playback
+    // passes continuous time, exporters call window.__seekToTime(t), which stops live playback.
+    let live = true;
+    let origin = null;
+    let previous = null;
+    const startAt = Number(params.get('start')) || 0; // e.g. ?start=4 skips the intro when demoing
+    const holdAt = params.has('hold') ? Number(params.get('hold')) : null; // freeze the timeline, keep hover live (design review)
+    const interaction = createStartupErrorInteraction();
+    const render = t => renderStartupErrorAt(svg, t, { reducedMotion: reduceMotion.matches });
+
+    function tick(now) {
+      if (!live) return;
+      if (reduceMotion.matches) return render(0); // switched on mid-play: settle to the still pose
+      origin ??= now;
+      const dt = previous === null ? 0 : (now - previous) / 1000;
+      previous = now;
+      const time = holdAt ?? startAt + (now - origin) / 1000;
+      interaction.step(dt);
+      applyStartupErrorState(svg, interaction.apply(sampleStartupErrorState(time)));
+      requestAnimationFrame(tick);
+    }
+
+    // Interaction: he looks toward the pointer, bubbles dodge it, a clicked bubble closes
+    // and pops back, and hovering a call-to-action calms the errors down.
+    const toStage = (clientX, clientY) => {
+      const p = new DOMPoint(clientX, clientY).matrixTransform(svg.getScreenCTM().inverse());
+      return { x: p.x, y: p.y };
+    };
+    stage.addEventListener('pointermove', e => interaction.setPointer(toStage(e.clientX, e.clientY)));
+    stage.addEventListener('pointerleave', () => interaction.setPointer(null));
+    stage.addEventListener('click', e => {
+      const bubble = e.target.closest?.('.se404-bubble');
+      if (bubble) interaction.dismiss(bubble.dataset.part);
+    });
+    document.querySelectorAll('.actions .btn').forEach(button => {
+      const aim = () => {
+        const box = button.getBoundingClientRect();
+        interaction.setFocus(toStage(box.left + box.width / 2, box.top + box.height / 2));
+      };
+      const release = () => interaction.setFocus(null);
+      button.addEventListener('pointerenter', aim);
+      button.addEventListener('focus', aim);
+      button.addEventListener('pointerleave', release);
+      button.addEventListener('blur', release);
+    });
+
+    window.__seekToTime = t => { live = false; render(t); };
+    reduceMotion.addEventListener('change', () => { if (reduceMotion.matches) render(0); });
+
+    render(0);
+    if (!reduceMotion.matches && params.get('clean') !== 'true') requestAnimationFrame(tick);
+
+    // Theme toggle ---------------------------------------------------------------
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const systemDark = matchMedia('(prefers-color-scheme: dark)');
+    const currentTheme = () => root.dataset.theme || (systemDark.matches ? 'dark' : 'light');
+    const labelToggle = () => toggle.setAttribute('aria-label', `Switch to ${currentTheme() === 'dark' ? 'light' : 'dark'} theme`);
+    labelToggle();
+    systemDark.addEventListener('change', labelToggle);
+
+    function applyTheme(next) {
+      root.dataset.theme = next;
+      try { localStorage.setItem('se404-theme', next); } catch {}
+      labelToggle();
+    }
+
+    toggle.addEventListener('click', () => {
+      const next = currentTheme() === 'dark' ? 'light' : 'dark';
+      if (reduceMotion.matches) return applyTheme(next);
+      if (!document.startViewTransition) {
+        root.classList.add('theme-fading');
+        applyTheme(next);
+        setTimeout(() => root.classList.remove('theme-fading'), 360);
+        return;
+      }
+      // Grow the new theme as a circle from the button's centre to the farthest corner.
+      const box = toggle.getBoundingClientRect();
+      const x = box.left + box.width / 2;
+      const y = box.top + box.height / 2;
+      const radius = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      const transition = document.startViewTransition(() => applyTheme(next));
+      transition.ready.then(() => {
+        root.animate(
+          { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`] },
+          { duration: 620, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', pseudoElement: '::view-transition-new(root)' },
+        );
+      });
+    });
+
+    document.getElementById('go-back').addEventListener('click', () => {
+      if (history.length > 1) history.back(); else location.href = '/';
+    });
+  </script>
+</body>
+</html>

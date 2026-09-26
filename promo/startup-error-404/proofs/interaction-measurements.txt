@@ -1,0 +1,4 @@
+at rest: translate(714 1140.053) rotate(-2.399) scale(1 1) translate(-714 -1133)
+interaction-1-approach.png: translate(713.452 1140.064) rotate(-2.432) scale(1 1) translate(-714 -1133)
+interaction-2-pushed.png: translate(776.348 1109.623) rotate(1.412) scale(1 1) translate(-714 -1133)
+interaction-3-settled.png: translate(771.045 1129.458) rotate(1.087) scale(1 1) translate(-714 -1133)

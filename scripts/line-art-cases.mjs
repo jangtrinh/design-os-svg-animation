@@ -8,8 +8,14 @@
  * fidelity: { reference: PNG of the source,
  *             referenceSvg?: vector source rendered to `reference` on first use,
  *             module + export: the geometry module,
- *             segments: paths into the export, e.g. ["segments"] or ["static", "bladePoses.0"],
- *             width?/height?/viewBox?/strokeWidth?: render frame (defaults from the export) }
+ *             segments: paths into the export, e.g. ["segments"] or ["static", "bladePoses.0"]
+ *               (ink mode: stroked line art), or
+ *             elements: path to a filled element list ({ fill, d } | { fill, ellipse }) (color mode),
+ *             width?/height?/viewBox?/strokeWidth?: render frame (defaults from the export),
+ *             page?: { selector, hide? }: also check the live page's rest pose (color mode) }
+ * timing:   { module, export } -> an object with seamlessFrom and loopPeriod (the exporter's
+ *           video span and GIF loop)
+ * render?:  exporter settings; every field has a default (see render-drone-404-deliverable.mjs)
  */
 
 import fs from 'node:fs';
@@ -39,9 +45,23 @@ export function loadCase(name, rootDir) {
     gif: abs(spec.gif),
     reference: abs(f.reference),
     referenceSvg: abs(f.referenceSvg),
-    /** Geometry for fidelity(): { width, height, viewBox?, strokeWidth?, segments: [{ d }] }. */
+    /** Timeline constants of the case's motion module ({ seamlessFrom, loopPeriod, ... }). */
+    async timing() {
+      if (!spec.timing) throw new Error(`case "${name}" has no timing { module, export } in case.json`);
+      const value = (await import(pathToFileURL(abs(spec.timing.module)).href))[spec.timing.export];
+      if (!(value?.loopPeriod > 0) || !(value?.seamlessFrom >= 0)) throw new Error(`${spec.timing.export} needs seamlessFrom and loopPeriod`);
+      return value;
+    },
+    /**
+     * Geometry for fidelity(): ink mode { width, height, viewBox?, strokeWidth?, segments: [{ d }] }
+     * or color mode { width, height, viewBox, elements }.
+     */
     async fidelityGeometry() {
       const exported = (await import(pathToFileURL(abs(f.module)).href))[f.export];
+      if (f.elements) {
+        // synthetic fills are motion scaffolding, not source art: the module check skips them
+        return { width: f.width, height: f.height, viewBox: f.viewBox ?? exported.viewBox, elements: pick(exported, f.elements).filter(e => !e.synthetic) };
+      }
       const segments = f.segments.flatMap(source => {
         const value = pick(exported, source);
         return typeof value === 'string' ? [{ d: value }] : value;

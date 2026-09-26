@@ -3,13 +3,13 @@
  * new-line-art-case.mjs — start a line-art-to-motion case in one command.
  *
  * Creates (never overwrites):
- *   research/<case>/case.json          page, proofs, video, selectors, fidelity, Pages modules
+ *   research/<case>/case.json          page, proofs, video, selectors, fidelity, timing, Pages modules
  *   research/<case>/<case>-parts.json  part map template (raster sources)
  *   plans/cases/<case>.md              intake: owner decisions + acceptance checklist
  * and prints the next commands for the chosen source kind. Pipeline doc:
  * docs/pipelines/line-art-to-motion-pipeline.md.
  *
- * Usage: node scripts/new-line-art-case.mjs <case> [--source raster|flipbook] [--root <repo root>]
+ * Usage: node scripts/new-line-art-case.mjs <case> [--source raster|vector|flipbook] [--root <repo root>]
  */
 
 import fs from 'node:fs';
@@ -26,8 +26,8 @@ if (!name || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
   console.error('Usage: node scripts/new-line-art-case.mjs <kebab-case-name> [--source raster|flipbook]');
   process.exit(1);
 }
-if (!['raster', 'flipbook'].includes(source)) {
-  console.error(`--source must be raster (a drawing to trace) or flipbook (a vector render with rotor poses), got ${source}`);
+if (!['raster', 'vector', 'flipbook'].includes(source)) {
+  console.error(`--source must be raster (a drawing to trace), vector (a filled SVG illustration) or flipbook (experimental: a vector render with rotor poses), got ${source}`);
   process.exit(1);
 }
 
@@ -51,7 +51,11 @@ const caseSpec = {
   selectors: { silhouette: 'TODO: the silhouette path selector', body: 'TODO: the transformed drone/body group selector' },
   fidelity: source === 'raster'
     ? { reference: `research/${name}/reference.png`, module: geometryModule, export: exportName, segments: ['segments'] }
+    : source === 'vector'
+    ? { mode: 'color', reference: `research/${name}/reference.png`, referenceSvg: `research/${name}/reference.svg`, module: geometryModule, export: exportName, elements: 'elements', width: 1500, height: 1500 }
     : { reference: `research/${name}/reference.png`, referenceSvg: `research/${name}/reference.svg`, module: geometryModule, export: exportName, segments: ['static', 'bladePoses.0'], width: 1600, height: 1000, viewBox: 'TODO: the reference SVG viewBox as [x, y, w, h]', strokeWidth: 0.72 },
+  // The motion module exports seamlessFrom + loopPeriod; `render` (optional) overrides exporter defaults.
+  timing: { module: `src/primitives/${name}-motion.mjs`, export: `${name.replace(/-/g, '_').toUpperCase()}_TIMING` },
   publish: { modules: [geometryModule, 'src/runtime/hyperframes-motion-presets.mjs'] },
 };
 
@@ -68,6 +72,18 @@ const partsTemplate = {
   penAxisWeight: [1, 1],
   strokeParts: {},
   regions: [],
+  extras: {},
+};
+
+const vectorPartsTemplate = {
+  description: 'Vector part map: each subpath goes to the first region containing its bbox centre, else defaultPart. See docs/pipelines/line-art-to-motion-pipeline.md §1c.',
+  reference: `research/${name}/reference.svg`,
+  output: geometryModule,
+  exportName,
+  defaultPart: 'body',
+  regions: [],
+  silhouettePxPerUnit: 0.5,
+  silhouettes: {},
   extras: {},
 };
 
@@ -96,6 +112,7 @@ Status: intake. Pipeline: docs/pipelines/line-art-to-motion-pipeline.md. Worked 
 fs.mkdirSync(dir, { recursive: true });
 fs.writeFileSync(path.join(dir, 'case.json'), `${JSON.stringify(caseSpec, null, 2)}\n`);
 if (source === 'raster') fs.writeFileSync(path.join(dir, `${name}-parts.json`), `${JSON.stringify(partsTemplate, null, 1)}\n`);
+if (source === 'vector') fs.writeFileSync(path.join(dir, `${name}-parts.json`), `${JSON.stringify(vectorPartsTemplate, null, 1)}\n`);
 fs.mkdirSync(path.dirname(plan), { recursive: true });
 fs.writeFileSync(plan, intake);
 
@@ -107,6 +124,13 @@ const steps = source === 'raster'
     `${venv} scripts/trace-line-art-centerline.py research/${name}/reference.png research/${name}/${name}-centerline-trace.json --upscale 3 --threshold 110 --spur 12 --epsilon 0.5`,
     `fill research/${name}/${name}-parts.json, then: node scripts/build-line-art-geometry.mjs research/${name}/${name}-parts.json --preview part-check.svg`,
     `node scripts/build-line-art-geometry.mjs research/${name}/${name}-parts.json   # geometry module (silhouette: pipeline §3)`,
+  ]
+  : source === 'vector'
+  ? [
+    `put the illustration at research/${name}/reference.svg (absolute path commands)`,
+    `fill regions in research/${name}/${name}-parts.json, then: node scripts/build-vector-parts.mjs research/${name}/${name}-parts.json --preview part-check.svg`,
+    `per silhouette group: node scripts/build-vector-parts.mjs <parts.json> --mask <group> mask.svg, rasterise it, run scripts/extract-line-art-silhouette.py into the group's file (only if something sits behind the art)`,
+    `node scripts/build-vector-parts.mjs research/${name}/${name}-parts.json   # geometry module`,
   ]
   : [
     `put the vector render at research/${name}/reference.svg (pose 0) and keep the flipbook SVG outside the repo`,
