@@ -53,12 +53,12 @@ export async function flightProfile(browser, file) {
 }
 
 /** Contact sheet of frames decoded from the encoded video at the given times. */
-export function encodedContactSheet(video, times, file, workDir) {
+export function encodedContactSheet(video, times, file, workDir, { crop = null } = {}) {
   fs.rmSync(workDir, { recursive: true, force: true });
   fs.mkdirSync(workDir, { recursive: true });
   const frames = times.map(t => {
     const frame = path.join(workDir, `t${t.toFixed(1)}.png`);
-    execFileSync('ffmpeg', ['-v', 'error', '-y', '-ss', String(t), '-i', video, '-frames:v', '1', '-vf', 'crop=1500:840:210:40,scale=640:-1', frame]);
+    execFileSync('ffmpeg', ['-v', 'error', '-y', '-ss', String(t), '-i', video, '-frames:v', '1', '-vf', `${crop ? `crop=${crop},` : ''}scale=640:-1`, frame]);
     return frame;
   });
   execFileSync('magick', ['montage', ...frames, '-tile', '4x', '-geometry', '+4+4', file]);
@@ -73,6 +73,7 @@ export function encodedContactSheet(video, times, file, workDir) {
  * agreement black) and fidelity-metric.txt. Throws below `minimum`.
  */
 export async function fidelity(browser, { geometry, reference, outDir, tolerancePx = 2, minimum = 0.98 }) {
+  if (geometry.elements) return colorFidelity(browser, { geometry, reference, outDir, minimum });
   const { width, height, segments, strokeWidth = 2.2, viewBox = [0, 0, width, height] } = geometry;
   const render = path.join(outDir, 'fidelity-trace-render.png');
   const page = await browser.newPage();
@@ -101,4 +102,83 @@ export async function fidelity(browser, { geometry, reference, outDir, tolerance
     `reference ink within ${tolerancePx}px of the trace (recall): ${(recall * 100).toFixed(2)}%\ntrace ink within ${tolerancePx}px of the reference (precision): ${(precision * 100).toFixed(2)}%\nreference ink ${refInk}px, trace ink ${traceInk}px, minimum ${minimum * 100}%\n`);
   if (recall < minimum || precision < minimum) throw new Error(`fidelity below ${minimum * 100}%: recall ${(recall * 100).toFixed(2)}%, precision ${(precision * 100).toFixed(2)}%`);
   return { recall, precision };
+}
+
+/**
+ * Color-mode fidelity for filled vector art: render the part module (every element, original
+ * fills, original paint order) and count the pixels whose colour differs from the reference
+ * by more than `fuzzPercent`, over the union of both images' painted (non-white) area. A
+ * blank or shifted render fails because the union keeps the reference's own area. Mismatch
+ * runs thinner than `tolerancePx` on each side (anti-aliased edges) are eroded away first.
+ */
+async function colorFidelity(browser, { geometry, reference, outDir, minimum, fuzzPercent = 12, tolerancePx = 1 }) {
+  const { width, height, viewBox, elements } = geometry;
+  const render = path.join(outDir, 'fidelity-trace-render.png');
+  const draw = e => (e.ellipse
+    ? `<ellipse ${Object.entries(e.ellipse).map(([k, v]) => `${k}="${v}"`).join(' ')} fill="${e.fill}"/>`
+    : `<path d="${e.d}" fill="${e.fill}"/>`);
+  const page = await browser.newPage();
+  await page.setViewport({ width, height, deviceScaleFactor: 1 });
+  await page.setContent(`<body style="margin:0;background:#fff"><svg viewBox="${viewBox.join(' ')}" width="${width}" height="${height}" style="display:block">${elements.filter(e => !e.synthetic).map(draw).join('')}</svg></body>`);
+  await page.screenshot({ path: render });
+  await page.close();
+  const match = colorMatch(reference, render, { outDir, name: 'fidelity', minimum, fuzzPercent, tolerancePx });
+  return { recall: match, precision: match, mode: 'color' };
+}
+
+/**
+ * The live page's rest pose must equal the reference, not just the geometry module: the
+ * renderer adds layers (paper silhouettes, synthetic fills, hidden strokes) that could cover
+ * source art. Load the page with reduced motion (the still rest pose) in the light scheme,
+ * reframe `selector` to the reference's viewBox and size, hide the page-only layers
+ * (`hide`, e.g. the 404 numerals), screenshot it and run the colour match.
+ */
+export async function pageRestFidelity(browser, { url, selector, hide = [], viewBox, width, height, reference, outDir, minimum = 0.98 }) {
+  const page = await browser.newPage();
+  await page.setViewport({ width, height, deviceScaleFactor: 1 });
+  await page.emulateMediaFeatures([
+    { name: 'prefers-color-scheme', value: 'light' },
+    { name: 'prefers-reduced-motion', value: 'reduce' },
+  ]);
+  await page.goto(url, { waitUntil: 'networkidle0' });
+  await page.evaluate(({ selector, hide, viewBox, width, height }) => {
+    document.body.style.background = '#fff';
+    const svg = document.querySelector(selector);
+    svg.setAttribute('viewBox', viewBox.join(' '));
+    Object.assign(svg.style, { position: 'fixed', left: '0', top: '0', width: `${width}px`, height: `${height}px`, maxWidth: 'none', zIndex: '1000', background: '#fff' });
+    for (const sel of hide) document.querySelectorAll(sel).forEach(node => { node.style.display = 'none'; });
+  }, { selector, hide, viewBox, width, height });
+  const render = path.join(outDir, 'page-rest-render.png');
+  await page.screenshot({ path: render, clip: { x: 0, y: 0, width, height } });
+  await page.close();
+  return colorMatch(reference, render, { outDir, name: 'page-rest-fidelity', minimum });
+}
+
+/**
+ * Share of painted pixels (union of both images' non-white area) whose colour is within
+ * `fuzzPercent` of the reference on every channel, after eroding mismatch runs thinner than `tolerancePx`
+ * (anti-aliased edges). Writes <name>-overlay.png and <name>-metric.txt; throws below minimum.
+ */
+function colorMatch(reference, render, { outDir, name, minimum, fuzzPercent = 12, tolerancePx = 1 }) {
+  const count = args => {
+    const value = Number(String(execFileSync('magick', [...args, '-format', '%[fx:mean*w*h]', 'info:'])).trim());
+    if (!Number.isFinite(value)) throw new Error(`${name}: could not read a pixel count from ImageMagick`);
+    return value;
+  };
+  const painted = file => ['(', file, '-alpha', 'off', '-fuzz', '4%', '-fill', 'black', '-opaque', 'white', '-fuzz', '0', '-fill', 'white', '+opaque', 'black', '-colorspace', 'gray', ')'];
+  const union = ['(', ...painted(reference), ...painted(render), '-compose', 'lighten', '-composite', ')'];
+  const area = count(union);
+  const refArea = count(painted(reference));
+  if (!refArea || !count(painted(render))) throw new Error(`${name}: nothing painted in the reference or the render`);
+  // per-channel max, not luminance: a pale layer of another hue (a peach 404 on white) is a
+  // ~17% blue-channel difference but only ~9% in luminance, and must not pass
+  const differs = ['(', reference, '-alpha', 'off', render, '-alpha', 'off', '-compose', 'difference', '-composite',
+    '-separate', '-evaluate-sequence', 'max', '-threshold', `${fuzzPercent}%`, '-morphology', 'Erode', `Square:${tolerancePx}`, ')'];
+  const mismatch = count([...differs, ...union, '-compose', 'multiply', '-composite']);
+  execFileSync('magick', [reference, render, '-compose', 'difference', '-composite', '-negate', path.join(outDir, `${name}-overlay.png`)]);
+  const match = 1 - mismatch / area;
+  fs.writeFileSync(path.join(outDir, `${name}-metric.txt`),
+    `painted pixels matching the reference colour within ${fuzzPercent}% (edge tolerance ${tolerancePx}px): ${(match * 100).toFixed(2)}%\nmismatched ${mismatch}px of ${area}px painted (reference ${refArea}px), minimum ${minimum * 100}%\n`);
+  if (match < minimum) throw new Error(`${name} below ${minimum * 100}%: colour match ${(match * 100).toFixed(2)}%`);
+  return match;
 }

@@ -1,0 +1,98 @@
+{
+  "label": "startup-error-404",
+  "page": "promo/startup-error-404/startup-error-404.html",
+  "proofDir": "promo/startup-error-404/proofs",
+  "video": "promo/startup-error-404/startup-error-404.mp4",
+  "gif": "promo/startup-error-404/startup-error-404.gif",
+  "selectors": {
+    "silhouette": ".se404-bubble[data-part=\"bubble-question\"]",
+    "body": ".se404-bubble[data-part=\"bubble-question\"]"
+  },
+  "fidelity": {
+    "mode": "color",
+    "reference": "research/startup-error-404/reference.png",
+    "referenceSvg": "research/startup-error-404/reference.svg",
+    "module": "src/primitives/startup-error-404-geometry.mjs",
+    "export": "STARTUP_ERROR_404_GEOMETRY",
+    "elements": "elements",
+    "width": 1500,
+    "height": 1500,
+    "page": {
+      "selector": "svg.se404",
+      "hide": [
+        ".se404-numerals"
+      ]
+    }
+  },
+  "timing": {
+    "module": "src/primitives/startup-error-404-motion.mjs",
+    "export": "STARTUP_ERROR_TIMING"
+  },
+  "render": {
+    "frames": [
+      0.3,
+      0.9,
+      1.5,
+      1.9,
+      2.2,
+      3.5,
+      4.65,
+      4.9,
+      5.6,
+      6.6,
+      7.1,
+      9.2
+    ],
+    "pageTime": 8.0,
+    "videoFrames": [
+      1.0,
+      1.6,
+      4.3,
+      4.65,
+      4.95,
+      5.8,
+      7.05,
+      9.3
+    ],
+    "themeKey": "se404-theme",
+    "interaction": {
+      "hold": 8.0,
+      "shots": [
+        {
+          "name": "interaction-1-approach.png",
+          "at": [
+            0.75,
+            0
+          ],
+          "settle": 900
+        },
+        {
+          "name": "interaction-2-pushed.png",
+          "at": [
+            -0.15,
+            0
+          ],
+          "settle": 260
+        },
+        {
+          "name": "interaction-3-settled.png",
+          "at": [
+            -0.15,
+            0
+          ],
+          "settle": 1300
+        }
+      ]
+    }
+  },
+  "publish": {
+    "modules": [
+      "src/primitives/startup-error-404-renderer.mjs",
+      "src/primitives/startup-error-404-motion.mjs",
+      "src/primitives/startup-error-404-interaction.mjs",
+      "src/primitives/startup-error-404-typing.mjs",
+      "src/primitives/startup-error-404-geometry.mjs",
+      "src/primitives/drone-404-flight-physics.mjs"
+    ]
+  }
+}

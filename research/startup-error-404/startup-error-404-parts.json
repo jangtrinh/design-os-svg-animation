@@ -1,0 +1,604 @@
+{
+ "description": "Vector part map: each subpath goes to the first region containing its bbox centre, else defaultPart. See docs/pipelines/line-art-to-motion-pipeline.md \u00a71c.",
+ "reference": "research/startup-error-404/reference.svg",
+ "output": "src/primitives/startup-error-404-geometry.mjs",
+ "exportName": "STARTUP_ERROR_404_GEOMETRY",
+ "defaultPart": "body",
+ "regions": [
+  {
+   "part": "cheek-left",
+   "poly": [
+    [
+     1262,
+     1020
+    ],
+    [
+     1350,
+     1020
+    ],
+    [
+     1350,
+     1078
+    ],
+    [
+     1262,
+     1078
+    ]
+   ],
+   "maxSize": [
+    100,
+    70
+   ]
+  },
+  {
+   "part": "cheek-right",
+   "poly": [
+    [
+     1455,
+     1040
+    ],
+    [
+     1528,
+     1040
+    ],
+    [
+     1528,
+     1095
+    ],
+    [
+     1455,
+     1095
+    ]
+   ],
+   "maxSize": [
+    100,
+    70
+   ]
+  },
+  {
+   "part": "bubble-error-glyph",
+   "poly": [
+    [
+     1800,
+     520
+    ],
+    [
+     2230,
+     520
+    ],
+    [
+     2230,
+     960
+    ],
+    [
+     1800,
+     960
+    ]
+   ],
+   "maxSize": [
+    420,
+    420
+   ]
+  },
+  {
+   "part": "bubble-alert-glyph",
+   "poly": [
+    [
+     2300,
+     680
+    ],
+    [
+     2410,
+     680
+    ],
+    [
+     2410,
+     1070
+    ],
+    [
+     2300,
+     1070
+    ]
+   ],
+   "maxSize": [
+    120,
+    400
+   ]
+  },
+  {
+   "part": "eyes",
+   "poly": [
+    [
+     1325,
+     955
+    ],
+    [
+     1382,
+     955
+    ],
+    [
+     1382,
+     1045
+    ],
+    [
+     1325,
+     1045
+    ]
+   ]
+  },
+  {
+   "part": "eyes",
+   "poly": [
+    [
+     1450,
+     965
+    ],
+    [
+     1505,
+     965
+    ],
+    [
+     1505,
+     1052
+    ],
+    [
+     1450,
+     1052
+    ]
+   ]
+  },
+  {
+   "part": "bubble-question",
+   "poly": [
+    [
+     340,
+     450
+    ],
+    [
+     940,
+     450
+    ],
+    [
+     940,
+     1150
+    ],
+    [
+     340,
+     1150
+    ]
+   ]
+  },
+  {
+   "part": "bubble-error",
+   "poly": [
+    [
+     1720,
+     440
+    ],
+    [
+     2285,
+     440
+    ],
+    [
+     2285,
+     1150
+    ],
+    [
+     1720,
+     1150
+    ]
+   ]
+  },
+  {
+   "part": "bubble-alert",
+   "poly": [
+    [
+     2285,
+     570
+    ],
+    [
+     2660,
+     570
+    ],
+    [
+     2660,
+     1260
+    ],
+    [
+     2285,
+     1260
+    ]
+   ]
+  },
+  {
+   "part": "head",
+   "poly": [
+    [
+     990,
+     680
+    ],
+    [
+     1640,
+     680
+    ],
+    [
+     1640,
+     1225
+    ],
+    [
+     1380,
+     1225
+    ],
+    [
+     1300,
+     1320
+    ],
+    [
+     1080,
+     1320
+    ],
+    [
+     990,
+     1230
+    ]
+   ]
+  }
+ ],
+ "silhouette": "research/startup-error-404/startup-error-404-silhouette.json",
+ "silhouettePxPerUnit": 0.5,
+ "extras": {
+  "pivots": {
+   "head": [
+    1300,
+    1262
+   ],
+   "eyes": [
+    1415,
+    1006
+   ],
+   "bubble-question": [
+    714,
+    1133
+   ],
+   "bubble-error": [
+    2027,
+    1135
+   ],
+   "bubble-alert": [
+    2255,
+    1232
+   ],
+   "arm": [
+    1110,
+    1640
+   ],
+   "finger": [
+    1716,
+    1396
+   ],
+   "cheek-left": [
+    1306,
+    1049
+   ],
+   "cheek-right": [
+    1491,
+    1067
+   ],
+   "bubble-error-glyph": [
+    2014,
+    741
+   ],
+   "bubble-alert-glyph": [
+    2352,
+    1020
+   ],
+   "laptop": [
+    2080,
+    1760
+   ]
+  },
+  "hiddenStrokes": {
+   "bubble-alert": [
+    {
+     "d": "M2108.7 985.6A274 274 0 0 1 2262.0 615.4",
+     "stroke": "#882119",
+     "strokeWidth": 22,
+     "note": "the ring's arc hidden behind the X bubble in the source (gap 152.7-251.9 deg); ends trimmed by the round cap (11 units = 2.3 deg) so the rest pose shows nothing extra"
+    }
+   ]
+  }
+ },
+ "silhouettes": {
+  "body": {
+   "parts": [
+    "body",
+    "arm",
+    "finger",
+    "laptop"
+   ],
+   "file": "research/startup-error-404/silhouette-body.json"
+  },
+  "head": {
+   "parts": [
+    "head",
+    "eyes",
+    "cheek-left",
+    "cheek-right"
+   ],
+   "file": "research/startup-error-404/silhouette-head.json"
+  },
+  "bubble-question": {
+   "parts": [
+    "bubble-question"
+   ],
+   "file": "research/startup-error-404/silhouette-bubble-question.json"
+  },
+  "bubble-error": {
+   "parts": [
+    "bubble-error",
+    "bubble-error-glyph"
+   ],
+   "file": "research/startup-error-404/silhouette-bubble-error.json"
+  },
+  "bubble-alert": {
+   "parts": [
+    "bubble-alert",
+    "bubble-alert-glyph"
+   ],
+   "file": "research/startup-error-404/silhouette-bubble-alert.json",
+   "patch": [
+    [
+     2622,
+     853
+    ],
+    [
+     2616,
+     905
+    ],
+    [
+     2600,
+     955
+    ],
+    [
+     2574,
+     1001
+    ],
+    [
+     2539,
+     1040
+    ],
+    [
+     2496,
+     1071
+    ],
+    [
+     2448,
+     1093
+    ],
+    [
+     2396,
+     1104
+    ],
+    [
+     2344,
+     1104
+    ],
+    [
+     2292,
+     1093
+    ],
+    [
+     2244,
+     1071
+    ],
+    [
+     2201,
+     1040
+    ],
+    [
+     2166,
+     1001
+    ],
+    [
+     2140,
+     955
+    ],
+    [
+     2124,
+     905
+    ],
+    [
+     2118,
+     853
+    ],
+    [
+     2124,
+     801
+    ],
+    [
+     2140,
+     751
+    ],
+    [
+     2166,
+     705
+    ],
+    [
+     2201,
+     666
+    ],
+    [
+     2244,
+     635
+    ],
+    [
+     2292,
+     613
+    ],
+    [
+     2344,
+     602
+    ],
+    [
+     2396,
+     602
+    ],
+    [
+     2448,
+     613
+    ],
+    [
+     2496,
+     635
+    ],
+    [
+     2539,
+     666
+    ],
+    [
+     2574,
+     705
+    ],
+    [
+     2600,
+     751
+    ],
+    [
+     2616,
+     801
+    ]
+   ]
+  },
+  "arm": {
+   "parts": [
+    "arm",
+    "finger"
+   ],
+   "file": "research/startup-error-404/silhouette-arm.json",
+   "patch": [
+    [
+     1212,
+     1541
+    ],
+    [
+     1162,
+     1571
+    ],
+    [
+     1113,
+     1609
+    ],
+    [
+     1074,
+     1657
+    ],
+    [
+     1044,
+     1704
+    ],
+    [
+     1026,
+     1745
+    ],
+    [
+     1033,
+     1751
+    ],
+    [
+     1051,
+     1710
+    ],
+    [
+     1081,
+     1663
+    ],
+    [
+     1120,
+     1615
+    ],
+    [
+     1169,
+     1577
+    ],
+    [
+     1219,
+     1547
+    ]
+   ],
+   "note": "patch: a strip along the inner edge of the upper-arm outline (11.0), which belongs to the static body, closing the forearm region"
+  },
+  "laptop": {
+   "parts": [
+    "laptop"
+   ],
+   "file": "research/startup-error-404/silhouette-laptop.json"
+  }
+ },
+ "pins": {
+  "12.0": "arm",
+  "14.0": "arm",
+  "13.0": "finger",
+  "19.2": "laptop",
+  "20.0": "laptop",
+  "21.0": "laptop",
+  "21.1": "laptop",
+  "21.2": "laptop",
+  "22.0": "laptop",
+  "22.1": "laptop",
+  "23.0": "laptop",
+  "23.1": "laptop",
+  "32.11": "laptop"
+ },
+ "fills": [
+  {
+   "part": "body",
+   "fill": "#FF8147",
+   "silhouette": "arm",
+   "after": 0,
+   "clip": [
+    [
+     1235,
+     1250
+    ],
+    [
+     1640,
+     1250
+    ],
+    [
+     1650,
+     1320
+    ],
+    [
+     1750,
+     1590
+    ],
+    [
+     1760,
+     1950
+    ],
+    [
+     1235,
+     1950
+    ]
+   ],
+   "note": "the shirt hidden under the forearm, so it shows when the arm moves; starts right of the elbow join (x 1235), where the arm stays white",
+   "inset": 5
+  },
+  {
+   "part": "laptop",
+   "fill": "paper",
+   "silhouette": "laptop",
+   "before": 11,
+   "note": "the laptop was transparent; it must hide the lap when it bounces",
+   "inset": 5
+  },
+  {
+   "part": "arm",
+   "fill": "paper",
+   "silhouette": "arm",
+   "before": 11,
+   "note": "the forearm was transparent over a cut-out; it must hide the shirt when it moves",
+   "inset": 5
+  }
+ ]
+}

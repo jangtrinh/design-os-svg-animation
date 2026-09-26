@@ -41,3 +41,6 @@ jobs:
 
       - name: Verify drone 404 Pages mirror
         run: node scripts/sync-line-art-pages.mjs --case drone-404 --check
+
+      - name: Verify startup-error 404 Pages mirror
+        run: node scripts/sync-line-art-pages.mjs --case startup-error-404 --check

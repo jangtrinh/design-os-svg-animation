@@ -4,12 +4,84 @@
   "proofDir": "promo/drone-404/proofs",
   "video": "promo/drone-404/drone-search-404.mp4",
   "gif": "promo/drone-404/drone-search-404.gif",
-  "selectors": { "silhouette": ".d404-silhouette", "body": ".d404-drone" },
+  "selectors": {
+    "silhouette": ".d404-silhouette",
+    "body": ".d404-drone"
+  },
   "fidelity": {
     "reference": "research/drone-404/reference-single-line-drone.png",
     "module": "src/primitives/drone-404-line-art-geometry.mjs",
     "export": "DRONE_LINE_ART",
-    "segments": ["segments"]
+    "segments": [
+      "segments"
+    ]
+  },
+  "timing": {
+    "module": "src/primitives/drone-404-motion.mjs",
+    "export": "DRONE_TIMING"
+  },
+  "render": {
+    "frames": [
+      0.6,
+      1.4,
+      2.3,
+      3.0,
+      3.8,
+      5.4,
+      6.9,
+      9.9,
+      10.4,
+      11.1,
+      12.4,
+      13.5
+    ],
+    "pageTime": 7.3,
+    "videoFrames": [
+      3.0,
+      5.4,
+      6.2,
+      7.3,
+      9.9,
+      10.4,
+      11.1,
+      13.0
+    ],
+    "flightProfile": true,
+    "themeKey": "d404-theme",
+    "interaction": {
+      "hold": 4.2,
+      "shots": [
+        {
+          "name": "interaction-1-spotted.png",
+          "at": [
+            0.55,
+            0
+          ],
+          "px": [
+            0,
+            190
+          ],
+          "settle": 900
+        },
+        {
+          "name": "interaction-2-too-close.png",
+          "at": [
+            -0.12,
+            0
+          ],
+          "settle": 260
+        },
+        {
+          "name": "interaction-3-settled-away.png",
+          "at": [
+            -0.12,
+            0
+          ],
+          "settle": 1300
+        }
+      ]
+    },
+    "videoCrop": "1500:840:210:40"
   },
   "publish": {
     "modules": [
