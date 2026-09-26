@@ -5,9 +5,9 @@
  * Creates (never overwrites):
  *   research/<case>/case.json          page, proofs, video, selectors, fidelity, Pages modules
  *   research/<case>/<case>-parts.json  part map template (raster sources)
- *   plans/<case>.md                    intake: owner decisions + acceptance checklist
+ *   plans/cases/<case>.md              intake: owner decisions + acceptance checklist
  * and prints the next commands for the chosen source kind. Pipeline doc:
- * docs/line-art-to-motion-pipeline.md.
+ * docs/pipelines/line-art-to-motion-pipeline.md.
  *
  * Usage: node scripts/new-line-art-case.mjs <case> [--source raster|flipbook] [--root <repo root>]
  */
@@ -32,7 +32,7 @@ if (!['raster', 'flipbook'].includes(source)) {
 }
 
 const dir = path.join(root, 'research', name);
-const plan = path.join(root, 'plans', `${name}.md`);
+const plan = path.join(root, 'plans', 'cases', `${name}.md`);
 for (const existing of [dir, plan]) {
   if (fs.existsSync(existing)) {
     console.error(`${path.relative(root, existing)} already exists; pick another name or continue that case`);
@@ -44,10 +44,10 @@ const exportName = `${name.replace(/-/g, '_').toUpperCase()}_GEOMETRY`;
 const geometryModule = `src/primitives/${name}-geometry.mjs`;
 const caseSpec = {
   label: name,
-  page: `promo/${name}.html`,
-  proofDir: `promo/${name}-proofs`,
-  video: `promo/${name}.mp4`,
-  gif: `promo/${name}.gif`,
+  page: `promo/${name}/${name}.html`,
+  proofDir: `promo/${name}/proofs`,
+  video: `promo/${name}/${name}.mp4`,
+  gif: `promo/${name}/${name}.gif`,
   selectors: { silhouette: 'TODO: the silhouette path selector', body: 'TODO: the transformed drone/body group selector' },
   fidelity: source === 'raster'
     ? { reference: `research/${name}/reference.png`, module: geometryModule, export: exportName, segments: ['segments'] }
@@ -56,7 +56,7 @@ const caseSpec = {
 };
 
 const partsTemplate = {
-  description: 'Part map. Coordinates are reference pixels; stroke indices refer to the trace file. See docs/line-art-to-motion-pipeline.md §2.',
+  description: 'Part map. Coordinates are reference pixels; stroke indices refer to the trace file. See docs/pipelines/line-art-to-motion-pipeline.md §2.',
   reference: `research/${name}/reference.png`,
   trace: `research/${name}/${name}-centerline-trace.json`,
   silhouette: `research/${name}/${name}-silhouette.json`,
@@ -73,18 +73,18 @@ const partsTemplate = {
 
 const intake = `# Plan: ${name}
 
-Status: intake. Pipeline: docs/line-art-to-motion-pipeline.md. Worked case: plans/drone-404-svg-animation.md.
+Status: intake. Pipeline: docs/pipelines/line-art-to-motion-pipeline.md. Worked case: plans/cases/drone-404-svg-animation.md.
 
 ## 0. Intake (owner decisions first)
 
 | Decide | Owner answer |
 |---|---|
 | Fidelity target and what may change | TODO |
-| Deliverables (page, MP4, GIF, Pages) and whether assets may be public | TODO |
+| Deliverables (page, MP4, GIF, Pages) and whether design-os-tutorial/assets may be public | TODO |
 | Motion feel (default: wobble slightly, then stable; zeta 0.65-0.8) | TODO |
 | Theme / palette | TODO |
 
-## Acceptance (evidence in \`promo/${name}-proofs/\`)
+## Acceptance (evidence in \`promo/${name}/proofs/\`)
 - [ ] Fidelity on ink within 2 px: recall and precision >= 98% (exporter gate)
 - [ ] \`npm test\`, \`npx tsc --noEmit\`, \`python3 scripts/anti-flop-gate.py\` exit 0
 - [ ] Flight envelope inside the stage (envelope test extended to this case)
@@ -114,6 +114,6 @@ const steps = source === 'raster'
     `${venv} scripts/build-flipbook-rotor-geometry.py <flipbook.svg> research/${name}/${name}-geometry.json --origin <body x,y> --static-svg static.svg`,
     `rasterise static.svg, run scripts/extract-line-art-silhouette.py, then rerun with --silhouette ... --module ${geometryModule} --export ${exportName}`,
   ];
-console.log(`created research/${name}/ and plans/${name}.md (${source} source)\nnext:`);
+console.log(`created research/${name}/ and plans/cases/${name}.md (${source} source)\nnext:`);
 steps.forEach((step, i) => console.log(`  ${i + 1}. ${step}`));
-console.log(`  then: renderer + page (templates: src/primitives/DroneSearch404.mjs, promo/drone-404.html), fill the TODOs in case.json,\n        node scripts/render-drone-404-deliverable.mjs --case ${name}, node scripts/sync-line-art-pages.mjs --case ${name} --write`);
+console.log(`  then: renderer + page (templates: src/primitives/DroneSearch404.mjs, promo/drone-404/drone-404.html), fill the TODOs in case.json,\n        node scripts/render-drone-404-deliverable.mjs --case ${name}, node scripts/sync-line-art-pages.mjs --case ${name} --write`);

@@ -13,7 +13,7 @@ metadata:
 
 # Line art to motion
 
-**Read [the pipeline](../../docs/line-art-to-motion-pipeline.md) before work.** It defines the stages, the artifact and gate of each stage, and the pitfalls already paid for. The worked case is `plans/drone-404-svg-animation.md` (PR #6).
+**Read [the pipeline](../../docs/pipelines/line-art-to-motion-pipeline.md) before work.** It defines the stages, the artifact and gate of each stage, and the pitfalls already paid for. The worked case is `plans/cases/drone-404-svg-animation.md` (PR #6).
 
 ## Start
 `node scripts/new-line-art-case.mjs <case> --source raster` creates the case files and prints the next commands (`--source flipbook` is experimental: its only trial case was rejected). Every script then takes `--case <case>`.

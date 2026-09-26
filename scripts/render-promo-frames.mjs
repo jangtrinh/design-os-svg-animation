@@ -26,7 +26,7 @@ console.log(`Total Frames:   ${TOTAL_FRAMES} frames`);
 console.log(`Step Interval:  ${STEP_MS.toFixed(2)}ms per frame\n`);
 
 // Verify asset existence
-const svgPath = resolve(process.cwd(), 'promo/promo-storyboard.svg');
+const svgPath = resolve(process.cwd(), 'promo/design-os-promo/promo-storyboard.svg');
 if (!existsSync(svgPath)) {
   console.error(`❌ Error: SVG storyboard not found at ${svgPath}`);
   process.exit(1);

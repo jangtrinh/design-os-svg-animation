@@ -2,7 +2,7 @@
 """
 Automated Video & Showcase Pipeline for OpenAI Codex App High-Tempo Promo (00:00 – 00:38.0)
 Captures key sequence frames via Google Chrome Headless and renders:
-1. Full 1080p 30fps MP4 video: promo/codex-app-promo.mp4
+1. Full 1080p 30fps MP4 video: promo/codex-app/codex-app-promo.mp4
 2. High-quality GitHub Pages showcase GIF: docs/assets/example-3-codex-app-promo.gif
 Enforces 100% authentic SVGL brand assets, zero emojis, and EaseUI tactile depth.
 """
@@ -17,8 +17,8 @@ import time
 PROMO_URL_BASE = "http://127.0.0.1:4323/codex-app-promo.html"
 FRAMES_DIR = "/tmp/codex_promo_frames"
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "codex-app-promo.mp4"))
-OUTPUT_GIF = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "docs", "assets", "example-3-codex-app-promo.gif"))
+OUTPUT_MP4 = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "promo", "codex-app/codex-app-promo.mp4"))
+OUTPUT_GIF = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "docs", "design-os-tutorial/assets", "example-3-codex-app-promo.gif"))
 CHROME_BIN = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 
 def capture_single_frame(entry):

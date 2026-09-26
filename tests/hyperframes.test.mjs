@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BEAT_KINDS, sampleHyperFrameCarry, sampleHyperFrameKeyframes,
-  sampleHyperFrameProgress, sampleHyperFrameStagger } from '../promo/hyperframes-engine.mjs';
-import { ASTRA_HYPERFRAME_STORYBOARD, ASTRA_HYPERFRAME_DURATION } from '../promo/astra-law-hyperframes-beats.mjs';
-import { BEATS, cameraAt } from '../promo/astra-law-timeline.mjs';
+  sampleHyperFrameProgress, sampleHyperFrameStagger } from '../promo/shared/hyperframes-engine.mjs';
+import { ASTRA_HYPERFRAME_STORYBOARD, ASTRA_HYPERFRAME_DURATION } from '../promo/astra-law/astra-law-hyperframes-beats.mjs';
+import { BEATS, cameraAt } from '../promo/astra-law/astra-law-timeline.mjs';
 import { readFileSync } from 'node:fs';
 import { BEAT_KINDS as CANONICAL_BEAT_KINDS } from '../src/runtime/hyperframes-engine.mjs';
 
@@ -12,7 +12,7 @@ test('the v2 draft exposes the complete 20-preset vocabulary and source-timed As
   assert.deepEqual(Object.keys(CANONICAL_BEAT_KINDS), Object.keys(BEAT_KINDS));
   for (const file of ['hyperframes-engine.mjs', 'hyperframes-extra-beats.mjs', 'hyperframes-motion-presets.mjs']) {
     const source = readFileSync(new URL(`../src/runtime/${file}`, import.meta.url), 'utf8');
-    for (const location of ['promo', 'docs/promo']) {
+    for (const location of ['promo/shared', 'docs/promo/shared']) {
       assert.equal(readFileSync(new URL(`../${location}/${file}`, import.meta.url), 'utf8'), source,
         `${location}/${file} drifted from the canonical runtime`);
     }

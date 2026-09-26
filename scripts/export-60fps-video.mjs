@@ -29,39 +29,39 @@ const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
 const TARGETS = {
   codex: {
     name: 'OpenAI Codex App Promo',
-    url: `${LOCAL_SERVER_ORIGIN}/codex-app-promo.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/codex-app/codex-app-promo.html?clean=true&autoplay=false`,
     duration: 38.0,
     fps: 60,
     width: 1920,
     height: 1080,
-    outputFilename: 'codex-app-promo.mp4'
+    outputFilename: 'codex-app/codex-app-promo.mp4'
   },
   claude: {
     name: 'Claude Design Master Promo',
-    url: `${LOCAL_SERVER_ORIGIN}/claude-design-promo.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/claude-design/claude-design-promo.html?clean=true&autoplay=false`,
     duration: 82.0,
     fps: 60,
     width: 1920,
     height: 1080,
-    outputFilename: 'claude-design-promo.mp4'
+    outputFilename: 'claude-design/claude-design-promo.mp4'
   },
   v0: {
     name: 'Vercel v0: Generative UI Launch Video',
-    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui/v0-generative-ui.html?clean=true&autoplay=false`,
     duration: 47.5,
     fps: 60,
     width: 1920,
     height: 1080,
-    outputFilename: 'v0-generative-ui.mp4'
+    outputFilename: 'v0-generative-ui/v0-generative-ui.mp4'
   },
   tutorial: {
     name: 'Design OS Tutorial Explainer (OpenAI Templates Edition)',
-    url: `${LOCAL_SERVER_ORIGIN}/design-os-tutorial.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/design-os-tutorial/design-os-tutorial.html?clean=true&autoplay=false`,
     duration: 30.0,
     fps: 60,
     width: 1920,
     height: 1080,
-    outputFilename: 'design-os-tutorial.mp4'
+    outputFilename: 'design-os-tutorial/design-os-tutorial.mp4'
   }
 };
 

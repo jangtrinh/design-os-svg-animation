@@ -41,7 +41,8 @@ function resolveFilePath(reqUrl) {
   const urlPath = reqUrl.split('?')[0];
 
   if (urlPath === '/' || urlPath === '') {
-    return path.join(PROMO_DIR, 'design-os-tutorial.html');
+    const landing = path.join(PROMO_DIR, 'design-os-tutorial/design-os-tutorial.html');
+    return fs.existsSync(landing) ? landing : null; // a moved landing page must 404, not crash the server
   }
 
   // Check in promo directory first, then repo root (e.g. /docs/..., /src/...).
@@ -122,12 +123,12 @@ server.listen(PORT, LOCAL_SERVER_HOST, () => {
   console.log('='.repeat(70));
   console.log(` 🚀 DESIGN OS DEV SERVER RUNNING AT: ${LOCAL_SERVER_ORIGIN}`);
   console.log('='.repeat(70));
-  console.log(` 📺 Tutorial (Codex Light):  ${LOCAL_SERVER_ORIGIN}/design-os-tutorial.html`);
-  console.log(` 🤖 OpenAI Codex Promo:      ${LOCAL_SERVER_ORIGIN}/codex-app-promo.html`);
-  console.log(` ⚡ Vercel v0 Generative UI:  ${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html`);
-  console.log(` 🌐 Claude Design 3D Globe:  ${LOCAL_SERVER_ORIGIN}/claude-design-promo.html`);
-  console.log(` 📐 Architecture Dashboard:  ${LOCAL_SERVER_ORIGIN}/docs/architecture-dashboard.html`);
-  console.log(` 🧩 Primitives Live Gallery:  ${LOCAL_SERVER_ORIGIN}/docs/primitives-showcase.html`);
+  console.log(` 📺 Tutorial (Codex Light):  ${LOCAL_SERVER_ORIGIN}/design-os-tutorial/design-os-tutorial.html`);
+  console.log(` 🤖 OpenAI Codex Promo:      ${LOCAL_SERVER_ORIGIN}/codex-app/codex-app-promo.html`);
+  console.log(` ⚡ Vercel v0 Generative UI:  ${LOCAL_SERVER_ORIGIN}/v0-generative-ui/v0-generative-ui.html`);
+  console.log(` 🌐 Claude Design 3D Globe:  ${LOCAL_SERVER_ORIGIN}/claude-design/claude-design-promo.html`);
+  console.log(` 📐 Architecture Dashboard:  ${LOCAL_SERVER_ORIGIN}/docs/architecture/architecture-dashboard.html`);
+  console.log(` 🧩 Primitives Live Gallery:  ${LOCAL_SERVER_ORIGIN}/docs/reference/primitives-showcase.html`);
   console.log('='.repeat(70));
 });
 

@@ -35,7 +35,7 @@ async function run() {
 
   // 1. Capture clean export frames (1920x1080 pure render)
   console.log('📸 Navigating to clean render mode...');
-  await page.goto(`${LOCAL_SERVER_ORIGIN}/design-os-tutorial.html?clean=true`, { waitUntil: 'networkidle0' });
+  await page.goto(`${LOCAL_SERVER_ORIGIN}/design-os-tutorial/design-os-tutorial.html?clean=true`, { waitUntil: 'networkidle0' });
 
   // Wait for images and fonts
   await page.evaluate(() => document.fonts.ready);
@@ -55,7 +55,7 @@ async function run() {
 
   // 2. Capture player UI mode (showing Universal Studio Player chrome)
   console.log('📸 Navigating to interactive player mode...');
-  await page.goto(`${LOCAL_SERVER_ORIGIN}/design-os-tutorial.html`, { waitUntil: 'networkidle0' });
+  await page.goto(`${LOCAL_SERVER_ORIGIN}/design-os-tutorial/design-os-tutorial.html`, { waitUntil: 'networkidle0' });
   await page.evaluate(() => document.fonts.ready);
   await new Promise(r => setTimeout(r, 500));
   await page.evaluate(() => window.__seekToTime(11.3));

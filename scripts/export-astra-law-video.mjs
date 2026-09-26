@@ -193,7 +193,7 @@ async function verifyRunner(browser, port) {
   const page = await browser.newPage();
   try {
     await page.setViewport({ width: 1280, height: 900, deviceScaleFactor: 1 });
-    await page.goto(`http://127.0.0.1:${port}/promo/astra-law-promo.html`, { waitUntil: 'load' });
+    await page.goto(`http://127.0.0.1:${port}/promo/astra-law/astra-law-promo.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.__readyPromise);
     await page.evaluate(() => window.__seekToTime(0.8));
     const geometry = await page.evaluate(() => {
@@ -217,7 +217,7 @@ async function verifyHyperFramesDraft(browser, port) {
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   try {
-    await page.goto(`http://127.0.0.1:${port}/promo/astra-law-hyperframes-draft.html`, { waitUntil: 'load' });
+    await page.goto(`http://127.0.0.1:${port}/promo/astra-law/astra-law-hyperframes-draft.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.__readyPromise);
     assert.deepEqual(errors, [], `HyperFrames draft page errors: ${errors.join('; ')}`);
     const contract = await page.evaluate(() => ({
@@ -271,7 +271,7 @@ async function writeFrame(page, output, second) {
 async function writeHyperFramesProof(browser, port) {
   const page = await browser.newPage();
   try {
-    await page.goto(`http://127.0.0.1:${port}/promo/astra-law-hyperframes-draft.html`, { waitUntil: 'load' });
+    await page.goto(`http://127.0.0.1:${port}/promo/astra-law/astra-law-hyperframes-draft.html`, { waitUntil: 'load' });
     await page.evaluate(() => window.__readyPromise);
     for (const second of [7.65, 18.8, 37.65, 49.2, 74.8]) {
       await page.evaluate(value => window.__seekToTime(value), second);
@@ -330,7 +330,7 @@ async function main() {
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
     const port = server.address().port;
-    await page.goto(`http://127.0.0.1:${port}/promo/astra-law-promo.html?clean=true`, { waitUntil: 'load' });
+    await page.goto(`http://127.0.0.1:${port}/promo/astra-law/astra-law-promo.html?clean=true`, { waitUntil: 'load' });
     await page.evaluate(() => window.__readyPromise);
     if (errors.length) throw new Error(`Browser page error: ${errors.join('; ')}`);
     if (verify) { await verifyPlayer(page); await verifyRunner(browser, port); await verifyHyperFramesDraft(browser, port); }

@@ -1,9 +1,9 @@
 {
   "label": "drone-404",
-  "page": "promo/drone-404.html",
-  "proofDir": "promo/drone-404-proofs",
-  "video": "promo/drone-search-404.mp4",
-  "gif": "promo/drone-search-404.gif",
+  "page": "promo/drone-404/drone-404.html",
+  "proofDir": "promo/drone-404/proofs",
+  "video": "promo/drone-404/drone-search-404.mp4",
+  "gif": "promo/drone-404/drone-search-404.gif",
   "selectors": { "silhouette": ".d404-silhouette", "body": ".d404-drone" },
   "fidelity": {
     "reference": "research/drone-404/reference-single-line-drone.png",

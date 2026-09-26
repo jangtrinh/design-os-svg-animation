@@ -15,7 +15,7 @@ import { LOCAL_SERVER_ORIGIN } from './local-server-config.mjs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
-const ASSETS_DIR = path.join(ROOT_DIR, 'docs', 'assets');
+const ASSETS_DIR = path.join(ROOT_DIR, 'docs', 'design-os-tutorial/assets');
 
 const CHROME_BIN = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const FFMPEG_BIN = '/opt/homebrew/bin/ffmpeg';
@@ -24,7 +24,7 @@ const DEMOS = [
   {
     id: 'example-1-claude-design-globe',
     name: 'Claude Design 3D Globe',
-    url: `${LOCAL_SERVER_ORIGIN}/claude-design-promo.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/claude-design/claude-design-promo.html?clean=true&autoplay=false`,
     start: 12.5,
     duration: 4.0,
     fps: 15,
@@ -36,7 +36,7 @@ const DEMOS = [
   {
     id: 'example-3-codex-app-promo',
     name: 'OpenAI Codex App Promo',
-    url: `${LOCAL_SERVER_ORIGIN}/codex-app-promo.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/codex-app/codex-app-promo.html?clean=true&autoplay=false`,
     start: 0.5,
     duration: 4.0,
     fps: 15,
@@ -48,7 +48,7 @@ const DEMOS = [
   {
     id: 'example-4-v0-generative-ui',
     name: 'Vercel v0 Generative UI',
-    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui.html?clean=true&autoplay=false`,
+    url: `${LOCAL_SERVER_ORIGIN}/v0-generative-ui/v0-generative-ui.html?clean=true&autoplay=false`,
     start: 12.0,
     duration: 4.0,
     fps: 15,

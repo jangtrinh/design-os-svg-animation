@@ -13,7 +13,7 @@ metadata:
 
 # Motion Video Recreation (v2)
 
-**Read [the normative pipeline contract](../../docs/motion-video-recreation-pipeline.md) before work.** It defines intake, scene/transition ledger, stage exits, hard fails, verification, acceptance, and cross-session handoff. [Lessons from Astra](../../docs/motion-video-recreation-workflow-guide.md) explain the failure modes. Do not use a numeric parity promise or treat technical gates as visual acceptance.
+**Read [the normative pipeline contract](../../docs/pipelines/motion-video-recreation-pipeline.md) before work.** It defines intake, scene/transition ledger, stage exits, hard fails, verification, acceptance, and cross-session handoff. [Lessons from Astra](../../docs/pipelines/motion-video-recreation-workflow-guide.md) explain the failure modes. Do not use a numeric parity promise or treat technical gates as visual acceptance.
 
 ## Mandatory preconditions
 

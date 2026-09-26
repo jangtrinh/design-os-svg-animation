@@ -23,11 +23,11 @@ const BASE_URL = LOCAL_SERVER_ORIGIN;
 const TARGET_PAGES = [
   {
     name: 'Vercel v0: Generative UI Promo',
-    path: '/v0-generative-ui.html?clean=true'
+    path: '/v0-generative-ui/v0-generative-ui.html?clean=true'
   },
   {
     name: 'OpenAI Codex App Promo',
-    path: '/codex-app-promo.html?clean=true'
+    path: '/codex-app/codex-app-promo.html?clean=true'
   }
 ];
 
@@ -56,7 +56,7 @@ function startStaticServer(port, staticDir) {
   };
 
   const server = http.createServer((req, res) => {
-    const reqUrl = req.url.split('?')[0] === '/' ? '/index.html' : req.url;
+    const reqUrl = req.url.split('?')[0] === '/' ? '/design-os-promo/index.html' : req.url;
     const filePath = resolvePathInsideRoot(staticDir, reqUrl);
     if (!filePath || !fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
       res.writeHead(404);

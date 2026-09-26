@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://jangtrinh.github.io/design-os-svg-animation/</loc><lastmod>2026-09-22</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/motion-ir.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/architecture-overview.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/motion-video-recreation-pipeline.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/setup-and-toolchain.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/quality-and-safety-gates.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/reference/motion-ir.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/architecture/architecture-overview.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/pipelines/motion-video-recreation-pipeline.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/reference/setup-and-toolchain.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://jangtrinh.github.io/design-os-svg-animation/reference/quality-and-safety-gates.html</loc><lastmod>2026-09-22</lastmod><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>

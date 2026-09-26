@@ -21,7 +21,7 @@ const ROOT_DIR = path.resolve(__dirname, '..');
 
 // Simple CLI arg parser
 const args = process.argv.slice(2);
-let outPath = path.join(ROOT_DIR, 'promo', 'sample-deliverable.html');
+let outPath = path.join(ROOT_DIR, 'promo', 'samples/sample-deliverable.html');
 let specPath = null;
 let title = 'Design OS Universal Deliverable';
 let aspectKey = '16:9';
