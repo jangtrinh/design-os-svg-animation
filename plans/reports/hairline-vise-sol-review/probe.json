@@ -1,0 +1,370 @@
+{
+  "method": "Actual kernel geometry in a simulated SVG DOM; librsvg rasterization, NOT browser evidence",
+  "original": {
+    "sourceMatchesEmbedded": true,
+    "lines": 194,
+    "rest": {
+      "read": "rest",
+      "highlight": 0,
+      "paths": 55,
+      "box": [
+        89.32,
+        56.39,
+        282.06,
+        228.13
+      ],
+      "finite": true
+    },
+    "closed": {
+      "read": "clamped 0mm",
+      "highlight": 1,
+      "paths": 55,
+      "box": [
+        89.32,
+        56.39,
+        311.38,
+        228.13
+      ],
+      "finite": true
+    },
+    "maximum": {
+      "read": "gap 56mm",
+      "highlight": 1,
+      "paths": 55,
+      "box": [
+        89.32,
+        56.39,
+        309.59,
+        228.13
+      ],
+      "finite": true
+    },
+    "idleReturns": false,
+    "idlePathWrites": 19
+  },
+  "solution": {
+    "sourceMatchesEmbedded": true,
+    "lines": 137,
+    "rest": {
+      "read": "rest",
+      "highlight": 1,
+      "paths": 71,
+      "box": [
+        65.06,
+        68.89,
+        285.23,
+        264.02
+      ],
+      "finite": true
+    },
+    "closed": {
+      "read": "jaw",
+      "highlight": 1,
+      "paths": 71,
+      "box": [
+        65.06,
+        68.89,
+        318.66,
+        264.02
+      ],
+      "finite": true
+    },
+    "maximum": {
+      "read": "jaw",
+      "highlight": 1,
+      "paths": 71,
+      "box": [
+        65.06,
+        68.89,
+        285.23,
+        264.02
+      ],
+      "finite": true
+    },
+    "idleReturns": false,
+    "idlePathWrites": 0,
+    "sweep": [
+      {
+        "reach": 16,
+        "x": -44,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 16,
+        "x": -43,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 16,
+        "x": -25,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 16,
+        "x": -5,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 16,
+        "x": 15,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 16,
+        "x": 31,
+        "read": "rest",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          293.48,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": -44,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": -43,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": -25,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          322.42,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": -5,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": 15,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 30,
+        "x": 31,
+        "read": "rest",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          298.49,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": -44,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": -43,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          318.66,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": -25,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          322.42,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": -5,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": 15,
+        "read": "jaw",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      },
+      {
+        "reach": 48,
+        "x": 31,
+        "read": "rest",
+        "highlight": 1,
+        "paths": 71,
+        "box": [
+          65.06,
+          68.89,
+          285.23,
+          264.02
+        ],
+        "finite": true
+      }
+    ],
+    "crankSweep": {
+      "poses": 97,
+      "minimumMargin": 55.98000000000002
+    },
+    "geometryContract": {
+      "fixedContactX": -42.7,
+      "movingClosedFaceX": -42.7,
+      "fixedFootEndX": -43,
+      "movingFootMinimumX": -42.7,
+      "maximumMovingEndX": 31.299999999999997,
+      "bearingFootStartsX": 42,
+      "minimumBearingClearance": 10.700000000000003
+    },
+    "reduced": {
+      "read": "jaw",
+      "highlight": 1,
+      "paths": 71,
+      "box": [
+        65.06,
+        68.89,
+        318.66,
+        264.02
+      ],
+      "finite": true
+    },
+    "destroyChildren": 0
+  },
+  "negativePaintControl": [
+    "paint: rule 04. The figure sets a stroke width, colour, fill, opacity, filter, gradient or shadow of its own. Use the kernel's classes and nothing else: sil, hi, lo, nf, fo, dash, dot, dot m, dot off."
+  ]
+}

@@ -22,10 +22,57 @@ Live site: [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.githu
 | :--- | :--- |
 | **Repository** | [jangtrinh/design-os-svg-animation](https://github.com/jangtrinh/design-os-svg-animation) |
 | **Requires** | Node 22, Python 3.10+, Google Chrome (headless capture), FFmpeg |
-| **Interface** | Browser players, Node/Python CLI scripts, Motion IR JSON schema |
-| **Rendering** | SVG / DOM / Three.js, driven by `window.__seekToTime(t)`, exported frame by frame through FFmpeg |
+| **Interface** | Browser players, Node/Python CLI scripts, Motion IR JSON schema, Hairline 2:1 CAD figures |
+| **Rendering** | SVG / DOM / Three.js / Hairline vector kinematics, driven by `window.__seekToTime(t)` and 60fps spring loops |
 | **Privacy** | Local only: a loopback dev server on port 4323, no telemetry |
 | **License** | MIT |
+
+---
+
+## Hairline Engine — Interactive 2:1 Isometric Kinematics
+
+> **Vector CAD precision meets 60fps tactile physics.**  
+> Native port and expansion of `@lucasmarkes/hairline` directly into Design OS. Generates self-contained, resolution-independent SVG instruments that answer the pointer under real-world mechanical constraints.
+
+| Specimen | Live Interactive Player | Art Direction Archetype | Meaningful Interaction (Rule 06 Honesty) |
+|---|---|---|---|
+| **Payment Terminal** | [💳 Launch case-terminal](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html) ([local](playground/case-terminal.html)) | *The Instrument* · 2:1 Axonometric | EMV chip card slides into front slot; 12 tactile keys depress $-1.4\text{mm}$ with spring return and semantic `.hi` transfer. |
+| **Machine Vise** | [🔩 Launch vise-sol](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html) ([local](playground/vise-sol.html)) | *Kinematic Linkage* · CAD Master | Constrained lead screw turns offset crank while translating sliding jaw against stationary anvil. |
+| **Design Vault** | [🏛️ Launch design-vault](https://jangtrinh.github.io/design-os-svg-animation/playground/design-vault.html) ([local](playground/design-vault.html)) | *The Discrete Array* · Isometric Grid | 9-station modular vault grid with coordinate tracking and floating accent pedestals. |
+| **Hairline 27 Showcase** | [🎨 Launch hairline-showcase](https://jangtrinh.github.io/design-os-svg-animation/playground/hairline-showcase.html) ([local](playground/hairline-showcase.html)) | *Complete Lucas Catalog* | 27 interactive figures across 6 core motion archetypes. |
+
+### How to Build & Validate Hairline Figures
+
+Use the unified pipeline tool `scripts/create-hairline-figure.mjs`:
+
+```bash
+# 1. Start local dev server (Port 4323)
+npm run dev
+
+# 2. Compile figure source (.js) into self-contained HTML deliverable
+node scripts/create-hairline-figure.mjs build playground/case-terminal.js playground/case-terminal.html
+
+# 3. Validate against the 10 Hairline Rules (Exit 0 required)
+node scripts/create-hairline-figure.mjs validate playground/case-terminal.html
+
+# 4. Capture automated headless visual proof
+node scripts/create-hairline-figure.mjs capture playground/case-terminal.html
+```
+
+### The 10 Hairline Rules
+
+1. **`01 hit`**: Measure pointer in world coordinates (`unproj(C, x, y, z)`), never raw screen pixels.
+2. **`02 order`**: Strict dynamic SVG depth sorting (`b.after(a)`).
+3. **`03 reach`**: Physical bounds with non-zero clearance reserve at limit stops.
+4. **`04 accent`**: Exactly one semantic highlight (`.hi`) transferred across active states. Zero inline styling.
+5. **`05 rest`**: Complete, restful initial pose. First paint must never be mid-travel.
+6. **`06 honesty`**: Meaningful physical kinematics only. No arbitrary exploded slop or floating CAD slices.
+7. **`07 cost`**: Clean code budget under 150 lines JS per figure.
+8. **`08 clock`**: Driven strictly by spring physics (`stepS`) and pointer. No unprompted infinite loops.
+9. **`09 radius`**: Chamfered/rounded corners on all solids (`rrect`, `fillet`).
+10. **`10 quiet`**: Monochrome technical ink (#202020 on #ffffff) with faint #e4e4e4 guidelines.
+
+---
 
 ## Why this engine, compared with the alternatives
 

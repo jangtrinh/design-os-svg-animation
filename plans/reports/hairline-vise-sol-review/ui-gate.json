@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "command": "gate",
+  "data": {
+    "file": "playground/vise-sol.html",
+    "families": {
+      "layout": {
+        "errorCount": 0,
+        "warningCount": 1,
+        "advisoryCount": 0,
+        "findings": [
+          {
+            "checkId": "dvh-over-100vh",
+            "severity": "warning",
+            "message": "height uses 100vh — on mobile the URL bar resizes the viewport, so 100vh clips content then jumps as the bar collapses; use 100dvh (dynamic viewport height)"
+          }
+        ]
+      },
+      "a11y": {
+        "errorCount": 0,
+        "warningCount": 0,
+        "advisoryCount": 0,
+        "findings": []
+      },
+      "taste": {
+        "errorCount": 0,
+        "warningCount": 0,
+        "advisoryCount": 0,
+        "findings": []
+      },
+      "tell": {
+        "errorCount": 0,
+        "warningCount": 0,
+        "advisoryCount": 0,
+        "findings": []
+      },
+      "content": {
+        "errorCount": 0,
+        "warningCount": 0,
+        "advisoryCount": 0,
+        "findings": []
+      },
+      "autofix": {
+        "errorCount": 0,
+        "warningCount": 0,
+        "advisoryCount": 0,
+        "findings": []
+      }
+    },
+    "skipped": [],
+    "partial": [],
+    "errorCount": 0,
+    "warningCount": 1,
+    "advisoryCount": 0,
+    "pass": true
+  }
+}

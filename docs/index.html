@@ -1,6 +1,3 @@
----
-layout: null
----
 <!doctype html>
 <html lang="en">
 <head>
@@ -39,11 +36,12 @@ layout: null
     {
       "@type": "FAQPage",
       "mainEntity": [
-        { "@type": "Question", "name": "How does deterministic virtual clock recording work?", "acceptedAnswer": { "@type": "Answer", "text": "Instead of relying on wall-clock screen recording, the renderer seeks the virtual clock at each configured output frame and captures frames for FFmpeg encoding." } },
+        { "@type": "Question", "name": "How does deterministic virtual clock recording work?", "acceptedAnswer": { "@type": "Answer", "text": "Instead of screen recording with dropped frames, headless Chromium advances time via window.__seekToTime(t) in exact 1/60s increments, capturing full-raster raw frames for FFmpeg encoding." } },
         { "@type": "Question", "name": "Why are raw Unicode emojis strictly banned?", "acceptedAnswer": { "@type": "Answer", "text": "System emojis render inconsistently across platforms, break geometry matching, and flag anti-flop gates. All iconography must use official Phosphor regular vectors." } },
         { "@type": "Question", "name": "Which coding agents are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Claude Code, Codex Native, and Antigravity. Portable skills map directly to each harness's toolchain." } },
         { "@type": "Question", "name": "Does this require a paid GPU or cloud rendering farm?", "acceptedAnswer": { "@type": "Answer", "text": "No. Rendering runs locally on macOS or Linux using headless Chromium hardware acceleration and FFmpeg libx264." } },
-        { "@type": "Question", "name": "Can it compile Motion IR directly to CSS and GSAP?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The motion-ir compiler converts storyboard tracks into pure CSS transform keyframes and GSAP timelines." } }
+        { "@type": "Question", "name": "Can it compile Motion IR directly to CSS and GSAP?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. The motion-ir compiler converts storyboard tracks into pure CSS transform keyframes and GSAP timelines." } },
+        { "@type": "Question", "name": "What is the Hairline Engine and how does it handle vector kinematics?", "acceptedAnswer": { "@type": "Answer", "text": "The Hairline Engine is an interactive 2:1 isometric vector engine ported from Lucas Markes. It computes dynamic SVG depth sorting, pointer projection in world coordinates, and 60fps spring physics under real-world mechanical constraints without exploded CAD slop." } }
       ]
     }
   ]
@@ -61,6 +59,7 @@ layout: null
       <a class="ds-tab" href="#install">Install</a>
       <a class="ds-tab" href="#loop">Loop</a>
       <a class="ds-tab" href="#showcase">Showcase</a>
+      <a class="ds-tab" href="#hairline">Hairline</a>
       <a class="ds-tab" href="#parity-comparison">Compare</a>
       <a class="ds-tab" href="#faq">FAQ</a>
       <a class="ds-tab" href="pipelines/motion-video-recreation-pipeline.html">Docs</a>
@@ -215,6 +214,60 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
       </div>
     </section>
 
+    <section id="hairline" data-pace="chapter" aria-labelledby="hairline-h">
+      <h2 id="hairline-h" class="ds-heading" data-level="2">Hairline Engine · 2:1 Isometric Kinematics</h2>
+      <p class="lede">Vector CAD precision meets 60fps tactile physics. Native port and expansion of Lucas Markes' Hairline engine with meaningful physical kinematics — card insertion, tactile button depression, and lead screw clamping.</p>
+
+      <figure class="ds-card branch-page-media" style="margin-top:var(--s-6);">
+        <div class="ds-card-stage capture-stage">
+          <img src="assets/hairline-case-terminal.png" width="640" height="360" alt="Payment Terminal Specimen with EMV Card Insertion and 12-key tactile keypad depression" loading="lazy">
+        </div>
+        <figcaption class="case-plate-caption">
+          <p>Specimen 1: Payment Terminal (<code>playground/case-terminal.html</code>). Meaningful POS machine kinematics — EMV chip card smoothly slides along -Y into the reader slot on approach; 12 tactile keys depress -1.4mm with spring return and semantic <code>.hi</code> accent transfer. <a href="playground/case-terminal.html" class="text-link" target="_blank" rel="noopener">Interactive Player <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+          <cite>playground/case-terminal.html · 2:1 Axonometric</cite>
+        </figcaption>
+      </figure>
+
+      <figure class="ds-card branch-page-media" style="margin-top:var(--s-6);">
+        <div class="ds-card-stage capture-stage">
+          <img src="assets/hairline-vise-sol.png" width="640" height="360" alt="Machine Vise benchmark with constrained lead screw and sliding jaw" loading="lazy">
+        </div>
+        <figcaption class="case-plate-caption">
+          <p>Specimen 2: Machine Vise (<code>playground/vise-sol.html</code>). Kinematic linkage benchmark — constrained lead screw turns offset crank while translating sliding jaw against stationary anvil under real-world mechanical limits. <a href="playground/vise-sol.html" class="text-link" target="_blank" rel="noopener">Interactive Player <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+          <cite>playground/vise-sol.html · CAD Master</cite>
+        </figcaption>
+      </figure>
+
+      <figure class="ds-card branch-page-media" style="margin-top:var(--s-6);">
+        <div class="ds-card-stage capture-stage">
+          <img src="assets/hairline-catalog-showcase.png" width="640" height="360" alt="Hairline 27 Catalog Showcase with 27 interactive figures across 6 core motion archetypes" loading="lazy">
+        </div>
+        <figcaption class="case-plate-caption">
+          <p>Specimen 3: 27-Figure Hairline Showcase (<code>playground/hairline-showcase.html</code>). Complete interactive gallery of all 27 canonical Hairline figures across 6 motion archetypes: slider-crank linkages, cam-followers, Geneva wheels, dial calipers, and rotary selectors. <a href="playground/hairline-showcase.html" class="text-link" target="_blank" rel="noopener">Interactive Player <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+          <cite>playground/hairline-showcase.html · Full Catalog</cite>
+        </figcaption>
+      </figure>
+
+      <div class="register" style="margin-top:var(--s-6);">
+        <div class="register-row" data-icon="none">
+          <h3><code>scripts/create-hairline-figure.mjs</code></h3>
+          <p>Universal pipeline tool: <code>build</code> (compiles JS to self-contained HTML), <code>validate</code> (enforces the 10 Hairline rules), and <code>capture</code> (headless visual verification).</p>
+        </div>
+        <div class="register-row" data-icon="none">
+          <h3><code>hairline-solid-workflow.html</code> · Workflow Guide</h3>
+          <p>5-step authoring guide: Solid geometry first, pointer projection in world coords, spring kinetics, and dynamic SVG depth sorting. <a href="hairline-solid-workflow.html" class="text-link">Read Guide <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+        </div>
+        <div class="register-row" data-icon="none">
+          <h3><code>art-direction.html</code> · Art Direction Spec</h3>
+          <p>Canonical design standards: 2:1 isometric projection, monochrome technical ink, chamfered silhouettes, and semantic accent hierarchy. <a href="art-direction.html" class="text-link">Read Spec <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+        </div>
+        <div class="register-row" data-icon="none">
+          <h3><code>playground/design-vault.html</code> · Design Vault</h3>
+          <p>Discrete array archetype: 9-station modular vault grid with coordinate tracking and floating accent pedestals. <a href="playground/design-vault.html" class="text-link" target="_blank" rel="noopener">Interactive Player <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M200,64V168a8,8,0,0,1-16,0V83.31L69.66,197.66a8,8,0,0,1-11.32-11.32L172.69,72H88a8,8,0,0,1,0-16H192A8,8,0,0,1,200,64Z"/></svg></a></p>
+        </div>
+      </div>
+    </section>
+
     <section id="showcase" data-pace="chapter" aria-labelledby="showcase-h">
       <h2 id="showcase-h" class="ds-heading" data-level="2">Showcase builds</h2>
       <p>Interactive motion builds, a traced line-art 404 page, and a reference recreation study. The Astra study remains open for visual review.</p>
@@ -338,6 +391,7 @@ python3 -c "import urllib.request; print('Python ready')"</code></pre>
       <details><summary>Which coding agents are supported? <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg></summary><p>Claude Code, Codex Native, and Antigravity. Portable skills map directly to each harness’s toolchain.</p></details>
       <details><summary>Does this require a paid GPU or cloud rendering farm? <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg></summary><p>No. Rendering runs locally on macOS or Linux using headless Chromium hardware acceleration and FFmpeg libx264.</p></details>
       <details><summary>Can it compile Motion IR directly to CSS and GSAP? <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg></summary><p>Yes. The motion-ir compiler converts storyboard tracks into pure CSS transform keyframes and GSAP timelines.</p></details>
+      <details><summary>What is the Hairline Engine and how does it handle vector kinematics? <svg class="ph" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg></summary><p>The Hairline Engine is an interactive 2:1 isometric vector engine ported from Lucas Markes. It computes dynamic SVG depth sorting, pointer projection in world coordinates, and 60fps spring physics under real-world mechanical constraints without exploded CAD slop.</p></details>
     </section>
 
     <section id="ecosystem" class="ecosystem" data-pace="chapter" aria-labelledby="ecosystem-h">

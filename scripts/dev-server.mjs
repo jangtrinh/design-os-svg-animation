@@ -57,7 +57,7 @@ function resolveFilePath(reqUrl) {
 
 const server = http.createServer((req, res) => {
   // CORS Headers
-  res.setHeader('Access-Control-Allow-Origin', LOCAL_SERVER_ORIGIN);
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, HEAD, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', '*');
 

@@ -8,3 +8,4 @@ dist/
 __pycache__/
 artifacts/
 scratch/
+*.local.json

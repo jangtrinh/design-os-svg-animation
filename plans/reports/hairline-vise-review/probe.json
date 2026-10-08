@@ -1,0 +1,45 @@
+{
+  "sourceMatchesEmbedded": true,
+  "lines": 194,
+  "restHi": 0,
+  "restRead": "rest",
+  "pathCount": 55,
+  "minimum": {
+    "read": "clamped 0mm",
+    "hi": 1
+  },
+  "topHit": {
+    "world": [
+      -4,
+      0,
+      46
+    ],
+    "groundHit": [
+      -60.33826408401308,
+      -56.33826408401309
+    ],
+    "read": "clamped 0mm",
+    "hi": 1
+  },
+  "closedFaceSeparation": 2,
+  "maximum": {
+    "read": "gap 56mm",
+    "hi": 1,
+    "jawInterval": [
+      30,
+      50
+    ],
+    "bearingInterval": [
+      38,
+      48
+    ],
+    "overlap": 10
+  },
+  "idleTickReturns": false,
+  "unchangedFramePathWrites": 19,
+  "reduced": {
+    "read": "clamped 0mm",
+    "hi": 1
+  },
+  "destroyChildren": 0
+}
