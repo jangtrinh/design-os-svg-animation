@@ -37,12 +37,5 @@ if (viseStage) {
 await page.screenshot({ path: 'docs/assets/hairline-vise-sol.png' });
 console.log('Saved docs/assets/hairline-vise-sol.png');
 
-// 3. Capture Hairline 27 Catalog Showcase
-console.log('Capturing hairline-showcase...');
-await page.goto('http://127.0.0.1:4323/playground/hairline-showcase.html', { waitUntil: 'networkidle0' });
-await new Promise(r => setTimeout(r, 800));
-await page.screenshot({ path: 'docs/assets/hairline-catalog-showcase.png' });
-console.log('Saved docs/assets/hairline-catalog-showcase.png');
-
 await browser.close();
 console.log('Done capturing docs assets!');
