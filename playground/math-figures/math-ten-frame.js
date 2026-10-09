@@ -1,8 +1,8 @@
 export default {
   id: "math-ten-frame",
   title: "3. Khung 10 Ô (Ten Frame Counter)",
-  concept: "Cấu trúc số 10 cơ số mười",
-  means: "Khung 10 ô đếm số: khay gỗ với 10 hốc lõm 2 hàng 5 cột. Ô trống vẽ nét đứt; đồng xu nhấc nảy có bóng đổ tiếp xúc đáy hốc.",
+  concept: "Cấu trúc số 10 cơ số mười & Bổ số 10",
+  means: "Khung 10 ô đếm số: khay gỗ 2 hàng 5 cột. Click vào ô để đặt hoặc bốc đồng xu; hiệu ứng thả rơi nảy chạm đáy hốc, hiển thị phép cộng bổ số 10 (vd: 7 + 3 = 10).",
   rules: [1, 2, 4, 7, 10],
   range: [0, 7, 10],
   mount({ stage, svg, read }, initialV) {
@@ -37,7 +37,7 @@ export default {
           d: HL.poly(HL.ringAt(P, floorO, 1.6))
         }, svg);
 
-        // Subtle 3D recessed wall drop edge at far corner (top-left in camera view)
+        // Subtle 3D recessed wall drop edge at far corner
         const wallDrop = HL.seg(P(cx - 8.0, cy + 8.0, 4.0), P(cx - 8.0, cy + 8.0, 1.6));
         HL.mk("path", { class: "lo", d: wallDrop }, svg);
       }
@@ -45,16 +45,16 @@ export default {
 
     // 10 Token Slots
     const tokens = [];
-    const initCount = initialV != null ? Math.round(initialV) : 7;
+    let count = initialV != null ? Math.round(initialV) : 7;
     let slotIdx = 0;
 
     for (let r = 0; r < 2; r++) {
+      const cy = r === 0 ? 10 : -10;
       for (let c = 0; c < 5; c++) {
         const cx = -40 + c * 20;
-        const cy = r === 0 ? 10 : -10;
-        const active = slotIdx < initCount;
+        const active = slotIdx < count;
 
-        // Dashed circle on cavity floor (shown only when cell is empty)
+        // Dashed circle on cavity floor (shown when empty)
         const emptyPts = [];
         for (let k = 0; k <= 32; k++) {
           const a = (k / 32) * Math.PI * 2;
@@ -65,13 +65,13 @@ export default {
           d: HL.poly(emptyPts)
         }, svg);
 
-        // Contact shadow element on cavity floor for lifted token
+        // Contact shadow element on cavity floor for dropping/lifted token
         const shadowEl = HL.mk("path", {
           class: "nf lo dash",
           d: ""
         }, svg);
 
-        // Vertical drop line connecting lifted token to its contact shadow
+        // Drop line connecting token to floor during drop
         const dropLineEl = HL.mk("path", {
           class: "nf lo dash",
           d: ""
@@ -80,12 +80,15 @@ export default {
         // Token solid
         const sol = HL.solid(svg);
 
+        // Token spring: drop elevation in Z (starts at 0 if active, 16 if inactive)
+        const dropSp = HL.spring(0, { k: 220, c: 16 });
+
         tokens.push({
           idx: slotIdx,
           cx,
           cy,
           active,
-          lift: HL.spring(0, { k: 160, c: 15 }),
+          dropSp,
           sol,
           emptyEl,
           shadowEl,
@@ -96,30 +99,51 @@ export default {
       }
     }
 
+    function applyCount(newCount) {
+      count = HL.clamp(newCount, 0, 10);
+      tokens.forEach((tok, i) => {
+        const wasActive = tok.active;
+        const willBeActive = i < count;
+        tok.active = willBeActive;
+        if (willBeActive && !wasActive) {
+          // Trigger drop animation from above
+          tok.dropSp.x = 14;
+          tok.dropSp.t = 0;
+        } else if (!willBeActive && wasActive) {
+          // Lift up and vanish
+          tok.dropSp.t = 16;
+        } else if (willBeActive) {
+          tok.dropSp.t = 0;
+        }
+      });
+      reg.wake();
+    }
+
     function draw() {
       tokens.forEach(tok => {
-        if (tok.active) {
+        const dropZ = tok.dropSp.x;
+
+        if (tok.active || dropZ < 15.5) {
           tok.emptyEl.style.display = "none";
 
-          const liftAmount = tok.lift.x;
-          const z = 1.6 + liftAmount;
+          const z = 1.6 + Math.max(0, dropZ);
 
           // Token cylinder solid
           const [cO, cI] = HL.rings(tok.cx - 5.8, tok.cy - 5.8, tok.cx + 5.8, tok.cy + 5.8, 5.8, 0.7);
           HL.put(tok.sol, HL.prism(P, front, cO, cI, z, z + 2.5));
 
           // Contact shadow on the cavity floor at z = 1.6
-          if (liftAmount > 0.4) {
+          if (dropZ > 0.4) {
             tok.shadowEl.style.display = "";
             const shadowPts = [];
-            for (let k = 0; k <= 28; k++) {
-              const a = (k / 28) * Math.PI * 2;
-              shadowPts.push(P(tok.cx + 5.6 * Math.cos(a), tok.cy + 5.6 * Math.sin(a), 1.6));
+            const shadowScale = HL.clamp(1 - dropZ * 0.03, 0.5, 1);
+            for (let k = 0; k <= 24; k++) {
+              const a = (k / 24) * Math.PI * 2;
+              shadowPts.push(P(tok.cx + 5.6 * shadowScale * Math.cos(a), tok.cy + 5.6 * shadowScale * Math.sin(a), 1.6));
             }
             tok.shadowEl.setAttribute("d", HL.poly(shadowPts));
 
-            // Vertical drop guide from token bottom to contact shadow
-            if (liftAmount > 2.0) {
+            if (dropZ > 2.0) {
               tok.dropLineEl.style.display = "";
               tok.dropLineEl.setAttribute("d", HL.seg(P(tok.cx, tok.cy, z), P(tok.cx, tok.cy, 1.6)));
             } else {
@@ -130,7 +154,7 @@ export default {
             tok.dropLineEl.style.display = "none";
           }
         } else {
-          // Empty slot: show gentle dashed circle on floor, NO extruded prism block
+          // Empty slot: show dashed circle on floor
           tok.emptyEl.style.display = "";
           tok.shadowEl.style.display = "none";
           tok.dropLineEl.style.display = "none";
@@ -138,33 +162,55 @@ export default {
         }
       });
 
-      const activeCount = tokens.filter(t => t.active).length;
-      const topCount = tokens.filter((t, i) => i < 5 && t.active).length;
-      const botCount = tokens.filter((t, i) => i >= 5 && t.active).length;
+      const activeCount = count;
+      const topCount = Math.min(5, activeCount);
+      const botCount = Math.max(0, activeCount - 5);
       const emptyCount = 10 - activeCount;
 
-      read.textContent = `${activeCount} = ${topCount} (hàng trên) + ${botCount} (hàng dưới) · ${emptyCount} ô trống`;
+      if (activeCount === 10) {
+        read.textContent = "Khung đầy 10 ô: 5 + 5 = 10 (Trọn vẹn cơ số mười!)";
+      } else if (activeCount === 0) {
+        read.textContent = "Khung trống: 0 đồng xu · Cần 10 đồng xu để đầy 10!";
+      } else {
+        read.textContent = `${activeCount} đồng xu = ${topCount} (hàng trên) + ${botCount} (hàng dưới) · Còn thiếu ${emptyCount} để đủ 10! (${activeCount} + ${emptyCount} = 10)`;
+      }
     }
 
-    function aim(pt) {
+    function handleClick(pt) {
       if (!pt) {
-        tokens.forEach(t => (t.lift.t = 0));
-        reg.wake();
+        applyCount((count + 1) % 11);
         return;
       }
+      // Check if clicked near a specific slot
+      let nearestIdx = -1;
+      let minDist = 25;
       tokens.forEach(tok => {
-        if (!tok.active) return;
-        const scr = P(tok.cx, tok.cy, 5);
+        const scr = P(tok.cx, tok.cy, 3);
         const dist = Math.hypot(pt[0] - scr[0], pt[1] - scr[1]);
-        tok.lift.t = dist < 22 ? 14 : 0;
+        if (dist < minDist) {
+          minDist = dist;
+          nearestIdx = tok.idx;
+        }
       });
-      reg.wake();
+
+      if (nearestIdx !== -1) {
+        if (nearestIdx < count) {
+          // Clicked an occupied slot: remove tokens down to nearestIdx
+          applyCount(nearestIdx);
+        } else {
+          // Clicked an empty slot: fill up to this slot
+          applyCount(nearestIdx + 1);
+        }
+      } else {
+        // Clicked outside slots: advance count
+        applyCount((count + 1) % 11);
+      }
     }
 
     const reg = HL.register(stage, dt => {
       let moving = false;
       tokens.forEach(t => {
-        if (HL.stepS(t.lift, dt)) moving = true;
+        if (HL.stepS(t.dropSp, dt)) moving = true;
       });
       draw();
       return moving;
@@ -173,25 +219,17 @@ export default {
     bag.add(reg.unregister);
     bag.add(
       HL.pointer(stage, {
-        move: aim,
-        leave: () => {
-          tokens.forEach(t => (t.lift.t = 0));
-          reg.wake();
-        }
+        down: handleClick
       })
     );
     bag.add(() => svg.replaceChildren());
 
+    // Initial render
     draw();
 
     return {
       set(v) {
-        const count = Math.round(HL.clamp(v, 0, 10));
-        tokens.forEach((t, i) => {
-          t.active = i < count;
-        });
-        draw();
-        reg.wake();
+        applyCount(Math.round(v));
       },
       destroy: bag.dispose
     };

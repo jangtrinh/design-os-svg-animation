@@ -927,6 +927,13 @@ const MATH_FIGURES = [
       reg.wake();
     }
 
+    function handleClick(pt) {
+      unitCount = (unitCount % 5) + 1;
+      d2Lift.x = 4.5;
+      d2Lift.t = 0;
+      reg.wake();
+    }
+
     const reg = HL.register(stage, dt => {
       const m1 = HL.stepS(d1Lift, dt);
       const m2 = HL.stepS(d2Lift, dt);
@@ -934,7 +941,7 @@ const MATH_FIGURES = [
       return m1 || m2;
     });
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
@@ -1243,8 +1250,8 @@ const MATH_FIGURES = [
 {
   id: "math-ten-frame",
   title: "3. Khung 10 Ô (Ten Frame Counter)",
-  concept: "Cấu trúc số 10 cơ số mười",
-  means: "Khung 10 ô đếm số: khay gỗ với 10 hốc lõm 2 hàng 5 cột. Ô trống vẽ nét đứt; đồng xu nhấc nảy có bóng đổ tiếp xúc đáy hốc.",
+  concept: "Cấu trúc số 10 cơ số mười & Bổ số 10",
+  means: "Khung 10 ô đếm số: khay gỗ 2 hàng 5 cột. Click vào ô để đặt hoặc bốc đồng xu; hiệu ứng thả rơi nảy chạm đáy hốc, hiển thị phép cộng bổ số 10 (vd: 7 + 3 = 10).",
   rules: [1, 2, 4, 7, 10],
   range: [0, 7, 10],
   mount({ stage, svg, read }, initialV) {
@@ -1279,7 +1286,7 @@ const MATH_FIGURES = [
           d: HL.poly(HL.ringAt(P, floorO, 1.6))
         }, svg);
 
-        // Subtle 3D recessed wall drop edge at far corner (top-left in camera view)
+        // Subtle 3D recessed wall drop edge at far corner
         const wallDrop = HL.seg(P(cx - 8.0, cy + 8.0, 4.0), P(cx - 8.0, cy + 8.0, 1.6));
         HL.mk("path", { class: "lo", d: wallDrop }, svg);
       }
@@ -1287,16 +1294,16 @@ const MATH_FIGURES = [
 
     // 10 Token Slots
     const tokens = [];
-    const initCount = initialV != null ? Math.round(initialV) : 7;
+    let count = initialV != null ? Math.round(initialV) : 7;
     let slotIdx = 0;
 
     for (let r = 0; r < 2; r++) {
+      const cy = r === 0 ? 10 : -10;
       for (let c = 0; c < 5; c++) {
         const cx = -40 + c * 20;
-        const cy = r === 0 ? 10 : -10;
-        const active = slotIdx < initCount;
+        const active = slotIdx < count;
 
-        // Dashed circle on cavity floor (shown only when cell is empty)
+        // Dashed circle on cavity floor (shown when empty)
         const emptyPts = [];
         for (let k = 0; k <= 32; k++) {
           const a = (k / 32) * Math.PI * 2;
@@ -1307,13 +1314,13 @@ const MATH_FIGURES = [
           d: HL.poly(emptyPts)
         }, svg);
 
-        // Contact shadow element on cavity floor for lifted token
+        // Contact shadow element on cavity floor for dropping/lifted token
         const shadowEl = HL.mk("path", {
           class: "nf lo dash",
           d: ""
         }, svg);
 
-        // Vertical drop line connecting lifted token to its contact shadow
+        // Drop line connecting token to floor during drop
         const dropLineEl = HL.mk("path", {
           class: "nf lo dash",
           d: ""
@@ -1322,12 +1329,15 @@ const MATH_FIGURES = [
         // Token solid
         const sol = HL.solid(svg);
 
+        // Token spring: drop elevation in Z (starts at 0 if active, 16 if inactive)
+        const dropSp = HL.spring(0, { k: 220, c: 16 });
+
         tokens.push({
           idx: slotIdx,
           cx,
           cy,
           active,
-          lift: HL.spring(0, { k: 160, c: 15 }),
+          dropSp,
           sol,
           emptyEl,
           shadowEl,
@@ -1338,30 +1348,51 @@ const MATH_FIGURES = [
       }
     }
 
+    function applyCount(newCount) {
+      count = HL.clamp(newCount, 0, 10);
+      tokens.forEach((tok, i) => {
+        const wasActive = tok.active;
+        const willBeActive = i < count;
+        tok.active = willBeActive;
+        if (willBeActive && !wasActive) {
+          // Trigger drop animation from above
+          tok.dropSp.x = 14;
+          tok.dropSp.t = 0;
+        } else if (!willBeActive && wasActive) {
+          // Lift up and vanish
+          tok.dropSp.t = 16;
+        } else if (willBeActive) {
+          tok.dropSp.t = 0;
+        }
+      });
+      reg.wake();
+    }
+
     function draw() {
       tokens.forEach(tok => {
-        if (tok.active) {
+        const dropZ = tok.dropSp.x;
+
+        if (tok.active || dropZ < 15.5) {
           tok.emptyEl.style.display = "none";
 
-          const liftAmount = tok.lift.x;
-          const z = 1.6 + liftAmount;
+          const z = 1.6 + Math.max(0, dropZ);
 
           // Token cylinder solid
           const [cO, cI] = HL.rings(tok.cx - 5.8, tok.cy - 5.8, tok.cx + 5.8, tok.cy + 5.8, 5.8, 0.7);
           HL.put(tok.sol, HL.prism(P, front, cO, cI, z, z + 2.5));
 
           // Contact shadow on the cavity floor at z = 1.6
-          if (liftAmount > 0.4) {
+          if (dropZ > 0.4) {
             tok.shadowEl.style.display = "";
             const shadowPts = [];
-            for (let k = 0; k <= 28; k++) {
-              const a = (k / 28) * Math.PI * 2;
-              shadowPts.push(P(tok.cx + 5.6 * Math.cos(a), tok.cy + 5.6 * Math.sin(a), 1.6));
+            const shadowScale = HL.clamp(1 - dropZ * 0.03, 0.5, 1);
+            for (let k = 0; k <= 24; k++) {
+              const a = (k / 24) * Math.PI * 2;
+              shadowPts.push(P(tok.cx + 5.6 * shadowScale * Math.cos(a), tok.cy + 5.6 * shadowScale * Math.sin(a), 1.6));
             }
             tok.shadowEl.setAttribute("d", HL.poly(shadowPts));
 
-            // Vertical drop guide from token bottom to contact shadow
-            if (liftAmount > 2.0) {
+            if (dropZ > 2.0) {
               tok.dropLineEl.style.display = "";
               tok.dropLineEl.setAttribute("d", HL.seg(P(tok.cx, tok.cy, z), P(tok.cx, tok.cy, 1.6)));
             } else {
@@ -1372,7 +1403,7 @@ const MATH_FIGURES = [
             tok.dropLineEl.style.display = "none";
           }
         } else {
-          // Empty slot: show gentle dashed circle on floor, NO extruded prism block
+          // Empty slot: show dashed circle on floor
           tok.emptyEl.style.display = "";
           tok.shadowEl.style.display = "none";
           tok.dropLineEl.style.display = "none";
@@ -1380,33 +1411,55 @@ const MATH_FIGURES = [
         }
       });
 
-      const activeCount = tokens.filter(t => t.active).length;
-      const topCount = tokens.filter((t, i) => i < 5 && t.active).length;
-      const botCount = tokens.filter((t, i) => i >= 5 && t.active).length;
+      const activeCount = count;
+      const topCount = Math.min(5, activeCount);
+      const botCount = Math.max(0, activeCount - 5);
       const emptyCount = 10 - activeCount;
 
-      read.textContent = `${activeCount} = ${topCount} (hàng trên) + ${botCount} (hàng dưới) · ${emptyCount} ô trống`;
+      if (activeCount === 10) {
+        read.textContent = "Khung đầy 10 ô: 5 + 5 = 10 (Trọn vẹn cơ số mười!)";
+      } else if (activeCount === 0) {
+        read.textContent = "Khung trống: 0 đồng xu · Cần 10 đồng xu để đầy 10!";
+      } else {
+        read.textContent = `${activeCount} đồng xu = ${topCount} (hàng trên) + ${botCount} (hàng dưới) · Còn thiếu ${emptyCount} để đủ 10! (${activeCount} + ${emptyCount} = 10)`;
+      }
     }
 
-    function aim(pt) {
+    function handleClick(pt) {
       if (!pt) {
-        tokens.forEach(t => (t.lift.t = 0));
-        reg.wake();
+        applyCount((count + 1) % 11);
         return;
       }
+      // Check if clicked near a specific slot
+      let nearestIdx = -1;
+      let minDist = 25;
       tokens.forEach(tok => {
-        if (!tok.active) return;
-        const scr = P(tok.cx, tok.cy, 5);
+        const scr = P(tok.cx, tok.cy, 3);
         const dist = Math.hypot(pt[0] - scr[0], pt[1] - scr[1]);
-        tok.lift.t = dist < 22 ? 14 : 0;
+        if (dist < minDist) {
+          minDist = dist;
+          nearestIdx = tok.idx;
+        }
       });
-      reg.wake();
+
+      if (nearestIdx !== -1) {
+        if (nearestIdx < count) {
+          // Clicked an occupied slot: remove tokens down to nearestIdx
+          applyCount(nearestIdx);
+        } else {
+          // Clicked an empty slot: fill up to this slot
+          applyCount(nearestIdx + 1);
+        }
+      } else {
+        // Clicked outside slots: advance count
+        applyCount((count + 1) % 11);
+      }
     }
 
     const reg = HL.register(stage, dt => {
       let moving = false;
       tokens.forEach(t => {
-        if (HL.stepS(t.lift, dt)) moving = true;
+        if (HL.stepS(t.dropSp, dt)) moving = true;
       });
       draw();
       return moving;
@@ -1415,25 +1468,17 @@ const MATH_FIGURES = [
     bag.add(reg.unregister);
     bag.add(
       HL.pointer(stage, {
-        move: aim,
-        leave: () => {
-          tokens.forEach(t => (t.lift.t = 0));
-          reg.wake();
-        }
+        down: handleClick
       })
     );
     bag.add(() => svg.replaceChildren());
 
+    // Initial render
     draw();
 
     return {
       set(v) {
-        const count = Math.round(HL.clamp(v, 0, 10));
-        tokens.forEach((t, i) => {
-          t.active = i < count;
-        });
-        draw();
-        reg.wake();
+        applyCount(Math.round(v));
       },
       destroy: bag.dispose
     };
@@ -1442,14 +1487,14 @@ const MATH_FIGURES = [
 {
   id: "math-number-blocks",
   title: "4. Tháp Khối Số Học (Unifix Number Blocks)",
-  concept: "Thứ tự số tự nhiên & chiều cao",
-  means: "Tháp khối lập phương Unifix: 3 tháp độ cao 1, 3 và 5. Bảo toàn thể tích; di chuột làm khối đỉnh tách rời lộ chốt tròn & lỗ cắm âm với đàn hồi snap-back.",
+  concept: "Phép cộng & bảo toàn số lượng khi ghép khối",
+  means: "Tháp khối lập phương Unifix: hai tháp 3 khối và 2 khối. Click để bốc khối từ tháp này cắm sang tháp kia; chốt tròn cắm khít lỗ âm với đàn hồi snap-back, chứng minh 3 + 2 = 5.",
   rules: [1, 2, 3, 7, 9],
-  range: [1, 3, 5],
+  range: [0, 2, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -15, 0], [50, 15, 84]], 200, 160);
+    HL.fit(C, [[-50, -18, 0], [50, 18, 76]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // Base Board (z = 0 to 3)
@@ -1457,175 +1502,155 @@ const MATH_FIGURES = [
     const baseSol = HL.solid(svg);
     HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 3));
 
-    const blockH = 13; // Strict invariant: unit cube height is 13, strictly conserved
+    // Base mounting studs on board at x = -20 and x = 20
+    const [studAO, studAI] = HL.rings(-23.5, -3.5, -16.5, 3.5, 3.5, 0.6);
+    const [studBO, studBI] = HL.rings( 16.5, -3.5,  23.5, 3.5, 3.5, 0.6);
+    const baseStudASol = HL.solid(svg);
+    const baseStudBSol = HL.solid(svg);
+    HL.put(baseStudASol, HL.prism(P, front, studAO, studAI, 3, 5.5));
+    HL.put(baseStudBSol, HL.prism(P, front, studBO, studBI, 3, 5.5));
 
-    const towers = [
-      { x: -32, count: 1, lift: HL.spring(0, { k: 170, c: 15 }) },
-      { x: 0, count: 3, lift: HL.spring(0, { k: 170, c: 15 }) },
-      { x: 32, count: 5, lift: HL.spring(0, { k: 170, c: 15 }) }
-    ];
+    const blockH = 12; // Height of each unit block
+    const TOTAL_BLOCKS = 5;
 
-    // Build graphics holders for each tower
-    towers.forEach(t => {
-      // Base stud on board (revealed when tower with count 1 lifts)
-      t.baseStudSol = HL.solid(svg);
+    // State: count on Tower A (starts at 3, Tower B has 5 - countA = 2)
+    let countA = initialV != null ? HL.clamp(Math.round(initialV), 0, TOTAL_BLOCKS) : 3;
 
-      // Solids for blocks: each block gets 1 solid for cube body, 1 solid for stud
-      t.blockSols = [];
-      t.studSols = [];
-      for (let i = 0; i < t.count; i++) {
-        t.blockSols.push(HL.solid(svg));
-        t.studSols.push(HL.solid(svg));
+    // 5 physical blocks total.
+    // Blocks 0, 1, 2 belong initially to Tower A.
+    // Blocks 3, 4 belong initially to Tower B.
+    // Each block has spring (x, y, z) position
+    const blocks = [];
+    for (let i = 0; i < TOTAL_BLOCKS; i++) {
+      const isInitialA = i < 3;
+      const targetTower = isInitialA ? -20 : 20;
+      const targetStackIdx = isInitialA ? i : (i - 3);
+      const targetZ = 3 + targetStackIdx * blockH;
+
+      const blockSol = HL.solid(svg);
+      const studSol = HL.solid(svg);
+
+      // Dash socket rim when airborne
+      const socketRimEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
+
+      blocks.push({
+        idx: i,
+        // Springs for smooth flight in X and Z
+        spX: HL.spring(targetTower, { k: 180, c: 16 }),
+        spZ: HL.spring(targetZ, { k: 220, c: 17 }),
+        blockSol,
+        studSol,
+        socketRimEl
+      });
+    }
+
+    function syncTargets() {
+      // Tower A gets blocks 0 .. countA - 1
+      for (let i = 0; i < countA; i++) {
+        const b = blocks[i];
+        b.spX.t = -20;
+        b.spZ.t = 3 + i * blockH;
       }
-
-      // Detach socket visuals for top block
-      // 1. Socket rim at bottom face
-      t.socketRimEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
-      // 2. Socket cavity ceiling inside block
-      t.socketDepthEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
-      // 3. Vertical alignment axis guide connecting lower stud to upper socket
-      t.alignGuideEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
-    });
+      // Tower B gets blocks countA .. TOTAL_BLOCKS - 1
+      let stackB = 0;
+      for (let i = countA; i < TOTAL_BLOCKS; i++) {
+        const b = blocks[i];
+        b.spX.t = 20;
+        b.spZ.t = 3 + stackB * blockH;
+        stackB++;
+      }
+      reg.wake();
+    }
 
     function draw() {
-      towers.forEach(t => {
-        const liftZ = t.lift.x; // Detach elevation in Z
-        const isDetached = liftZ > 0.5;
+      blocks.forEach(b => {
+        const curX = b.spX.x;
+        const curZ = b.spZ.x;
 
-        // Base stud on board at (t.x, 0, z = 3)
-        const [baseStudO, baseStudI] = HL.rings(t.x - 3.5, -3.5, t.x + 3.5, 3.5, 3.5, 0.6);
-        if (t.count === 1 && isDetached) {
-          HL.put(t.baseStudSol, HL.prism(P, front, baseStudO, baseStudI, 3, 5.5));
-        } else {
-          HL.put(t.baseStudSol, { sil: "", crease: "" });
-        }
+        // Block cube prism (17 x 17 footprint, height 12)
+        const [bO, bI] = HL.rings(curX - 8.5, -8.5, curX + 8.5, 8.5, 2, 1);
+        HL.put(b.blockSol, HL.prism(P, front, bO, bI, curZ, curZ + blockH));
 
-        // Render lower blocks (0 to count - 2)
-        for (let i = 0; i < t.count - 1; i++) {
-          const z0 = 3 + i * blockH;
-          const z1 = z0 + blockH;
+        // Interlocking stud on top face
+        const [sO, sI] = HL.rings(curX - 3.5, -3.5, curX + 3.5, 3.5, 3.5, 0.6);
+        HL.put(b.studSol, HL.prism(P, front, sO, sI, curZ + blockH, curZ + blockH + 2.5));
 
-          // Block cube body (Strictly constant height blockH = 13, no volume squash)
-          const [bO, bI] = HL.rings(t.x - 9, -9, t.x + 9, 9, 2, 1);
-          HL.put(t.blockSols[i], HL.prism(P, front, bO, bI, z0, z1));
-
-          // Connecting stud on block i:
-          if (i === t.count - 2) {
-            // Block directly beneath the detached top block:
-            // Stud is revealed when top block lifts up
-            if (isDetached) {
-              const [sO, sI] = HL.rings(t.x - 3.5, -3.5, t.x + 3.5, 3.5, 3.5, 0.6);
-              HL.put(t.studSols[i], HL.prism(P, front, sO, sI, z1, z1 + 2.5));
-            } else {
-              HL.put(t.studSols[i], { sil: "", crease: "" });
-            }
-          } else {
-            // Hidden inside the block above
-            HL.put(t.studSols[i], { sil: "", crease: "" });
-          }
-        }
-
-        // Render Top Block (index: count - 1)
-        const topIdx = t.count - 1;
-        const topBaseZ = 3 + topIdx * blockH + liftZ;
-        const topRoofZ = topBaseZ + blockH;
-
-        // Top block cube body (Strictly blockH = 13)
-        const [topO, topI] = HL.rings(t.x - 9, -9, t.x + 9, 9, 2, 1);
-        HL.put(t.blockSols[topIdx], HL.prism(P, front, topO, topI, topBaseZ, topRoofZ));
-
-        // Top stud of top block
-        const [tsO, tsI] = HL.rings(t.x - 3.5, -3.5, t.x + 3.5, 3.5, 3.5, 0.6);
-        HL.put(t.studSols[topIdx], HL.prism(P, front, tsO, tsI, topRoofZ, topRoofZ + 2.5));
-
-        // Internal socket hole (lỗ cắm âm) at the bottom face of detached top block
-        if (isDetached) {
-          // Socket opening rim at bottom face (z = topBaseZ)
+        // Socket dashed rim at bottom if airborne
+        const isAirborne = Math.abs(curX - (-20)) > 2 && Math.abs(curX - 20) > 2;
+        if (isAirborne) {
           const rimPts = [];
-          for (let k = 0; k <= 28; k++) {
-            const a = (k / 28) * Math.PI * 2;
-            rimPts.push(P(t.x + 3.6 * Math.cos(a), 3.6 * Math.sin(a), topBaseZ));
+          for (let k = 0; k <= 24; k++) {
+            const a = (k / 24) * Math.PI * 2;
+            rimPts.push(P(curX + 3.6 * Math.cos(a), 3.6 * Math.sin(a), curZ));
           }
-          t.socketRimEl.style.display = "";
-          t.socketRimEl.setAttribute("d", HL.poly(rimPts));
-
-          // Socket depth ceiling inside block (z = topBaseZ + 2.5)
-          const ceilPts = [];
-          for (let k = 0; k <= 28; k++) {
-            const a = (k / 28) * Math.PI * 2;
-            ceilPts.push(P(t.x + 3.6 * Math.cos(a), 3.6 * Math.sin(a), topBaseZ + 2.5));
-          }
-          t.socketDepthEl.style.display = "";
-          t.socketDepthEl.setAttribute("d", HL.poly(ceilPts));
-
-          // Vertical alignment axis between lower stud and upper socket
-          const lowerStudPeakZ = t.count === 1 ? 5.5 : (3 + (t.count - 1) * blockH + 2.5);
-          t.alignGuideEl.style.display = "";
-          t.alignGuideEl.setAttribute(
-            "d",
-            HL.seg(P(t.x, 0, lowerStudPeakZ), P(t.x, 0, topBaseZ))
-          );
+          b.socketRimEl.style.display = "";
+          b.socketRimEl.setAttribute("d", HL.poly(rimPts));
         } else {
-          t.socketRimEl.style.display = "none";
-          t.socketDepthEl.style.display = "none";
-          t.alignGuideEl.style.display = "none";
+          b.socketRimEl.style.display = "none";
         }
       });
 
-      const anyDetached = towers.some(t => t.lift.x > 1.5);
-      if (anyDetached) {
-        read.textContent = "1 + 3 + 5 = 9 khối (Tách rời: lộ chốt tròn & lỗ cắm âm Unifix)";
+      const countB = TOTAL_BLOCKS - countA;
+      if (countA === 5) {
+        read.textContent = `Đã ghép trọn vẹn: Tháp A có 5 khối (3 + 2 = 5) · Tháp B trống!`;
+      } else if (countA === 0) {
+        read.textContent = `Chuyển hết sang tháp B: 0 + 5 = 5 khối · Tháp A trống!`;
       } else {
-        read.textContent = "1 + 3 + 5 = 9 khối lập phương (Bảo toàn thể tích chuẩn Unifix)";
+        read.textContent = `Phép cộng ghép khối: ${countA} khối (Tháp A) + ${countB} khối (Tháp B) = 5 khối (Bảo toàn tổng số)`;
       }
     }
 
-    function aim(pt) {
+    function toggleTransfer(pt) {
       if (!pt) {
-        towers.forEach(t => (t.lift.t = 0));
-        reg.wake();
+        // Step cycle countA: 3 -> 4 -> 5 -> 2 -> 3
+        countA = countA >= TOTAL_BLOCKS ? 1 : countA + 1;
+        syncTargets();
         return;
       }
-      towers.forEach(t => {
-        const scr = P(t.x, 0, 30);
-        const dist = Math.abs(pt[0] - scr[0]);
-        // Snap-lift when hovered, spring snaps back when pointer leaves
-        t.lift.t = dist < 26 ? 16 : 0;
-      });
-      reg.wake();
+
+      // Check if clicked left or right half
+      const midScr = P(0, 0, 10)[0];
+      if (pt[0] > midScr) {
+        // Clicked right side (Tower B): transfer block from B to A
+        if (countA < TOTAL_BLOCKS) {
+          countA++;
+        } else {
+          countA = 2; // Reset to split
+        }
+      } else {
+        // Clicked left side (Tower A): transfer block from A to B
+        if (countA > 0) {
+          countA--;
+        } else {
+          countA = 3; // Reset
+        }
+      }
+      syncTargets();
     }
 
     const reg = HL.register(stage, dt => {
       let moving = false;
-      towers.forEach(t => {
-        if (HL.stepS(t.lift, dt)) moving = true;
+      blocks.forEach(b => {
+        const mx = HL.stepS(b.spX, dt);
+        const mz = HL.stepS(b.spZ, dt);
+        if (mx || mz) moving = true;
       });
       draw();
       return moving;
     });
 
     bag.add(reg.unregister);
-    bag.add(
-      HL.pointer(stage, {
-        move: aim,
-        leave: () => {
-          towers.forEach(t => (t.lift.t = 0));
-          reg.wake();
-        }
-      })
-    );
+    bag.add(HL.pointer(stage, { down: toggleTransfer }));
     bag.add(() => svg.replaceChildren());
 
+    // Initial positioning
+    syncTargets();
     draw();
 
     return {
       set(v) {
-        // Slider sets target tower snap-lift
-        const targetCount = Math.round(v);
-        towers.forEach(t => {
-          t.lift.t = t.count === targetCount ? 16 : 0;
-        });
-        reg.wake();
+        countA = HL.clamp(Math.round(v), 0, TOTAL_BLOCKS);
+        syncTargets();
       },
       destroy: bag.dispose
     };
@@ -1634,14 +1659,14 @@ const MATH_FIGURES = [
 {
   id: "math-number-line",
   title: "5. Trục Số Nhảy Ếch (Number Line Jumps)",
-  concept: "Cộng nhẩm bằng bước nhảy trục số",
-  means: "Thước đo trục số: vạch chia đánh số từ 0 đến 10. Chú ếch origami với đầu mũi tên nhảy dọc cung parabol 0 -> 4 -> 7 hướng về phía trước.",
+  concept: "Cộng nhẩm bằng bước nhảy trục số (0 + 4 = 4; 4 + 3 = 7)",
+  means: "Thước đo trục số chia vạch 0 đến 10. Click để chú ếch origami bật nhảy theo cung parabol: bước 1 nhảy +4 vạch (đến 4), bước 2 nhảy +3 vạch (đến 7).",
   rules: [1, 3, 5, 7, 8],
   range: [0, 4, 10],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-58, -14, 0], [58, 14, 38]], 200, 160);
+    HL.fit(C, [[-58, -14, 0], [58, 14, 40]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // Ruler Body (z = 0 to 4.0)
@@ -1655,12 +1680,12 @@ const MATH_FIGURES = [
       const x = -48 + i * 9.6;
       ticks.push(x);
 
-      // Tick line on ruler surface (positioned in upper half: y = -6 to y = -1.2)
+      // Tick line on ruler surface
       HL.mk("line", {
         x1: P(x, -6.0, 4.0)[0], y1: P(x, -6.0, 4.0)[1],
         x2: P(x, -1.2, 4.0)[0], y2: P(x, -1.2, 4.0)[1],
         stroke: "#232327",
-        "stroke-width": (i === 0 || i === 4 || i === 7 ? 1.4 : 1.0)
+        "stroke-width": (i === 0 || i === 4 || i === 7 ? 1.5 : 1.0)
       }, svg);
 
       // Number Label 0, 1, 2, ..., 10 at lower half of ruler face
@@ -1685,12 +1710,12 @@ const MATH_FIGURES = [
       const z = 4.0 + 4 * 18 * t * (1 - t);
       arc1Pts.push(P(x, 0, z));
     }
-    HL.mk("path", {
+    const arc1Path = HL.mk("path", {
       d: HL.open(arc1Pts),
-      stroke: "#6f6f78",
+      stroke: "#232327",
       "stroke-dasharray": "3 2",
       fill: "none",
-      "stroke-width": 1.2
+      "stroke-width": 1.4
     }, svg);
 
     // Label "+4" above Arc 1 peak
@@ -1714,12 +1739,12 @@ const MATH_FIGURES = [
       const z = 4.0 + 4 * 14 * t * (1 - t);
       arc2Pts.push(P(x, 0, z));
     }
-    HL.mk("path", {
+    const arc2Path = HL.mk("path", {
       d: HL.open(arc2Pts),
-      stroke: "#6f6f78",
+      stroke: "#232327",
       "stroke-dasharray": "3 2",
       fill: "none",
-      "stroke-width": 1.2
+      "stroke-width": 1.4
     }, svg);
 
     // Label "+3" above Arc 2 peak
@@ -1735,68 +1760,81 @@ const MATH_FIGURES = [
     }, svg);
     label2.textContent = "+3";
 
-    // Contact shadow and vertical drop line on ruler
+    // Origami Frog 3D Mesh
+    const frogGroup = HL.mk("g", { id: "origami-frog" }, svg);
+    const faceEls = [];
+    for (let i = 0; i < 7; i++) {
+      const poly = HL.mk("polygon", {
+        fill: i < 2 ? "#e0e0e4" : "#ffffff",
+        stroke: "#232327",
+        "stroke-width": 1.1,
+        "stroke-linejoin": "round"
+      }, frogGroup);
+      faceEls.push(poly);
+    }
+
+    // Frog Eyes
+    const eyeDots = [
+      HL.mk("circle", { r: 1.2, fill: "#232327" }, frogGroup),
+      HL.mk("circle", { r: 1.2, fill: "#232327" }, frogGroup)
+    ];
+
+    // Contact shadow & drop line
     const shadowEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
     const dropLineEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
 
-    // Origami / Vector Frog Pointer Group
-    const frogG = HL.mk("g", {}, svg);
-    const NUM_FACES = 7;
-    const faceEls = [];
-    for (let f = 0; f < NUM_FACES; f++) {
-      faceEls.push(
-        HL.mk("polygon", {
-          fill: "#ffffff",
-          stroke: "#232327",
-          "stroke-width": "1.2",
-          "stroke-linejoin": "round"
-        }, frogG)
-      );
-    }
-    const eyeDots = [
-      HL.mk("circle", { r: 1.4, fill: "#232327" }, frogG),
-      HL.mk("circle", { r: 1.4, fill: "#232327" }, frogG)
-    ];
+    // State machine:
+    // step = 0: at tick 0
+    // step = 1: at tick 4 (after leap 1)
+    // step = 2: at tick 7 (after leap 2)
+    let curStep = initialV != null ? (initialV >= 7 ? 2 : (initialV >= 4 ? 1 : 0)) : 1;
 
-    const jumpProgress = HL.spring(0.57, { k: 110, c: 14 });
+    // Continuous parameter along the route: 0 -> 0.57 (arc 1) -> 1.0 (arc 2)
+    const stepTargetMap = [0, 0.57, 1.0];
+    const jumpProgress = HL.spring(stepTargetMap[curStep], { k: 120, c: 13 });
+
+    function setHopStep(nextStep) {
+      curStep = nextStep % 3;
+      jumpProgress.t = stepTargetMap[curStep];
+      reg.wake();
+    }
 
     function draw() {
-      const t = jumpProgress.x;
-      let x, z, dz, dx;
+      const t = HL.clamp(jumpProgress.x, 0, 1);
+      let x, z, pitch;
 
       if (t <= 0.57) {
-        const subT = t / 0.57;
-        x = HL.lerp(ticks[0], ticks[4], subT);
-        z = 4.0 + 4 * 18 * subT * (1 - subT);
-        dz = 72 * (1 - 2 * subT);
-        dx = ticks[4] - ticks[0];
+        // Arc 1: 0 -> 4 (+4 jump)
+        const u = t / 0.57;
+        x = HL.lerp(ticks[0], ticks[4], u);
+        z = 4.0 + 4 * 18 * u * (1 - u);
+        const slope = (4 * 18 * (1 - 2 * u)) / (ticks[4] - ticks[0]);
+        pitch = Math.atan(slope) * 0.45;
       } else {
-        const subT = (t - 0.57) / 0.43;
-        x = HL.lerp(ticks[4], ticks[7], subT);
-        z = 4.0 + 4 * 14 * subT * (1 - subT);
-        dz = 56 * (1 - 2 * subT);
-        dx = ticks[7] - ticks[4];
+        // Arc 2: 4 -> 7 (+3 jump)
+        const u = (t - 0.57) / 0.43;
+        x = HL.lerp(ticks[4], ticks[7], u);
+        z = 4.0 + 4 * 14 * u * (1 - u);
+        const slope = (4 * 14 * (1 - 2 * u)) / (ticks[7] - ticks[4]);
+        pitch = Math.atan(slope) * 0.45;
       }
 
-      // Smooth pitch rotation along parabolic trajectory
-      const pitch = Math.atan2(dz, dx) * 0.4;
       const cosP = Math.cos(pitch);
       const sinP = Math.sin(pitch);
 
-      // Vertex transform helper (local frog space -> world -> projected screen)
       function V(lx, ly, lz) {
         const rotX = lx * cosP - lz * sinP;
         const rotZ = lx * sinP + lz * cosP;
         return P(x + rotX, ly, z + rotZ);
       }
 
-      // Key 3D points of Origami Frog (pointing forward in +X jump direction)
-      const snout = V(7.0, 0, 1.6);        // Arrowhead snout pointing along direction of jump (+X)
+      // Key 3D points of Origami Frog
+      const snout = V(7.0, 0, 1.6);
       const eyeL = V(3.2, -3.4, 4.6);
       const eyeR = V(3.2, 3.4, 4.6);
       const crown = V(3.8, 0, 4.2);
-      const spine = V(-1.0, 0, 5.6);       // Folded dorsal ridge
-      const tail = V(-6.2, 0, 1.4);        // Rear crease fold
+      const spine = V(-1.0, 0, 5.6);
+      const tail = V(-6.2, 0, 1.4);
       const flankL = V(-1.0, -5.6, 2.0);
       const flankR = V(-1.0, 5.6, 2.0);
       const kneeL = V(-3.8, -6.6, 3.4);
@@ -1804,15 +1842,14 @@ const MATH_FIGURES = [
       const footL = V(-6.6, -7.0, 0);
       const footR = V(-6.6, 7.0, 0);
 
-      // Faces ordered back to front for 2:1 axonometric projection
       const faces = [
-        [flankL, kneeL, footL],         // Left hind leg
-        [flankR, kneeR, footR],         // Right hind leg
-        [spine, flankL, tail],          // Left rear flank
-        [spine, tail, flankR],          // Right rear flank
-        [crown, eyeL, flankL, spine],   // Left dorsal facet
-        [crown, spine, flankR, eyeR],   // Right dorsal facet
-        [snout, eyeR, crown, eyeL]      // Front arrow-head snout face pointing forward
+        [flankL, kneeL, footL],
+        [flankR, kneeR, footR],
+        [spine, flankL, tail],
+        [spine, tail, flankR],
+        [crown, eyeL, flankL, spine],
+        [crown, spine, flankR, eyeR],
+        [snout, eyeR, crown, eyeL]
       ];
 
       faces.forEach((pts, i) => {
@@ -1820,21 +1857,20 @@ const MATH_FIGURES = [
         faceEls[i].setAttribute("points", pointsStr);
       });
 
-      // Eyes
       eyeDots[0].setAttribute("cx", HL.r2(eyeL[0]));
       eyeDots[0].setAttribute("cy", HL.r2(eyeL[1]));
       eyeDots[1].setAttribute("cx", HL.r2(eyeR[0]));
       eyeDots[1].setAttribute("cy", HL.r2(eyeR[1]));
 
-      // Contact shadow on the ruler face at z = 4.0
+      // Shadow on ruler
       const shadowPts = [];
+      const sScale = HL.clamp(1 - (z - 4) * 0.03, 0.4, 1);
       for (let k = 0; k <= 24; k++) {
         const a = (k / 24) * Math.PI * 2;
-        shadowPts.push(P(x + 5.5 * Math.cos(a), 3.8 * Math.sin(a), 4.0));
+        shadowPts.push(P(x + 5.5 * sScale * Math.cos(a), 3.8 * sScale * Math.sin(a), 4.0));
       }
       shadowEl.setAttribute("d", HL.poly(shadowPts));
 
-      // Dashed vertical drop line from frog down to contact shadow
       if (z > 5.5) {
         dropLineEl.style.display = "";
         dropLineEl.setAttribute("d", HL.seg(P(x, 0, z), P(x, 0, 4.0)));
@@ -1842,17 +1878,39 @@ const MATH_FIGURES = [
         dropLineEl.style.display = "none";
       }
 
-      const curVal = Math.round(t <= 0.57 ? (t / 0.57) * 4 : 4 + ((t - 0.57) / 0.43) * 3);
-      read.textContent = "Bước nhảy ếch: 0 + 4 = 4; 4 + 3 = 7 (Vị trí: " + curVal + ")";
+      if (curStep === 0) {
+        read.textContent = "Vị trí 0: Chú ếch chuẩn bị nhảy! (Click để ếch nhảy bước 1)";
+        arc1Path.setAttribute("stroke", "#6f6f78");
+        arc2Path.setAttribute("stroke", "#6f6f78");
+      } else if (curStep === 1) {
+        read.textContent = "Bước 1: 0 + 4 = 4 (Ếch nhảy qua 4 vạch số · Click để nhảy tiếp)";
+        arc1Path.setAttribute("stroke", "#232327");
+        arc2Path.setAttribute("stroke", "#6f6f78");
+      } else {
+        read.textContent = "Bước 2: 4 + 3 = 7! Tổng cộng: 0 + 4 + 3 = 7 (Click để quay lại vạch 0)";
+        arc1Path.setAttribute("stroke", "#232327");
+        arc2Path.setAttribute("stroke", "#232327");
+      }
     }
 
-    function aim(pt) {
-      if (!pt) return;
-      const scr0 = P(ticks[0], 0, 4.0)[0];
-      const scr7 = P(ticks[7], 0, 4.0)[0];
-      const t = HL.clamp((pt[0] - scr0) / (scr7 - scr0), 0, 1);
-      jumpProgress.t = t;
-      reg.wake();
+    function handleClick(pt) {
+      if (!pt) {
+        setHopStep(curStep + 1);
+        return;
+      }
+      // Check if clicked near tick 0, 4, or 7
+      const s0 = P(ticks[0], 0, 4)[0];
+      const s4 = P(ticks[4], 0, 4)[0];
+      const s7 = P(ticks[7], 0, 4)[0];
+
+      const d0 = Math.abs(pt[0] - s0);
+      const d4 = Math.abs(pt[0] - s4);
+      const d7 = Math.abs(pt[0] - s7);
+
+      if (d0 < 20) setHopStep(0);
+      else if (d4 < 20) setHopStep(1);
+      else if (d7 < 20) setHopStep(2);
+      else setHopStep(curStep + 1);
     }
 
     const reg = HL.register(stage, dt => {
@@ -1862,7 +1920,7 @@ const MATH_FIGURES = [
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => {} }));
+    bag.add(HL.pointer(stage, { down: handleClick }));
     bag.add(() => svg.replaceChildren());
 
     // Initialize
@@ -1870,246 +1928,264 @@ const MATH_FIGURES = [
 
     return {
       set(v) {
-        jumpProgress.t = HL.clamp(v / 7, 0, 1);
-        reg.wake();
+        if (v <= 2) setHopStep(0);
+        else if (v <= 5) setHopStep(1);
+        else setHopStep(2);
       },
       destroy: bag.dispose
     };
   }
 },
 {
-    id: "math-dice",
-    title: "6. Cặp Xúc Xắc (Math Dice Pips)",
-    concept: "Phép cộng trực quan bằng chấm đố",
-    means: "Hai khối xúc xắc lập phương: mặt trên hiển thị 3 chấm và 4 chấm; di chuột để xúc xắc nghiêng xoay theo góc nhìn 3D.",
-    rules: [1, 2, 4, 6, 9],
-    range: [0, 3.5, 7],
-    mount({ stage, svg, read }, initialV) {
-      const bag = HL.disposer();
-      const C = HL.Cam(45, 0.5, 1.85);
-      HL.fit(C, [[-48, -22, 0], [48, 22, 38]], 200, 160);
-      const P = HL.proj(C), front = HL.facing(C);
+  id: "math-dice",
+  title: "6. Cặp Xúc Xắc (Math Dice Pips)",
+  concept: "Phép cộng & tung xúc xắc trực quan",
+  means: "Hai khối xúc xắc trên thảm nỉ. Click để tung xúc xắc nảy xoay 3D và rơi ngẫu nhiên các cặp phép cộng lớp 1 (3+4=7, 2+5=7, 5+5=10, 4+2=6).",
+  rules: [1, 2, 4, 6, 9],
+  range: [0, 0, 5],
+  mount({ stage, svg, read }, initialV) {
+    const bag = HL.disposer();
+    const C = HL.Cam(45, 0.5, 1.85);
+    HL.fit(C, [[-48, -22, 0], [48, 22, 42]], 200, 160);
+    const P = HL.proj(C), front = HL.facing(C);
 
-      // Felt Gaming Mat Base
-      const [matO, matI] = HL.rings(-44, -18, 44, 18, 4, 1.5);
-      const matSol = HL.solid(svg);
-      HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2));
+    // Felt Gaming Mat Base
+    const [matO, matI] = HL.rings(-44, -18, 44, 18, 4, 1.5);
+    const matSol = HL.solid(svg);
+    HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2));
 
-      // Dice Groups
-      const d1Group = HL.mk("g", { id: "die-1" }, svg);
-      const d2Group = HL.mk("g", { id: "die-2" }, svg);
+    // Dice Groups
+    const d1Group = HL.mk("g", { id: "die-1" }, svg);
+    const d2Group = HL.mk("g", { id: "die-2" }, svg);
 
-      // Faces for Die 1: Front-Right (+X), Front-Left (+Y), Top (+Z)
-      const d1FaceX = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
-      const d1FaceY = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
-      const d1FaceZ = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
+    // Faces for Die 1
+    const d1FaceX = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
+    const d1FaceY = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
+    const d1FaceZ = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d1Group);
 
-      // Faces for Die 2: Front-Right (+X), Front-Left (+Y), Top (+Z)
-      const d2FaceX = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
-      const d2FaceY = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
-      const d2FaceZ = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
+    // Faces for Die 2
+    const d2FaceX = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
+    const d2FaceY = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
+    const d2FaceZ = HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;" }, d2Group);
 
-      // Pips: Die 1 has Top(3), Left(1), Right(2) -> 6 pips
-      const d1Pips = [];
-      for (let i = 0; i < 6; i++) {
-        d1Pips.push(HL.mk("path", { style: "fill: #232327; stroke: none;" }, d1Group));
-      }
-
-      // Pips: Die 2 has Top(4), Left(5), Right(6) -> 15 pips
-      const d2Pips = [];
-      for (let i = 0; i < 15; i++) {
-        d2Pips.push(HL.mk("path", { style: "fill: #232327; stroke: none;" }, d2Group));
-      }
-
-      // 3D Springs for tilt/wobble and lift
-      const wobbleX1 = HL.spring(0, { k: 120, c: 14 });
-      const wobbleY1 = HL.spring(0, { k: 120, c: 14 });
-      const lift1 = HL.spring(0, { k: 130, c: 15 });
-
-      const wobbleX2 = HL.spring(0, { k: 120, c: 14 });
-      const wobbleY2 = HL.spring(0, { k: 120, c: 14 });
-      const lift2 = HL.spring(0, { k: 130, c: 15 });
-
-      // 3D Rotation helper around cube center
-      function rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz) {
-        const rx = HL.rad(rxDeg);
-        const ry = HL.rad(ryDeg);
-        // Roll around Y
-        const x1 = lx * Math.cos(ry) + lz * Math.sin(ry);
-        const y1 = ly;
-        const z1 = -lx * Math.sin(ry) + lz * Math.cos(ry);
-        // Pitch around X
-        const x2 = x1;
-        const y2 = y1 * Math.cos(rx) - z1 * Math.sin(rx);
-        const z2 = y1 * Math.sin(rx) + z1 * Math.cos(rx);
-        return [cx + x2, cy + y2, cz + z2];
-      }
-
-      // Project a 3D circular pip in local plane coordinates to screen path
-      // normalAxis: 'z' (top), 'y' (front-left), 'x' (front-right)
-      function projectPip(cu, cv, r, normalAxis, rxDeg, ryDeg, cx, cy, cz) {
-        const N = 12;
-        const pts = [];
-        for (let i = 0; i < N; i++) {
-          const theta = (i / N) * Math.PI * 2;
-          const u = cu + r * Math.cos(theta);
-          const v = cv + r * Math.sin(theta);
-          let lx, ly, lz;
-          if (normalAxis === 'z') {
-            lx = u; ly = v; lz = 10.05;
-          } else if (normalAxis === 'y') {
-            lx = u; ly = 10.05; lz = v;
-          } else { // 'x'
-            lx = 10.05; ly = u; lz = v;
-          }
-          const wPt = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
-          pts.push(P(...wPt));
-        }
-        return HL.poly(pts);
-      }
-
-      function drawDie(cx, baseZ, rxDeg, ryDeg, faceX, faceY, faceZ, pips, pipConfig) {
-        const s = 10;
-        const cz = baseZ + s;
-
-        // 8 Corners of the rotated cube
-        const c_000 = rotatePoint(-s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
-        const c_100 = rotatePoint( s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
-        const c_010 = rotatePoint(-s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-        const c_110 = rotatePoint( s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-        const c_001 = rotatePoint(-s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-        const c_101 = rotatePoint( s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-        const c_011 = rotatePoint(-s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-        const c_111 = rotatePoint( s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-
-        // 1. Front-Right face (+X): c_100 -> c_110 -> c_111 -> c_101
-        const ptsX = [P(...c_100), P(...c_110), P(...c_111), P(...c_101)];
-        faceX.setAttribute("points", ptsX.map(p => p.map(HL.r2).join(",")).join(" "));
-
-        // 2. Front-Left face (+Y): c_010 -> c_110 -> c_111 -> c_011
-        const ptsY = [P(...c_010), P(...c_110), P(...c_111), P(...c_011)];
-        faceY.setAttribute("points", ptsY.map(p => p.map(HL.r2).join(",")).join(" "));
-
-        // 3. Top face (+Z): c_001 -> c_101 -> c_111 -> c_011
-        const ptsZ = [P(...c_001), P(...c_101), P(...c_111), P(...c_011)];
-        faceZ.setAttribute("points", ptsZ.map(p => p.map(HL.r2).join(",")).join(" "));
-
-        // Render each pip projected onto its respective tilted face
-        let pipIdx = 0;
-        pipConfig.forEach(cfg => {
-          const pathStr = projectPip(cfg.u, cfg.v, cfg.r, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
-          pips[pipIdx].setAttribute("d", pathStr);
-          pipIdx++;
-        });
-      }
-
-      // Standard Pip Positions on a 20x20 face
-      const d = 5.2;
-      const rStandard = 1.55;
-      const rCenter = 1.75;
-
-      // Die 1: Top=3 (axis z), Left=1 (axis y), Right=2 (axis x)
-      const d1Config = [
-        // Right face (+X): 2 pips
-        { axis: 'x', u: -d, v:  d, r: rStandard },
-        { axis: 'x', u:  d, v: -d, r: rStandard },
-        // Left face (+Y): 1 pip
-        { axis: 'y', u:  0, v:  0, r: rCenter },
-        // Top face (+Z): 3 pips
-        { axis: 'z', u: -d, v: -d, r: rStandard },
-        { axis: 'z', u:  0, v:  0, r: rCenter },
-        { axis: 'z', u:  d, v:  d, r: rStandard }
-      ];
-
-      // Die 2: Top=4 (axis z), Left=5 (axis y), Right=6 (axis x)
-      const d2Config = [
-        // Right face (+X): 6 pips
-        { axis: 'x', u: -d, v: -d, r: rStandard },
-        { axis: 'x', u:  d, v: -d, r: rStandard },
-        { axis: 'x', u: -d, v:  0, r: rStandard },
-        { axis: 'x', u:  d, v:  0, r: rStandard },
-        { axis: 'x', u: -d, v:  d, r: rStandard },
-        { axis: 'x', u:  d, v:  d, r: rStandard },
-        // Left face (+Y): 5 pips
-        { axis: 'y', u: -d, v: -d, r: rStandard },
-        { axis: 'y', u:  d, v: -d, r: rStandard },
-        { axis: 'y', u:  0, v:  0, r: rCenter },
-        { axis: 'y', u: -d, v:  d, r: rStandard },
-        { axis: 'y', u:  d, v:  d, r: rStandard },
-        // Top face (+Z): 4 pips
-        { axis: 'z', u: -d, v: -d, r: rStandard },
-        { axis: 'z', u:  d, v: -d, r: rStandard },
-        { axis: 'z', u: -d, v:  d, r: rStandard },
-        { axis: 'z', u:  d, v:  d, r: rStandard }
-      ];
-
-      function draw() {
-        const baseZ1 = 2 + lift1.x;
-        const baseZ2 = 2 + lift2.x;
-
-        drawDie(-22, baseZ1, wobbleX1.x, wobbleY1.x, d1FaceX, d1FaceY, d1FaceZ, d1Pips, d1Config);
-        drawDie( 22, baseZ2, wobbleX2.x, wobbleY2.x, d2FaceX, d2FaceY, d2FaceZ, d2Pips, d2Config);
-
-        read.textContent = "Xúc xắc 3D: Mặt trên 3 + 4 = 7 (Tổng 2 mặt đối diện = 7)";
-      }
-
-      function aim(pt) {
-        if (!pt) {
-          wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
-          wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
-          reg.wake();
-          return;
-        }
-
-        const p1Scr = P(-22, 0, 12);
-        const p2Scr = P( 22, 0, 12);
-
-        const dist1 = Math.hypot(pt[0] - p1Scr[0], pt[1] - p1Scr[1]);
-        const dist2 = Math.hypot(pt[0] - p2Scr[0], pt[1] - p2Scr[1]);
-
-        if (dist1 < 45) {
-          wobbleX1.t = HL.clamp((pt[1] - p1Scr[1]) * 0.35, -8, 8);
-          wobbleY1.t = HL.clamp(-(pt[0] - p1Scr[0]) * 0.35, -8, 8);
-          lift1.t = 2.5;
-        } else {
-          wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
-        }
-
-        if (dist2 < 45) {
-          wobbleX2.t = HL.clamp((pt[1] - p2Scr[1]) * 0.35, -8, 8);
-          wobbleY2.t = HL.clamp(-(pt[0] - p2Scr[0]) * 0.35, -8, 8);
-          lift2.t = 2.5;
-        } else {
-          wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
-        }
-
-        reg.wake();
-      }
-
-      const reg = HL.register(stage, dt => {
-        const m1 = HL.stepS(wobbleX1, dt) || HL.stepS(wobbleY1, dt) || HL.stepS(lift1, dt);
-        const m2 = HL.stepS(wobbleX2, dt) || HL.stepS(wobbleY2, dt) || HL.stepS(lift2, dt);
-        draw();
-        return m1 || m2;
-      });
-      bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
-      bag.add(() => svg.replaceChildren());
-
-      draw();
-      return {
-        set(v) {
-          const t = (v - 3.5) / 3.5;
-          wobbleY1.t = t * 7;
-          wobbleY2.t = -t * 7;
-          lift1.t = Math.abs(t) * 2;
-          lift2.t = Math.abs(t) * 2;
-          reg.wake();
-        },
-        destroy: bag.dispose
-      };
+    // Dynamic Pip Holders (up to 21 pips per die)
+    const d1Pips = [];
+    for (let i = 0; i < 21; i++) {
+      d1Pips.push(HL.mk("path", { style: "fill: #232327; stroke: none;" }, d1Group));
     }
-  },
+    const d2Pips = [];
+    for (let i = 0; i < 21; i++) {
+      d2Pips.push(HL.mk("path", { style: "fill: #232327; stroke: none;" }, d2Group));
+    }
+
+    // 3D Springs for toss and bounce
+    const wobbleX1 = HL.spring(0, { k: 140, c: 14 });
+    const wobbleY1 = HL.spring(0, { k: 140, c: 14 });
+    const lift1 = HL.spring(0, { k: 160, c: 13 });
+
+    const wobbleX2 = HL.spring(0, { k: 140, c: 14 });
+    const wobbleY2 = HL.spring(0, { k: 140, c: 14 });
+    const lift2 = HL.spring(0, { k: 160, c: 13 });
+
+    // Presets of educational Grade 1 dice rolls
+    const ROLLS = [
+      { val1: 3, val2: 4, label: "3 + 4 = 7" },
+      { val1: 2, val2: 5, label: "2 + 5 = 7" },
+      { val1: 5, val2: 5, label: "5 + 5 = 10 (Đôi năm tròn mười!)" },
+      { val1: 4, val2: 2, label: "4 + 2 = 6" },
+      { val1: 1, val2: 6, label: "1 + 6 = 7" },
+      { val1: 6, val2: 3, label: "6 + 3 = 9" }
+    ];
+
+    let rollIdx = initialV != null ? HL.clamp(Math.round(initialV), 0, ROLLS.length - 1) : 0;
+
+    // Standard Pip Positions on a 20x20 face
+    const d = 5.2;
+    const rStandard = 1.55;
+    const rCenter = 1.75;
+
+    function buildPipsForFace(axis, val) {
+      const pips = [];
+      if (val === 1) {
+        pips.push({ axis, u: 0, v: 0, r: rCenter });
+      } else if (val === 2) {
+        pips.push({ axis, u: -d, v: -d, r: rStandard });
+        pips.push({ axis, u:  d, v:  d, r: rStandard });
+      } else if (val === 3) {
+        pips.push({ axis, u: -d, v: -d, r: rStandard });
+        pips.push({ axis, u:  0, v:  0, r: rCenter });
+        pips.push({ axis, u:  d, v:  d, r: rStandard });
+      } else if (val === 4) {
+        pips.push({ axis, u: -d, v: -d, r: rStandard });
+        pips.push({ axis, u:  d, v: -d, r: rStandard });
+        pips.push({ axis, u: -d, v:  d, r: rStandard });
+        pips.push({ axis, u:  d, v:  d, r: rStandard });
+      } else if (val === 5) {
+        pips.push({ axis, u: -d, v: -d, r: rStandard });
+        pips.push({ axis, u:  d, v: -d, r: rStandard });
+        pips.push({ axis, u:  0, v:  0, r: rCenter });
+        pips.push({ axis, u: -d, v:  d, r: rStandard });
+        pips.push({ axis, u:  d, v:  d, r: rStandard });
+      } else if (val === 6) {
+        pips.push({ axis, u: -d, v: -d, r: rStandard });
+        pips.push({ axis, u:  d, v: -d, r: rStandard });
+        pips.push({ axis, u: -d, v:  0, r: rStandard });
+        pips.push({ axis, u:  d, v:  0, r: rStandard });
+        pips.push({ axis, u: -d, v:  d, r: rStandard });
+        pips.push({ axis, u:  d, v:  d, r: rStandard });
+      }
+      return pips;
+    }
+
+    function getDieConfig(topVal) {
+      // Opposite faces sum to 7: top + bottom = 7
+      // If top is 1: bottom 6, left 2, right 3
+      // If top is 3: bottom 4, left 1, right 2
+      // If top is 4: bottom 3, left 5, right 6
+      let leftVal = 1, rightVal = 2;
+      if (topVal === 1) { leftVal = 2; rightVal = 3; }
+      else if (topVal === 2) { leftVal = 1; rightVal = 4; }
+      else if (topVal === 3) { leftVal = 1; rightVal = 2; }
+      else if (topVal === 4) { leftVal = 5; rightVal = 6; }
+      else if (topVal === 5) { leftVal = 3; rightVal = 1; }
+      else if (topVal === 6) { leftVal = 4; rightVal = 2; }
+
+      return [
+        ...buildPipsForFace('x', rightVal),
+        ...buildPipsForFace('y', leftVal),
+        ...buildPipsForFace('z', topVal)
+      ];
+    }
+
+    function rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz) {
+      const rx = HL.rad(rxDeg);
+      const ry = HL.rad(ryDeg);
+      const x1 = lx * Math.cos(ry) + lz * Math.sin(ry);
+      const y1 = ly;
+      const z1 = -lx * Math.sin(ry) + lz * Math.cos(ry);
+      const x2 = x1;
+      const y2 = y1 * Math.cos(rx) - z1 * Math.sin(rx);
+      const z2 = y1 * Math.sin(rx) + z1 * Math.cos(rx);
+      return [cx + x2, cy + y2, cz + z2];
+    }
+
+    function projectPip(cu, cv, r, normalAxis, rxDeg, ryDeg, cx, cy, cz) {
+      const N = 12;
+      const pts = [];
+      for (let i = 0; i < N; i++) {
+        const theta = (i / N) * Math.PI * 2;
+        const u = cu + r * Math.cos(theta);
+        const v = cv + r * Math.sin(theta);
+        let lx, ly, lz;
+        if (normalAxis === 'z') {
+          lx = u; ly = v; lz = 10.05;
+        } else if (normalAxis === 'y') {
+          lx = u; ly = 10.05; lz = v;
+        } else {
+          lx = 10.05; ly = u; lz = v;
+        }
+        const wPt = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
+        pts.push(P(...wPt));
+      }
+      return HL.poly(pts);
+    }
+
+    function drawDie(cx, baseZ, rxDeg, ryDeg, faceX, faceY, faceZ, pips, pipConfig) {
+      const s = 10;
+      const cz = baseZ + s;
+
+      const c_000 = rotatePoint(-s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
+      const c_100 = rotatePoint( s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
+      const c_010 = rotatePoint(-s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
+      const c_110 = rotatePoint( s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
+      const c_001 = rotatePoint(-s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
+      const c_101 = rotatePoint( s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
+      const c_011 = rotatePoint(-s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
+      const c_111 = rotatePoint( s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
+
+      const ptsX = [P(...c_100), P(...c_110), P(...c_111), P(...c_101)];
+      faceX.setAttribute("points", ptsX.map(p => p.map(HL.r2).join(",")).join(" "));
+
+      const ptsY = [P(...c_010), P(...c_110), P(...c_111), P(...c_011)];
+      faceY.setAttribute("points", ptsY.map(p => p.map(HL.r2).join(",")).join(" "));
+
+      const ptsZ = [P(...c_001), P(...c_101), P(...c_111), P(...c_011)];
+      faceZ.setAttribute("points", ptsZ.map(p => p.map(HL.r2).join(",")).join(" "));
+
+      for (let i = 0; i < pips.length; i++) {
+        if (i < pipConfig.length) {
+          const cfg = pipConfig[i];
+          const pathStr = projectPip(cfg.u, cfg.v, cfg.r, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
+          pips[i].style.display = "";
+          pips[i].setAttribute("d", pathStr);
+        } else {
+          pips[i].style.display = "none";
+        }
+      }
+    }
+
+    function rollDice() {
+      rollIdx = (rollIdx + 1) % ROLLS.length;
+
+      // Toss into air with rotational tumble
+      lift1.x = 22;
+      lift1.t = 0;
+      wobbleX1.x = 28;
+      wobbleY1.x = -24;
+      wobbleX1.t = 0;
+      wobbleY1.t = 0;
+
+      lift2.x = 24;
+      lift2.t = 0;
+      wobbleX2.x = -24;
+      wobbleY2.x = 28;
+      wobbleX2.t = 0;
+      wobbleY2.t = 0;
+
+      reg.wake();
+    }
+
+    function draw() {
+      const cur = ROLLS[rollIdx];
+      const cfg1 = getDieConfig(cur.val1);
+      const cfg2 = getDieConfig(cur.val2);
+
+      const baseZ1 = 2 + Math.max(0, lift1.x);
+      const baseZ2 = 2 + Math.max(0, lift2.x);
+
+      drawDie(-22, baseZ1, wobbleX1.x, wobbleY1.x, d1FaceX, d1FaceY, d1FaceZ, d1Pips, cfg1);
+      drawDie( 22, baseZ2, wobbleX2.x, wobbleY2.x, d2FaceX, d2FaceY, d2FaceZ, d2Pips, cfg2);
+
+      const isAirborne = lift1.x > 1.5 || lift2.x > 1.5;
+      if (isAirborne) {
+        read.textContent = "Đang tung xúc xắc trong không gian 3D...";
+      } else {
+        read.textContent = `Tung xúc xắc: ${cur.val1} (trái) + ${cur.val2} (phải) = ${cur.val1 + cur.val2} (Click để tung lượt mới!)`;
+      }
+    }
+
+    const reg = HL.register(stage, dt => {
+      const m1 = HL.stepS(wobbleX1, dt) || HL.stepS(wobbleY1, dt) || HL.stepS(lift1, dt);
+      const m2 = HL.stepS(wobbleX2, dt) || HL.stepS(wobbleY2, dt) || HL.stepS(lift2, dt);
+      draw();
+      return m1 || m2;
+    });
+
+    bag.add(reg.unregister);
+    bag.add(HL.pointer(stage, { down: rollDice }));
+    bag.add(() => svg.replaceChildren());
+
+    draw();
+
+    return {
+      set(v) {
+        rollIdx = HL.clamp(Math.round(v), 0, ROLLS.length - 1);
+        rollDice();
+      },
+      destroy: bag.dispose
+    };
+  }
+},
 {
     id: "math-clock",
     title: "7. Mặt Đồng Hồ Học Giờ (Teaching Clock)",
@@ -2302,13 +2378,20 @@ const MATH_FIGURES = [
         reg.wake();
       }
 
+      function handleClick(pt) {
+        // Advance clock by 1 full hour (2*PI on minute hand)
+        targetRot += Math.PI * 2;
+        rotSpring.t = targetRot;
+        reg.wake();
+      }
+
       const reg = HL.register(stage, dt => {
         const moving = HL.stepS(rotSpring, dt);
         draw();
         return moving;
       });
       bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+      bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => aim(null) }));
       bag.add(() => svg.replaceChildren());
 
       draw();
@@ -2324,130 +2407,161 @@ const MATH_FIGURES = [
     }
   },
 {
-    id: "math-shapes",
-    title: "8. Khối Hình Không Gian (3D Geometric Solids)",
-    concept: "Nhận biết khối lập phương, khối trụ, khối chóp",
-    means: "Ba khối hình học cơ bản: Khối lập phương, Khối trụ và Khối nón; di chuột nâng từng khối lên để lộ hình phẳng đáy 2D.",
-    rules: [1, 2, 4, 7, 9],
-    range: [0, 10, 20],
-    mount({ stage, svg, read }, initialV) {
-      const bag = HL.disposer();
-      const C = HL.Cam(45, 0.5, 1.8);
-      HL.fit(C, [[-55, -20, 0], [55, 20, 52]], 200, 178);
-      const P = HL.proj(C), front = HL.facing(C);
+  id: "math-shapes",
+  title: "8. Khối Hình Không Gian (3D Geometric Solids)",
+  concept: "Nhận biết khối lập phương, khối trụ, khối nón & vết đáy 2D",
+  means: "Ba khối hình học cơ bản: Khối lập phương, Khối trụ và Khối nón trên đế bàn. Click vào từng khối để nhấc bổng lên, làm lộ rõ vết in đáy hình học 2D (hình vuông, hình tròn).",
+  rules: [1, 2, 4, 7, 9],
+  range: [1, 2, 3],
+  mount({ stage, svg, read }, initialV) {
+    const bag = HL.disposer();
+    const C = HL.Cam(45, 0.5, 1.8);
+    HL.fit(C, [[-55, -20, 0], [55, 20, 52]], 200, 178);
+    const P = HL.proj(C), front = HL.facing(C);
 
-      const [gridO, gridI] = HL.rings(-52, -18, 52, 18, 2, 1);
-      const gridSol = HL.solid(svg);
-      HL.put(gridSol, HL.prism(P, front, gridO, gridI, 0, 2));
+    const [gridO, gridI] = HL.rings(-52, -18, 52, 18, 2, 1);
+    const gridSol = HL.solid(svg);
+    HL.put(gridSol, HL.prism(P, front, gridO, gridI, 0, 2));
 
-      // 2D Footprints on base (z = 2.2)
-      // Cube footprint: Square 24x24
-      const sqPts = [P(-48, -12, 2.2), P(-24, -12, 2.2), P(-24, 12, 2.2), P(-48, 12, 2.2)];
-      HL.mk("polygon", { points: sqPts.map(p => p.join(",")).join(" "), stroke: "#6f6f78", "stroke-dasharray": "2 2", fill: "none" }, svg);
+    // 2D Footprints on base (z = 2.2)
+    // Cube footprint: Square 24x24
+    const sqPts = [P(-48, -12, 2.2), P(-24, -12, 2.2), P(-24, 12, 2.2), P(-48, 12, 2.2)];
+    const sqFoot = HL.mk("polygon", { points: sqPts.map(p => p.join(",")).join(" "), stroke: "#232327", "stroke-width": 1.4, fill: "#e0e0e4" }, svg);
 
-      // Cylinder footprint: Circle R=12 (center 0, 0)
-      const circPts = [];
-      for (let a = 0; a <= 48; a++) {
-        const rad = (a / 48) * Math.PI * 2;
-        circPts.push(P(Math.cos(rad) * 12, Math.sin(rad) * 12, 2.2));
-      }
-      HL.mk("polygon", { points: circPts.map(p => p.join(",")).join(" "), stroke: "#6f6f78", "stroke-dasharray": "2 2", fill: "none" }, svg);
-
-      // Cone footprint: Circle R=12 (center 36, 0)
-      const coneFootPts = [];
-      for (let a = 0; a <= 48; a++) {
-        const rad = (a / 48) * Math.PI * 2;
-        coneFootPts.push(P(36 + Math.cos(rad) * 12, Math.sin(rad) * 12, 2.2));
-      }
-      HL.mk("polygon", { points: coneFootPts.map(p => p.join(",")).join(" "), stroke: "#6f6f78", "stroke-dasharray": "2 2", fill: "none" }, svg);
-
-      // Drop guides when lifted
-      const dropGuides = HL.mk("path", { class: "nf dash lo" }, svg);
-
-      const cubeSol = HL.solid(svg);
-      const cylSol = HL.solid(svg);
-      const coneSol = HL.solid(svg);
-
-      const lift1 = HL.spring(0, { k: 130, c: 14 });
-      const lift2 = HL.spring(0, { k: 130, c: 14 });
-      const lift3 = HL.spring(0, { k: 130, c: 14 });
-
-      const cyRing = HL.circ(12, 48);
-      const cyInner = HL.circ(11, 48);
-      const coneBaseRing = HL.circ(12, 48).map(q => ({ u: 36 + q.u, v: q.v, nu: q.nu, nv: q.nv }));
-
-      function draw() {
-        let guides = "";
-
-        // 1. Cube: 24x24 base, height 24
-        const z1 = 2 + lift1.x;
-        const [cO, cI] = HL.rings(-48, -12, -24, 12, 2, 1);
-        HL.put(cubeSol, HL.prism(P, front, cO, cI, z1, z1 + 24));
-        if (lift1.x > 0.8) {
-          const corners = [[-48, -12], [-24, -12], [-24, 12], [-48, 12]];
-          corners.forEach(([cx, cy]) => {
-            guides += HL.seg(P(cx, cy, z1), P(cx, cy, 2.2));
-          });
-        }
-
-        // 2. Cylinder: Circle R=12, height 24
-        const z2 = 2 + lift2.x;
-        HL.put(cylSol, HL.prism(P, front, cyRing, cyInner, z2, z2 + 24));
-        if (lift2.x > 0.8) {
-          const ext = HL.extremes(P, cyRing).slice(0, 2);
-          ext.forEach(q => {
-            guides += HL.seg(P(q.u, q.v, z2), P(q.u, q.v, 2.2));
-          });
-        }
-
-        // 3. Cone: Base circle R=12 at z3, Apex at (36, 0, z3 + 24)
-        const z3 = 2 + lift3.x;
-        const apex = P(36, 0, z3 + 24);
-        const basePts = HL.ringAt(P, coneBaseRing, z3);
-        const coneSil = HL.poly(HL.hull([apex, ...basePts]));
-        HL.put(coneSol, { sil: coneSil, crease: "" });
-        if (lift3.x > 0.8) {
-          const ext = HL.extremes(P, coneBaseRing).slice(0, 2);
-          ext.forEach(q => {
-            guides += HL.seg(P(q.u, q.v, z3), P(q.u, q.v, 2.2));
-          });
-          // Center axis drop
-          guides += HL.seg(P(36, 0, z3), P(36, 0, 2.2));
-        }
-
-        dropGuides.setAttribute("d", guides);
-        read.textContent = "Khối Lập Phương (Đáy Vuông) · Khối Trụ (Đáy Tròn) · Khối Nón (Đáy Tròn, Đỉnh Nhọn)";
-      }
-
-      function aim(pt) {
-        if (!pt) { lift1.t = 0; lift2.t = 0; lift3.t = 0; reg.wake(); return; }
-        const s1 = P(-36, 0, 10)[0];
-        const s2 = P(0, 0, 10)[0];
-        const s3 = P(36, 0, 10)[0];
-        lift1.t = Math.abs(pt[0] - s1) < 24 ? 18 : 0;
-        lift2.t = Math.abs(pt[0] - s2) < 24 ? 18 : 0;
-        lift3.t = Math.abs(pt[0] - s3) < 24 ? 18 : 0;
-        reg.wake();
-      }
-
-      const reg = HL.register(stage, dt => {
-        const m1 = HL.stepS(lift1, dt);
-        const m2 = HL.stepS(lift2, dt);
-        const m3 = HL.stepS(lift3, dt);
-        draw();
-        return m1 || m2 || m3;
-      });
-      bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
-      bag.add(() => svg.replaceChildren());
-
-      draw();
-      return {
-        set(v) { lift1.t = v; lift2.t = v; lift3.t = v; reg.wake(); },
-        destroy: bag.dispose
-      };
+    // Cylinder footprint: Circle R=12 (center 0, 0)
+    const circPts = [];
+    for (let a = 0; a <= 48; a++) {
+      const rad = (a / 48) * Math.PI * 2;
+      circPts.push(P(Math.cos(rad) * 12, Math.sin(rad) * 12, 2.2));
     }
-  },
+    const cyFoot = HL.mk("polygon", { points: circPts.map(p => p.join(",")).join(" "), stroke: "#232327", "stroke-width": 1.4, fill: "#e0e0e4" }, svg);
+
+    // Cone footprint: Circle R=12 (center 36, 0)
+    const coneFootPts = [];
+    for (let a = 0; a <= 48; a++) {
+      const rad = (a / 48) * Math.PI * 2;
+      coneFootPts.push(P(36 + Math.cos(rad) * 12, Math.sin(rad) * 12, 2.2));
+    }
+    const coneFoot = HL.mk("polygon", { points: coneFootPts.map(p => p.join(",")).join(" "), stroke: "#232327", "stroke-width": 1.4, fill: "#e0e0e4" }, svg);
+
+    // Drop guides when lifted
+    const dropGuides = HL.mk("path", { class: "nf dash lo" }, svg);
+
+    const cubeSol = HL.solid(svg);
+    const cylSol = HL.solid(svg);
+    const coneSol = HL.solid(svg);
+
+    // Initial lifted shape: 1 = cube, 2 = cylinder, 3 = cone
+    let activeShape = initialV != null ? HL.clamp(Math.round(initialV), 1, 3) : 2;
+
+    const lift1 = HL.spring(activeShape === 1 ? 18 : 0, { k: 140, c: 14 });
+    const lift2 = HL.spring(activeShape === 2 ? 18 : 0, { k: 140, c: 14 });
+    const lift3 = HL.spring(activeShape === 3 ? 18 : 0, { k: 140, c: 14 });
+
+    const cyRing = HL.circ(12, 48);
+    const cyInner = HL.circ(11, 48);
+    const coneBaseRing = HL.circ(12, 48).map(q => ({ u: 36 + q.u, v: q.v, nu: q.nu, nv: q.nv }));
+
+    function setShape(shapeIdx) {
+      activeShape = shapeIdx;
+      lift1.t = activeShape === 1 ? 18 : 0;
+      lift2.t = activeShape === 2 ? 18 : 0;
+      lift3.t = activeShape === 3 ? 18 : 0;
+      reg.wake();
+    }
+
+    function draw() {
+      let guides = "";
+
+      // 1. Cube: 24x24 base, height 24
+      const z1 = 2 + lift1.x;
+      const [cO, cI] = HL.rings(-48, -12, -24, 12, 2, 1);
+      HL.put(cubeSol, HL.prism(P, front, cO, cI, z1, z1 + 24));
+      if (lift1.x > 0.8) {
+        const corners = [[-48, -12], [-24, -12], [-24, 12], [-48, 12]];
+        corners.forEach(([cx, cy]) => {
+          guides += HL.seg(P(cx, cy, z1), P(cx, cy, 2.2));
+        });
+      }
+
+      // 2. Cylinder: Circle R=12, height 24
+      const z2 = 2 + lift2.x;
+      HL.put(cylSol, HL.prism(P, front, cyRing, cyInner, z2, z2 + 24));
+      if (lift2.x > 0.8) {
+        const ext = HL.extremes(P, cyRing).slice(0, 2);
+        ext.forEach(q => {
+          guides += HL.seg(P(q.u, q.v, z2), P(q.u, q.v, 2.2));
+        });
+      }
+
+      // 3. Cone: Base circle R=12 at z3, Apex at (36, 0, z3 + 24)
+      const z3 = 2 + lift3.x;
+      const apex = P(36, 0, z3 + 24);
+      const basePts = HL.ringAt(P, coneBaseRing, z3);
+      const coneSil = HL.poly(HL.hull([apex, ...basePts]));
+      HL.put(coneSol, { sil: coneSil, crease: "" });
+      if (lift3.x > 0.8) {
+        const ext = HL.extremes(P, coneBaseRing).slice(0, 2);
+        ext.forEach(q => {
+          guides += HL.seg(P(q.u, q.v, z3), P(q.u, q.v, 2.2));
+        });
+        guides += HL.seg(P(36, 0, z3), P(36, 0, 2.2));
+      }
+
+      dropGuides.setAttribute("d", guides);
+
+      if (activeShape === 1) {
+        read.textContent = "Khối Lập Phương nâng lên: Vết in đáy là Hình Vuông phẳng (4 cạnh bằng nhau)";
+      } else if (activeShape === 2) {
+        read.textContent = "Khối Trụ nâng lên: Vết in đáy là Hình Tròn phẳng (đường cong tròn không góc)";
+      } else if (activeShape === 3) {
+        read.textContent = "Khối Nón nâng lên: Đáy là Hình Tròn phẳng, đỉnh chóp thu về 1 Điểm Nhọn!";
+      } else {
+        read.textContent = "Click vào từng khối để nâng lên và xem vết in đáy 2D tương ứng!";
+      }
+    }
+
+    function handleClick(pt) {
+      if (!pt) {
+        setShape((activeShape % 3) + 1);
+        return;
+      }
+      const s1 = P(-36, 0, 10)[0];
+      const s2 = P(0, 0, 10)[0];
+      const s3 = P(36, 0, 10)[0];
+
+      const d1 = Math.abs(pt[0] - s1);
+      const d2 = Math.abs(pt[0] - s2);
+      const d3 = Math.abs(pt[0] - s3);
+
+      if (d1 < 26) setShape(1);
+      else if (d2 < 26) setShape(2);
+      else if (d3 < 26) setShape(3);
+      else setShape((activeShape % 3) + 1);
+    }
+
+    const reg = HL.register(stage, dt => {
+      const m1 = HL.stepS(lift1, dt);
+      const m2 = HL.stepS(lift2, dt);
+      const m3 = HL.stepS(lift3, dt);
+      draw();
+      return m1 || m2 || m3;
+    });
+
+    bag.add(reg.unregister);
+    bag.add(HL.pointer(stage, { down: handleClick }));
+    bag.add(() => svg.replaceChildren());
+
+    draw();
+
+    return {
+      set(v) {
+        setShape(HL.clamp(Math.round(v), 1, 3));
+      },
+      destroy: bag.dispose
+    };
+  }
+},
 /*
  * 9. Math Fraction Pie (Bánh Phân Số 1/4 & Một Nửa)
  * Authentic Meaningful Interaction: Taking Slices from Baking Tray to Serving Plate
@@ -2785,10 +2899,12 @@ const MATH_FIGURES = [
         read.textContent = "Tách gộp số 10: " + leftCount + " + " + rightCount + " = 10 (" + leftDark + " đậm, " + leftLight + " sáng | " + rightDark + " đậm, " + rightLight + " sáng)";
       }
 
+      let curSplit = 5;
+
       function setSplit(splitIdx) {
-        const s = HL.clamp(splitIdx, 0, 10);
+        curSplit = HL.clamp(splitIdx, 0, 10);
         beads.forEach((b, i) => {
-          if (i < s) {
+          if (i < curSplit) {
             b.tSp.t = 0.06 + i * 0.048;
           } else {
             b.tSp.t = 0.94 - (9 - i) * 0.048;
@@ -2806,6 +2922,22 @@ const MATH_FIGURES = [
         setSplit(splitIdx);
       }
 
+      function handleClick(pt) {
+        if (!pt) {
+          setSplit((curSplit + 1) % 11);
+          return;
+        }
+        const scrLeft = P(-44, 0, 4)[0];
+        const scrRight = P(44, 0, 4)[0];
+        const norm = HL.clamp((pt[0] - scrLeft) / (scrRight - scrLeft), 0, 1);
+        const splitIdx = Math.round(norm * 10);
+        if (Math.abs(splitIdx - curSplit) < 1) {
+          setSplit((curSplit + 1) % 11);
+        } else {
+          setSplit(splitIdx);
+        }
+      }
+
       const reg = HL.register(stage, dt => {
         let moving = false;
         beads.forEach(b => { if (HL.stepS(b.tSp, dt)) moving = true; });
@@ -2813,7 +2945,7 @@ const MATH_FIGURES = [
         return moving;
       });
       bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => {} }));
+      bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => {} }));
       bag.add(() => svg.replaceChildren());
 
       draw();

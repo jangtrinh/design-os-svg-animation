@@ -1,14 +1,14 @@
 export default {
   id: "math-number-line",
   title: "5. Trục Số Nhảy Ếch (Number Line Jumps)",
-  concept: "Cộng nhẩm bằng bước nhảy trục số",
-  means: "Thước đo trục số: vạch chia đánh số từ 0 đến 10. Chú ếch origami với đầu mũi tên nhảy dọc cung parabol 0 -> 4 -> 7 hướng về phía trước.",
+  concept: "Cộng nhẩm bằng bước nhảy trục số (0 + 4 = 4; 4 + 3 = 7)",
+  means: "Thước đo trục số chia vạch 0 đến 10. Click để chú ếch origami bật nhảy theo cung parabol: bước 1 nhảy +4 vạch (đến 4), bước 2 nhảy +3 vạch (đến 7).",
   rules: [1, 3, 5, 7, 8],
   range: [0, 4, 10],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-58, -14, 0], [58, 14, 38]], 200, 160);
+    HL.fit(C, [[-58, -14, 0], [58, 14, 40]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // Ruler Body (z = 0 to 4.0)
@@ -22,12 +22,12 @@ export default {
       const x = -48 + i * 9.6;
       ticks.push(x);
 
-      // Tick line on ruler surface (positioned in upper half: y = -6 to y = -1.2)
+      // Tick line on ruler surface
       HL.mk("line", {
         x1: P(x, -6.0, 4.0)[0], y1: P(x, -6.0, 4.0)[1],
         x2: P(x, -1.2, 4.0)[0], y2: P(x, -1.2, 4.0)[1],
         stroke: "#232327",
-        "stroke-width": (i === 0 || i === 4 || i === 7 ? 1.4 : 1.0)
+        "stroke-width": (i === 0 || i === 4 || i === 7 ? 1.5 : 1.0)
       }, svg);
 
       // Number Label 0, 1, 2, ..., 10 at lower half of ruler face
@@ -52,12 +52,12 @@ export default {
       const z = 4.0 + 4 * 18 * t * (1 - t);
       arc1Pts.push(P(x, 0, z));
     }
-    HL.mk("path", {
+    const arc1Path = HL.mk("path", {
       d: HL.open(arc1Pts),
-      stroke: "#6f6f78",
+      stroke: "#232327",
       "stroke-dasharray": "3 2",
       fill: "none",
-      "stroke-width": 1.2
+      "stroke-width": 1.4
     }, svg);
 
     // Label "+4" above Arc 1 peak
@@ -81,12 +81,12 @@ export default {
       const z = 4.0 + 4 * 14 * t * (1 - t);
       arc2Pts.push(P(x, 0, z));
     }
-    HL.mk("path", {
+    const arc2Path = HL.mk("path", {
       d: HL.open(arc2Pts),
-      stroke: "#6f6f78",
+      stroke: "#232327",
       "stroke-dasharray": "3 2",
       fill: "none",
-      "stroke-width": 1.2
+      "stroke-width": 1.4
     }, svg);
 
     // Label "+3" above Arc 2 peak
@@ -102,68 +102,81 @@ export default {
     }, svg);
     label2.textContent = "+3";
 
-    // Contact shadow and vertical drop line on ruler
+    // Origami Frog 3D Mesh
+    const frogGroup = HL.mk("g", { id: "origami-frog" }, svg);
+    const faceEls = [];
+    for (let i = 0; i < 7; i++) {
+      const poly = HL.mk("polygon", {
+        fill: i < 2 ? "#e0e0e4" : "#ffffff",
+        stroke: "#232327",
+        "stroke-width": 1.1,
+        "stroke-linejoin": "round"
+      }, frogGroup);
+      faceEls.push(poly);
+    }
+
+    // Frog Eyes
+    const eyeDots = [
+      HL.mk("circle", { r: 1.2, fill: "#232327" }, frogGroup),
+      HL.mk("circle", { r: 1.2, fill: "#232327" }, frogGroup)
+    ];
+
+    // Contact shadow & drop line
     const shadowEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
     const dropLineEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
 
-    // Origami / Vector Frog Pointer Group
-    const frogG = HL.mk("g", {}, svg);
-    const NUM_FACES = 7;
-    const faceEls = [];
-    for (let f = 0; f < NUM_FACES; f++) {
-      faceEls.push(
-        HL.mk("polygon", {
-          fill: "#ffffff",
-          stroke: "#232327",
-          "stroke-width": "1.2",
-          "stroke-linejoin": "round"
-        }, frogG)
-      );
-    }
-    const eyeDots = [
-      HL.mk("circle", { r: 1.4, fill: "#232327" }, frogG),
-      HL.mk("circle", { r: 1.4, fill: "#232327" }, frogG)
-    ];
+    // State machine:
+    // step = 0: at tick 0
+    // step = 1: at tick 4 (after leap 1)
+    // step = 2: at tick 7 (after leap 2)
+    let curStep = initialV != null ? (initialV >= 7 ? 2 : (initialV >= 4 ? 1 : 0)) : 1;
 
-    const jumpProgress = HL.spring(0.57, { k: 110, c: 14 });
+    // Continuous parameter along the route: 0 -> 0.57 (arc 1) -> 1.0 (arc 2)
+    const stepTargetMap = [0, 0.57, 1.0];
+    const jumpProgress = HL.spring(stepTargetMap[curStep], { k: 120, c: 13 });
+
+    function setHopStep(nextStep) {
+      curStep = nextStep % 3;
+      jumpProgress.t = stepTargetMap[curStep];
+      reg.wake();
+    }
 
     function draw() {
-      const t = jumpProgress.x;
-      let x, z, dz, dx;
+      const t = HL.clamp(jumpProgress.x, 0, 1);
+      let x, z, pitch;
 
       if (t <= 0.57) {
-        const subT = t / 0.57;
-        x = HL.lerp(ticks[0], ticks[4], subT);
-        z = 4.0 + 4 * 18 * subT * (1 - subT);
-        dz = 72 * (1 - 2 * subT);
-        dx = ticks[4] - ticks[0];
+        // Arc 1: 0 -> 4 (+4 jump)
+        const u = t / 0.57;
+        x = HL.lerp(ticks[0], ticks[4], u);
+        z = 4.0 + 4 * 18 * u * (1 - u);
+        const slope = (4 * 18 * (1 - 2 * u)) / (ticks[4] - ticks[0]);
+        pitch = Math.atan(slope) * 0.45;
       } else {
-        const subT = (t - 0.57) / 0.43;
-        x = HL.lerp(ticks[4], ticks[7], subT);
-        z = 4.0 + 4 * 14 * subT * (1 - subT);
-        dz = 56 * (1 - 2 * subT);
-        dx = ticks[7] - ticks[4];
+        // Arc 2: 4 -> 7 (+3 jump)
+        const u = (t - 0.57) / 0.43;
+        x = HL.lerp(ticks[4], ticks[7], u);
+        z = 4.0 + 4 * 14 * u * (1 - u);
+        const slope = (4 * 14 * (1 - 2 * u)) / (ticks[7] - ticks[4]);
+        pitch = Math.atan(slope) * 0.45;
       }
 
-      // Smooth pitch rotation along parabolic trajectory
-      const pitch = Math.atan2(dz, dx) * 0.4;
       const cosP = Math.cos(pitch);
       const sinP = Math.sin(pitch);
 
-      // Vertex transform helper (local frog space -> world -> projected screen)
       function V(lx, ly, lz) {
         const rotX = lx * cosP - lz * sinP;
         const rotZ = lx * sinP + lz * cosP;
         return P(x + rotX, ly, z + rotZ);
       }
 
-      // Key 3D points of Origami Frog (pointing forward in +X jump direction)
-      const snout = V(7.0, 0, 1.6);        // Arrowhead snout pointing along direction of jump (+X)
+      // Key 3D points of Origami Frog
+      const snout = V(7.0, 0, 1.6);
       const eyeL = V(3.2, -3.4, 4.6);
       const eyeR = V(3.2, 3.4, 4.6);
       const crown = V(3.8, 0, 4.2);
-      const spine = V(-1.0, 0, 5.6);       // Folded dorsal ridge
-      const tail = V(-6.2, 0, 1.4);        // Rear crease fold
+      const spine = V(-1.0, 0, 5.6);
+      const tail = V(-6.2, 0, 1.4);
       const flankL = V(-1.0, -5.6, 2.0);
       const flankR = V(-1.0, 5.6, 2.0);
       const kneeL = V(-3.8, -6.6, 3.4);
@@ -171,15 +184,14 @@ export default {
       const footL = V(-6.6, -7.0, 0);
       const footR = V(-6.6, 7.0, 0);
 
-      // Faces ordered back to front for 2:1 axonometric projection
       const faces = [
-        [flankL, kneeL, footL],         // Left hind leg
-        [flankR, kneeR, footR],         // Right hind leg
-        [spine, flankL, tail],          // Left rear flank
-        [spine, tail, flankR],          // Right rear flank
-        [crown, eyeL, flankL, spine],   // Left dorsal facet
-        [crown, spine, flankR, eyeR],   // Right dorsal facet
-        [snout, eyeR, crown, eyeL]      // Front arrow-head snout face pointing forward
+        [flankL, kneeL, footL],
+        [flankR, kneeR, footR],
+        [spine, flankL, tail],
+        [spine, tail, flankR],
+        [crown, eyeL, flankL, spine],
+        [crown, spine, flankR, eyeR],
+        [snout, eyeR, crown, eyeL]
       ];
 
       faces.forEach((pts, i) => {
@@ -187,21 +199,20 @@ export default {
         faceEls[i].setAttribute("points", pointsStr);
       });
 
-      // Eyes
       eyeDots[0].setAttribute("cx", HL.r2(eyeL[0]));
       eyeDots[0].setAttribute("cy", HL.r2(eyeL[1]));
       eyeDots[1].setAttribute("cx", HL.r2(eyeR[0]));
       eyeDots[1].setAttribute("cy", HL.r2(eyeR[1]));
 
-      // Contact shadow on the ruler face at z = 4.0
+      // Shadow on ruler
       const shadowPts = [];
+      const sScale = HL.clamp(1 - (z - 4) * 0.03, 0.4, 1);
       for (let k = 0; k <= 24; k++) {
         const a = (k / 24) * Math.PI * 2;
-        shadowPts.push(P(x + 5.5 * Math.cos(a), 3.8 * Math.sin(a), 4.0));
+        shadowPts.push(P(x + 5.5 * sScale * Math.cos(a), 3.8 * sScale * Math.sin(a), 4.0));
       }
       shadowEl.setAttribute("d", HL.poly(shadowPts));
 
-      // Dashed vertical drop line from frog down to contact shadow
       if (z > 5.5) {
         dropLineEl.style.display = "";
         dropLineEl.setAttribute("d", HL.seg(P(x, 0, z), P(x, 0, 4.0)));
@@ -209,17 +220,39 @@ export default {
         dropLineEl.style.display = "none";
       }
 
-      const curVal = Math.round(t <= 0.57 ? (t / 0.57) * 4 : 4 + ((t - 0.57) / 0.43) * 3);
-      read.textContent = "Bước nhảy ếch: 0 + 4 = 4; 4 + 3 = 7 (Vị trí: " + curVal + ")";
+      if (curStep === 0) {
+        read.textContent = "Vị trí 0: Chú ếch chuẩn bị nhảy! (Click để ếch nhảy bước 1)";
+        arc1Path.setAttribute("stroke", "#6f6f78");
+        arc2Path.setAttribute("stroke", "#6f6f78");
+      } else if (curStep === 1) {
+        read.textContent = "Bước 1: 0 + 4 = 4 (Ếch nhảy qua 4 vạch số · Click để nhảy tiếp)";
+        arc1Path.setAttribute("stroke", "#232327");
+        arc2Path.setAttribute("stroke", "#6f6f78");
+      } else {
+        read.textContent = "Bước 2: 4 + 3 = 7! Tổng cộng: 0 + 4 + 3 = 7 (Click để quay lại vạch 0)";
+        arc1Path.setAttribute("stroke", "#232327");
+        arc2Path.setAttribute("stroke", "#232327");
+      }
     }
 
-    function aim(pt) {
-      if (!pt) return;
-      const scr0 = P(ticks[0], 0, 4.0)[0];
-      const scr7 = P(ticks[7], 0, 4.0)[0];
-      const t = HL.clamp((pt[0] - scr0) / (scr7 - scr0), 0, 1);
-      jumpProgress.t = t;
-      reg.wake();
+    function handleClick(pt) {
+      if (!pt) {
+        setHopStep(curStep + 1);
+        return;
+      }
+      // Check if clicked near tick 0, 4, or 7
+      const s0 = P(ticks[0], 0, 4)[0];
+      const s4 = P(ticks[4], 0, 4)[0];
+      const s7 = P(ticks[7], 0, 4)[0];
+
+      const d0 = Math.abs(pt[0] - s0);
+      const d4 = Math.abs(pt[0] - s4);
+      const d7 = Math.abs(pt[0] - s7);
+
+      if (d0 < 20) setHopStep(0);
+      else if (d4 < 20) setHopStep(1);
+      else if (d7 < 20) setHopStep(2);
+      else setHopStep(curStep + 1);
     }
 
     const reg = HL.register(stage, dt => {
@@ -229,7 +262,7 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => {} }));
+    bag.add(HL.pointer(stage, { down: handleClick }));
     bag.add(() => svg.replaceChildren());
 
     // Initialize
@@ -237,8 +270,9 @@ export default {
 
     return {
       set(v) {
-        jumpProgress.t = HL.clamp(v / 7, 0, 1);
-        reg.wake();
+        if (v <= 2) setHopStep(0);
+        else if (v <= 5) setHopStep(1);
+        else setHopStep(2);
       },
       destroy: bag.dispose
     };

@@ -190,13 +190,20 @@ export default {
         reg.wake();
       }
 
+      function handleClick(pt) {
+        // Advance clock by 1 full hour (2*PI on minute hand)
+        targetRot += Math.PI * 2;
+        rotSpring.t = targetRot;
+        reg.wake();
+      }
+
       const reg = HL.register(stage, dt => {
         const moving = HL.stepS(rotSpring, dt);
         draw();
         return moving;
       });
       bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+      bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => aim(null) }));
       bag.add(() => svg.replaceChildren());
 
       draw();
