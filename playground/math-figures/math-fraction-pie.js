@@ -1,129 +1,199 @@
+/*
+ * 9. Math Fraction Pie (Bánh Phân Số 1/4 & Một Nửa)
+ * Authentic Meaningful Interaction: Taking Slices from Baking Tray to Serving Plate
+ * Illustrates concrete part-whole fraction decomposition (4/4 = 1, 3/4, 2/4 = 1/2, 1/4)
+ */
+
 export default {
-    id: "math-fraction-pie",
-    title: "9. Đĩa Phân Số 1/4 (Fraction Wheel)",
-    concept: "Khái niệm một phần tư và một phần hai",
-    means: "Đĩa tròn phân số chia 4 phần bằng nhau: di chuột làm 4 miếng bánh tách rời hướng tâm, minh họa 1/4 + 1/4 + 1/4 + 1/4 = 1.",
-    rules: [1, 2, 4, 7, 8],
-    range: [0, 8, 16],
-    mount({ stage, svg, read }, initialV) {
-      const bag = HL.disposer();
-      const C = HL.Cam(45, 0.5, 1.85);
-      HL.fit(C, [[-45, -45, 0], [45, 45, 20]], 200, 160);
-      const P = HL.proj(C), front = HL.facing(C);
+  id: "math-fraction-pie",
+  title: "9. Bánh Phân Số 1/4 (Fraction Pie)",
+  concept: "Phần tư (1/4) và Một nửa (1/2)",
+  means: "Bánh tròn chia 4 miếng quạt 90°: khay nướng bên trái, đĩa ăn bên phải; click để bốc từng miếng bánh ra đĩa, trực quan hóa 4/4 = 1, 3/4, 2/4 = 1/2, 1/4.",
+  rules: [1, 2, 4, 7, 8],
+  range: [0, 1, 4],
+  mount({ stage, svg, read }, initialV) {
+    const bag = HL.disposer();
+    const C = HL.Cam(45, 0.5, 1.85);
+    HL.fit(C, [[-60, -26, 0], [60, 26, 25]], 200, 160);
+    const P = HL.proj(C), front = HL.facing(C);
 
-      // Base tray (Z: 0 to 3)
-      const [trayO, trayI] = HL.rings(-44, -44, 44, 44, 44, 2);
-      const traySol = HL.solid(svg);
-      HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 3));
+    const panX = -26;
+    const plateX = 26;
+    const R = 20;
+    const z0 = 3;
+    const z1 = 10;
+    const numArc = 14;
 
-      // 2D Footprint guidelines on tray surface (Z: 3.1)
-      const trayCircPts = [];
-      for (let a = 0; a <= 48; a++) {
-        const rad = (a / 48) * Math.PI * 2;
-        trayCircPts.push(P(Math.cos(rad) * 30, Math.sin(rad) * 30, 3.1));
-      }
-      HL.mk("polygon", { points: trayCircPts.map(p => p.join(",")).join(" "), stroke: "#c3c3c9", "stroke-dasharray": "2 2", fill: "none" }, svg);
-      HL.mk("line", { x1: P(-30, 0, 3.1)[0], y1: P(-30, 0, 3.1)[1], x2: P(30, 0, 3.1)[0], y2: P(30, 0, 3.1)[1], stroke: "#c3c3c9", "stroke-dasharray": "2 2" }, svg);
-      HL.mk("line", { x1: P(0, -30, 3.1)[0], y1: P(0, -30, 3.1)[1], x2: P(0, 30, 3.1)[0], y2: P(0, 30, 3.1)[1], stroke: "#c3c3c9", "stroke-dasharray": "2 2" }, svg);
+    // 1. Left: Baking Tray (Khay nướng bánh)
+    const [panO, panI] = HL.rings(panX - 24, -24, panX + 24, 24, 24, 1.8);
+    const panSol = HL.solid(svg);
+    HL.put(panSol, HL.prism(P, front, panO, panI, 0, 3));
 
-      // 4 Quadrant pieces (90° sectors), created in back-to-front depth order for SVG painter's algorithm
-      // Order: quadrant 2 (back: x<0, y<0), 1 (x<0, y>0), 3 (x>0, y<0), 0 (front: x>0, y>0)
-      const renderOrder = [2, 1, 3, 0];
-      const pieces = renderOrder.map(i => {
-        const a0 = i * Math.PI / 2;
-        const a1 = (i + 1) * Math.PI / 2;
-        const mid = (a0 + a1) / 2;
-        return {
-          idx: i,
-          a0,
-          a1,
-          dx: Math.cos(mid),
-          dy: Math.sin(mid),
-          sol: HL.solid(svg)
-        };
-      });
-
-      const explode = HL.spring(0, { k: 130, c: 14 });
-      const R = 30;
-      const numArc = 16;
-      const z0 = 3;
-      const z1 = 12;
-
-      function draw() {
-        const d = explode.x;
-        pieces.forEach(pc => {
-          const cx = pc.dx * d;
-          const cy = pc.dy * d;
-
-          // 2D sector boundary: apex (cx, cy) -> ray a0 -> circular arc -> ray a1 -> apex
-          const sectorPts2D = [[cx, cy]];
-          for (let k = 0; k <= numArc; k++) {
-            const ang = pc.a0 + (pc.a1 - pc.a0) * (k / numArc);
-            sectorPts2D.push([cx + R * Math.cos(ang), cy + R * Math.sin(ang)]);
-          }
-
-          const topPts = sectorPts2D.map(p => P(p[0], p[1], z1));
-          const botPts = sectorPts2D.map(p => P(p[0], p[1], z0));
-
-          // Silhouette: convex hull of top and bottom face vertices
-          const sil = HL.poly(HL.hull(topPts.concat(botPts)));
-
-          // Internal creases: top sector outline + visible cut faces + visible bottom curved arc
-          let crease = HL.poly(topPts);
-
-          // Face 1 (along ray a0): normal (sin a0, -cos a0)
-          if (front({ nu: Math.sin(pc.a0), nv: -Math.cos(pc.a0) })) {
-            crease += HL.seg(P(cx, cy, z0), P(cx + R * Math.cos(pc.a0), cy + R * Math.sin(pc.a0), z0));
-            crease += HL.seg(P(cx, cy, z0), P(cx, cy, z1));
-            crease += HL.seg(P(cx + R * Math.cos(pc.a0), cy + R * Math.sin(pc.a0), z0), P(cx + R * Math.cos(pc.a0), cy + R * Math.sin(pc.a0), z1));
-          }
-
-          // Face 2 (along ray a1): normal (-sin a1, cos a1)
-          if (front({ nu: -Math.sin(pc.a1), nv: Math.cos(pc.a1) })) {
-            crease += HL.seg(P(cx, cy, z0), P(cx + R * Math.cos(pc.a1), cy + R * Math.sin(pc.a1), z0));
-            crease += HL.seg(P(cx, cy, z0), P(cx, cy, z1));
-            crease += HL.seg(P(cx + R * Math.cos(pc.a1), cy + R * Math.sin(pc.a1), z0), P(cx + R * Math.cos(pc.a1), cy + R * Math.sin(pc.a1), z1));
-          }
-
-          // Curved face: visible bottom arc
-          const frontArc = [];
-          for (let k = 0; k <= numArc; k++) {
-            const ang = pc.a0 + (pc.a1 - pc.a0) * (k / numArc);
-            if (front({ nu: Math.cos(ang), nv: Math.sin(ang) })) {
-              frontArc.push(P(cx + R * Math.cos(ang), cy + R * Math.sin(ang), z0));
-            }
-          }
-          if (frontArc.length > 1) {
-            crease += HL.open(frontArc);
-          }
-
-          HL.put(pc.sol, { sil, crease });
-        });
-
-        read.textContent = "Phân số: 1/4 + 1/4 + 1/4 + 1/4 = 1 hình tròn (4 góc vuông 90°)";
-      }
-
-      function aim(pt) {
-        if (!pt) { explode.t = 0; reg.wake(); return; }
-        const center = P(0, 0, 7.5);
-        const dist = Math.hypot(pt[0] - center[0], pt[1] - center[1]);
-        explode.t = HL.clamp((1 - dist / 80) * 14, 0, 14);
-        reg.wake();
-      }
-
-      const reg = HL.register(stage, dt => {
-        const moving = HL.stepS(explode, dt);
-        draw();
-        return moving;
-      });
-      bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
-      bag.add(() => svg.replaceChildren());
-
-      draw();
-      return {
-        set(v) { explode.t = v; reg.wake(); },
-        destroy: bag.dispose
-      };
+    // Tray etched guidelines (showing 4 quadrant slots)
+    const trayCirc = [];
+    for (let a = 0; a <= 36; a++) {
+      const rad = (a / 36) * Math.PI * 2;
+      trayCirc.push(P(panX + Math.cos(rad) * R, Math.sin(rad) * R, 3.1));
     }
-  };
+    HL.mk("polygon", { points: trayCirc.map(p => p.join(",")).join(" "), stroke: "#d0d0d6", "stroke-dasharray": "2 2", fill: "none" }, svg);
+    HL.mk("line", { x1: P(panX - R, 0, 3.1)[0], y1: P(panX - R, 0, 3.1)[1], x2: P(panX + R, 0, 3.1)[0], y2: P(panX + R, 0, 3.1)[1], stroke: "#d0d0d6", "stroke-dasharray": "2 2" }, svg);
+    HL.mk("line", { x1: P(panX, -R, 3.1)[0], y1: P(panX, -R, 3.1)[1], x2: P(panX, R, 3.1)[0], y2: P(panX, R, 3.1)[1], stroke: "#d0d0d6", "stroke-dasharray": "2 2" }, svg);
+
+    const panLabel = HL.mk("text", {
+      x: P(panX, -20, 3.1)[0], y: P(panX, -20, 3.1)[1],
+      fill: "#6f6f78", "font-size": "8px", "font-family": "ui-monospace, monospace",
+      "text-anchor": "middle", "font-weight": "600"
+    }, svg);
+    panLabel.textContent = "KHAY BÁNH";
+
+    // 2. Right: Serving Plate (Đĩa ăn)
+    const [plateO, plateI] = HL.rings(plateX - 24, -24, plateX + 24, 24, 24, 1.8);
+    const plateSol = HL.solid(svg);
+    HL.put(plateSol, HL.prism(P, front, plateO, plateI, 0, 3));
+
+    const plateCirc = [];
+    for (let a = 0; a <= 36; a++) {
+      const rad = (a / 36) * Math.PI * 2;
+      plateCirc.push(P(plateX + Math.cos(rad) * R, Math.sin(rad) * R, 3.1));
+    }
+    HL.mk("polygon", { points: plateCirc.map(p => p.join(",")).join(" "), stroke: "#d0d0d6", "stroke-dasharray": "2 2", fill: "none" }, svg);
+
+    const plateLabel = HL.mk("text", {
+      x: P(plateX, -20, 3.1)[0], y: P(plateX, -20, 3.1)[1],
+      fill: "#6f6f78", "font-size": "8px", "font-family": "ui-monospace, monospace",
+      "text-anchor": "middle", "font-weight": "600"
+    }, svg);
+    plateLabel.textContent = "ĐĨA ĂN";
+
+    // 3. 4 Slices (Quarter Wedges)
+    // Slices order for Painter's algorithm depth:
+    // Quadrant 2 (back: x<0, y<0), 1 (x<0, y>0), 3 (x>0, y<0), 0 (front: x>0, y>0)
+    const renderOrder = [2, 1, 3, 0];
+    let takenCount = initialV !== undefined ? Math.round(HL.clamp(initialV, 0, 4)) : 1;
+
+    const pieces = renderOrder.map(i => {
+      const a0 = i * Math.PI / 2;
+      const a1 = (i + 1) * Math.PI / 2;
+      const mid = (a0 + a1) / 2;
+      return {
+        idx: i,
+        a0,
+        a1,
+        mid,
+        // Harmonic spring for transferring from Pan (0) to Plate (1)
+        sp: HL.spring(i < takenCount ? 1 : 0, { k: 110, c: 14 }),
+        sol: HL.solid(svg)
+      };
+    });
+
+    function draw() {
+      pieces.forEach(pc => {
+        const t = pc.sp.x;
+        // Current center position: lerp from panX to plateX
+        const curX = HL.lerp(panX, plateX, t);
+        // Small radial displacement when landing or flying
+        const curY = 0;
+        // Arc lift height during flight
+        const flightLift = 4 * 10 * t * (1 - t);
+        const curZ0 = z0 + flightLift;
+        const curZ1 = z1 + flightLift;
+
+        // 2D sector boundary: apex (curX, curY) -> ray a0 -> circular arc -> ray a1 -> apex
+        const sectorPts2D = [[curX, curY]];
+        for (let k = 0; k <= numArc; k++) {
+          const ang = pc.a0 + (pc.a1 - pc.a0) * (k / numArc);
+          sectorPts2D.push([curX + R * Math.cos(ang), curY + R * Math.sin(ang)]);
+        }
+
+        const topPts = sectorPts2D.map(p => P(p[0], p[1], curZ1));
+        const botPts = sectorPts2D.map(p => P(p[0], p[1], curZ0));
+
+        // Convex hull of projected top and bottom vertices
+        const sil = HL.poly(HL.hull(topPts.concat(botPts)));
+
+        // Crease lines: top face + visible cut walls
+        let crease = HL.poly(topPts);
+
+        // Radial cut face 1 (along ray a0)
+        if (front({ nu: Math.sin(pc.a0), nv: -Math.cos(pc.a0) })) {
+          crease += HL.seg(P(curX, curY, curZ0), P(curX + R * Math.cos(pc.a0), curY + R * Math.sin(pc.a0), curZ0));
+          crease += HL.seg(P(curX, curY, curZ0), P(curX, curY, curZ1));
+          crease += HL.seg(P(curX + R * Math.cos(pc.a0), curY + R * Math.sin(pc.a0), curZ0), P(curX + R * Math.cos(pc.a0), curY + R * Math.sin(pc.a0), curZ1));
+        }
+
+        // Radial cut face 2 (along ray a1)
+        if (front({ nu: -Math.sin(pc.a1), nv: Math.cos(pc.a1) })) {
+          crease += HL.seg(P(curX, curY, curZ0), P(curX + R * Math.cos(pc.a1), curY + R * Math.sin(pc.a1), curZ0));
+          crease += HL.seg(P(curX, curY, curZ0), P(curX, curY, curZ1));
+          crease += HL.seg(P(curX + R * Math.cos(pc.a1), curY + R * Math.sin(pc.a1), curZ0), P(curX + R * Math.cos(pc.a1), curY + R * Math.sin(pc.a1), curZ1));
+        }
+
+        // Curved outer rim: visible bottom arc
+        const frontArc = [];
+        for (let k = 0; k <= numArc; k++) {
+          const ang = pc.a0 + (pc.a1 - pc.a0) * (k / numArc);
+          if (front({ nu: Math.cos(ang), nv: Math.sin(ang) })) {
+            frontArc.push(P(curX + R * Math.cos(ang), curY + R * Math.sin(ang), curZ0));
+          }
+        }
+        if (frontArc.length > 1) {
+          crease += HL.open(frontArc);
+        }
+
+        HL.put(pc.sol, { sil, crease });
+      });
+
+      // Pedagogical Readout based on actual slices taken vs remaining
+      const inPanCount = 4 - takenCount;
+      if (takenCount === 0) {
+        read.textContent = "Bánh nguyên vẹn: 4/4 = 1 cái bánh (Click để bốc 1 miếng)";
+      } else if (takenCount === 1) {
+        read.textContent = "Bốc 1 miếng (1/4) ra đĩa: Trong khay còn 3/4 cái bánh";
+      } else if (takenCount === 2) {
+        read.textContent = "Bốc 2 miếng (2/4) ra đĩa: Trong khay còn đúng 1/2 cái bánh (một nửa)";
+      } else if (takenCount === 3) {
+        read.textContent = "Bốc 3 miếng (3/4) ra đĩa: Trong khay còn lại 1/4 cái bánh";
+      } else {
+        read.textContent = "Đã bốc hết 4/4 miếng: Khay bánh trống! (Click để làm bánh mới)";
+      }
+    }
+
+    function toggleSlice() {
+      // Cycle: 0 -> 1 -> 2 -> 3 -> 4 -> 0
+      takenCount = (takenCount + 1) % 5;
+      pieces.forEach(pc => {
+        pc.sp.t = pc.idx < takenCount ? 1 : 0;
+      });
+      reg.wake();
+    }
+
+    function handleClick() {
+      toggleSlice();
+    }
+
+    const reg = HL.register(stage, dt => {
+      let moving = false;
+      pieces.forEach(pc => {
+        if (HL.stepS(pc.sp, dt)) moving = true;
+      });
+      draw();
+      return moving;
+    });
+    bag.add(reg.unregister);
+    stage.addEventListener("click", handleClick);
+    bag.add(() => stage.removeEventListener("click", handleClick));
+    bag.add(() => svg.replaceChildren());
+
+    draw();
+    return {
+      set(v) {
+        takenCount = Math.round(HL.clamp(v, 0, 4));
+        pieces.forEach(pc => {
+          pc.sp.t = pc.idx < takenCount ? 1 : 0;
+        });
+        reg.wake();
+      },
+      destroy: bag.dispose
+    };
+  }
+};
