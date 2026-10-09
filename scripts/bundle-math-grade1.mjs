@@ -5,7 +5,7 @@ const ROOT = process.cwd();
 const figuresDir = path.join(ROOT, 'playground/math-figures');
 
 const figureFiles = [
-  'math-sticks.js',
+  'math-domino.js',
   'math-balance.js',
   'math-ten-frame.js',
   'math-number-blocks.js',
