@@ -10,237 +10,156 @@ if (typeof HL !== "undefined" && HL.inject) {
 const MATH_FIGURES = [
 /*
  * 1. Math Domino Addition Tiles (Thẻ Domino Số Học)
- * Authentic Grade 1 Pedagogical Manipulative: Place Value & Addition (10 + 3 = 13)
- * Lucas Markes Hairline Standard:
- * - Turned hardwood presentation tray with recessed compartments & foot pads
- * - Ivory domino tiles with filleted corners (r=3.2, b=1.0) & perimeter face creases
- * - Turned brass spinner rivets with collar rings & center domes
- * - Sunken double-ring pips (recess rim + core)
- * - Single focal accent (hi) at rest on left spinner, transferring to active tile
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Place value & addition (10 + 3 = 13)
+ * Simplified Geometry: Clean rounded domino tiles on a minimalist wooden tray
+ * Meaningful Interaction: Moving pointer smoothly adjusts unit dots (1 to 5) with spring bounce
  */
 
 {
   id: "math-domino",
   title: "1. Thẻ Domino Số Học (Domino Addition Tiles)",
   concept: "Cộng số tròn chục & đơn vị (10 + 3 = 13)",
-  means: "Hai quân cờ Domino ngà tinh xảo trên khay gỗ: quân trái đại diện 1 chục (5+5), quân phải là các đơn vị (1..5); di chuột để nhấc quân cờ 3D mượt mà với chốt đồng tâm.",
-  rules: [1, 2, 4, 6, 9],
+  means: "Hai quân cờ Domino tinh giản: quân trái luôn cố định 10 chấm (1 chục = 5+5), quân phải thay đổi từ 1 đến 5 đơn vị theo vị trí chuột; trực quan hóa 1 chục ghép với các đơn vị.",
+  rules: [1, 2, 4, 7, 9],
   range: [1, 3, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-58, -26, 0], [58, 26, 26]], 200, 160);
+    HL.fit(C, [[-52, -22, 0], [52, 22, 24]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Presentation Tray (Z: 0 to 4)
-    const [trayO, trayI] = HL.rings(-54, -24, 54, 24, 4.5, 1.4);
+    // Clean Minimalist Wooden Tray (Z: 0 to 3.5)
+    const [trayO, trayI] = HL.rings(-50, -20, 50, 20, 3.5, 1.0);
     const traySol = HL.solid(svg);
-    HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 4));
+    HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 3.5));
 
-    // Four corner foot pads under tray
-    for (const [fx, fy] of [[-48, -19], [48, -19], [-48, 19], [48, 19]]) {
-      const [fO] = HL.rings(fx - 3.2, fy - 3.2, fx + 3.2, fy + 3.2, 3.2, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
+    // Two clean recessed pockets on tray floor
+    for (const cx of [-25, 25]) {
+      const [compO] = HL.rings(cx - 14, -18, cx + 14, 18, 2.5, 0.6);
+      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, compO, 3.5)) }, svg);
     }
 
-    // Two recessed compartments on tray floor (Z: 2.2 to 4.0)
-    for (const cx of [-26, 26]) {
-      const [compO] = HL.rings(cx - 15, -20, cx + 15, 20, 3.5, 0.6);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, compO, 4.0)) }, svg);
-      const [compFloor] = HL.rings(cx - 14.2, -19.2, cx + 14.2, 19.2, 3.0, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, compFloor, 2.2)) }, svg);
-    }
-
-    // Center divider bead between compartments
-    HL.mk("line", {
-      x1: HL.r2(P(0, -22, 4.1)[0]), y1: HL.r2(P(0, -22, 4.1)[1]),
-      x2: HL.r2(P(0, 22, 4.1)[0]), y2: HL.r2(P(0, 22, 4.1)[1]),
-      class: "lo", "stroke-width": 1.2
-    }, svg);
-
-    // 2. Domino Tile 1 (Left: Tens = 5 + 5 pips)
+    // Tile 1 (Left: 10 pips, 5 top + 5 bottom)
     const d1Sol = HL.solid(svg);
-    const d1Lift = HL.spring(0, { k: 130, c: 14 });
+    const z1 = 2.0;
+    const [t1O, t1I] = HL.rings(-37, -16, -13, 16, 2.5, 0.8);
+    HL.put(d1Sol, HL.prism(P, front, t1O, t1I, z1, z1 + 5.0));
 
-    // 3. Domino Tile 2 (Right: Units = 1 to 5 pips)
+    // Tile 1 dividing groove & center pin
+    const topZ1 = z1 + 5.1;
+    HL.mk("line", {
+      x1: HL.r2(P(-36, 0, topZ1)[0]), y1: HL.r2(P(-36, 0, topZ1)[1]),
+      x2: HL.r2(P(-14, 0, topZ1)[0]), y2: HL.r2(P(-14, 0, topZ1)[1]),
+      class: "lo", "stroke-width": 1.0
+    }, svg);
+    HL.mk("circle", { cx: HL.r2(P(-25, 0, topZ1)[0]), cy: HL.r2(P(-25, 0, topZ1)[1]), r: 1.4, fill: "#232327" }, svg);
+
+    // Helper for clean projected dots
+    function makeDot() {
+      return HL.mk("ellipse", { rx: HL.r2(1.5 * C.S), ry: HL.r2(1.5 * C.S * C.k), fill: "#232327", stroke: "none" }, svg);
+    }
+
+    // 10 pips on Tile 1 (5 top, 5 bottom)
+    const c1X = -25;
+    const pips1Pos = [
+      [c1X - 5.5, -11.5], [c1X + 5.5, -11.5],
+      [c1X, -8.0],
+      [c1X - 5.5, -4.5],  [c1X + 5.5, -4.5],
+      [c1X - 5.5, 4.5],   [c1X + 5.5, 4.5],
+      [c1X, 8.0],
+      [c1X - 5.5, 11.5],  [c1X + 5.5, 11.5]
+    ];
+    pips1Pos.forEach(([px, py]) => {
+      const pt = P(px, py, topZ1);
+      const dot = makeDot();
+      dot.setAttribute("cx", HL.r2(pt[0]));
+      dot.setAttribute("cy", HL.r2(pt[1]));
+    });
+
+    // Tile 2 (Right: Units 1 to 5)
     const d2Sol = HL.solid(svg);
-    const d2Lift = HL.spring(0, { k: 130, c: 14 });
-
-    // Central Brass Spinner Rivets (collar ring + dome core)
-    const spinner1Collar = HL.mk("ellipse", { rx: HL.r2(2.6 * C.S), ry: HL.r2(2.6 * C.S * C.k), class: "lo nf" }, svg);
-    const spinner1Dot = HL.mk("ellipse", { rx: HL.r2(1.3 * C.S), ry: HL.r2(1.3 * C.S * C.k), fill: "#232327", class: "hi" }, svg);
-
-    const spinner2Collar = HL.mk("ellipse", { rx: HL.r2(2.6 * C.S), ry: HL.r2(2.6 * C.S * C.k), class: "lo nf" }, svg);
-    const spinner2Dot = HL.mk("ellipse", { rx: HL.r2(1.3 * C.S), ry: HL.r2(1.3 * C.S * C.k), fill: "#232327" }, svg);
-
-    // Milled dividing channels on tiles (double lines)
-    const div1A = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
-    const div1B = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
-    const div2A = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
-    const div2B = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
-
-    // Sunken Double-Ring Pips Pool:
-    // Outer recess ring (.lo) + Inner filled core dot
-    function makePip() {
-      const ring = HL.mk("polygon", { fill: "#ffffff", stroke: "#6f6f78", "stroke-width": 0.8 }, svg);
-      const dot = HL.mk("polygon", { fill: "#232327", stroke: "none" }, svg);
-      return { ring, dot };
-    }
-
-    const d1Pips = Array.from({ length: 10 }, makePip);
-    const d2Pips = Array.from({ length: 5 }, makePip);
-
-    function projectPipPolygon(cx, cy, z, r) {
-      const pts = [];
-      for (let i = 0; i < 12; i++) {
-        const a = (i / 12) * Math.PI * 2;
-        pts.push(P(cx + Math.cos(a) * r, cy + Math.sin(a) * r, z).map(HL.r2).join(","));
-      }
-      return pts.join(" ");
-    }
+    const d2Lift = HL.spring(0, { k: 140, c: 14 });
+    const div2 = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
+    const pin2 = HL.mk("circle", { r: 1.4, fill: "#232327" }, svg);
+    const d2Dots = Array.from({ length: 5 }, makeDot);
 
     let unitCount = initialV != null ? Math.round(HL.clamp(initialV, 1, 5)) : 3;
-    let active = false;
 
     function draw() {
-      // --- TILE 1 (Left: Tens = 10 pips) ---
-      const z1 = 2.4 + d1Lift.x;
-      const [t1O, t1I] = HL.rings(-38, -17.5, -14, 17.5, 3.2, 0.9);
-      HL.put(d1Sol, HL.prism(P, front, t1O, t1I, z1, z1 + 5.2));
+      const z2 = 2.0 + d2Lift.x;
+      const [t2O, t2I] = HL.rings(13, -16, 37, 16, 2.5, 0.8);
+      HL.put(d2Sol, HL.prism(P, front, t2O, t2I, z2, z2 + 5.0));
 
-      const topZ1 = z1 + 5.3;
-      const c1X = -26;
+      const topZ2 = z2 + 5.1;
+      const c2X = 25;
 
-      // Spinner rivet 1
-      const p1Scr = P(c1X, 0, topZ1);
-      spinner1Collar.setAttribute("cx", HL.r2(p1Scr[0]));
-      spinner1Collar.setAttribute("cy", HL.r2(p1Scr[1]));
-      spinner1Dot.setAttribute("cx", HL.r2(p1Scr[0]));
-      spinner1Dot.setAttribute("cy", HL.r2(p1Scr[1]));
+      div2.setAttribute("x1", HL.r2(P(14, 0, topZ2)[0]));
+      div2.setAttribute("y1", HL.r2(P(14, 0, topZ2)[1]));
+      div2.setAttribute("x2", HL.r2(P(36, 0, topZ2)[0]));
+      div2.setAttribute("y2", HL.r2(P(36, 0, topZ2)[1]));
 
-      // Double divider channel on Tile 1
-      const g1L = P(-37, -0.6, topZ1); const g1R = P(-15, -0.6, topZ1);
-      const g2L = P(-37, 0.6, topZ1);  const g2R = P(-15, 0.6, topZ1);
-      div1A.setAttribute("x1", HL.r2(g1L[0])); div1A.setAttribute("y1", HL.r2(g1L[1]));
-      div1A.setAttribute("x2", HL.r2(g1R[0])); div1A.setAttribute("y2", HL.r2(g1R[1]));
-      div1B.setAttribute("x1", HL.r2(g2L[0])); div1B.setAttribute("y1", HL.r2(g2L[1]));
-      div1B.setAttribute("x2", HL.r2(g2R[0])); div1B.setAttribute("y2", HL.r2(g2R[1]));
+      const p2Center = P(c2X, 0, topZ2);
+      pin2.setAttribute("cx", HL.r2(p2Center[0]));
+      pin2.setAttribute("cy", HL.r2(p2Center[1]));
 
-      // 10 Pips layout on Tile 1 (5 top, 5 bottom)
-      const pips1Pos = [
-        // Top 5 pips
-        [c1X - 6.2, -12.5], [c1X + 6.2, -12.5],
-        [c1X, -9.2],
-        [c1X - 6.2, -5.9],  [c1X + 6.2, -5.9],
-        // Bottom 5 pips
-        [c1X - 6.2, 5.9],   [c1X + 6.2, 5.9],
-        [c1X, 9.2],
-        [c1X - 6.2, 12.5],  [c1X + 6.2, 12.5]
-      ];
-
-      pips1Pos.forEach((pos, i) => {
-        d1Pips[i].ring.setAttribute("points", projectPipPolygon(pos[0], pos[1], topZ1, 1.8));
-        d1Pips[i].dot.setAttribute("points", projectPipPolygon(pos[0], pos[1], topZ1, 1.2));
-      });
-
-      // --- TILE 2 (Right: Units = 1 to 5 pips) ---
-      const z2 = 2.4 + d2Lift.x;
-      const [t2O, t2I] = HL.rings(14, -17.5, 38, 17.5, 3.2, 0.9);
-      HL.put(d2Sol, HL.prism(P, front, t2O, t2I, z2, z2 + 5.2));
-
-      const topZ2 = z2 + 5.3;
-      const c2X = 26;
-
-      // Spinner rivet 2
-      const p2Scr = P(c2X, 0, topZ2);
-      spinner2Collar.setAttribute("cx", HL.r2(p2Scr[0]));
-      spinner2Collar.setAttribute("cy", HL.r2(p2Scr[1]));
-      spinner2Dot.setAttribute("cx", HL.r2(p2Scr[0]));
-      spinner2Dot.setAttribute("cy", HL.r2(p2Scr[1]));
-
-      // Double divider channel on Tile 2
-      const h1L = P(15, -0.6, topZ2); const h1R = P(37, -0.6, topZ2);
-      const h2L = P(15, 0.6, topZ2);  const h2R = P(37, 0.6, topZ2);
-      div2A.setAttribute("x1", HL.r2(h1L[0])); div2A.setAttribute("y1", HL.r2(h1L[1]));
-      div2A.setAttribute("x2", HL.r2(h1R[0])); div2A.setAttribute("y2", HL.r2(h1R[1]));
-      div2B.setAttribute("x1", HL.r2(h2L[0])); div2B.setAttribute("y1", HL.r2(h2L[1]));
-      div2B.setAttribute("x2", HL.r2(h2R[0])); div2B.setAttribute("y2", HL.r2(h2R[1]));
-
-      // Standard domino pip patterns for 1, 2, 3, 4, 5
-      const unitPipsPatterns = {
-        1: [[c2X, -9.2]],
-        2: [[c2X - 5.5, -12.5], [c2X + 5.5, -5.9]],
-        3: [[c2X - 5.5, -12.5], [c2X, -9.2], [c2X + 5.5, -5.9]],
-        4: [[c2X - 5.5, -12.5], [c2X + 5.5, -12.5], [c2X - 5.5, -5.9], [c2X + 5.5, -5.9]],
-        5: [[c2X - 5.5, -12.5], [c2X + 5.5, -12.5], [c2X, -9.2], [c2X - 5.5, -5.9], [c2X + 5.5, -5.9]]
+      const patterns = {
+        1: [[c2X, -8.0]],
+        2: [[c2X - 5.5, -11.5], [c2X + 5.5, -4.5]],
+        3: [[c2X - 5.5, -11.5], [c2X, -8.0], [c2X + 5.5, -4.5]],
+        4: [[c2X - 5.5, -11.5], [c2X + 5.5, -11.5], [c2X - 5.5, -4.5], [c2X + 5.5, -4.5]],
+        5: [[c2X - 5.5, -11.5], [c2X + 5.5, -11.5], [c2X, -8.0], [c2X - 5.5, -4.5], [c2X + 5.5, -4.5]]
       };
 
-      const curPattern = unitPipsPatterns[unitCount] || unitPipsPatterns[3];
-      d2Pips.forEach((pip, i) => {
-        if (i < curPattern.length) {
-          pip.ring.style.display = "";
-          pip.dot.style.display = "";
-          pip.ring.setAttribute("points", projectPipPolygon(curPattern[i][0], curPattern[i][1], topZ2, 1.8));
-          pip.dot.setAttribute("points", projectPipPolygon(curPattern[i][0], curPattern[i][1], topZ2, 1.2));
+      const pts = patterns[unitCount] || patterns[3];
+      d2Dots.forEach((dot, i) => {
+        if (i < pts.length) {
+          dot.style.display = "";
+          const p = P(pts[i][0], pts[i][1], topZ2);
+          dot.setAttribute("cx", HL.r2(p[0]));
+          dot.setAttribute("cy", HL.r2(p[1]));
         } else {
-          pip.ring.style.display = "none";
-          pip.dot.style.display = "none";
+          dot.style.display = "none";
         }
       });
 
-      const total = 10 + unitCount;
-      read.textContent = "Domino: 10 + " + unitCount + " = " + total;
+      d2Sol.sil.classList.toggle("hi", d2Lift.x > 0.5);
+      read.textContent = "Domino: 10 + " + unitCount + " = " + (10 + unitCount) + " (1 chục và " + unitCount + " đơn vị)";
     }
 
     function aim(pt) {
       if (!pt) {
-        d1Lift.t = 0; d2Lift.t = 0;
-        active = false;
-        spinner1Dot.classList.toggle("hi", true);
-        d1Sol.sil.classList.toggle("hi", false);
-        d2Sol.sil.classList.toggle("hi", false);
+        d2Lift.t = 0;
         reg.wake();
         return;
       }
-      const [u, v] = pt;
-      const s1 = P(-26, 0, 5)[0];
-      const s2 = P(26, 0, 5)[0];
+      const s2 = P(25, 0, 5)[0];
+      const near = Math.abs(pt[0] - s2) < 35;
+      d2Lift.t = near ? 3.0 : 0;
 
-      const h1 = Math.abs(u - s1) < 36;
-      const h2 = Math.abs(u - s2) < 36;
-
-      d1Lift.t = h1 ? 4.5 : 0;
-      d2Lift.t = h2 ? 4.5 : 0;
-      active = h1 || h2;
-
-      spinner1Dot.classList.toggle("hi", !active);
-      d1Sol.sil.classList.toggle("hi", h1);
-      d2Sol.sil.classList.toggle("hi", h2);
-
-      if (h2) {
-        const topY = P(26, -18, 5)[1];
-        const botY = P(26, 18, 5)[1];
-        const norm = HL.clamp((v - topY) / (botY - topY), 0, 1);
+      if (near) {
+        const topY = P(25, -16, 5)[1];
+        const botY = P(25, 16, 5)[1];
+        const norm = HL.clamp((pt[1] - topY) / (botY - topY), 0, 1);
         unitCount = Math.min(5, Math.max(1, Math.round(1 + norm * 4)));
       }
       reg.wake();
     }
 
     const reg = HL.register(stage, dt => {
-      const m1 = HL.stepS(d1Lift, dt);
-      const m2 = HL.stepS(d2Lift, dt);
+      const m = HL.stepS(d2Lift, dt);
       draw();
-      return m1 || m2;
+      return m;
     });
+
     bag.add(reg.unregister);
     bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
+
     return {
       set(v) {
-        unitCount = Math.min(5, Math.max(1, Math.round(v)));
+        unitCount = HL.clamp(Math.round(v), 1, 5);
         draw();
       },
       destroy: bag.dispose
@@ -249,232 +168,155 @@ const MATH_FIGURES = [
 },
 /*
  * 2. Math Balance Scale (Cân Thăng Bằng Số Học)
- * Crafted to Lucas Markes Hairline Standard:
- * - Tapered cast truss beam with circular end eyelets
- * - Swinging vertical indicator needle & engraved focal scale arc
- * - Turned pedestal mast with collar rings & leveling plinth
- * - Dished brass pans & calibrated cylindrical weights with spherical lifting knobs
- * - Pure 2:1 axonometric line art with Rule 04/05/09 solid & crease discipline
+ * Pedagogical Goal: Number comparison (lớn hơn, bé hơn, bằng nhau)
+ * Simplified Geometry: Clean balance beam, center fulcrum mast, two hanging pans
+ * Meaningful Interaction: Moving pointer left/right tilts scale with needle indicating =, >, <
  */
 
 {
   id: "math-balance",
   title: "2. Cân Thăng Bằng (Balance Scale)",
   concept: "So sánh lớn hơn, bé hơn, bằng nhau",
-  means: "Cân thăng bằng cơ học chính xác: dầm cân hình thoi vuốt thon với kim chỉ thị trung tâm; di chuyển con trỏ để làm cân nghiêng tự nhiên, thả chuột kim hồi phục về vạch 0 thăng bằng.",
-  rules: [1, 3, 4, 6, 7, 9],
+  means: "Cân thăng bằng cơ học tinh giản: dầm cân với kim chỉ thị trung tâm; di chuột sang trái/phải để làm cân nghiêng trực quan (lớn hơn/nhỏ hơn), thả chuột cân tự cân bằng ở giữa.",
+  rules: [1, 3, 4, 7, 9],
   range: [-1, 0, 1],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-58, -20, 0], [58, 20, 58]], 200, 160);
+    HL.fit(C, [[-54, -18, 0], [54, 18, 56]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Leveling Instrument Plinth Base (Z: 0 to 5)
-    const [baseO, baseI] = HL.rings(-26, -18, 26, 18, 4, 1.2);
+    // 1. Clean Base Plinth (Z: 0 to 4)
+    const [baseO, baseI] = HL.rings(-24, -16, 24, 16, 3.5, 0.8);
     const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 5));
+    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 4));
 
-    // Two brass leveling thumb-screws at front corners of plinth
-    for (const [bx, by] of [[-20, 14], [20, 14]]) {
-      const [screwO] = HL.rings(bx - 2.8, by - 2.8, bx + 2.8, by + 2.8, 2.8, 0.6);
-      HL.mk("path", { class: "lo", d: HL.poly(HL.ringAt(P, screwO, 5.2)) }, svg);
-      HL.mk("circle", { cx: P(bx, by, 5.2)[0], cy: P(bx, by, 5.2)[1], r: 1.2, fill: "#232327" }, svg);
-    }
-
-    // 2. Turned Mast Pillar with Base Collar & Head Bracket
-    // Base collar ring (Z: 5 to 9)
-    const [collarO, collarI] = HL.rings(-6, -6, 6, 6, 6, 0.8);
-    const collarSol = HL.solid(svg);
-    HL.put(collarSol, HL.prism(P, front, collarO, collarI, 5, 9));
-
-    // Vertical shaft (Z: 9 to 38)
-    const [mastO, mastI] = HL.rings(-3.6, -3.6, 3.6, 3.6, 3.6, 0.7);
+    // 2. Clean Mast Pillar (Z: 4 to 38)
+    const [mastO, mastI] = HL.rings(-3.2, -3.2, 3.2, 3.2, 3.2, 0.6);
     const mastSol = HL.solid(svg);
-    HL.put(mastSol, HL.prism(P, front, mastO, mastI, 9, 38));
+    HL.put(mastSol, HL.prism(P, front, mastO, mastI, 4, 38));
 
-    // Top fulcrum housing (Z: 38 to 43)
-    const [headO, headI] = HL.rings(-5.5, -4, 5.5, 4, 3, 0.8);
-    const headSol = HL.solid(svg);
-    HL.put(headSol, HL.prism(P, front, headO, headI, 38, 43));
-
-    // Central Agate Bearing Pivot Pin
-    const pinScr = P(0, 4.2, 40.5);
-    HL.mk("circle", { cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]), r: 2.2, fill: "#ffffff", stroke: "#232327", "stroke-width": 1.2 }, svg);
+    // Center pivot pin
+    const pinScr = P(0, 3.5, 38);
+    HL.mk("circle", { cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]), r: 2.0, fill: "#ffffff", stroke: "#232327", "stroke-width": 1.2 }, svg);
     HL.mk("circle", { cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]), r: 1.0, fill: "#232327" }, svg);
 
-    // 3. Focal Indicator Scale Arc on Mast (Z: 20 to 26)
-    // Engraved scale lines on front face of pillar
-    const scaleArc = [];
-    for (let k = -4; k <= 4; k++) {
-      const ang = (k / 16) * Math.PI;
-      const rA = 17.5;
-      const sx = Math.sin(ang) * rA;
-      const sz = 40.5 - Math.cos(ang) * rA;
-      const isCenter = k === 0;
-      const pTop = P(sx, 3.7, sz);
-      const pBot = P(sx * 0.9, 3.7, sz - 2.5);
+    // 3. Simple 3-tick indicator scale (-1, 0, +1)
+    const tickMid = P(0, 3.4, 25);
+    const tickMidTop = P(0, 3.4, 22.5);
+    HL.mk("line", {
+      x1: HL.r2(tickMid[0]), y1: HL.r2(tickMid[1]),
+      x2: HL.r2(tickMidTop[0]), y2: HL.r2(tickMidTop[1]),
+      stroke: "#111113", "stroke-width": 1.4, class: "hi"
+    }, svg);
+
+    for (const sx of [-6, 6]) {
+      const p1 = P(sx, 3.4, 25.5);
+      const p2 = P(sx * 0.85, 3.4, 23.5);
       HL.mk("line", {
-        x1: HL.r2(pTop[0]), y1: HL.r2(pTop[1]),
-        x2: HL.r2(pBot[0]), y2: HL.r2(pBot[1]),
-        stroke: isCenter ? "#111113" : "#6f6f78",
-        "stroke-width": isCenter ? 1.4 : 0.8,
-        class: isCenter ? "hi" : "lo"
+        x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
+        x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
+        stroke: "#6f6f78", "stroke-width": 0.8, class: "lo"
       }, svg);
     }
 
-    // 4. Moving Elements: Beam, Pointer Needle, Pans, Cords, Weights
+    // 4. Moving Balance Elements
     const beamSol = HL.solid(svg);
     const needleLine = HL.mk("line", { stroke: "#111113", "stroke-width": 1.4, "stroke-linecap": "round" }, svg);
     const needleTip = HL.mk("circle", { r: 1.2, fill: "#232327" }, svg);
 
-    const leftTraySol = HL.solid(svg);
-    const rightTraySol = HL.solid(svg);
-    const leftRim = HL.mk("ellipse", { rx: HL.r2(11.5 * C.S), ry: HL.r2(11.5 * C.S * C.k), class: "lo nf" }, svg);
-    const rightRim = HL.mk("ellipse", { rx: HL.r2(11.5 * C.S), ry: HL.r2(11.5 * C.S * C.k), class: "lo nf" }, svg);
-
+    const leftPanSol = HL.solid(svg);
+    const rightPanSol = HL.solid(svg);
     const cords = HL.mk("path", { class: "lo", "stroke-width": 1.0 }, svg);
 
-    // 6 Precision Calibrated Brass Weights (3 on left, 3 on right)
-    const weights = Array.from({ length: 6 }, () => ({
-      bodySol: HL.solid(svg),
-      collarSol: HL.solid(svg),
-      knobDot: HL.mk("circle", { r: 1.3, fill: "#232327" }, svg)
-    }));
+    // Weights: 3 weights on left pan, 3 weights on right pan
+    const leftWeights = Array.from({ length: 3 }, () => HL.solid(svg));
+    const rightWeights = Array.from({ length: 3 }, () => HL.solid(svg));
 
-    const tiltSpring = HL.spring(0, { k: 110, c: 12 });
-    const beamLen = 39;
-    const fulcrumZ = 40.5;
-    const cordLen = 23;
-    const needleLen = 17.5;
-
-    function renderCalibratedWeight(wObj, wx, wy, baseZ) {
-      // Cylindrical weight body: R=3.4, H=4.5
-      const [wO, wI] = HL.rings(wx - 3.4, wy - 3.4, wx + 3.4, wy + 3.4, 3.4, 0.5);
-      HL.put(wObj.bodySol, HL.prism(P, front, wO, wI, baseZ, baseZ + 4.5));
-
-      // Stepped top neck collar: R=2.0, H=1.5
-      const [cO, cI] = HL.rings(wx - 2.0, wy - 2.0, wx + 2.0, wy + 2.0, 2.0, 0.4);
-      HL.put(wObj.collarSol, HL.prism(P, front, cO, cI, baseZ + 4.5, baseZ + 5.8));
-
-      // Spherical top lifting knob
-      const knobScr = P(wx, wy, baseZ + 6.8);
-      wObj.knobDot.setAttribute("cx", HL.r2(knobScr[0]));
-      wObj.knobDot.setAttribute("cy", HL.r2(knobScr[1]));
-    }
+    const tiltSpring = HL.spring(0, { k: 120, c: 13 });
+    const beamLen = 38;
+    const fulcrumZ = 38;
+    const cordLen = 22;
 
     function draw() {
-      const theta = tiltSpring.x;
-      const cosT = Math.cos(theta);
-      const sinT = Math.sin(theta);
+      const angle = tiltSpring.x; // Angle in radians
+      const sinA = Math.sin(angle);
+      const cosA = Math.cos(angle);
 
-      // Beam pivot positions
-      const xR = beamLen * cosT;
-      const zR = fulcrumZ + beamLen * sinT;
-      const xL = -beamLen * cosT;
-      const zL = fulcrumZ - beamLen * sinT;
+      // Beam ends
+      const lx = -beamLen * cosA;
+      const lz = fulcrumZ - beamLen * sinA;
+      const rx = beamLen * cosA;
+      const rz = fulcrumZ + beamLen * sinA;
 
-      // 1. Tapered Diamond Truss Beam with Rounded Eyelet Ends
-      // Beam profile sampled along X from -beamLen to +beamLen
-      const numPts = 20;
-      const beamUpper = [];
-      const beamLower = [];
+      // Diamond tapered beam prism
+      const topPts = [
+        P(-beamLen * cosA, 0, fulcrumZ - beamLen * sinA),
+        P(0, 0, fulcrumZ + 2.5),
+        P(beamLen * cosA, 0, fulcrumZ + beamLen * sinA),
+        P(0, 0, fulcrumZ - 2.5)
+      ];
+      const botPts = topPts.map(p => [p[0], p[1] + 1.2]);
+      HL.put(beamSol, { sil: HL.poly(HL.hull([...topPts, ...botPts])), crease: HL.poly(topPts) });
 
-      for (let i = 0; i <= numPts; i++) {
-        const u = i / numPts;
-        const lx = HL.lerp(-beamLen, beamLen, u);
-        // Taper: height is 5.5 at center (u=0.5), tapering to 2.4 at ends
-        const h = 2.4 + 3.1 * (1 - Math.pow(Math.abs(u - 0.5) * 2, 1.4));
-        const rotX = lx * cosT - (h / 2) * sinT;
-        const rotZ = fulcrumZ + lx * sinT + (h / 2) * cosT;
-        beamUpper.push(P(rotX, 0, rotZ));
-
-        const rotX_b = lx * cosT - (-h / 2) * sinT;
-        const rotZ_b = fulcrumZ + lx * sinT + (-h / 2) * cosT;
-        beamLower.push(P(rotX_b, 0, rotZ_b));
-      }
-
-      // 3D Extrusion thickness of beam (along Y: -1.4 to 1.4)
-      const beamHull = HL.hull([...beamUpper, ...beamLower]);
-      HL.put(beamSol, {
-        sil: HL.poly(beamHull),
-        crease: HL.open(beamUpper)
-      });
-
-      // 2. Vertical Indicator Needle swinging from fulcrum
-      const tipX = -Math.sin(theta) * needleLen;
-      const tipZ = fulcrumZ - Math.cos(theta) * needleLen;
-      const nBaseScr = P(0, 2.5, fulcrumZ);
-      const nTipScr = P(tipX, 2.5, tipZ);
-
+      // Indicator needle pointing downwards
+      const nTipX = -14 * sinA;
+      const nTipZ = fulcrumZ - 14 * cosA;
+      const nBaseScr = P(0, 3.6, fulcrumZ);
+      const nTipScr = P(nTipX, 3.6, nTipZ);
       needleLine.setAttribute("x1", HL.r2(nBaseScr[0]));
       needleLine.setAttribute("y1", HL.r2(nBaseScr[1]));
       needleLine.setAttribute("x2", HL.r2(nTipScr[0]));
       needleLine.setAttribute("y2", HL.r2(nTipScr[1]));
-
       needleTip.setAttribute("cx", HL.r2(nTipScr[0]));
       needleTip.setAttribute("cy", HL.r2(nTipScr[1]));
 
-      // 3. Pans: Plumb suspension
-      const panR = 11.5;
-      const trayH = 2.0;
+      // Pans hanging plumb
+      const panRadius = 11;
+      const lPanZ = lz - cordLen;
+      const rPanZ = rz - cordLen;
 
-      // Left pan
-      const trayLZ = zL - cordLen;
-      const [lO, lI] = HL.rings(xL - panR, -panR, xL + panR, panR, panR, 1.0);
-      HL.put(leftTraySol, HL.prism(P, front, lO, lI, trayLZ, trayLZ + trayH));
-      const lRimScr = P(xL, 0, trayLZ + trayH + 0.1);
-      leftRim.setAttribute("cx", HL.r2(lRimScr[0]));
-      leftRim.setAttribute("cy", HL.r2(lRimScr[1]));
+      // Left pan prism
+      const [lpO, lpI] = HL.rings(lx - panRadius, -panRadius, lx + panRadius, panRadius, panRadius, 0.8);
+      HL.put(leftPanSol, HL.prism(P, front, lpO, lpI, lPanZ, lPanZ + 1.8));
 
-      // Right pan
-      const trayRZ = zR - cordLen;
-      const [rO, rI] = HL.rings(xR - panR, -panR, xR + panR, panR, panR, 1.0);
-      HL.put(rightTraySol, HL.prism(P, front, rO, rI, trayRZ, trayRZ + trayH));
-      const rRimScr = P(xR, 0, trayRZ + trayH + 0.1);
-      rightRim.setAttribute("cx", HL.r2(rRimScr[0]));
-      rightRim.setAttribute("cy", HL.r2(rRimScr[1]));
+      // Right pan prism
+      const [rpO, rpI] = HL.rings(rx - panRadius, -panRadius, rx + panRadius, panRadius, panRadius, 0.8);
+      HL.put(rightPanSol, HL.prism(P, front, rpO, rpI, rPanZ, rPanZ + 1.8));
 
-      // Suspension cords (3 per tray at 120-degree intervals)
+      // 3 Suspension Cords per pan
       let cordD = "";
-      const angles = [0, (2 * Math.PI) / 3, (4 * Math.PI) / 3];
+      for (const ang of [0, (2 * Math.PI) / 3, (4 * Math.PI) / 3]) {
+        const pxL = lx + (panRadius - 1.2) * Math.cos(ang);
+        const pyL = (panRadius - 1.2) * Math.sin(ang);
+        cordD += HL.seg(P(lx, 0, lz), P(pxL, pyL, lPanZ + 1.6));
 
-      angles.forEach(a => {
-        const pxL = xL + panR * 0.88 * Math.cos(a);
-        const pyL = panR * 0.88 * Math.sin(a);
-        cordD += HL.seg(P(xL, 0, zL), P(pxL, pyL, trayLZ + trayH));
-
-        const pxR = xR + panR * 0.88 * Math.cos(a);
-        const pyR = panR * 0.88 * Math.sin(a);
-        cordD += HL.seg(P(xR, 0, zR), P(pxR, pyR, trayRZ + trayH));
-      });
+        const pxR = rx + (panRadius - 1.2) * Math.cos(ang);
+        const pyR = (panRadius - 1.2) * Math.sin(ang);
+        cordD += HL.seg(P(rx, 0, rz), P(pxR, pyR, rPanZ + 1.6));
+      }
       cords.setAttribute("d", cordD);
 
-      // 4. Weights placement
-      const wOffsets = [
-        [-3.8, -2.4],
-        [ 3.8, -2.4],
-        [   0,  4.2]
-      ];
+      // Clean cylindrical weights
+      const wOffsets = [[-3.5, -2], [3.5, -2], [0, 3.5]];
+      wOffsets.forEach(([ox, oy], i) => {
+        const [wlO, wlI] = HL.rings(lx + ox - 2.6, oy - 2.6, lx + ox + 2.6, oy + 2.6, 2.6, 0.5);
+        HL.put(leftWeights[i], HL.prism(P, front, wlO, wlI, lPanZ + 1.8, lPanZ + 8.5));
 
-      // Left pan weights
-      wOffsets.forEach(([ox, oy], idx) => {
-        renderCalibratedWeight(weights[idx], xL + ox, oy, trayLZ + trayH);
+        const [wrO, wrI] = HL.rings(rx + ox - 2.6, oy - 2.6, rx + ox + 2.6, oy + 2.6, 2.6, 0.5);
+        HL.put(rightWeights[i], HL.prism(P, front, wrO, wrI, rPanZ + 1.8, rPanZ + 8.5));
       });
 
-      // Right pan weights
-      wOffsets.forEach(([ox, oy], idx) => {
-        renderCalibratedWeight(weights[3 + idx], xR + ox, oy, trayRZ + trayH);
-      });
+      // Semantic highlight
+      const isBalanced = Math.abs(angle) < 0.03;
+      beamSol.sil.classList.toggle("hi", isBalanced);
 
-      // Readout
-      const deg = (theta * 180) / Math.PI;
-      if (Math.abs(deg) < 1.0) {
-        read.textContent = "Cân thăng bằng: Hai bên bằng nhau (3 = 3)";
-      } else if (deg < 0) {
-        read.textContent = "Bên trái nặng hơn (Kim lệch phải)";
+      if (isBalanced) {
+        read.textContent = "Thăng bằng: Hai vế bằng nhau (3 = 3)";
+      } else if (angle < -0.03) {
+        read.textContent = "Nghiêng trái: Vế trái nặng hơn (> )";
       } else {
-        read.textContent = "Bên phải nặng hơn (Kim lệch trái)";
+        read.textContent = "Nghiêng phải: Vế phải nặng hơn (< )";
       }
     }
 
@@ -484,33 +326,28 @@ const MATH_FIGURES = [
         reg.wake();
         return;
       }
-      const midScr = P(0, 0, fulcrumZ)[0];
-      const norm = HL.clamp((pt[0] - midScr) / 100, -1, 1);
-      tiltSpring.t = norm * HL.rad(10);
+      const midX = P(0, 0, 38)[0];
+      const diffX = pt[0] - midX;
+      // Clamp tilt between -0.16 and +0.16 radians
+      tiltSpring.t = HL.clamp(diffX * 0.003, -0.16, 0.16);
       reg.wake();
     }
 
     const reg = HL.register(stage, dt => {
-      const moving = HL.stepS(tiltSpring, dt);
+      const m = HL.stepS(tiltSpring, dt);
       draw();
-      return moving;
+      return m;
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => {
-        tiltSpring.t = 0;
-        reg.wake();
-      }
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
-        tiltSpring.t = HL.clamp(v, -1, 1) * HL.rad(10);
+        tiltSpring.t = HL.clamp(v * 0.16, -0.16, 0.16);
         reg.wake();
       },
       destroy: bag.dispose
@@ -519,108 +356,69 @@ const MATH_FIGURES = [
 },
 /*
  * 3. Ten Frame Counter (Khung 10 Ô Đếm Số)
- * Authentic Grade 1 Pedagogical Manipulative: Base-10 Structure & Complements of 10
- * Lucas Markes Hairline Standard:
- * - Turned beechwood tray with filleted border (r=4.0, b=1.4) & corner foot pads
- * - 10 dished circular cup pockets with beveled rims
- * - Minted coin counters with concentric minted rims & center bosses
- * - Continuous pointer tracking across 10 slots with spring drop physics
- * - Semantic highlight (hi) on current count milestone, transferring on interaction
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Complements of 10 & base-10 structure (7 + 3 = 10)
+ * Simplified Geometry: Clean 2x5 tray with 10 rounded pockets & clean circular counters
+ * Meaningful Interaction: Moving pointer horizontally smoothly fills/empties counters with spring drop
  */
 
 {
   id: "math-ten-frame",
   title: "3. Khung 10 Ô (Ten Frame Counter)",
   concept: "Cấu trúc số 10 cơ số mười & Bổ số 10",
-  means: "Khung 10 ô đếm số: khay gỗ 2 hàng 5 cột; di chuột ngang để đặt hoặc rút đồng xu cơ khí, trực quan hóa bổ số 10 (7 + 3 = 10).",
+  means: "Khung 10 ô đếm số tinh giản: khay gỗ 2 hàng 5 cột; di chuột ngang để đặt hoặc rút đồng xu cơ khí mượt mà, trực quan hóa bổ số 10 (7 + 3 = 10).",
   rules: [1, 2, 4, 7, 9],
   range: [0, 7, 10],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-58, -26, 0], [58, 26, 32]], 200, 160);
+    HL.fit(C, [[-54, -24, 0], [54, 24, 30]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Tray (Z: 0 to 4.5)
-    const [trayO, trayI] = HL.rings(-54, -24, 54, 24, 4.0, 1.4);
+    // 1. Clean Wooden Tray (Z: 0 to 3.5)
+    const [trayO, trayI] = HL.rings(-50, -20, 50, 20, 3.5, 1.0);
     const traySol = HL.solid(svg);
-    HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 4.5));
+    HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 3.5));
 
-    // Corner foot pads
-    for (const [fx, fy] of [[-48, -19], [48, -19], [-48, 19], [48, 19]]) {
-      const [fO] = HL.rings(fx - 3.2, fy - 3.2, fx + 3.2, fy + 3.2, 3.2, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
-
-    // Recessed tray floor opening (Z = 4.5)
-    const [trayRecess] = HL.rings(-51, -21, 51, 21, 3.0, 0.6);
-    HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, trayRecess, 4.5)) }, svg);
-
-    // 10 Dished Circular Cup Pockets (2 rows, 5 columns)
+    // 10 Clean Circular Cup Pockets (2 rows, 5 columns)
     for (let r = 0; r < 2; r++) {
-      const cy = r === 0 ? 10.5 : -10.5;
+      const cy = r === 0 ? 9.5 : -9.5;
       for (let c = 0; c < 5; c++) {
-        const cx = -40 + c * 20;
-
-        // Beveled outer rim of pocket at Z = 4.5
-        const rimOuter = [];
-        const rimFloor = [];
+        const cx = -38 + c * 19;
+        const pocketPts = [];
         for (let k = 0; k <= 24; k++) {
           const a = (k / 24) * Math.PI * 2;
-          rimOuter.push(P(cx + 7.5 * Math.cos(a), cy + 7.5 * Math.sin(a), 4.5));
-          rimFloor.push(P(cx + 6.8 * Math.cos(a), cy + 6.8 * Math.sin(a), 1.8));
+          pocketPts.push(P(cx + 6.8 * Math.cos(a), cy + 6.8 * Math.sin(a), 3.5));
         }
-        HL.mk("path", { class: "lo nf", d: HL.poly(rimOuter) }, svg);
-        HL.mk("path", { class: "lo nf", d: HL.poly(rimFloor) }, svg);
-
-        // Center crosshair tick inside empty socket
-        HL.mk("line", {
-          x1: HL.r2(P(cx - 2, cy, 1.9)[0]), y1: HL.r2(P(cx - 2, cy, 1.9)[1]),
-          x2: HL.r2(P(cx + 2, cy, 1.9)[0]), y2: HL.r2(P(cx + 2, cy, 1.9)[1]),
-          class: "lo"
-        }, svg);
-        HL.mk("line", {
-          x1: HL.r2(P(cx, cy - 2, 1.9)[0]), y1: HL.r2(P(cx, cy - 2, 1.9)[1]),
-          x2: HL.r2(P(cx, cy + 2, 1.9)[0]), y2: HL.r2(P(cx, cy + 2, 1.9)[1]),
-          class: "lo"
-        }, svg);
+        HL.mk("path", { class: "lo nf", d: HL.poly(pocketPts) }, svg);
       }
     }
 
     // Center divider groove separating row 1 and row 2
     HL.mk("line", {
-      x1: HL.r2(P(-49, 0, 4.5)[0]), y1: HL.r2(P(-49, 0, 4.5)[1]),
-      x2: HL.r2(P(49, 0, 4.5)[0]), y2: HL.r2(P(49, 0, 4.5)[1]),
+      x1: HL.r2(P(-46, 0, 3.5)[0]), y1: HL.r2(P(-46, 0, 3.5)[1]),
+      x2: HL.r2(P(46, 0, 3.5)[0]), y2: HL.r2(P(46, 0, 3.5)[1]),
       class: "lo", "stroke-width": 1.0, "stroke-dasharray": "3 2"
     }, svg);
 
-    // 10 Minted Coin Tokens
+    // 10 Clean Circular Coin Tokens
     const tokens = [];
     let count = initialV != null ? HL.clamp(Math.round(initialV), 0, 10) : 7;
     let slotIdx = 0;
 
     for (let r = 0; r < 2; r++) {
-      const cy = r === 0 ? 10.5 : -10.5;
+      const cy = r === 0 ? 9.5 : -9.5;
       for (let c = 0; c < 5; c++) {
-        const cx = -40 + c * 20;
+        const cx = -38 + c * 19;
         const active = slotIdx < count;
-
         const sol = HL.solid(svg);
-        const rimCrease = HL.mk("ellipse", { rx: HL.r2(4.6 * C.S), ry: HL.r2(4.6 * C.S * C.k), class: "lo nf" }, svg);
-        const bossDot = HL.mk("circle", { r: 1.2, fill: "#232327" }, svg);
-        const dropLineEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
 
         tokens.push({
           idx: slotIdx,
           cx,
           cy,
           active,
-          dropSp: HL.spring(active ? 0 : 16, { k: 210, c: 16 }),
-          sol,
-          rimCrease,
-          bossDot,
-          dropLineEl
+          dropSp: HL.spring(active ? 0 : 16, { k: 200, c: 16 }),
+          sol
         });
 
         slotIdx++;
@@ -632,11 +430,7 @@ const MATH_FIGURES = [
       tokens.forEach((tok, i) => {
         const willBeActive = i < count;
         tok.active = willBeActive;
-        if (willBeActive && tok.dropSp.t > 0) {
-          tok.dropSp.t = 0;
-        } else if (!willBeActive && tok.dropSp.t === 0) {
-          tok.dropSp.t = 16;
-        }
+        tok.dropSp.t = willBeActive ? 0 : 16;
       });
       reg.wake();
     }
@@ -644,48 +438,20 @@ const MATH_FIGURES = [
     function draw() {
       tokens.forEach((tok, i) => {
         const dropZ = tok.dropSp.x;
-
         if (tok.active || dropZ < 15.5) {
-          const z = 1.9 + Math.max(0, dropZ);
+          const z = 2.0 + Math.max(0, dropZ);
+          const [cO, cI] = HL.rings(tok.cx - 5.5, tok.cy - 5.5, tok.cx + 5.5, tok.cy + 5.5, 5.5, 0.6);
+          HL.put(tok.sol, HL.prism(P, front, cO, cI, z, z + 2.5));
 
-          // Minted token prism (radius 6.0, height 2.6)
-          const [cO, cI] = HL.rings(tok.cx - 6.0, tok.cy - 6.0, tok.cx + 6.0, tok.cy + 6.0, 6.0, 0.7);
-          HL.put(tok.sol, HL.prism(P, front, cO, cI, z, z + 2.6));
-
-          // Top face minted inner groove & center boss
-          const topFaceZ = z + 2.7;
-          const topScr = P(tok.cx, tok.cy, topFaceZ);
-          tok.rimCrease.style.display = "";
-          tok.rimCrease.setAttribute("cx", HL.r2(topScr[0]));
-          tok.rimCrease.setAttribute("cy", HL.r2(topScr[1]));
-
-          tok.bossDot.style.display = "";
-          tok.bossDot.setAttribute("cx", HL.r2(topScr[0]));
-          tok.bossDot.setAttribute("cy", HL.r2(topScr[1]));
-
-          // Highlight the milestone boundary token (count - 1)
           const isFocal = (i === count - 1) && (dropZ < 1.0);
           tok.sol.sil.classList.toggle("hi", isFocal);
-          tok.bossDot.classList.toggle("hi", isFocal);
-
-          // Drop guideline if airborne
-          if (dropZ > 1.5) {
-            tok.dropLineEl.style.display = "";
-            tok.dropLineEl.setAttribute("d", HL.seg(P(tok.cx, tok.cy, z), P(tok.cx, tok.cy, 1.9)));
-          } else {
-            tok.dropLineEl.style.display = "none";
-          }
         } else {
-          tok.rimCrease.style.display = "none";
-          tok.bossDot.style.display = "none";
-          tok.dropLineEl.style.display = "none";
           HL.put(tok.sol, { sil: "", crease: "" });
         }
       });
 
-      const activeCount = count;
-      const emptyCount = 10 - activeCount;
-      read.textContent = "Ten Frame: " + activeCount + " + " + emptyCount + " = 10";
+      const emptyCount = 10 - count;
+      read.textContent = "Khung 10 ô: " + count + " (có) + " + emptyCount + " (trống) = 10";
     }
 
     function aim(pt) {
@@ -693,11 +459,10 @@ const MATH_FIGURES = [
         applyCount(7);
         return;
       }
-      const pLeft = P(-42, 0, 4)[0];
-      const pRight = P(42, 0, 4)[0];
+      const pLeft = P(-38, 0, 3.5)[0];
+      const pRight = P(38, 0, 3.5)[0];
       const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
-      const targetCount = Math.round(norm * 10);
-      applyCount(targetCount);
+      applyCount(Math.round(norm * 10));
     }
 
     const reg = HL.register(stage, dt => {
@@ -714,6 +479,7 @@ const MATH_FIGURES = [
     bag.add(() => svg.replaceChildren());
 
     draw();
+
     return {
       set(v) {
         applyCount(Math.round(v));
@@ -724,58 +490,39 @@ const MATH_FIGURES = [
 },
 /*
  * 4. Number Blocks Tower (Tháp Khối Số Học Unifix)
- * Authentic Grade 1 Pedagogical Manipulative: Part-Whole Addition & Conservation (3 + 2 = 5)
- * Lucas Markes Hairline Standard:
- * - Turned baseboard with beveled edges (r=3.5, b=1.2) & twin mounting plinths
- * - Precision interlocking Unifix unit cubes with recessed face panels & stack seams
- * - Hollow cylindrical interlocking studs with center core bore holes (r_out=3.6, r_in=1.8)
- * - Airborne flight along parabolic transfer arcs with spring kinematics
- * - Semantic focal highlight (hi) on active transferring block
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Part-whole addition & conservation of volume (3 + 2 = 5)
+ * Simplified Geometry: Clean interlocking cubes with cylindrical top studs on a simple baseboard
+ * Meaningful Interaction: Moving pointer smoothly transfers cubes across towers along a parabolic arc
  */
 
 {
   id: "math-number-blocks",
   title: "4. Tháp Khối Số Học (Unifix Number Blocks)",
   concept: "Phép cộng & bảo toàn số lượng khi ghép khối (3 + 2 = 5)",
-  means: "Tháp khối lập phương Unifix: hai tháp 3 khối và 2 khối; di chuột để chuyển khối theo cung bay parabol mượt mà, trực quan hóa bảo toàn số lượng.",
+  means: "Tháp khối lập phương Unifix tinh giản: hai tháp 3 khối và 2 khối; di chuột để chuyển khối theo cung bay parabol mượt mà, trực quan hóa bảo toàn số lượng.",
   rules: [1, 2, 3, 7, 9],
   range: [1, 3, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-54, -20, 0], [54, 20, 80]], 200, 160);
+    HL.fit(C, [[-50, -18, 0], [50, 18, 76]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Baseboard (Z: 0 to 4)
-    const [baseO, baseI] = HL.rings(-50, -18, 50, 18, 3.5, 1.2);
+    // 1. Clean Hardwood Baseboard (Z: 0 to 3.5)
+    const [baseO, baseI] = HL.rings(-46, -16, 46, 16, 3.0, 0.8);
     const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 4));
-
-    // Corner foot pads
-    for (const [fx, fy] of [[-44, -14], [44, -14], [-44, 14], [44, 14]]) {
-      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
+    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 3.5));
 
     // Base mounting boss studs on board at x = -20 and x = 20
     for (const bx of [-20, 20]) {
-      const [studO, studI] = HL.rings(bx - 4.0, -4.0, bx + 4.0, 4.0, 4.0, 0.7);
+      const [studO, studI] = HL.rings(bx - 3.5, -3.5, bx + 3.5, 3.5, 3.5, 0.5);
       const studSol = HL.solid(svg);
-      HL.put(studSol, HL.prism(P, front, studO, studI, 4, 6.8));
-      // Hollow center bore
-      const centerScr = P(bx, 0, 6.9);
-      HL.mk("ellipse", {
-        cx: HL.r2(centerScr[0]), cy: HL.r2(centerScr[1]),
-        rx: HL.r2(1.8 * C.S), ry: HL.r2(1.8 * C.S * C.k),
-        fill: "#232327", stroke: "none"
-      }, svg);
+      HL.put(studSol, HL.prism(P, front, studO, studI, 3.5, 5.5));
     }
 
-    const blockH = 12.5; // Height of each unit cube
+    const blockH = 12.0;
     const TOTAL_BLOCKS = 5;
 
-    // State: count on Tower A (starts at 3, Tower B has 5 - 3 = 2)
     let countA = initialV != null ? HL.clamp(Math.round(initialV), 1, 5) : 3;
 
     // 5 physical Unifix unit blocks
@@ -784,32 +531,17 @@ const MATH_FIGURES = [
       const isInitialA = i < 3;
       const targetTower = isInitialA ? -20 : 20;
       const targetStackIdx = isInitialA ? i : (i - 3);
-      const targetZ = 4 + targetStackIdx * blockH;
+      const targetZ = 3.5 + targetStackIdx * blockH;
 
       const blockSol = HL.solid(svg);
       const studSol = HL.solid(svg);
-      const studBore = HL.mk("ellipse", {
-        rx: HL.r2(1.8 * C.S), ry: HL.r2(1.8 * C.S * C.k),
-        fill: "#232327", stroke: "none"
-      }, svg);
-
-      // Inset face frame creases for side faces
-      const faceCrease1 = HL.mk("path", { class: "cr nf", d: "" }, svg);
-      const faceCrease2 = HL.mk("path", { class: "cr nf", d: "" }, svg);
-
-      // Dash socket rim when airborne
-      const socketRimEl = HL.mk("path", { class: "nf lo dash", d: "" }, svg);
 
       blocks.push({
         idx: i,
         spX: HL.spring(targetTower, { k: 160, c: 15 }),
         spZ: HL.spring(targetZ, { k: 180, c: 16 }),
         blockSol,
-        studSol,
-        studBore,
-        faceCrease1,
-        faceCrease2,
-        socketRimEl
+        studSol
       });
     }
 
@@ -818,14 +550,14 @@ const MATH_FIGURES = [
       for (let i = 0; i < countA; i++) {
         const b = blocks[i];
         b.spX.t = -20;
-        b.spZ.t = 4 + i * blockH;
+        b.spZ.t = 3.5 + i * blockH;
       }
       // Tower B gets blocks countA .. TOTAL_BLOCKS - 1
       let stackB = 0;
       for (let i = countA; i < TOTAL_BLOCKS; i++) {
         const b = blocks[i];
         b.spX.t = 20;
-        b.spZ.t = 4 + stackB * blockH;
+        b.spZ.t = 3.5 + stackB * blockH;
         stackB++;
       }
       reg.wake();
@@ -836,56 +568,22 @@ const MATH_FIGURES = [
         const curX = b.spX.x;
         const curZ = b.spZ.x;
 
-        // Block cube prism (17 x 17 footprint, height 12.5) with corner fillet r=2.2, bevel b=0.9
-        const [bO, bI] = HL.rings(curX - 8.5, -8.5, curX + 8.5, 8.5, 2.2, 0.9);
+        // Block cube prism (16 x 16 footprint, height 12)
+        const [bO, bI] = HL.rings(curX - 8.0, -8.0, curX + 8.0, 8.0, 2.0, 0.8);
         HL.put(b.blockSol, HL.prism(P, front, bO, bI, curZ, curZ + blockH));
 
-        // Hollow interlocking stud on top face
-        const [sO, sI] = HL.rings(curX - 3.8, -3.8, curX + 3.8, 3.8, 3.8, 0.6);
-        HL.put(b.studSol, HL.prism(P, front, sO, sI, curZ + blockH, curZ + blockH + 2.8));
+        // Interlocking stud on top face
+        const [sO, sI] = HL.rings(curX - 3.5, -3.5, curX + 3.5, 3.5, 3.5, 0.5);
+        HL.put(b.studSol, HL.prism(P, front, sO, sI, curZ + blockH, curZ + blockH + 2.4));
 
-        // Stud center core bore hole
-        const studTopScr = P(curX, 0, curZ + blockH + 2.9);
-        b.studBore.setAttribute("cx", HL.r2(studTopScr[0]));
-        b.studBore.setAttribute("cy", HL.r2(studTopScr[1]));
-
-        // Inset square face panels on visible front/side faces
-        const fZ0 = curZ + 1.8;
-        const fZ1 = curZ + blockH - 1.8;
-        // Face 1 (front-right: Y = 8.5)
-        const fc1 = [
-          P(curX - 6.5, 8.5, fZ0), P(curX + 6.5, 8.5, fZ0),
-          P(curX + 6.5, 8.5, fZ1), P(curX - 6.5, 8.5, fZ1)
-        ];
-        b.faceCrease1.setAttribute("d", HL.poly(fc1));
-
-        // Face 2 (front-left: X = curX + 8.5)
-        const fc2 = [
-          P(curX + 8.5, -6.5, fZ0), P(curX + 8.5, 6.5, fZ0),
-          P(curX + 8.5, 6.5, fZ1), P(curX + 8.5, -6.5, fZ1)
-        ];
-        b.faceCrease2.setAttribute("d", HL.poly(fc2));
-
-        // Airborne state: socket dashed rim & focal highlight
+        // Airborne highlight
         const isAirborne = Math.abs(curX - (-20)) > 2 && Math.abs(curX - 20) > 2;
         b.blockSol.sil.classList.toggle("hi", isAirborne);
         b.studSol.sil.classList.toggle("hi", isAirborne);
-
-        if (isAirborne) {
-          const rimPts = [];
-          for (let k = 0; k <= 24; k++) {
-            const a = (k / 24) * Math.PI * 2;
-            rimPts.push(P(curX + 3.8 * Math.cos(a), 3.8 * Math.sin(a), curZ));
-          }
-          b.socketRimEl.style.display = "";
-          b.socketRimEl.setAttribute("d", HL.poly(rimPts));
-        } else {
-          b.socketRimEl.style.display = "none";
-        }
       });
 
       const countB = TOTAL_BLOCKS - countA;
-      read.textContent = "Unifix: " + countA + " + " + countB + " = 5";
+      read.textContent = "Khối ghép: " + countA + " khối + " + countB + " khối = 5 khối";
     }
 
     function aim(pt) {
@@ -936,102 +634,57 @@ const MATH_FIGURES = [
 },
 /*
  * 5. Number Line (Trục Số Nhảy Cung Parabol)
- * Authentic Grade 1 Pedagogical Manipulative: Counting-on & Number Line Jumps (0 + 4 = 4; 4 + 3 = 7)
- * Lucas Markes Hairline Standard:
- * - Precision graduated scale beam with beveled face (r=2.5, b=1.0) & end mounting brackets with screw marks
- * - Engraved station ticks with millimeter sub-divisions & guide channel
- * - Faceted origami hopper with pitch kinematics matching trajectory tangents
- * - Parabolic flight arcs with contact shadow & drop guidelines
- * - Semantic highlight (hi) on resting target tick (4), transferring to active hopper
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Jump addition on number line (0 + 4 = 4; 4 + 3 = 7)
+ * Simplified Geometry: Clean beveled scale ruler with 0..10 graduation ticks & parabolic jump arcs
+ * Meaningful Interaction: Moving pointer smoothly drives hopper along parabolic arcs with spring tracking
  */
 
 {
   id: "math-number-line",
   title: "5. Trục Số Nhảy Ếch (Number Line Jumps)",
   concept: "Cộng nhẩm bằng bước nhảy trục số (0 + 4 = 4; 4 + 3 = 7)",
-  means: "Thước đo trục số chia vạch cơ khí: di chuột để chú ếch origami bật nhảy theo các cung parabol mượt mà dọc theo các vạch số, trực quan hóa phép cộng nhảy bước.",
+  means: "Thước đo trục số chia vạch tinh giản: di chuột để chú ếch origami bật nhảy theo các cung parabol mượt mà dọc theo các vạch số, trực quan hóa phép cộng nhảy bước.",
   rules: [1, 3, 5, 7, 9],
   range: [0, 4, 10],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-62, -18, 0], [62, 18, 45]], 200, 160);
+    HL.fit(C, [[-58, -14, 0], [58, 14, 42]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. End Mounting Brackets & Grounding Bed (Z: 0 to 6)
-    // Left bracket at X = -56
-    const [brkLO, brkLI] = HL.rings(-59, -11, -51, 11, 2.5, 0.7);
-    const brkLSol = HL.solid(svg);
-    HL.put(brkLSol, HL.prism(P, front, brkLO, brkLI, 0, 5.5));
-    // Screw mark on left bracket
-    const scrL = P(-55, 0, 5.6);
-    HL.mk("circle", { cx: HL.r2(scrL[0]), cy: HL.r2(scrL[1]), r: 1.2, fill: "#232327" }, svg);
-
-    // Right bracket at X = 56
-    const [brkRO, brkRI] = HL.rings(51, -11, 59, 11, 2.5, 0.7);
-    const brkRSol = HL.solid(svg);
-    HL.put(brkRSol, HL.prism(P, front, brkRO, brkRI, 0, 5.5));
-    // Screw mark on right bracket
-    const scrR = P(55, 0, 5.6);
-    HL.mk("circle", { cx: HL.r2(scrR[0]), cy: HL.r2(scrR[1]), r: 1.2, fill: "#232327" }, svg);
-
-    // 2. Precision Scale Beam Rail (Z: 0 to 4.2)
-    const [rO, rI] = HL.rings(-53, -9, 53, 9, 2.0, 1.0);
+    // 1. Clean Graduated Scale Ruler (Z: 0 to 4.0)
+    const [rO, rI] = HL.rings(-52, -8, 52, 8, 2.5, 0.8);
     const rulerSol = HL.solid(svg);
-    HL.put(rulerSol, HL.prism(P, front, rO, rI, 0, 4.2));
+    HL.put(rulerSol, HL.prism(P, front, rO, rI, 0, 4.0));
 
-    // Longitudinal Guide Channel along the center (Y = 0)
-    HL.mk("line", {
-      x1: HL.r2(P(-51, 0, 4.3)[0]), y1: HL.r2(P(-51, 0, 4.3)[1]),
-      x2: HL.r2(P(51, 0, 4.3)[0]), y2: HL.r2(P(51, 0, 4.3)[1]),
-      class: "lo", "stroke-width": 0.8
-    }, svg);
-
-    // 3. Calibrated Graduation Ticks (0 to 10)
+    // 2. Graduation Station Ticks (0 to 10)
     const ticks = [];
     const tickEls = [];
     for (let i = 0; i <= 10; i++) {
-      const x = -48 + i * 9.6;
+      const x = -46 + i * 9.2;
       ticks.push(x);
 
       const isMajor = i % 5 === 0;
       const isKey = i === 4 || i === 7;
-      const yStart = isMajor ? -7.5 : (isKey ? -6.5 : -5.0);
+      const yStart = isMajor ? -6.5 : (isKey ? -5.5 : -4.0);
 
       const tLine = HL.mk("line", {
-        x1: HL.r2(P(x, yStart, 4.3)[0]), y1: HL.r2(P(x, yStart, 4.3)[1]),
-        x2: HL.r2(P(x, -0.8, 4.3)[0]), y2: HL.r2(P(x, -0.8, 4.3)[1]),
+        x1: HL.r2(P(x, yStart, 4.1)[0]), y1: HL.r2(P(x, yStart, 4.1)[1]),
+        x2: HL.r2(P(x, 1.0, 4.1)[0]), y2: HL.r2(P(x, 1.0, 4.1)[1]),
         stroke: (isMajor || isKey ? "#111113" : "#6f6f78"),
         "stroke-width": (isMajor || isKey ? 1.4 : 0.9),
         class: (i === 4 ? "hi" : (isMajor ? "" : "lo"))
       }, svg);
       tickEls.push(tLine);
-
-      // Station boss pip on beveled front slope
-      if (isMajor || isKey) {
-        const dotP = P(x, 4.5, 3.2);
-        HL.mk("circle", { cx: HL.r2(dotP[0]), cy: HL.r2(dotP[1]), r: 1.1, fill: "#232327" }, svg);
-      }
-
-      // Millimeter sub-divisions (half ticks)
-      if (i < 10) {
-        const xHalf = x + 4.8;
-        HL.mk("line", {
-          x1: HL.r2(P(xHalf, -3.5, 4.3)[0]), y1: HL.r2(P(xHalf, -3.5, 4.3)[1]),
-          x2: HL.r2(P(xHalf, -0.8, 4.3)[0]), y2: HL.r2(P(xHalf, -0.8, 4.3)[1]),
-          class: "lo", "stroke-width": 0.6
-        }, svg);
-      }
     }
 
-    // 4. Parabolic Jump Arcs
+    // 3. Parabolic Jump Arcs
     // Arc 1: 0 -> 4 (+4 jump)
     const arc1Pts = [];
-    for (let s = 0; s <= 32; s++) {
-      const t = s / 32;
+    for (let s = 0; s <= 28; s++) {
+      const t = s / 28;
       const x = HL.lerp(ticks[0], ticks[4], t);
-      const z = 4.3 + 4 * 18 * t * (1 - t);
+      const z = 4.1 + 4 * 16 * t * (1 - t);
       arc1Pts.push(P(x, 0, z));
     }
     HL.mk("path", {
@@ -1044,10 +697,10 @@ const MATH_FIGURES = [
 
     // Arc 2: 4 -> 7 (+3 jump)
     const arc2Pts = [];
-    for (let s = 0; s <= 32; s++) {
-      const t = s / 32;
+    for (let s = 0; s <= 28; s++) {
+      const t = s / 28;
       const x = HL.lerp(ticks[4], ticks[7], t);
-      const z = 4.3 + 4 * 14 * t * (1 - t);
+      const z = 4.1 + 4 * 13 * t * (1 - t);
       arc2Pts.push(P(x, 0, z));
     }
     HL.mk("path", {
@@ -1058,7 +711,7 @@ const MATH_FIGURES = [
       "stroke-width": 1.2
     }, svg);
 
-    // 5. Faceted Origami Hopper
+    // 4. Faceted Origami Hopper
     const frogGroup = HL.mk("g", { id: "origami-frog" }, svg);
     const faceEls = [];
     for (let i = 0; i < 7; i++) {
@@ -1090,14 +743,14 @@ const MATH_FIGURES = [
       if (t <= 0.57) {
         const u = t / 0.57;
         x = HL.lerp(ticks[0], ticks[4], u);
-        z = 4.3 + 4 * 18 * u * (1 - u);
-        const slope = (4 * 18 * (1 - 2 * u)) / (ticks[4] - ticks[0]);
+        z = 4.1 + 4 * 16 * u * (1 - u);
+        const slope = (4 * 16 * (1 - 2 * u)) / (ticks[4] - ticks[0]);
         pitch = Math.atan(slope) * 0.45;
       } else {
         const u = (t - 0.57) / 0.43;
         x = HL.lerp(ticks[4], ticks[7], u);
-        z = 4.3 + 4 * 14 * u * (1 - u);
-        const slope = (4 * 14 * (1 - 2 * u)) / (ticks[7] - ticks[4]);
+        z = 4.1 + 4 * 13 * u * (1 - u);
+        const slope = (4 * 13 * (1 - 2 * u)) / (ticks[7] - ticks[4]);
         pitch = Math.atan(slope) * 0.45;
       }
 
@@ -1110,18 +763,18 @@ const MATH_FIGURES = [
         return P(x + rotX, ly, z + rotZ);
       }
 
-      const snout = V(7.0, 0, 1.6);
-      const eyeL = V(3.2, -3.4, 4.6);
-      const eyeR = V(3.2, 3.4, 4.6);
-      const crown = V(3.8, 0, 4.2);
-      const spine = V(-1.0, 0, 5.6);
-      const tail = V(-6.2, 0, 1.4);
-      const flankL = V(-1.0, -5.6, 2.0);
-      const flankR = V(-1.0, 5.6, 2.0);
-      const kneeL = V(-3.8, -6.6, 3.4);
-      const kneeR = V(-3.8, 6.6, 3.4);
-      const footL = V(-6.6, -7.0, 0);
-      const footR = V(-6.6, 7.0, 0);
+      const snout = V(6.5, 0, 1.5);
+      const eyeL = V(3.0, -3.0, 4.2);
+      const eyeR = V(3.0, 3.0, 4.2);
+      const crown = V(3.5, 0, 3.8);
+      const spine = V(-1.0, 0, 5.0);
+      const tail = V(-5.5, 0, 1.2);
+      const flankL = V(-1.0, -5.0, 1.8);
+      const flankR = V(-1.0, 5.0, 1.8);
+      const kneeL = V(-3.5, -6.0, 3.0);
+      const kneeR = V(-3.5, 6.0, 3.0);
+      const footL = V(-6.0, -6.2, 0);
+      const footR = V(-6.0, 6.2, 0);
 
       const faces = [
         [flankL, kneeL, footL],
@@ -1144,28 +797,27 @@ const MATH_FIGURES = [
 
       // Shadow on ruler surface
       const shadowPts = [];
-      const sScale = HL.clamp(1 - (z - 4.3) * 0.03, 0.4, 1);
+      const sScale = HL.clamp(1 - (z - 4.1) * 0.03, 0.4, 1);
       for (let k = 0; k <= 24; k++) {
         const a = (k / 24) * Math.PI * 2;
-        shadowPts.push(P(x + 5.5 * sScale * Math.cos(a), 3.8 * sScale * Math.sin(a), 4.3));
+        shadowPts.push(P(x + 5.0 * sScale * Math.cos(a), 3.5 * sScale * Math.sin(a), 4.1));
       }
       shadowEl.setAttribute("d", HL.poly(shadowPts));
 
-      if (z > 5.8) {
+      if (z > 5.5) {
         dropLineEl.style.display = "";
-        dropLineEl.setAttribute("d", HL.seg(P(x, 0, z), P(x, 0, 4.3)));
+        dropLineEl.setAttribute("d", HL.seg(P(x, 0, z), P(x, 0, 4.1)));
       } else {
         dropLineEl.style.display = "none";
       }
 
-      // Highlight focal tick (4 at rest, or currently landed tick)
       const curTickIdx = Math.round(t <= 0.57 ? (t / 0.57) * 4 : 4 + ((t - 0.57) / 0.43) * 3);
       tickEls.forEach((el, idx) => {
         const isHi = active ? (idx === curTickIdx) : (idx === 4);
         el.classList.toggle("hi", isHi);
       });
 
-      read.textContent = "Number Line: 0 + 4 = 4; 4 + 3 = 7 (Pos: " + curTickIdx + ")";
+      read.textContent = "Trục số nhảy ếch: 0 + 4 = 4; 4 + 3 = 7 (Vị trí hiện tại: " + curTickIdx + ")";
     }
 
     function aim(pt) {
@@ -1175,8 +827,8 @@ const MATH_FIGURES = [
         reg.wake();
         return;
       }
-      const scr0 = P(ticks[0], 0, 4.3)[0];
-      const scr7 = P(ticks[7], 0, 4.3)[0];
+      const scr0 = P(ticks[0], 0, 4.1)[0];
+      const scr7 = P(ticks[7], 0, 4.1)[0];
       const t = HL.clamp((pt[0] - scr0) / (scr7 - scr0), 0, 1);
       jumpProgress.t = t;
       active = true;
@@ -1213,54 +865,39 @@ const MATH_FIGURES = [
 },
 /*
  * 6. Math Dice (Cặp Xúc Xắc Chấm Đố)
- * Crafted to Lucas Markes Hairline Standard:
- * - Rounded-corner chamfered casino dice cubes with inner face creases
- * - Sunken double-ring engraved spherical pips
- * - Stitched felt tabletop mat with rounded perimeter
- * - Pure 2:1 axonometric line art with Rule 09 radius & bevel discipline
+ * Pedagogical Goal: Number recognition & subitizing (3 + 4 = 7, opposite faces sum to 7)
+ * Simplified Geometry: Clean chamfered cubes with solid bold pips on a minimalist mat
+ * Meaningful Interaction: Moving pointer smoothly tilts/wobbles dice to explore 3D faces
  */
 
 {
   id: "math-dice",
   title: "6. Cặp Xúc Xắc (Math Dice Pips)",
   concept: "Phép cộng & nhận biết mặt xúc xắc 3D",
-  means: "Hai khối xúc xắc bo góc vát mép chuẩn xác trên thảm nỉ viền chỉ. Di chuyển con trỏ để nghiêng xoay 3D khám phá các mặt chấm tròn khắc lõm.",
+  means: "Hai khối xúc xắc bo góc vát mép tinh giản trên bàn đế: di chuột để nghiêng xoay 3D khám phá các mặt chấm tròn, nhận biết tổng hai mặt trên (3 + 4 = 7) và tính chất mặt đối diện bằng 7.",
   rules: [1, 2, 4, 6, 9],
   range: [0, 3.5, 7],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-48, -22, 0], [48, 22, 40]], 200, 160);
+    HL.fit(C, [[-48, -20, 0], [48, 20, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Felt Gaming Mat with Stitched Border
-    const [matO, matI] = HL.rings(-45, -18, 45, 18, 4, 1.5);
+    // 1. Clean Minimalist Mat (Z: 0 to 2.5)
+    const [matO, matI] = HL.rings(-44, -16, 44, 16, 3.5, 0.8);
     const matSol = HL.solid(svg);
     HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2.5));
-
-    // Stitched perimeter line on mat face (z = 2.6)
-    const [stitchO] = HL.rings(-42, -15, 42, 15, 3, 0.5);
-    HL.mk("path", {
-      class: "lo dash",
-      d: HL.poly(HL.ringAt(P, stitchO, 2.6)),
-      "stroke-dasharray": "2.5 2.0"
-    }, svg);
 
     // 2. Dice Groups
     const d1Group = HL.mk("g", { id: "die-1" }, svg);
     const d2Group = HL.mk("g", { id: "die-2" }, svg);
 
-    // Face solids with chamfer creases for Die 1 & Die 2
     function makeDieGraphics(g) {
       return {
         faceX: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
         faceY: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
         faceZ: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
-        creaseX: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        creaseY: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        creaseZ: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        pipRims: Array.from({ length: 16 }, () => HL.mk("path", { class: "lo", "stroke-width": 0.8 }, g)),
-        pipDots: Array.from({ length: 16 }, () => HL.mk("path", { style: "fill: #232327; stroke: none;" }, g))
+        pipDots: Array.from({ length: 16 }, () => HL.mk("polygon", { style: "fill: #232327; stroke: none;" }, g))
       };
     }
 
@@ -1276,23 +913,22 @@ const MATH_FIGURES = [
     const wobbleY2 = HL.spring(0, { k: 140, c: 14 });
     const lift2 = HL.spring(0, { k: 150, c: 14 });
 
-    const d = 5.2;
-    const rStandard = 1.45;
-    const rCenter = 1.65;
+    const d = 5.0;
+    const rPip = 1.6;
 
     function buildPipsForFace(axis, val) {
       const pips = [];
-      if (val === 1) pips.push({ axis, u: 0, v: 0, r: rCenter });
+      if (val === 1) pips.push({ axis, u: 0, v: 0, r: rPip * 1.2 });
       else if (val === 2) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 3) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: 0, v: 0, r: rCenter }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: 0, v: 0, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 4) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 5) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: 0, v: 0, r: rCenter }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: 0, v: 0, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 6) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: -d, v: 0, r: rStandard }, { axis, u: d, v: 0, r: rStandard }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: -d, v: 0, r: rPip }, { axis, u: d, v: 0, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       }
       return pips;
     }
@@ -1310,105 +946,88 @@ const MATH_FIGURES = [
     }
 
     function projectPip(cu, cv, r, normalAxis, rxDeg, ryDeg, cx, cy, cz) {
-      const N = 12;
+      const N = 10;
       const pts = [];
-      for (let i = 0; i < N; i++) {
-        const theta = (i / N) * Math.PI * 2;
-        const u = cu + r * Math.cos(theta);
-        const v = cv + r * Math.sin(theta);
+      for (let k = 0; k < N; k++) {
+        const a = (k / N) * Math.PI * 2;
         let lx, ly, lz;
-        if (normalAxis === 'z') { lx = u; ly = v; lz = 10.05; }
-        else if (normalAxis === 'y') { lx = u; ly = 10.05; lz = v; }
-        else { lx = 10.05; ly = u; lz = v; }
-        const wPt = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, 0, cz);
-        pts.push(P(...wPt));
-      }
-      return HL.poly(pts);
-    }
-
-    function projectFaceCrease(normalAxis, rxDeg, ryDeg, cx, cz) {
-      // Inset rounded rectangular crease on face (s = 10, inset = 1.3, r = 1.8)
-      const b = 8.7;
-      const pts = [];
-      const corners = [[-b, -b], [b, -b], [b, b], [-b, b]];
-      corners.forEach(([u, v]) => {
-        let lx, ly, lz;
-        if (normalAxis === 'z') { lx = u; ly = v; lz = 10.02; }
-        else if (normalAxis === 'y') { lx = u; ly = 10.02; lz = v; }
-        else { lx = 10.02; ly = u; lz = v; }
-        pts.push(P(...rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, 0, cz)));
-      });
-      return HL.poly(pts);
-    }
-
-    function drawDie(cx, baseZ, rxDeg, ryDeg, gfx, pipConfig) {
-      const s = 10;
-      const cz = baseZ + s;
-
-      const c_100 = rotatePoint( s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_110 = rotatePoint( s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_010 = rotatePoint(-s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_001 = rotatePoint(-s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_101 = rotatePoint( s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_011 = rotatePoint(-s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_111 = rotatePoint( s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-
-      // 1. Faces
-      const ptsX = [P(...c_100), P(...c_110), P(...c_111), P(...c_101)];
-      gfx.faceX.setAttribute("points", ptsX.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      const ptsY = [P(...c_010), P(...c_110), P(...c_111), P(...c_011)];
-      gfx.faceY.setAttribute("points", ptsY.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      const ptsZ = [P(...c_001), P(...c_101), P(...c_111), P(...c_011)];
-      gfx.faceZ.setAttribute("points", ptsZ.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      // 2. Inset Chamfer Creases on visible faces
-      gfx.creaseX.setAttribute("d", projectFaceCrease('x', rxDeg, ryDeg, cx, cz));
-      gfx.creaseY.setAttribute("d", projectFaceCrease('y', rxDeg, ryDeg, cx, cz));
-      gfx.creaseZ.setAttribute("d", projectFaceCrease('z', rxDeg, ryDeg, cx, cz));
-
-      // 3. Pips with outer sunken rim and inner dot
-      for (let i = 0; i < gfx.pipDots.length; i++) {
-        if (i < pipConfig.length) {
-          const cfg = pipConfig[i];
-          const rimPath = projectPip(cfg.u, cfg.v, cfg.r + 0.55, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
-          const dotPath = projectPip(cfg.u, cfg.v, cfg.r, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
-
-          gfx.pipRims[i].style.display = "";
-          gfx.pipRims[i].setAttribute("d", rimPath);
-
-          gfx.pipDots[i].style.display = "";
-          gfx.pipDots[i].setAttribute("d", dotPath);
+        if (normalAxis === 'Z') {
+          lx = cu + r * Math.cos(a);
+          ly = cv + r * Math.sin(a);
+          lz = 10.0;
+        } else if (normalAxis === 'X') {
+          lx = 10.0;
+          ly = cu + r * Math.cos(a);
+          lz = cv + r * Math.sin(a);
         } else {
-          gfx.pipRims[i].style.display = "none";
-          gfx.pipDots[i].style.display = "none";
+          lx = cu + r * Math.cos(a);
+          ly = 10.0;
+          lz = cv + r * Math.sin(a);
         }
+        const w = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
+        pts.push(P(w[0], w[1], w[2]).map(HL.r2).join(","));
+      }
+      return pts.join(" ");
+    }
+
+    function renderDie(gfx, cx, cy, cz, rxDeg, ryDeg, faces) {
+      const H = 10.0;
+      const corners = [
+        [-H, -H, -H], [H, -H, -H], [H, H, -H], [-H, H, -H],
+        [-H, -H,  H], [H, -H,  H], [H, H,  H], [-H, H,  H]
+      ].map(([lx, ly, lz]) => {
+        const w = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
+        return P(w[0], w[1], w[2]);
+      });
+
+      // Face Z+ (top)
+      const topPts = [corners[4], corners[5], corners[6], corners[7]];
+      gfx.faceZ.setAttribute("points", topPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Face X+ (right)
+      const rightPts = [corners[1], corners[2], corners[6], corners[5]];
+      gfx.faceX.setAttribute("points", rightPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Face Y+ (front)
+      const frontPts = [corners[3], corners[2], corners[6], corners[7]];
+      gfx.faceY.setAttribute("points", frontPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Pips
+      const allPips = [
+        ...buildPipsForFace('Z', faces.top),
+        ...buildPipsForFace('X', faces.right),
+        ...buildPipsForFace('Y', faces.front)
+      ];
+
+      allPips.forEach((pip, i) => {
+        if (i < gfx.pipDots.length) {
+          gfx.pipDots[i].style.display = "";
+          gfx.pipDots[i].setAttribute("points", projectPip(pip.u, pip.v, pip.r, pip.axis, rxDeg, ryDeg, cx, cy, cz));
+        }
+      });
+      for (let i = allPips.length; i < gfx.pipDots.length; i++) {
+        gfx.pipDots[i].style.display = "none";
       }
     }
 
     function draw() {
-      // Die 1: Top 3, Left 1, Right 2
-      const cfg1 = [
-        ...buildPipsForFace('x', 2),
-        ...buildPipsForFace('y', 1),
-        ...buildPipsForFace('z', 3)
-      ];
+      // Die 1: Center at (-18, 0), Top=3, Right=2, Front=1
+      renderDie(
+        d1Gfx,
+        -18, 0, 12.5 + lift1.x,
+        wobbleX1.x, wobbleY1.x,
+        { top: 3, right: 2, front: 1 }
+      );
 
-      // Die 2: Top 4, Left 5, Right 6
-      const cfg2 = [
-        ...buildPipsForFace('x', 6),
-        ...buildPipsForFace('y', 5),
-        ...buildPipsForFace('z', 4)
-      ];
+      // Die 2: Center at (18, 0), Top=4, Right=5, Front=6
+      renderDie(
+        d2Gfx,
+        18, 0, 12.5 + lift2.x,
+        wobbleX2.x, wobbleY2.x,
+        { top: 4, right: 5, front: 6 }
+      );
 
-      const baseZ1 = 2.5 + Math.max(0, lift1.x);
-      const baseZ2 = 2.5 + Math.max(0, lift2.x);
-
-      drawDie(-22, baseZ1, wobbleX1.x, wobbleY1.x, d1Gfx, cfg1);
-      drawDie( 22, baseZ2, wobbleX2.x, wobbleY2.x, d2Gfx, cfg2);
-
-      read.textContent = "Xúc xắc 3D: Mặt trên 3 + 4 = 7 (Tổng các chấm tròn đối diện = 7)";
+      read.textContent = "Xúc xắc: Mặt trên 3 + 4 = 7 chấm (Mặt đối diện: 3+4=7, 2+5=7, 1+6=7)";
     }
 
     function aim(pt) {
@@ -1418,14 +1037,20 @@ const MATH_FIGURES = [
         reg.wake();
         return;
       }
-      const midX = 0;
-      const midY = P(0, 0, 12)[1];
+      const s1 = P(-18, 0, 12.5)[0];
+      const s2 = P(18, 0, 12.5)[0];
 
-      const tiltX = HL.clamp((pt[1] - midY) * 0.28, -10, 10);
-      const tiltY = HL.clamp(-(pt[0] - midX) * 0.28, -10, 10);
+      const h1 = Math.abs(pt[0] - s1) < 30;
+      const h2 = Math.abs(pt[0] - s2) < 30;
 
-      wobbleX1.t = tiltX; wobbleY1.t = tiltY; lift1.t = 2.2;
-      wobbleX2.t = tiltX; wobbleY2.t = tiltY; lift2.t = 2.2;
+      lift1.t = h1 ? 4.0 : 0;
+      wobbleX1.t = h1 ? (pt[1] - P(-18, 0, 12.5)[1]) * 0.4 : 0;
+      wobbleY1.t = h1 ? (pt[0] - s1) * 0.4 : 0;
+
+      lift2.t = h2 ? 4.0 : 0;
+      wobbleX2.t = h2 ? (pt[1] - P(18, 0, 12.5)[1]) * 0.4 : 0;
+      wobbleY2.t = h2 ? (pt[0] - s2) * 0.4 : 0;
+
       reg.wake();
     }
 
@@ -1437,24 +1062,14 @@ const MATH_FIGURES = [
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => {
-        wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
-        wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
-        reg.wake();
-      }
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
-        const t = (v - 3.5) / 3.5;
-        wobbleY1.t = t * 10;
-        wobbleY2.t = -t * 10;
-        reg.wake();
+        draw();
       },
       destroy: bag.dispose
     };
@@ -1462,81 +1077,39 @@ const MATH_FIGURES = [
 },
 /*
  * 7. Teaching Clock (Mặt Đồng Hồ Học Giờ)
- * Authentic Grade 1 Pedagogical Manipulative: Telling Time & 12:1 Gear Ratio
- * Lucas Markes Hairline Standard:
- * - Stepped horological easel desk clock with turned brass bezel & support plinth
- * - Pure horological dial with zero SVG text: double-baton cardinal indices (12, 3, 6, 9) & 60 minute ticks
- * - Precision sculpted sword hands with diamond/circular counterweight hubs
- * - Center jewel axle cap with concentric turning rings
- * - Mechanically coupled 12:1 gear ratio kinematics
- * - Single focal highlight (hi) on 12 o'clock index at rest, transferring to minute hand
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Telling time & 12:1 gear ratio
+ * Simplified Geometry: Clean circular clock bezel on an angled stand with 12 hour ticks
+ * Meaningful Interaction: Circling pointer smoothly drives minute hand; hour hand follows with exact 12:1 ratio
  */
 
 {
   id: "math-clock",
   title: "7. Mặt Đồng Hồ Học Giờ (Teaching Clock)",
   concept: "Xem giờ đúng & tỷ lệ bánh răng 12:1",
-  means: "Đồng hồ để bàn chính xác: di chuột theo vòng tròn để quay kim phút; kim giờ chuyển động chính xác theo tỷ lệ bánh răng 12:1, hiển thị chỉ số cọc giờ thanh lịch.",
+  means: "Đồng hồ để bàn tinh giản: di chuột theo vòng tròn để quay kim phút; kim giờ chuyển động chính xác theo tỷ lệ bánh răng 12:1, hiển thị 12 cọc giờ rõ ràng trực quan.",
   rules: [1, 2, 4, 6, 9],
   range: [0, 3, 12],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-48, -48, 0], [48, 48, 22]], 200, 160);
+    HL.fit(C, [[-44, -44, 0], [44, 44, 18]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Grounding Plinth & Twin Turned Brass Feet (Z: 0 to 4)
-    // Plinth base
-    const [baseO, baseI] = HL.rings(-38, -20, 38, 20, 4.0, 1.2);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 4));
-
-    // Two turned brass leveling feet at front
-    for (const bx of [-28, 28]) {
-      const [fO] = HL.rings(bx - 3.5, 12 - 3.5, bx + 3.5, 12 + 3.5, 3.5, 0.6);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-      HL.mk("circle", { cx: HL.r2(P(bx, 12, 4.2)[0]), cy: HL.r2(P(bx, 12, 4.2)[1]), r: 1.2, fill: "#232327" }, svg);
-    }
-
-    // Easel back-support strut
-    HL.mk("line", {
-      x1: HL.r2(P(0, -16, 4)[0]), y1: HL.r2(P(0, -16, 4)[1]),
-      x2: HL.r2(P(0, -28, 0)[0]), y2: HL.r2(P(0, -28, 0)[1]),
-      class: "lo", "stroke-width": 1.4
-    }, svg);
-
-    // 2. Turned Clock Bezel Casing (Z: 4 to 10)
+    // 1. Clean Bezel Body (Z: 0 to 6)
     const [bezelO, bezelI] = HL.rings(-36, -36, 36, 36, 36, 2.5);
     const bezelSol = HL.solid(svg);
-    HL.put(bezelSol, HL.prism(P, front, bezelO, bezelI, 4, 10));
+    HL.put(bezelSol, HL.prism(P, front, bezelO, bezelI, 0, 6));
 
-    // Inset Dial Face Floor Rim at Z = 9.8
+    // Dial face rim line
     const dialRim = HL.mk("ellipse", {
-      rx: HL.r2(33.5 * C.S), ry: HL.r2(33.5 * C.S * C.k),
+      rx: HL.r2(33.0 * C.S), ry: HL.r2(33.0 * C.S * C.k),
       class: "lo nf"
     }, svg);
-    const centerScr = P(0, 0, 9.8);
+    const centerScr = P(0, 0, 6.2);
     dialRim.setAttribute("cx", HL.r2(centerScr[0]));
     dialRim.setAttribute("cy", HL.r2(centerScr[1]));
 
-    // 3. Dial Graduation: Zero Text! Pure Calibrated Indices
-    // 60 fine minute ticks around perimeter (radius 30.5 to 32.5)
-    for (let m = 0; m < 60; m++) {
-      if (m % 5 === 0) continue; // Major hour ticks drawn separately
-      const alpha = -Math.PI / 2 + (m / 60) * Math.PI * 2;
-      const phi = alpha - Math.PI / 4;
-      const r1 = 30.8, r2 = 32.5;
-      const p1 = P(Math.cos(phi) * r1, Math.sin(phi) * r1, 10.0);
-      const p2 = P(Math.cos(phi) * r2, Math.sin(phi) * r2, 10.0);
-      HL.mk("line", {
-        x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
-        x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
-        class: "lo", "stroke-width": 0.6
-      }, svg);
-    }
-
-    // 12 Major Hour Indices
+    // 2. 12 Clear Hour Ticks (No SVG Text)
     let marker12El;
     for (let h = 1; h <= 12; h++) {
       const alpha = -Math.PI / 2 + (h / 12) * Math.PI * 2;
@@ -1544,81 +1117,40 @@ const MATH_FIGURES = [
       const isCardinal = (h % 3 === 0);
       const is12 = (h === 12);
 
-      if (is12) {
-        // Double baton at 12 o'clock with focal highlight (hi)
-        const dPhi = 0.04;
-        const p1A = P(Math.cos(phi - dPhi) * 25.5, Math.sin(phi - dPhi) * 25.5, 10.0);
-        const p2A = P(Math.cos(phi - dPhi) * 32.5, Math.sin(phi - dPhi) * 32.5, 10.0);
-        const p1B = P(Math.cos(phi + dPhi) * 25.5, Math.sin(phi + dPhi) * 25.5, 10.0);
-        const p2B = P(Math.cos(phi + dPhi) * 32.5, Math.sin(phi + dPhi) * 32.5, 10.0);
-        marker12El = HL.mk("line", {
-          x1: HL.r2(p1A[0]), y1: HL.r2(p1A[1]), x2: HL.r2(p2A[0]), y2: HL.r2(p2A[1]),
-          class: "hi", "stroke-width": 1.5
-        }, svg);
-        HL.mk("line", {
-          x1: HL.r2(p1B[0]), y1: HL.r2(p1B[1]), x2: HL.r2(p2B[0]), y2: HL.r2(p2B[1]),
-          class: "hi", "stroke-width": 1.5
-        }, svg);
-      } else if (isCardinal) {
-        // Double baton at 3, 6, 9
-        const dPhi = 0.035;
-        const p1A = P(Math.cos(phi - dPhi) * 26.5, Math.sin(phi - dPhi) * 26.5, 10.0);
-        const p2A = P(Math.cos(phi - dPhi) * 32.5, Math.sin(phi - dPhi) * 32.5, 10.0);
-        const p1B = P(Math.cos(phi + dPhi) * 26.5, Math.sin(phi + dPhi) * 26.5, 10.0);
-        const p2B = P(Math.cos(phi + dPhi) * 32.5, Math.sin(phi + dPhi) * 32.5, 10.0);
-        HL.mk("line", {
-          x1: HL.r2(p1A[0]), y1: HL.r2(p1A[1]), x2: HL.r2(p2A[0]), y2: HL.r2(p2A[1]),
-          stroke: "#232327", "stroke-width": 1.3
-        }, svg);
-        HL.mk("line", {
-          x1: HL.r2(p1B[0]), y1: HL.r2(p1B[1]), x2: HL.r2(p2B[0]), y2: HL.r2(p2B[1]),
-          stroke: "#232327", "stroke-width": 1.3
-        }, svg);
-      } else {
-        // Single precision baton at other hours
-        const p1 = P(Math.cos(phi) * 27.5, Math.sin(phi) * 27.5, 10.0);
-        const p2 = P(Math.cos(phi) * 32.5, Math.sin(phi) * 32.5, 10.0);
-        HL.mk("line", {
-          x1: HL.r2(p1[0]), y1: HL.r2(p1[1]), x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
-          stroke: "#232327", "stroke-width": 1.2
-        }, svg);
-      }
+      const r1 = is12 ? 24.0 : (isCardinal ? 26.0 : 28.0);
+      const r2 = 32.5;
 
-      // Hour pip dot on inner perimeter
-      const pipP = P(Math.cos(phi) * 22.5, Math.sin(phi) * 22.5, 10.0);
-      HL.mk("circle", {
-        cx: HL.r2(pipP[0]), cy: HL.r2(pipP[1]),
-        r: isCardinal ? 1.4 : 1.0,
-        fill: "#232327"
+      const p1 = P(Math.cos(phi) * r1, Math.sin(phi) * r1, 6.3);
+      const p2 = P(Math.cos(phi) * r2, Math.sin(phi) * r2, 6.3);
+
+      const tLine = HL.mk("line", {
+        x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
+        x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
+        stroke: (is12 || isCardinal ? "#111113" : "#6f6f78"),
+        "stroke-width": (is12 ? 2.0 : (isCardinal ? 1.5 : 1.0)),
+        class: (is12 ? "hi" : "")
       }, svg);
+
+      if (is12) marker12El = tLine;
     }
 
-    // 4. Precision Sculpted Clock Hands
-    // Hour Hand (short & broad dauphine sword hand with diamond counterweight)
+    // 3. Hands: Short & Broad Hour Hand, Long & Slender Minute Hand
     const hourPoly = HL.mk("polygon", {
       style: "fill: #232327; stroke: #111113; stroke-width: 1.0; stroke-linejoin: round;"
     }, svg);
 
-    // Minute Hand (long & slender sword hand with circular counterweight)
     const minutePoly = HL.mk("polygon", {
       style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2; stroke-linejoin: round;"
     }, svg);
 
-    // Center Jewel Axle Cap (covers hand roots)
-    const centerPinOuter = HL.mk("ellipse", {
-      rx: HL.r2(3.2 * C.S), ry: HL.r2(3.2 * C.S * C.k),
-      style: "fill: #ffffff; stroke: #232327; stroke-width: 1.2;"
+    // Center Axle Pin
+    const centerPin = HL.mk("ellipse", {
+      rx: HL.r2(2.5 * C.S), ry: HL.r2(2.5 * C.S * C.k),
+      fill: "#232327", stroke: "none"
     }, svg);
-    const centerPinInner = HL.mk("ellipse", {
-      rx: HL.r2(1.4 * C.S), ry: HL.r2(1.4 * C.S * C.k),
-      style: "fill: #232327; stroke: none;"
-    }, svg);
-    centerPinOuter.setAttribute("cx", HL.r2(centerScr[0]));
-    centerPinOuter.setAttribute("cy", HL.r2(centerScr[1]));
-    centerPinInner.setAttribute("cx", HL.r2(centerScr[0]));
-    centerPinInner.setAttribute("cy", HL.r2(centerScr[1]));
+    centerPin.setAttribute("cx", HL.r2(centerScr[0]));
+    centerPin.setAttribute("cy", HL.r2(centerScr[1]));
 
-    // Clock State: initial at 3:00
     const startHour = initialV != null ? HL.clamp(initialV, 0, 12) : 3;
     const minuteAngleSp = HL.spring((startHour % 1) * Math.PI * 2, { k: 140, c: 14 });
     let totalMinutes = startHour * 60;
@@ -1628,54 +1160,41 @@ const MATH_FIGURES = [
       const mRad = minuteAngleSp.x;
       const hRad = (totalMinutes / 720) * Math.PI * 2;
 
-      // Coordinate transformation on dial face
       const mPhi = mRad - Math.PI / 2 - Math.PI / 4;
       const hPhi = hRad - Math.PI / 2 - Math.PI / 4;
 
-      const zH = 10.4;
-      const zM = 10.8;
+      const zH = 6.6;
+      const zM = 7.0;
 
-      // Sculpted Minute Hand: length 25.5, width 2.2, tail -6.0 with counterweight
+      // Minute hand: length 25, width 2.0
       const mCos = Math.cos(mPhi), mSin = Math.sin(mPhi);
       const mPerpX = -mSin, mPerpY = mCos;
-
       const mPts = [
-        P(mCos * 25.5, mSin * 25.5, zM),                     // Tip
-        P(mCos * 21.0 + mPerpX * 1.8, mSin * 21.0 + mPerpY * 1.8, zM), // Shoulder R
-        P(mCos * 3.0 + mPerpX * 1.6, mSin * 3.0 + mPerpY * 1.6, zM),   // Body R
-        P(-mCos * 5.5 + mPerpX * 2.4, -mSin * 5.5 + mPerpY * 2.4, zM), // Counterweight ring R
-        P(-mCos * 7.5, -mSin * 7.5, zM),                     // Tail tip
-        P(-mCos * 5.5 - mPerpX * 2.4, -mSin * 5.5 - mPerpY * 2.4, zM), // Counterweight ring L
-        P(mCos * 3.0 - mPerpX * 1.6, mSin * 3.0 - mPerpY * 1.6, zM),   // Body L
-        P(mCos * 21.0 - mPerpX * 1.8, mSin * 21.0 - mPerpY * 1.8, zM)  // Shoulder L
+        P(mCos * 25.0, mSin * 25.0, zM),
+        P(mCos * 2.5 + mPerpX * 1.6, mSin * 2.5 + mPerpY * 1.6, zM),
+        P(-mCos * 4.5, -mSin * 4.5, zM),
+        P(mCos * 2.5 - mPerpX * 1.6, mSin * 2.5 - mPerpY * 1.6, zM)
       ];
       minutePoly.setAttribute("points", mPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // Sculpted Hour Hand: length 16.5, width 3.2, tail -4.5 with diamond counterweight
+      // Hour hand: length 16, width 3.0
       const hCos = Math.cos(hPhi), hSin = Math.sin(hPhi);
       const hPerpX = -hSin, hPerpY = hCos;
-
       const hPts = [
-        P(hCos * 16.5, hSin * 16.5, zH),                     // Tip
-        P(hCos * 12.5 + hPerpX * 2.6, hSin * 12.5 + hPerpY * 2.6, zH), // Shoulder R
-        P(hCos * 2.5 + hPerpX * 2.2, hSin * 2.5 + hPerpY * 2.2, zH),   // Body R
-        P(-hCos * 3.5 + hPerpX * 2.2, -hSin * 3.5 + hPerpY * 2.2, zH), // Diamond hub R
-        P(-hCos * 5.5, -hSin * 5.5, zH),                     // Tail tip
-        P(-hCos * 3.5 - hPerpX * 2.2, -hSin * 3.5 - hPerpY * 2.2, zH), // Diamond hub L
-        P(hCos * 2.5 - hPerpX * 2.2, hSin * 2.5 - hPerpY * 2.2, zH),   // Body L
-        P(hCos * 12.5 - hPerpX * 2.6, hSin * 12.5 - hPerpY * 2.6, zH)  // Shoulder L
+        P(hCos * 16.0, hSin * 16.0, zH),
+        P(hCos * 2.5 + hPerpX * 2.4, hSin * 2.5 + hPerpY * 2.4, zH),
+        P(-hCos * 3.5, -hSin * 3.5, zH),
+        P(hCos * 2.5 - hPerpX * 2.4, hSin * 2.5 - hPerpY * 2.4, zH)
       ];
       hourPoly.setAttribute("points", hPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // Semantic highlight transfer
       if (marker12El) marker12El.classList.toggle("hi", !active);
       minutePoly.classList.toggle("hi", active);
 
-      // DOM Text readout
       const hrs = Math.floor((totalMinutes % 720) / 60) || 12;
       const mins = Math.floor(totalMinutes % 60);
       const minStr = mins < 10 ? "0" + mins : mins;
-      read.textContent = "Clock: " + hrs + ":" + minStr + " (12:1 gear ratio)";
+      read.textContent = "Đồng hồ: " + hrs + ":" + minStr + " (Kim phút quay 1 vòng 360° = Kim giờ nhích 1 số)";
     }
 
     let lastAimAngle = null;
@@ -1691,7 +1210,7 @@ const MATH_FIGURES = [
       const dy = pt[1] - centerScr[1];
       const dist = Math.hypot(dx, dy);
 
-      if (dist < 12 || dist > 110) return;
+      if (dist < 10 || dist > 110) return;
 
       active = true;
       let angle = Math.atan2(dy, dx) + Math.PI / 4 + Math.PI / 2;
@@ -1737,188 +1256,124 @@ const MATH_FIGURES = [
 },
 /*
  * 8. 3D Geometric Solids (Khối Hình Không Gian)
- * Authentic Grade 1 Pedagogical Manipulative: Cube, Cylinder, Cone & 2D Footprint Invariance
- * Lucas Markes Hairline Standard:
- * - Turned hardwood workshop base with filleted corners (r=4.0, b=1.4) & 4 corner foot pads
- * - Three precision recessed nests with chamfered lips (square, circular, circular with dimple)
- * - Chamfered cube with inset face panel creases
- * - Turned cylinder with top & bottom rim bevel rings
- * - Turned cone with base rim crease, apex bead & tangent contour highlight
- * - Smooth hover lift kinematics with drop guidelines & focal highlight transfer
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: 3D solids (Cube, Cylinder, Cone) & their 2D bottom footprints
+ * Simplified Geometry: Clean solids on a minimalist base with 3 distinct 2D footprint pockets
+ * Meaningful Interaction: Hovering pointer lifts each solid straight up to reveal its 2D shape below
  */
 
 {
   id: "math-shapes",
   title: "8. Khối Hình Không Gian (3D Geometric Solids)",
   concept: "Nhận biết khối lập phương, khối trụ, khối nón & vết đáy 2D",
-  means: "Ba khối hình học cơ bản tinh xảo trên bàn đế: Khối lập phương, Khối trụ và Khối nón; di chuột để nhấc bổng từng khối, để lộ hốc khắc vết đáy hình học 2D chính xác.",
+  means: "Ba khối hình học cơ bản tinh giản trên bàn đế: Khối lập phương, Khối trụ và Khối nón; di chuột để nhấc bổng từng khối, để lộ rõ vết in đáy hình học 2D (Hình vuông, Hình tròn).",
   rules: [1, 2, 4, 7, 9],
   range: [1, 2, 3],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-60, -24, 0], [60, 24, 55]], 200, 160);
+    HL.fit(C, [[-56, -20, 0], [56, 20, 52]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Workshop Bed (Z: 0 to 4.5)
-    const [baseO, baseI] = HL.rings(-56, -22, 56, 22, 4.0, 1.4);
+    // 1. Clean Baseboard (Z: 0 to 3.5)
+    const [baseO, baseI] = HL.rings(-52, -18, 52, 18, 3.5, 0.8);
     const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 4.5));
+    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 3.5));
 
-    // Corner foot pads
-    for (const [fx, fy] of [[-50, -17], [50, -17], [-50, 17], [50, 17]]) {
-      const [fO] = HL.rings(fx - 3.2, fy - 3.2, fx + 3.2, fy + 3.2, 3.2, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
+    // 2. Three 2D Footprint Inset Outlines on Baseboard (Z = 3.6)
+    // Cube: Square (-36, 0)
+    const [sqO] = HL.rings(-45, -9, -27, 9, 1.5, 0.5);
+    HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, sqO, 3.6)) }, svg);
 
-    // 2. Three Precision Recessed Footprint Nests (Z = 4.5 down to 2.2)
-    // Nest 1: Cube Square Pocket (-36, 0)
-    const [nest1O] = HL.rings(-46.5, -10.5, -25.5, 10.5, 2.0, 0.6);
-    HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, nest1O, 4.5)) }, svg);
-    const [nest1Floor] = HL.rings(-45.5, -9.5, -26.5, 9.5, 1.5, 0.5);
-    HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, nest1Floor, 2.2)) }, svg);
-
-    // Nest 2: Cylinder Circular Pocket (0, 0)
-    const nest2Rim = [], nest2Floor = [];
+    // Cylinder: Circle (0, 0)
+    const cyPts = [];
     for (let k = 0; k <= 32; k++) {
       const a = (k / 32) * Math.PI * 2;
-      nest2Rim.push(P(10.8 * Math.cos(a), 10.8 * Math.sin(a), 4.5));
-      nest2Floor.push(P(9.8 * Math.cos(a), 9.8 * Math.sin(a), 2.2));
+      cyPts.push(P(9.5 * Math.cos(a), 9.5 * Math.sin(a), 3.6));
     }
-    HL.mk("path", { class: "lo nf", d: HL.poly(nest2Rim) }, svg);
-    HL.mk("path", { class: "lo nf", d: HL.poly(nest2Floor) }, svg);
+    HL.mk("path", { class: "lo nf", d: HL.poly(cyPts) }, svg);
 
-    // Nest 3: Cone Circular Pocket (36, 0)
-    const nest3Rim = [], nest3Floor = [];
+    // Cone: Circle (36, 0)
+    const conePts = [];
     for (let k = 0; k <= 32; k++) {
       const a = (k / 32) * Math.PI * 2;
-      nest3Rim.push(P(36 + 10.8 * Math.cos(a), 10.8 * Math.sin(a), 4.5));
-      nest3Floor.push(P(36 + 9.8 * Math.cos(a), 9.8 * Math.sin(a), 2.2));
+      conePts.push(P(36 + 9.5 * Math.cos(a), 9.5 * Math.sin(a), 3.6));
     }
-    HL.mk("path", { class: "lo nf", d: HL.poly(nest3Rim) }, svg);
-    HL.mk("path", { class: "lo nf", d: HL.poly(nest3Floor) }, svg);
-    // Dimple at center of cone nest
-    HL.mk("circle", { cx: HL.r2(P(36, 0, 2.3)[0]), cy: HL.r2(P(36, 0, 2.3)[1]), r: 1.2, fill: "#232327" }, svg);
+    HL.mk("path", { class: "lo nf", d: HL.poly(conePts) }, svg);
 
-    // 3. Precision Geometric Solids
+    // 3. Three Clean Geometric Solids
     const cubeSol = HL.solid(svg);
-    const cubeFaceCrease1 = HL.mk("path", { class: "cr nf", d: "" }, svg);
-    const cubeFaceCrease2 = HL.mk("path", { class: "cr nf", d: "" }, svg);
-
     const cylSol = HL.solid(svg);
-    const cylTopRim = HL.mk("ellipse", { rx: HL.r2(8.8 * C.S), ry: HL.r2(8.8 * C.S * C.k), class: "cr nf" }, svg);
-
     const coneSol = HL.solid(svg);
-    const coneBaseRim = HL.mk("ellipse", { rx: HL.r2(9.8 * C.S), ry: HL.r2(9.8 * C.S * C.k), class: "cr nf" }, svg);
-    const coneApexDot = HL.mk("circle", { r: 1.2, fill: "#232327" }, svg);
-    const coneContour = HL.mk("line", { class: "cr", "stroke-width": 0.8 }, svg);
-
-    // Drop guidelines & shadows
     const dropGuides = HL.mk("path", { class: "nf dash lo" }, svg);
 
-    // Lift springs
     let activeShape = initialV != null ? HL.clamp(Math.round(initialV), 0, 3) : 2;
-    const lift1 = HL.spring(activeShape === 1 ? 20 : 0, { k: 140, c: 14 });
-    const lift2 = HL.spring(activeShape === 2 ? 20 : 0, { k: 140, c: 14 });
-    const lift3 = HL.spring(activeShape === 3 ? 20 : 0, { k: 140, c: 14 });
+    const lift1 = HL.spring(activeShape === 1 ? 18 : 0, { k: 140, c: 14 });
+    const lift2 = HL.spring(activeShape === 2 ? 18 : 0, { k: 140, c: 14 });
+    const lift3 = HL.spring(activeShape === 3 ? 18 : 0, { k: 140, c: 14 });
 
-    const cyRing = HL.circ(10.0, 32);
-    const cyInner = HL.circ(9.0, 32);
-    const coneRing = HL.circ(10.0, 32).map(q => ({ u: 36 + q.u, v: q.v, nu: q.nu, nv: q.nv }));
+    const cyRing = HL.circ(9.5, 32);
+    const cyInner = HL.circ(8.5, 32);
+    const coneRing = HL.circ(9.5, 32).map(q => ({ u: 36 + q.u, v: q.v, nu: q.nu, nv: q.nv }));
 
     function setShape(shapeIdx) {
       activeShape = shapeIdx;
-      lift1.t = activeShape === 1 ? 20 : 0;
-      lift2.t = activeShape === 2 ? 20 : 0;
-      lift3.t = activeShape === 3 ? 20 : 0;
+      lift1.t = activeShape === 1 ? 18 : 0;
+      lift2.t = activeShape === 2 ? 18 : 0;
+      lift3.t = activeShape === 3 ? 18 : 0;
       reg.wake();
     }
 
     function draw() {
       let guides = "";
 
-      // --- 1. CUBE: at X = -36 ---
-      const z1 = 2.4 + lift1.x;
-      const [cO, cI] = HL.rings(-45, -9, -27, 9, 2.2, 0.9);
+      // Cube: at X = -36
+      const z1 = 3.6 + lift1.x;
+      const [cO, cI] = HL.rings(-45, -9, -27, 9, 2.0, 0.8);
       HL.put(cubeSol, HL.prism(P, front, cO, cI, z1, z1 + 18));
-
-      // Side face panel creases
-      const fcZ0 = z1 + 2.0;
-      const fcZ1 = z1 + 16.0;
-      const fc1 = [
-        P(-43, 9, fcZ0), P(-29, 9, fcZ0),
-        P(-29, 9, fcZ1), P(-43, 9, fcZ1)
-      ];
-      cubeFaceCrease1.setAttribute("d", HL.poly(fc1));
-      const fc2 = [
-        P(-27, -7, fcZ0), P(-27, 7, fcZ0),
-        P(-27, 7, fcZ1), P(-27, -7, fcZ1)
-      ];
-      cubeFaceCrease2.setAttribute("d", HL.poly(fc2));
-
       if (lift1.x > 1.0) {
         for (const [cx, cy] of [[-45, -9], [-27, -9], [-27, 9], [-45, 9]]) {
-          guides += HL.seg(P(cx, cy, z1), P(cx, cy, 2.4));
+          guides += HL.seg(P(cx, cy, z1), P(cx, cy, 3.6));
         }
       }
 
-      // --- 2. CYLINDER: at X = 0 ---
-      const z2 = 2.4 + lift2.x;
+      // Cylinder: at X = 0
+      const z2 = 3.6 + lift2.x;
       HL.put(cylSol, HL.prism(P, front, cyRing, cyInner, z2, z2 + 20));
-
-      const cylTopCenter = P(0, 0, z2 + 20.1);
-      cylTopRim.setAttribute("cx", HL.r2(cylTopCenter[0]));
-      cylTopRim.setAttribute("cy", HL.r2(cylTopCenter[1]));
-
       if (lift2.x > 1.0) {
         const ext = HL.extremes(P, cyRing).slice(0, 2);
         ext.forEach(q => {
-          guides += HL.seg(P(q.u, q.v, z2), P(q.u, q.v, 2.4));
+          guides += HL.seg(P(q.u, q.v, z2), P(q.u, q.v, 3.6));
         });
       }
 
-      // --- 3. CONE: at X = 36 ---
-      const z3 = 2.4 + lift3.x;
+      // Cone: at X = 36
+      const z3 = 3.6 + lift3.x;
       const apex = P(36, 0, z3 + 22);
       const basePts = HL.ringAt(P, coneRing, z3);
       const coneSil = HL.poly(HL.hull([apex, ...basePts]));
-
-      // Tangent crease from apex down the front face
-      const frontPt = P(36 + 10.0 * Math.SQRT1_2, 10.0 * Math.SQRT1_2, z3);
-      const coneCrease = HL.seg(apex, frontPt);
-      HL.put(coneSol, { sil: coneSil, crease: coneCrease });
-
-      const coneBaseCenter = P(36, 0, z3);
-      coneBaseRim.setAttribute("cx", HL.r2(coneBaseCenter[0]));
-      coneBaseRim.setAttribute("cy", HL.r2(coneBaseCenter[1]));
-
-      coneApexDot.setAttribute("cx", HL.r2(apex[0]));
-      coneApexDot.setAttribute("cy", HL.r2(apex[1]));
-
+      HL.put(coneSol, { sil: coneSil, crease: "" });
       if (lift3.x > 1.0) {
         const ext = HL.extremes(P, coneRing).slice(0, 2);
         ext.forEach(q => {
-          guides += HL.seg(P(q.u, q.v, z3), P(q.u, q.v, 2.4));
+          guides += HL.seg(P(q.u, q.v, z3), P(q.u, q.v, 3.6));
         });
-        guides += HL.seg(P(36, 0, z3), P(36, 0, 2.4));
+        guides += HL.seg(P(36, 0, z3), P(36, 0, 3.6));
       }
 
       dropGuides.setAttribute("d", guides);
 
-      // Semantic highlight: cylinder at rest, or active lifted shape
       cubeSol.sil.classList.toggle("hi", activeShape === 1);
-      cylSol.sil.classList.toggle("hi", activeShape === 2 || (activeShape === 0));
+      cylSol.sil.classList.toggle("hi", activeShape === 2 || activeShape === 0);
       coneSol.sil.classList.toggle("hi", activeShape === 3);
 
       if (activeShape === 1) {
-        read.textContent = "Cube: Square 2D footprint (4 equal straight sides)";
+        read.textContent = "Khối Lập Phương nâng lên: Vết in đáy là Hình Vuông phẳng (4 cạnh bằng nhau)";
       } else if (activeShape === 2) {
-        read.textContent = "Cylinder: Circle 2D footprint (continuous smooth curve)";
+        read.textContent = "Khối Trụ nâng lên: Vết in đáy là Hình Tròn phẳng (đường cong tròn kín)";
       } else if (activeShape === 3) {
-        read.textContent = "Cone: Circle 2D base tapering to 1 sharp apex vertex";
+        read.textContent = "Khối Nón nâng lên: Đáy là Hình Tròn phẳng, thu về 1 đỉnh chóp nhọn";
       } else {
-        read.textContent = "Solids: Hover any shape to lift and inspect its 2D footprint";
+        read.textContent = "Khối không gian: Di chuột vào từng khối để nhấc lên xem vết đáy 2D";
       }
     }
 
@@ -1927,17 +1382,17 @@ const MATH_FIGURES = [
         setShape(0);
         return;
       }
-      const s1 = P(-36, 0, 12)[0];
-      const s2 = P(0, 0, 12)[0];
-      const s3 = P(36, 0, 12)[0];
+      const s1 = P(-36, 0, 10)[0];
+      const s2 = P(0, 0, 10)[0];
+      const s3 = P(36, 0, 10)[0];
 
       const d1 = Math.abs(pt[0] - s1);
       const d2 = Math.abs(pt[0] - s2);
       const d3 = Math.abs(pt[0] - s3);
 
-      if (d1 < 28) setShape(1);
-      else if (d2 < 28) setShape(2);
-      else if (d3 < 28) setShape(3);
+      if (d1 < 26) setShape(1);
+      else if (d2 < 26) setShape(2);
+      else if (d3 < 26) setShape(3);
       else setShape(0);
     }
 
@@ -1950,10 +1405,7 @@ const MATH_FIGURES = [
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => setShape(0)
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => setShape(0) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
@@ -1967,94 +1419,41 @@ const MATH_FIGURES = [
   }
 },
 /*
- * 9. Fraction Pie (Bánh Phân Số Montessori 1/4, 1/2, 3/4, 4/4)
- * Authentic Grade 1 Pedagogical Manipulative: Fractions of a Whole & Visual Partitioning
- * Lucas Markes Hairline Standard:
- * - Turned hardwood baking tray with recessed circular pocket, stepped rim & center locator pin
- * - Turned wooden serving plate with dished concave profile & concentric rim turning lines
- * - Precision Montessori quadrant tiles with filleted corners, top perimeter bevel creases & radial creases
- * - Smooth parabolic transfer flight with spring kinematics & drop guidelines
- * - Semantic highlight (hi) on airborne / transferred quadrant
- * - Pure 2:1 axonometric line art, zero SVG text
+ * 9. Fraction Pie (Bánh Phân Số 1/4, 1/2, 3/4, 4/4)
+ * Pedagogical Goal: Basic fractions (1/4, 2/4 = 1/2, 3/4, 4/4)
+ * Simplified Geometry: Clean round baking tray, clean round plate, 4 quarter pie slices
+ * Meaningful Interaction: Moving pointer smoothly transfers 1 to 4 slices from tray to plate
  */
 
 {
   id: "math-fraction-pie",
   title: "9. Bánh Phân Số 1/4 (Fraction Pie)",
   concept: "Phân số cơ bản: một phần tư (1/4), một nửa (1/2), toàn bộ (4/4)",
-  means: "Bánh tròn chia 4 miếng quạt 90° tinh xảo: di chuột để nhấc các miếng bánh từ khay nướng sang đĩa ăn theo cung bay 3D mượt mà, trực quan hóa 1/4, 2/4 = 1/2, 3/4.",
+  means: "Bánh tròn chia 4 miếng quạt 90° tinh giản: di chuột để nhấc các miếng bánh từ khay nướng sang đĩa ăn theo cung bay 3D mượt mà, trực quan hóa 1/4, 2/4 = 1/2, 3/4.",
   rules: [1, 2, 4, 7, 9],
   range: [0, 1, 4],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-60, -26, 0], [60, 26, 38]], 200, 160);
+    HL.fit(C, [[-58, -24, 0], [58, 24, 35]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    const R = 18.5;
-    const H = 7.5;
-    const panX = -27;
-    const plateX = 27;
+    const R = 18.0;
+    const H = 7.0;
+    const panX = -26;
+    const plateX = 26;
 
-    // 1. Turned Hardwood Baking Tray at X = -27 (Z: 0 to 4.5)
-    const [panO, panI] = HL.rings(panX - 25, -25, panX + 25, 25, 25, 2.0);
+    // 1. Clean Round Baking Tray at X = -26 (Z: 0 to 3.5)
+    const [panO, panI] = HL.rings(panX - 22, -22, panX + 22, 22, 22, 1.5);
     const panSol = HL.solid(svg);
-    HL.put(panSol, HL.prism(P, front, panO, panI, 0, 4.5));
+    HL.put(panSol, HL.prism(P, front, panO, panI, 0, 3.5));
 
-    // Foot pads under baking tray
-    for (const [fx, fy] of [[panX - 18, -18], [panX + 18, -18], [panX - 18, 18], [panX + 18, 18]]) {
-      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
-
-    // Recessed circular pocket in baking tray (Z = 4.5 down to 2.2)
-    const panRim = [], panFloor = [];
-    for (let k = 0; k <= 36; k++) {
-      const a = (k / 36) * Math.PI * 2;
-      panRim.push(P(panX + 20.5 * Math.cos(a), 20.5 * Math.sin(a), 4.5));
-      panFloor.push(P(panX + 19.5 * Math.cos(a), 19.5 * Math.sin(a), 2.2));
-    }
-    HL.mk("path", { class: "lo nf", d: HL.poly(panRim) }, svg);
-    HL.mk("path", { class: "lo nf", d: HL.poly(panFloor) }, svg);
-
-    // Center locator pin in baking tray
-    HL.mk("circle", { cx: HL.r2(P(panX, 0, 2.3)[0]), cy: HL.r2(P(panX, 0, 2.3)[1]), r: 1.4, fill: "#232327" }, svg);
-
-    // Etched quadrant crosshair in tray floor
-    HL.mk("line", {
-      x1: HL.r2(P(panX - 18, 0, 2.3)[0]), y1: HL.r2(P(panX - 18, 0, 2.3)[1]),
-      x2: HL.r2(P(panX + 18, 0, 2.3)[0]), y2: HL.r2(P(panX + 18, 0, 2.3)[1]),
-      class: "lo", "stroke-dasharray": "2 2"
-    }, svg);
-    HL.mk("line", {
-      x1: HL.r2(P(panX, -18, 2.3)[0]), y1: HL.r2(P(panX, -18, 2.3)[1]),
-      x2: HL.r2(P(panX, 18, 2.3)[0]), y2: HL.r2(P(panX, 18, 2.3)[1]),
-      class: "lo", "stroke-dasharray": "2 2"
-    }, svg);
-
-    // 2. Turned Hardwood Serving Plate at X = 27 (Z: 0 to 4.5)
-    const [plateO, plateI] = HL.rings(plateX - 25, -25, plateX + 25, 25, 25, 2.0);
+    // 2. Clean Round Serving Plate at X = 26 (Z: 0 to 3.5)
+    const [plateO, plateI] = HL.rings(plateX - 22, -22, plateX + 22, 22, 22, 1.5);
     const plateSol = HL.solid(svg);
-    HL.put(plateSol, HL.prism(P, front, plateO, plateI, 0, 4.5));
+    HL.put(plateSol, HL.prism(P, front, plateO, plateI, 0, 3.5));
 
-    // Foot pads under plate
-    for (const [fx, fy] of [[plateX - 18, -18], [plateX + 18, -18], [plateX - 18, 18], [plateX + 18, 18]]) {
-      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
-
-    // Dished concentric turning rings on serving plate
-    for (const rPlate of [20.5, 18.5, 14.0]) {
-      const plateRing = [];
-      for (let k = 0; k <= 36; k++) {
-        const a = (k / 36) * Math.PI * 2;
-        plateRing.push(P(plateX + rPlate * Math.cos(a), rPlate * Math.sin(a), 4.5));
-      }
-      HL.mk("path", { class: "lo nf", d: HL.poly(plateRing) }, svg);
-    }
-
-    // 3. Four Precision Montessori Quadrant Tiles
-    // Render order from back to front for proper isometric occlusion
+    // 3. Four Clean Quarter Pie Slices
     const renderOrder = [2, 1, 3, 0];
     let takenCount = initialV !== undefined ? Math.round(HL.clamp(initialV, 0, 4)) : 1;
 
@@ -2066,7 +1465,6 @@ const MATH_FIGURES = [
         a0,
         a1,
         sol: HL.solid(svg),
-        faceCrease: HL.mk("path", { class: "cr nf", d: "" }, svg),
         sp: HL.spring(i < takenCount ? 1 : 0, { k: 140, c: 14 })
       };
     });
@@ -2075,13 +1473,12 @@ const MATH_FIGURES = [
       pieces.forEach(pc => {
         const u = pc.sp.x;
 
-        // Path from pan to plate with gentle lifting arc in Z
         const curX = HL.lerp(panX, plateX, u);
         const curY = 0;
-        const curZ0 = 2.4 + 4 * 16 * u * (1 - u);
+        const curZ0 = 3.6 + 4 * 14 * u * (1 - u);
         const curZ1 = curZ0 + H;
 
-        const numArc = 16;
+        const numArc = 14;
         const topPts = [P(curX, curY, curZ1)];
         const botPts = [P(curX, curY, curZ0)];
 
@@ -2093,7 +1490,6 @@ const MATH_FIGURES = [
 
         const hullPts = HL.hull([...topPts, ...botPts]);
         const sil = HL.poly(hullPts);
-
         let crease = HL.poly(topPts);
 
         // Radial face 0
@@ -2124,31 +1520,20 @@ const MATH_FIGURES = [
 
         HL.put(pc.sol, { sil, crease });
 
-        // Inset face crease on top surface for light-catching bevel
-        const rInner = R - 1.6;
-        const innerTopPts = [P(curX + 1.2 * Math.cos((pc.a0 + pc.a1) / 2), curY + 1.2 * Math.sin((pc.a0 + pc.a1) / 2), curZ1 + 0.1)];
-        for (let k = 0; k <= numArc; k++) {
-          const ang = pc.a0 + 0.05 + (pc.a1 - pc.a0 - 0.1) * (k / numArc);
-          innerTopPts.push(P(curX + rInner * Math.cos(ang), curY + rInner * Math.sin(ang), curZ1 + 0.1));
-        }
-        pc.faceCrease.setAttribute("d", HL.poly(innerTopPts));
-
-        // Focal highlight: active flying or transferred quadrant
-        const isAirborne = u > 0.05 && u < 0.95;
-        const isFocal = (pc.idx === takenCount - 1 && u >= 0.95) || isAirborne;
+        const isFocal = (pc.idx === takenCount - 1 && u >= 0.9) || (u > 0.1 && u < 0.9);
         pc.sol.sil.classList.toggle("hi", isFocal);
       });
 
       if (takenCount === 0) {
-        read.textContent = "Fraction Pie: 4/4 = 1 Whole";
+        read.textContent = "Bánh nguyên vẹn trong khay: 4/4 = 1 cái bánh";
       } else if (takenCount === 1) {
-        read.textContent = "Fraction Pie: 1/4 on plate, 3/4 remaining in tray";
+        read.textContent = "Bốc 1 miếng (1/4) ra đĩa: Trong khay còn lại 3/4 cái bánh";
       } else if (takenCount === 2) {
-        read.textContent = "Fraction Pie: 2/4 = 1/2 on plate (One Half)";
+        read.textContent = "Bốc 2 miếng (2/4) ra đĩa: Đúng một nửa cái bánh (1/2)";
       } else if (takenCount === 3) {
-        read.textContent = "Fraction Pie: 3/4 on plate, 1/4 in tray";
+        read.textContent = "Bốc 3 miếng (3/4) ra đĩa: Trong khay chỉ còn 1/4 cái bánh";
       } else {
-        read.textContent = "Fraction Pie: 4/4 transferred (Whole Pie on Plate)";
+        read.textContent = "Đã chuyển hết 4/4 miếng ra đĩa: Trọn vẹn 1 cái bánh";
       }
     }
 
@@ -2165,11 +1550,10 @@ const MATH_FIGURES = [
         setSlices(1);
         return;
       }
-      const pLeft = P(panX, 0, 4)[0];
-      const pRight = P(plateX, 0, 4)[0];
+      const pLeft = P(panX, 0, 3)[0];
+      const pRight = P(plateX, 0, 3)[0];
       const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
-      const targetSlices = Math.round(norm * 4);
-      setSlices(targetSlices);
+      setSlices(Math.round(norm * 4));
     }
 
     const reg = HL.register(stage, dt => {
@@ -2182,10 +1566,7 @@ const MATH_FIGURES = [
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => setSlices(1)
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => setSlices(1) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
@@ -2200,14 +1581,9 @@ const MATH_FIGURES = [
 },
 /*
  * 10. Counting Bead String (Chuỗi 10 Hạt Đếm Số)
- * Authentic Grade 1 Pedagogical Manipulative: Part-Whole Decompositions of 10 (7+3, 6+4, 8+2)
- * Lucas Markes Hairline Standard:
- * - Turned hardwood baseboard with beveled edges (r=4.0, b=1.4) & 4 corner foot pads
- * - Turned brass wire mounting posts with collar rings at wire anchor roots
- * - Precision bi-conical Soroban abacus beads with sharp equatorial ridge rings & center wire bores
- * - 5 ivory + 5 ebony beads for instant Grade 1 subitizing
- * - Continuous pointer tracking with spring partition kinematics & focal highlight transfer
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Part-whole decompositions of 10 (7+3, 6+4, 8+2)
+ * Simplified Geometry: Clean wooden baseboard, arched wire, 10 beads (5 dark + 5 light)
+ * Meaningful Interaction: Moving pointer smoothly divides beads into left and right groups
  */
 
 {
@@ -2220,48 +1596,34 @@ const MATH_FIGURES = [
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-60, -18, 0], [60, 18, 48]], 200, 160);
+    HL.fit(C, [[-58, -16, 0], [58, 16, 46]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Baseboard (Z: 0 to 4.5)
-    const [bO, bI] = HL.rings(-54, -16, 54, 16, 4.0, 1.4);
+    // 1. Clean Wooden Baseboard (Z: 0 to 4.0)
+    const [bO, bI] = HL.rings(-52, -14, 52, 14, 3.5, 0.8);
     const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 4.5));
+    HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 4.0));
 
-    // Four corner foot pads
-    for (const [fx, fy] of [[-48, -11], [48, -11], [-48, 11], [48, 11]]) {
-      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
+    // Anchor sockets for wire on base
+    HL.mk("circle", { cx: HL.r2(P(-44, 0, 4.1)[0]), cy: HL.r2(P(-44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
+    HL.mk("circle", { cx: HL.r2(P(44, 0, 4.1)[0]), cy: HL.r2(P(44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
 
-    // 2. Turned Brass Mounting Posts at Wire Anchors (X = -44, X = 44)
-    for (const bx of [-44, 44]) {
-      const [postO, postI] = HL.rings(bx - 3.8, -3.8, bx + 3.8, 3.8, 3.8, 0.6);
-      const postSol = HL.solid(svg);
-      HL.put(postSol, HL.prism(P, front, postO, postI, 4.5, 7.5));
-
-      const centerScr = P(bx, 0, 7.6);
-      HL.mk("circle", { cx: HL.r2(centerScr[0]), cy: HL.r2(centerScr[1]), r: 1.6, fill: "#232327" }, svg);
-    }
-
-    // 3. Parabolic Brass Wire on X-Z Plane
+    // 2. Parabolic Wire on X-Z Plane
     const wirePts = [];
     for (let s = 0; s <= 48; s++) {
       const t = s / 48;
       const x = HL.lerp(-44, 44, t);
-      const z = 7.5 + 130 * t * (1 - t);
+      const z = 4.0 + 130 * t * (1 - t);
       wirePts.push(P(x, 0, z));
     }
     HL.mk("path", { d: HL.open(wirePts), stroke: "#232327", fill: "none", "stroke-width": 1.6 }, svg);
 
-    // 4. Ten Precision Bi-Conical Abacus Beads
-    // 5 Ebony (dark) + 5 Ivory (light)
+    // 3. Ten Clean Counting Beads (5 dark + 5 light)
     const beads = [];
-    const R_mid = 5.2;   // Midpoint ridge radius
-    const R_end = 2.8;   // End rims radius
-    const L = 5.6;       // Bead length along wire
-    const r_hole = 1.3;  // Center bore hole radius
-    const N = 24;
+    const R = 4.5;
+    const L = 5.2;
+    const r_hole = 1.2;
+    const N = 20;
 
     for (let i = 0; i < 10; i++) {
       const dark = i < 5;
@@ -2296,17 +1658,15 @@ const MATH_FIGURES = [
       beads.forEach(b => {
         const t = b.tSp.x;
         const x = -44 + 88 * t;
-        const z = 7.5 + 130 * t * (1 - t);
+        const z = 4.0 + 130 * t * (1 - t);
 
-        // Tangent vector along wire
         const tx = 88;
         const tz = 130 * (1 - 2 * t);
         const len = Math.hypot(tx, tz);
         const utx = tx / len;
         const utz = tz / len;
 
-        // Orthogonal vectors
-        const end1 = [], end2 = [], midRing = [];
+        const end1 = [], end2 = [];
         const hole1 = [], hole2 = [];
 
         for (let k = 0; k < N; k++) {
@@ -2314,51 +1674,38 @@ const MATH_FIGURES = [
           const cosA = Math.cos(ang);
           const sinA = Math.sin(ang);
 
-          // End 1 (at -L/2)
-          const p1x = x - (L / 2) * utx + R_end * sinA * (-utz);
-          const p1y = R_end * cosA;
-          const p1z = z - (L / 2) * utz + R_end * sinA * utx;
+          // End 1
+          const p1x = x - (L / 2) * utx + R * sinA * (-utz);
+          const p1y = R * cosA;
+          const p1z = z - (L / 2) * utz + R * sinA * utx;
           end1.push(P(p1x, p1y, p1z));
 
-          // Midpoint Equatorial Ridge Ring (at 0)
-          const pmx = x + R_mid * sinA * (-utz);
-          const pmy = R_mid * cosA;
-          const pmz = z + R_mid * sinA * utx;
-          midRing.push(P(pmx, pmy, pmz));
-
-          // End 2 (at +L/2)
-          const p2x = x + (L / 2) * utx + R_end * sinA * (-utz);
-          const p2y = R_end * cosA;
-          const p2z = z + (L / 2) * utz + R_end * sinA * utx;
+          // End 2
+          const p2x = x + (L / 2) * utx + R * sinA * (-utz);
+          const p2y = R * cosA;
+          const p2z = z + (L / 2) * utz + R * sinA * utx;
           end2.push(P(p2x, p2y, p2z));
 
-          // Hole 1
+          // Hole 1 & 2
           hole1.push(P(x - (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z - (L / 2) * utz + r_hole * sinA * utx));
-          // Hole 2
           hole2.push(P(x + (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z + (L / 2) * utz + r_hole * sinA * utx));
         }
 
-        // Outer silhouette: hull of End 1, Mid Ring, and End 2
-        const sil = HL.poly(HL.hull(end1.concat(midRing).concat(end2)));
-
-        // Camera direction test
+        const sil = HL.poly(HL.hull(end1.concat(end2)));
         const dotEnd2 = utx * 0.3536 + utz * 0.866;
         const visRim = dotEnd2 > 0 ? end2 : end1;
         const visHole = dotEnd2 > 0 ? hole2 : hole1;
-
-        // Crease: equatorial sharp ridge ring + visible bore hole
-        const crease = HL.poly(midRing) + HL.poly(visRim) + HL.poly(visHole);
+        const crease = HL.poly(visRim) + HL.poly(visHole);
 
         HL.put(b.sol, { sil, crease });
 
-        // Highlight active parting boundary bead
         const isFocal = (b.idx === curSplit - 1);
         b.sol.sil.classList.toggle("hi", isFocal);
       });
 
       const leftCount = beads.filter(b => b.tSp.x < 0.5).length;
       const rightCount = 10 - leftCount;
-      read.textContent = "Bead String: " + leftCount + " + " + rightCount + " = 10";
+      read.textContent = "Chuỗi hạt: " + leftCount + " (trái) + " + rightCount + " (phải) = 10";
     }
 
     function setSplit(splitIdx) {
@@ -2381,8 +1728,7 @@ const MATH_FIGURES = [
       const scrLeft = P(-44, 0, 8)[0];
       const scrRight = P(44, 0, 8)[0];
       const norm = HL.clamp((pt[0] - scrLeft) / (scrRight - scrLeft), 0.05, 0.95);
-      const splitIdx = Math.round(norm * 10);
-      setSplit(splitIdx);
+      setSplit(Math.round(norm * 10));
     }
 
     const reg = HL.register(stage, dt => {
@@ -2393,10 +1739,7 @@ const MATH_FIGURES = [
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => setSplit(5)
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => setSplit(5) }));
     bag.add(() => svg.replaceChildren());
 
     draw();

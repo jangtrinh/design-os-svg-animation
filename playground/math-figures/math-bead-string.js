@@ -1,13 +1,8 @@
 /*
  * 10. Counting Bead String (Chuỗi 10 Hạt Đếm Số)
- * Authentic Grade 1 Pedagogical Manipulative: Part-Whole Decompositions of 10 (7+3, 6+4, 8+2)
- * Lucas Markes Hairline Standard:
- * - Turned hardwood baseboard with beveled edges (r=4.0, b=1.4) & 4 corner foot pads
- * - Turned brass wire mounting posts with collar rings at wire anchor roots
- * - Precision bi-conical Soroban abacus beads with sharp equatorial ridge rings & center wire bores
- * - 5 ivory + 5 ebony beads for instant Grade 1 subitizing
- * - Continuous pointer tracking with spring partition kinematics & focal highlight transfer
- * - Pure 2:1 axonometric line art, zero SVG text
+ * Pedagogical Goal: Part-whole decompositions of 10 (7+3, 6+4, 8+2)
+ * Simplified Geometry: Clean wooden baseboard, arched wire, 10 beads (5 dark + 5 light)
+ * Meaningful Interaction: Moving pointer smoothly divides beads into left and right groups
  */
 
 export default {
@@ -20,48 +15,34 @@ export default {
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-60, -18, 0], [60, 18, 48]], 200, 160);
+    HL.fit(C, [[-58, -16, 0], [58, 16, 46]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Turned Hardwood Baseboard (Z: 0 to 4.5)
-    const [bO, bI] = HL.rings(-54, -16, 54, 16, 4.0, 1.4);
+    // 1. Clean Wooden Baseboard (Z: 0 to 4.0)
+    const [bO, bI] = HL.rings(-52, -14, 52, 14, 3.5, 0.8);
     const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 4.5));
+    HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 4.0));
 
-    // Four corner foot pads
-    for (const [fx, fy] of [[-48, -11], [48, -11], [-48, 11], [48, 11]]) {
-      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
-      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
-    }
+    // Anchor sockets for wire on base
+    HL.mk("circle", { cx: HL.r2(P(-44, 0, 4.1)[0]), cy: HL.r2(P(-44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
+    HL.mk("circle", { cx: HL.r2(P(44, 0, 4.1)[0]), cy: HL.r2(P(44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
 
-    // 2. Turned Brass Mounting Posts at Wire Anchors (X = -44, X = 44)
-    for (const bx of [-44, 44]) {
-      const [postO, postI] = HL.rings(bx - 3.8, -3.8, bx + 3.8, 3.8, 3.8, 0.6);
-      const postSol = HL.solid(svg);
-      HL.put(postSol, HL.prism(P, front, postO, postI, 4.5, 7.5));
-
-      const centerScr = P(bx, 0, 7.6);
-      HL.mk("circle", { cx: HL.r2(centerScr[0]), cy: HL.r2(centerScr[1]), r: 1.6, fill: "#232327" }, svg);
-    }
-
-    // 3. Parabolic Brass Wire on X-Z Plane
+    // 2. Parabolic Wire on X-Z Plane
     const wirePts = [];
     for (let s = 0; s <= 48; s++) {
       const t = s / 48;
       const x = HL.lerp(-44, 44, t);
-      const z = 7.5 + 130 * t * (1 - t);
+      const z = 4.0 + 130 * t * (1 - t);
       wirePts.push(P(x, 0, z));
     }
     HL.mk("path", { d: HL.open(wirePts), stroke: "#232327", fill: "none", "stroke-width": 1.6 }, svg);
 
-    // 4. Ten Precision Bi-Conical Abacus Beads
-    // 5 Ebony (dark) + 5 Ivory (light)
+    // 3. Ten Clean Counting Beads (5 dark + 5 light)
     const beads = [];
-    const R_mid = 5.2;   // Midpoint ridge radius
-    const R_end = 2.8;   // End rims radius
-    const L = 5.6;       // Bead length along wire
-    const r_hole = 1.3;  // Center bore hole radius
-    const N = 24;
+    const R = 4.5;
+    const L = 5.2;
+    const r_hole = 1.2;
+    const N = 20;
 
     for (let i = 0; i < 10; i++) {
       const dark = i < 5;
@@ -96,17 +77,15 @@ export default {
       beads.forEach(b => {
         const t = b.tSp.x;
         const x = -44 + 88 * t;
-        const z = 7.5 + 130 * t * (1 - t);
+        const z = 4.0 + 130 * t * (1 - t);
 
-        // Tangent vector along wire
         const tx = 88;
         const tz = 130 * (1 - 2 * t);
         const len = Math.hypot(tx, tz);
         const utx = tx / len;
         const utz = tz / len;
 
-        // Orthogonal vectors
-        const end1 = [], end2 = [], midRing = [];
+        const end1 = [], end2 = [];
         const hole1 = [], hole2 = [];
 
         for (let k = 0; k < N; k++) {
@@ -114,51 +93,38 @@ export default {
           const cosA = Math.cos(ang);
           const sinA = Math.sin(ang);
 
-          // End 1 (at -L/2)
-          const p1x = x - (L / 2) * utx + R_end * sinA * (-utz);
-          const p1y = R_end * cosA;
-          const p1z = z - (L / 2) * utz + R_end * sinA * utx;
+          // End 1
+          const p1x = x - (L / 2) * utx + R * sinA * (-utz);
+          const p1y = R * cosA;
+          const p1z = z - (L / 2) * utz + R * sinA * utx;
           end1.push(P(p1x, p1y, p1z));
 
-          // Midpoint Equatorial Ridge Ring (at 0)
-          const pmx = x + R_mid * sinA * (-utz);
-          const pmy = R_mid * cosA;
-          const pmz = z + R_mid * sinA * utx;
-          midRing.push(P(pmx, pmy, pmz));
-
-          // End 2 (at +L/2)
-          const p2x = x + (L / 2) * utx + R_end * sinA * (-utz);
-          const p2y = R_end * cosA;
-          const p2z = z + (L / 2) * utz + R_end * sinA * utx;
+          // End 2
+          const p2x = x + (L / 2) * utx + R * sinA * (-utz);
+          const p2y = R * cosA;
+          const p2z = z + (L / 2) * utz + R * sinA * utx;
           end2.push(P(p2x, p2y, p2z));
 
-          // Hole 1
+          // Hole 1 & 2
           hole1.push(P(x - (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z - (L / 2) * utz + r_hole * sinA * utx));
-          // Hole 2
           hole2.push(P(x + (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z + (L / 2) * utz + r_hole * sinA * utx));
         }
 
-        // Outer silhouette: hull of End 1, Mid Ring, and End 2
-        const sil = HL.poly(HL.hull(end1.concat(midRing).concat(end2)));
-
-        // Camera direction test
+        const sil = HL.poly(HL.hull(end1.concat(end2)));
         const dotEnd2 = utx * 0.3536 + utz * 0.866;
         const visRim = dotEnd2 > 0 ? end2 : end1;
         const visHole = dotEnd2 > 0 ? hole2 : hole1;
-
-        // Crease: equatorial sharp ridge ring + visible bore hole
-        const crease = HL.poly(midRing) + HL.poly(visRim) + HL.poly(visHole);
+        const crease = HL.poly(visRim) + HL.poly(visHole);
 
         HL.put(b.sol, { sil, crease });
 
-        // Highlight active parting boundary bead
         const isFocal = (b.idx === curSplit - 1);
         b.sol.sil.classList.toggle("hi", isFocal);
       });
 
       const leftCount = beads.filter(b => b.tSp.x < 0.5).length;
       const rightCount = 10 - leftCount;
-      read.textContent = "Bead String: " + leftCount + " + " + rightCount + " = 10";
+      read.textContent = "Chuỗi hạt: " + leftCount + " (trái) + " + rightCount + " (phải) = 10";
     }
 
     function setSplit(splitIdx) {
@@ -181,8 +147,7 @@ export default {
       const scrLeft = P(-44, 0, 8)[0];
       const scrRight = P(44, 0, 8)[0];
       const norm = HL.clamp((pt[0] - scrLeft) / (scrRight - scrLeft), 0.05, 0.95);
-      const splitIdx = Math.round(norm * 10);
-      setSplit(splitIdx);
+      setSplit(Math.round(norm * 10));
     }
 
     const reg = HL.register(stage, dt => {
@@ -193,10 +158,7 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => setSplit(5)
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => setSplit(5) }));
     bag.add(() => svg.replaceChildren());
 
     draw();

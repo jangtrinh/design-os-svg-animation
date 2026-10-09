@@ -1,53 +1,38 @@
 /*
  * 6. Math Dice (Cặp Xúc Xắc Chấm Đố)
- * Crafted to Lucas Markes Hairline Standard:
- * - Rounded-corner chamfered casino dice cubes with inner face creases
- * - Sunken double-ring engraved spherical pips
- * - Stitched felt tabletop mat with rounded perimeter
- * - Pure 2:1 axonometric line art with Rule 09 radius & bevel discipline
+ * Pedagogical Goal: Number recognition & subitizing (3 + 4 = 7, opposite faces sum to 7)
+ * Simplified Geometry: Clean chamfered cubes with solid bold pips on a minimalist mat
+ * Meaningful Interaction: Moving pointer smoothly tilts/wobbles dice to explore 3D faces
  */
 
 export default {
   id: "math-dice",
   title: "6. Cặp Xúc Xắc (Math Dice Pips)",
   concept: "Phép cộng & nhận biết mặt xúc xắc 3D",
-  means: "Hai khối xúc xắc bo góc vát mép chuẩn xác trên thảm nỉ viền chỉ. Di chuyển con trỏ để nghiêng xoay 3D khám phá các mặt chấm tròn khắc lõm.",
+  means: "Hai khối xúc xắc bo góc vát mép tinh giản trên bàn đế: di chuột để nghiêng xoay 3D khám phá các mặt chấm tròn, nhận biết tổng hai mặt trên (3 + 4 = 7) và tính chất mặt đối diện bằng 7.",
   rules: [1, 2, 4, 6, 9],
   range: [0, 3.5, 7],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-48, -22, 0], [48, 22, 40]], 200, 160);
+    HL.fit(C, [[-48, -20, 0], [48, 20, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Felt Gaming Mat with Stitched Border
-    const [matO, matI] = HL.rings(-45, -18, 45, 18, 4, 1.5);
+    // 1. Clean Minimalist Mat (Z: 0 to 2.5)
+    const [matO, matI] = HL.rings(-44, -16, 44, 16, 3.5, 0.8);
     const matSol = HL.solid(svg);
     HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2.5));
-
-    // Stitched perimeter line on mat face (z = 2.6)
-    const [stitchO] = HL.rings(-42, -15, 42, 15, 3, 0.5);
-    HL.mk("path", {
-      class: "lo dash",
-      d: HL.poly(HL.ringAt(P, stitchO, 2.6)),
-      "stroke-dasharray": "2.5 2.0"
-    }, svg);
 
     // 2. Dice Groups
     const d1Group = HL.mk("g", { id: "die-1" }, svg);
     const d2Group = HL.mk("g", { id: "die-2" }, svg);
 
-    // Face solids with chamfer creases for Die 1 & Die 2
     function makeDieGraphics(g) {
       return {
         faceX: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
         faceY: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
         faceZ: HL.mk("polygon", { style: "fill: #ffffff; stroke: #232327; stroke-width: 1.3; stroke-linejoin: round;" }, g),
-        creaseX: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        creaseY: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        creaseZ: HL.mk("path", { class: "cr", "stroke-width": 0.9 }, g),
-        pipRims: Array.from({ length: 16 }, () => HL.mk("path", { class: "lo", "stroke-width": 0.8 }, g)),
-        pipDots: Array.from({ length: 16 }, () => HL.mk("path", { style: "fill: #232327; stroke: none;" }, g))
+        pipDots: Array.from({ length: 16 }, () => HL.mk("polygon", { style: "fill: #232327; stroke: none;" }, g))
       };
     }
 
@@ -63,23 +48,22 @@ export default {
     const wobbleY2 = HL.spring(0, { k: 140, c: 14 });
     const lift2 = HL.spring(0, { k: 150, c: 14 });
 
-    const d = 5.2;
-    const rStandard = 1.45;
-    const rCenter = 1.65;
+    const d = 5.0;
+    const rPip = 1.6;
 
     function buildPipsForFace(axis, val) {
       const pips = [];
-      if (val === 1) pips.push({ axis, u: 0, v: 0, r: rCenter });
+      if (val === 1) pips.push({ axis, u: 0, v: 0, r: rPip * 1.2 });
       else if (val === 2) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 3) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: 0, v: 0, r: rCenter }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: 0, v: 0, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 4) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 5) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: 0, v: 0, r: rCenter }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: 0, v: 0, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       } else if (val === 6) {
-        pips.push({ axis, u: -d, v: -d, r: rStandard }, { axis, u: d, v: -d, r: rStandard }, { axis, u: -d, v: 0, r: rStandard }, { axis, u: d, v: 0, r: rStandard }, { axis, u: -d, v: d, r: rStandard }, { axis, u: d, v: d, r: rStandard });
+        pips.push({ axis, u: -d, v: -d, r: rPip }, { axis, u: d, v: -d, r: rPip }, { axis, u: -d, v: 0, r: rPip }, { axis, u: d, v: 0, r: rPip }, { axis, u: -d, v: d, r: rPip }, { axis, u: d, v: d, r: rPip });
       }
       return pips;
     }
@@ -97,105 +81,88 @@ export default {
     }
 
     function projectPip(cu, cv, r, normalAxis, rxDeg, ryDeg, cx, cy, cz) {
-      const N = 12;
+      const N = 10;
       const pts = [];
-      for (let i = 0; i < N; i++) {
-        const theta = (i / N) * Math.PI * 2;
-        const u = cu + r * Math.cos(theta);
-        const v = cv + r * Math.sin(theta);
+      for (let k = 0; k < N; k++) {
+        const a = (k / N) * Math.PI * 2;
         let lx, ly, lz;
-        if (normalAxis === 'z') { lx = u; ly = v; lz = 10.05; }
-        else if (normalAxis === 'y') { lx = u; ly = 10.05; lz = v; }
-        else { lx = 10.05; ly = u; lz = v; }
-        const wPt = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, 0, cz);
-        pts.push(P(...wPt));
-      }
-      return HL.poly(pts);
-    }
-
-    function projectFaceCrease(normalAxis, rxDeg, ryDeg, cx, cz) {
-      // Inset rounded rectangular crease on face (s = 10, inset = 1.3, r = 1.8)
-      const b = 8.7;
-      const pts = [];
-      const corners = [[-b, -b], [b, -b], [b, b], [-b, b]];
-      corners.forEach(([u, v]) => {
-        let lx, ly, lz;
-        if (normalAxis === 'z') { lx = u; ly = v; lz = 10.02; }
-        else if (normalAxis === 'y') { lx = u; ly = 10.02; lz = v; }
-        else { lx = 10.02; ly = u; lz = v; }
-        pts.push(P(...rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, 0, cz)));
-      });
-      return HL.poly(pts);
-    }
-
-    function drawDie(cx, baseZ, rxDeg, ryDeg, gfx, pipConfig) {
-      const s = 10;
-      const cz = baseZ + s;
-
-      const c_100 = rotatePoint( s, -s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_110 = rotatePoint( s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_010 = rotatePoint(-s,  s, -s, rxDeg, ryDeg, cx, 0, cz);
-      const c_001 = rotatePoint(-s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_101 = rotatePoint( s, -s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_011 = rotatePoint(-s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-      const c_111 = rotatePoint( s,  s,  s, rxDeg, ryDeg, cx, 0, cz);
-
-      // 1. Faces
-      const ptsX = [P(...c_100), P(...c_110), P(...c_111), P(...c_101)];
-      gfx.faceX.setAttribute("points", ptsX.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      const ptsY = [P(...c_010), P(...c_110), P(...c_111), P(...c_011)];
-      gfx.faceY.setAttribute("points", ptsY.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      const ptsZ = [P(...c_001), P(...c_101), P(...c_111), P(...c_011)];
-      gfx.faceZ.setAttribute("points", ptsZ.map(p => p.map(HL.r2).join(",")).join(" "));
-
-      // 2. Inset Chamfer Creases on visible faces
-      gfx.creaseX.setAttribute("d", projectFaceCrease('x', rxDeg, ryDeg, cx, cz));
-      gfx.creaseY.setAttribute("d", projectFaceCrease('y', rxDeg, ryDeg, cx, cz));
-      gfx.creaseZ.setAttribute("d", projectFaceCrease('z', rxDeg, ryDeg, cx, cz));
-
-      // 3. Pips with outer sunken rim and inner dot
-      for (let i = 0; i < gfx.pipDots.length; i++) {
-        if (i < pipConfig.length) {
-          const cfg = pipConfig[i];
-          const rimPath = projectPip(cfg.u, cfg.v, cfg.r + 0.55, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
-          const dotPath = projectPip(cfg.u, cfg.v, cfg.r, cfg.axis, rxDeg, ryDeg, cx, 0, cz);
-
-          gfx.pipRims[i].style.display = "";
-          gfx.pipRims[i].setAttribute("d", rimPath);
-
-          gfx.pipDots[i].style.display = "";
-          gfx.pipDots[i].setAttribute("d", dotPath);
+        if (normalAxis === 'Z') {
+          lx = cu + r * Math.cos(a);
+          ly = cv + r * Math.sin(a);
+          lz = 10.0;
+        } else if (normalAxis === 'X') {
+          lx = 10.0;
+          ly = cu + r * Math.cos(a);
+          lz = cv + r * Math.sin(a);
         } else {
-          gfx.pipRims[i].style.display = "none";
-          gfx.pipDots[i].style.display = "none";
+          lx = cu + r * Math.cos(a);
+          ly = 10.0;
+          lz = cv + r * Math.sin(a);
         }
+        const w = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
+        pts.push(P(w[0], w[1], w[2]).map(HL.r2).join(","));
+      }
+      return pts.join(" ");
+    }
+
+    function renderDie(gfx, cx, cy, cz, rxDeg, ryDeg, faces) {
+      const H = 10.0;
+      const corners = [
+        [-H, -H, -H], [H, -H, -H], [H, H, -H], [-H, H, -H],
+        [-H, -H,  H], [H, -H,  H], [H, H,  H], [-H, H,  H]
+      ].map(([lx, ly, lz]) => {
+        const w = rotatePoint(lx, ly, lz, rxDeg, ryDeg, cx, cy, cz);
+        return P(w[0], w[1], w[2]);
+      });
+
+      // Face Z+ (top)
+      const topPts = [corners[4], corners[5], corners[6], corners[7]];
+      gfx.faceZ.setAttribute("points", topPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Face X+ (right)
+      const rightPts = [corners[1], corners[2], corners[6], corners[5]];
+      gfx.faceX.setAttribute("points", rightPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Face Y+ (front)
+      const frontPts = [corners[3], corners[2], corners[6], corners[7]];
+      gfx.faceY.setAttribute("points", frontPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
+
+      // Pips
+      const allPips = [
+        ...buildPipsForFace('Z', faces.top),
+        ...buildPipsForFace('X', faces.right),
+        ...buildPipsForFace('Y', faces.front)
+      ];
+
+      allPips.forEach((pip, i) => {
+        if (i < gfx.pipDots.length) {
+          gfx.pipDots[i].style.display = "";
+          gfx.pipDots[i].setAttribute("points", projectPip(pip.u, pip.v, pip.r, pip.axis, rxDeg, ryDeg, cx, cy, cz));
+        }
+      });
+      for (let i = allPips.length; i < gfx.pipDots.length; i++) {
+        gfx.pipDots[i].style.display = "none";
       }
     }
 
     function draw() {
-      // Die 1: Top 3, Left 1, Right 2
-      const cfg1 = [
-        ...buildPipsForFace('x', 2),
-        ...buildPipsForFace('y', 1),
-        ...buildPipsForFace('z', 3)
-      ];
+      // Die 1: Center at (-18, 0), Top=3, Right=2, Front=1
+      renderDie(
+        d1Gfx,
+        -18, 0, 12.5 + lift1.x,
+        wobbleX1.x, wobbleY1.x,
+        { top: 3, right: 2, front: 1 }
+      );
 
-      // Die 2: Top 4, Left 5, Right 6
-      const cfg2 = [
-        ...buildPipsForFace('x', 6),
-        ...buildPipsForFace('y', 5),
-        ...buildPipsForFace('z', 4)
-      ];
+      // Die 2: Center at (18, 0), Top=4, Right=5, Front=6
+      renderDie(
+        d2Gfx,
+        18, 0, 12.5 + lift2.x,
+        wobbleX2.x, wobbleY2.x,
+        { top: 4, right: 5, front: 6 }
+      );
 
-      const baseZ1 = 2.5 + Math.max(0, lift1.x);
-      const baseZ2 = 2.5 + Math.max(0, lift2.x);
-
-      drawDie(-22, baseZ1, wobbleX1.x, wobbleY1.x, d1Gfx, cfg1);
-      drawDie( 22, baseZ2, wobbleX2.x, wobbleY2.x, d2Gfx, cfg2);
-
-      read.textContent = "Xúc xắc 3D: Mặt trên 3 + 4 = 7 (Tổng các chấm tròn đối diện = 7)";
+      read.textContent = "Xúc xắc: Mặt trên 3 + 4 = 7 chấm (Mặt đối diện: 3+4=7, 2+5=7, 1+6=7)";
     }
 
     function aim(pt) {
@@ -205,14 +172,20 @@ export default {
         reg.wake();
         return;
       }
-      const midX = 0;
-      const midY = P(0, 0, 12)[1];
+      const s1 = P(-18, 0, 12.5)[0];
+      const s2 = P(18, 0, 12.5)[0];
 
-      const tiltX = HL.clamp((pt[1] - midY) * 0.28, -10, 10);
-      const tiltY = HL.clamp(-(pt[0] - midX) * 0.28, -10, 10);
+      const h1 = Math.abs(pt[0] - s1) < 30;
+      const h2 = Math.abs(pt[0] - s2) < 30;
 
-      wobbleX1.t = tiltX; wobbleY1.t = tiltY; lift1.t = 2.2;
-      wobbleX2.t = tiltX; wobbleY2.t = tiltY; lift2.t = 2.2;
+      lift1.t = h1 ? 4.0 : 0;
+      wobbleX1.t = h1 ? (pt[1] - P(-18, 0, 12.5)[1]) * 0.4 : 0;
+      wobbleY1.t = h1 ? (pt[0] - s1) * 0.4 : 0;
+
+      lift2.t = h2 ? 4.0 : 0;
+      wobbleX2.t = h2 ? (pt[1] - P(18, 0, 12.5)[1]) * 0.4 : 0;
+      wobbleY2.t = h2 ? (pt[0] - s2) * 0.4 : 0;
+
       reg.wake();
     }
 
@@ -224,24 +197,14 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, {
-      move: aim,
-      leave: () => {
-        wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
-        wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
-        reg.wake();
-      }
-    }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
-        const t = (v - 3.5) / 3.5;
-        wobbleY1.t = t * 10;
-        wobbleY2.t = -t * 10;
-        reg.wake();
+        draw();
       },
       destroy: bag.dispose
     };
