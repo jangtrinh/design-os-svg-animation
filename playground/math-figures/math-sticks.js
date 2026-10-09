@@ -1,166 +1,191 @@
 /*
- * 1. Math Counting Sticks (Bó Que Tính Chục & Đơn Vị)
- * Authentic Grade 1 Pedagogical Manipulative: Place Value (Tens & Units)
- * 10 sticks bundled with an accent band + loose unit sticks on wooden mat
+ * 1. Counting Sticks Bundle (Bó Que Tính Chục & Đơn Vị)
+ * Pedagogical Goal: Place value in Grade 1 (Tens & Units, numbers 11 to 19)
+ * Simplified Geometry: 1 bundle of 10 tied sticks (1 chục) + loose unit sticks on a clean desk mat
+ * Meaningful Interaction: Moving pointer smoothly adds/removes loose unit sticks (1 to 5)
  */
 
 export default {
   id: "math-sticks",
   title: "1. Bó Que Tính (Counting Sticks Bundle)",
-  concept: "Chục và đơn vị · Các số từ 11 đến 20",
-  means: "1 bó chục (10 que tính buộc đai) cùng các que tính rời nằm phẳng trên mặt bàn; di chuột kéo que rời ra/vào để học cấu tạo số 1 chục và các đơn vị (10 + 3 = 13).",
-  rules: [1, 2, 3, 5, 8],
-  range: [0, 3, 5],
+  concept: "Chục và đơn vị · Các số từ 11 đến 19",
+  means: "1 bó chục (10 que tính buộc đai) cùng các que tính rời trên mặt bàn: di chuột để thêm/bớt que rời từ 1 đến 5, trực quan hóa cấu tạo số (1 chục và 3 đơn vị = 13).",
+  rules: [1, 2, 4, 7, 9],
+  range: [1, 3, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-55, -20, 0], [55, 20, 30]], 200, 160);
+    HL.fit(C, [[-54, -20, 0], [54, 20, 26]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Desktop Wooden Mat
-    const [matO, matI] = HL.rings(-52, -18, 52, 18, 3, 1.2);
+    // 1. Clean Desktop Mat (Z: 0 to 2.5)
+    const [matO, matI] = HL.rings(-50, -16, 50, 16, 3.0, 0.8);
     const matSol = HL.solid(svg);
     HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2.5));
 
-    // Divider groove line between Tens (Left) and Units (Right)
+    // Subtle divider groove between Tens (Left) and Units (Right)
     HL.mk("line", {
-      x1: P(0, -17, 2.6)[0], y1: P(0, -17, 2.6)[1],
-      x2: P(0, 17, 2.6)[0], y2: P(0, 17, 2.6)[1],
-      stroke: "#e0e0e4", "stroke-width": 1, "stroke-dasharray": "3 2"
+      x1: HL.r2(P(0, -14, 2.6)[0]), y1: HL.r2(P(0, -14, 2.6)[1]),
+      x2: HL.r2(P(0, 14, 2.6)[0]), y2: HL.r2(P(0, 14, 2.6)[1]),
+      class: "lo", "stroke-width": 1.0, "stroke-dasharray": "3 2"
     }, svg);
 
-    // Labels etched on the mat
-    const tensLabelPt = P(-26, -14, 2.6);
-    const unitsLabelPt = P(26, -14, 2.6);
-    const tText = HL.mk("text", {
-      x: tensLabelPt[0], y: tensLabelPt[1],
-      fill: "#6f6f78", "font-size": "9px", "font-family": "ui-monospace, monospace",
-      "text-anchor": "middle", "font-weight": "600"
-    }, svg);
-    tText.textContent = "CHỤC (10)";
-
-    const uText = HL.mk("text", {
-      x: unitsLabelPt[0], y: unitsLabelPt[1],
-      fill: "#6f6f78", "font-size": "9px", "font-family": "ui-monospace, monospace",
-      "text-anchor": "middle", "font-weight": "600"
-    }, svg);
-    uText.textContent = "ĐƠN VỊ";
-
-    // 2. The Bundle of 10 Sticks (Left side: x in [-46, -6])
-    // 3 layers: Layer 1 (bottom: 4 sticks), Layer 2 (mid: 3 sticks), Layer 3 (top: 3 sticks)
-    const bundleStickConfigs = [
-      // Bottom layer (z: 2.6 to 4.8)
-      { y: -6.6, z0: 2.6, z1: 4.8 },
-      { y: -2.2, z0: 2.6, z1: 4.8 },
-      { y: 2.2, z0: 2.6, z1: 4.8 },
-      { y: 6.6, z0: 2.6, z1: 4.8 },
-      // Middle layer (z: 4.8 to 7.0)
-      { y: -4.4, z0: 4.8, z1: 7.0 },
-      { y: 0.0, z0: 4.8, z1: 7.0 },
-      { y: 4.4, z0: 4.8, z1: 7.0 },
-      // Top layer (z: 7.0 to 9.2)
-      { y: -4.4, z0: 7.0, z1: 9.2 },
-      { y: 0.0, z0: 7.0, z1: 9.2 },
-      { y: 4.4, z0: 7.0, z1: 9.2 }
+    // 2. The Bundle of 10 Sticks (Left side: X from -42 to -8)
+    // Symmetrically arranged: 3 bottom, 4 middle, 3 top (3 + 4 + 3 = 10)
+    const stickR = 1.6;
+    const bundleYzs = [
+      // Bottom layer 3 sticks (Z = 4.2)
+      { y: -3.6, z: 4.2 }, { y: 0.0, z: 4.2 }, { y: 3.6, z: 4.2 },
+      // Mid layer 4 sticks (Z = 7.0)
+      { y: -5.4, z: 7.0 }, { y: -1.8, z: 7.0 }, { y: 1.8, z: 7.0 }, { y: 5.4, z: 7.0 },
+      // Top layer 3 sticks (Z = 9.8)
+      { y: -3.6, z: 9.8 }, { y: 0.0, z: 9.8 }, { y: 3.6, z: 9.8 }
     ];
 
-    const bundleSols = bundleStickConfigs.map(() => HL.solid(svg));
-    bundleStickConfigs.forEach((cfg, i) => {
-      const [sO, sI] = HL.rings(-45, cfg.y - 1.8, -7, cfg.y + 1.8, 1.8, 0.5);
-      HL.put(bundleSols[i], HL.prism(P, front, sO, sI, cfg.z0, cfg.z1));
+    const yz = (x, y, z, radius) => HL.circ(radius, 24).map(q => P(x, y + q.u, z + q.v));
+
+    // Render sticks sorted by depth (back to front) so front cylinders cleanly occlude back ones
+    const sortedSticks = bundleYzs.slice().sort((a, b) => {
+      const depthA = a.y * Math.SQRT1_2 + a.z * 0.5;
+      const depthB = b.y * Math.SQRT1_2 + b.z * 0.5;
+      return depthA - depthB;
     });
 
-    // Tie Band around the bundle (at x in [-28, -24])
-    const [bandO, bandI] = HL.rings(-28.5, -8.2, -23.5, 8.2, 2.5, 0.6);
-    const bandSol = HL.solid(svg);
-    bandSol.g.classList.add("hi");
-    HL.put(bandSol, HL.prism(P, front, bandO, bandI, 2.6, 9.8));
+    sortedSticks.forEach(({ y, z }) => {
+      const sol = HL.solid(svg);
+      const x0 = -42, x1 = -8;
+      const ring0 = yz(x0, y, z, stickR);
+      const ring1 = yz(x1, y, z, stickR);
+      HL.put(sol, {
+        sil: HL.poly(HL.hull(ring0.concat(ring1))),
+        crease: HL.poly(ring1)
+      });
+    });
 
-    // 3. Loose Units Sticks (Right side: 5 sticks)
-    // Spaced at y = -8, -4, 0, 4, 8
+    // Tight Tie Ribbon (Dải ruy-băng / Dây nơ ôm sát quanh thân bó que ở X = -25)
+    // Curves over the visible front & top perimeter of the 3-4-3 stick bundle
+    const bandLoopYZ = [
+      [-7.2, 7.0], [-7.1, 6.4], [-6.8, 5.8], [-5.2, 3.2], [-4.8, 2.8], [-4.2, 2.5],
+      [-3.6, 2.4], [0.0, 2.4], [3.6, 2.4], [4.2, 2.5], [4.8, 2.8], [5.2, 3.2],
+      [6.8, 5.8], [7.1, 6.4], [7.2, 7.0], [7.1, 7.6], [6.8, 8.2], [5.2, 10.8],
+      [4.8, 11.2], [4.2, 11.5], [3.6, 11.6], [0.0, 11.6], [-3.6, 11.6], [-4.2, 11.5],
+      [-4.8, 11.2], [-5.2, 10.8], [-6.8, 8.2], [-7.1, 7.6]
+    ];
+
+    // Visible arc segments in front & top of the bundle (from bottom-front around to top-back)
+    const frontArcYZ = bandLoopYZ.slice(10, 24);
+    const bandX0 = -26.0, bandX1 = -24.0;
+    const bandPts0 = frontArcYZ.map(p => P(bandX0, p[0], p[1]));
+    const bandPts1 = frontArcYZ.map(p => P(bandX1, p[0], p[1]));
+
+    const strapG = HL.mk("g", { class: "hi" }, svg);
+    // Ribbon strap surface wrapping over the bundle
+    HL.mk("path", {
+      d: HL.poly([...bandPts0, ...bandPts1.slice().reverse()]),
+      fill: "#ffffff", stroke: "#232327", "stroke-width": 1.2
+    }, strapG);
+
+    // Ribbon Knot & Bow on top of the bundle (Nút thắt nơ dây buộc ở đỉnh bó que)
+    const knotCenter = P(-24.0, 0.0, 11.6);
+    // Left and right bow loops
+    HL.mk("path", {
+      d: "M" + HL.r2(knotCenter[0]) + " " + HL.r2(knotCenter[1]) +
+         " C" + HL.r2(knotCenter[0] - 6) + " " + HL.r2(knotCenter[1] - 4) +
+         " " + HL.r2(knotCenter[0] - 8) + " " + HL.r2(knotCenter[1] + 2) +
+         " " + HL.r2(knotCenter[0]) + " " + HL.r2(knotCenter[1]) +
+         " C" + HL.r2(knotCenter[0] + 6) + " " + HL.r2(knotCenter[1] - 4) +
+         " " + HL.r2(knotCenter[0] + 8) + " " + HL.r2(knotCenter[1] + 2) +
+         " " + HL.r2(knotCenter[0]) + " " + HL.r2(knotCenter[1]),
+      fill: "#ffffff", stroke: "#232327", "stroke-width": 1.0
+    }, strapG);
+    // Small center knot circle
+    HL.mk("circle", {
+      cx: HL.r2(knotCenter[0]), cy: HL.r2(knotCenter[1]), r: 1.6,
+      fill: "#232327", stroke: "#ffffff", "stroke-width": 0.6
+    }, strapG);
+
+
+
+    // 3. Loose Unit Sticks (Right side: X from 8 to 42)
+    // 5 single loose sticks arranged parallel
     const looseSticks = [];
-    const unitYs = [-8, -4, 0, 4, 8];
     for (let i = 0; i < 5; i++) {
+      const sol = HL.solid(svg);
+      const y = -8.0 + i * 4.0;
       looseSticks.push({
         idx: i,
-        baseY: unitYs[i],
-        active: i < 3, // Default: 3 loose sticks (10 + 3 = 13)
-        spX: HL.spring(i < 3 ? 1 : 0, { k: 130, c: 14 }),
-        sol: HL.solid(svg)
+        y,
+        spZ: HL.spring(0, { k: 160, c: 15 }),
+        sol
       });
     }
 
-    function draw() {
-      let activeCount = 0;
-      looseSticks.forEach(st => {
-        if (st.spX.x > 0.4) activeCount++;
-        // When active, stick is aligned at rest x=[10, 46].
-        // When inactive (or pulled back), stick slides slightly to the right x=[18, 54] or dims
-        const slide = (1 - st.spX.x) * 10;
-        const x0 = 8 + slide;
-        const x1 = 44 + slide;
-        const [sO, sI] = HL.rings(x0, st.baseY - 1.6, x1, st.baseY + 1.6, 1.6, 0.4);
-        const z0 = 2.6 + st.spX.x * 0.4;
-        const z1 = z0 + 2.2;
-        HL.put(st.sol, HL.prism(P, front, sO, sI, z0, z1));
+    let unitCount = initialV != null ? HL.clamp(Math.round(initialV), 1, 5) : 3;
 
-        if (st.spX.x > 0.6) {
-          st.sol.g.style.opacity = "1";
+    function draw() {
+      looseSticks.forEach((stk, i) => {
+        const active = i < unitCount;
+        const curZ = 4.2 + stk.spZ.x;
+
+        if (active || stk.spZ.x > 0.2) {
+          const x0 = 8, x1 = 42;
+          const r0 = yz(x0, stk.y, curZ, stickR);
+          const r1 = yz(x1, stk.y, curZ, stickR);
+          HL.put(stk.sol, {
+            sil: HL.poly(HL.hull(r0.concat(r1))),
+            crease: HL.poly(r1)
+          });
+          stk.sol.sil.style.display = "";
         } else {
-          st.sol.g.style.opacity = "0.35";
+          HL.put(stk.sol, { sil: "", crease: "" });
         }
       });
 
-      const total = 10 + activeCount;
-      const readouts = {
-        10: "1 chục (10) + 0 đơn vị = 10 que tính",
-        11: "1 chục (10) + 1 que rời = 11 (Mười một)",
-        12: "1 chục (10) + 2 que rời = 12 (Mười hai)",
-        13: "1 chục (10) + 3 que rời = 13 (Mười ba)",
-        14: "1 chục (10) + 4 que rời = 14 (Mười bốn)",
-        15: "1 chục (10) + 5 que rời = 15 (Mười lăm)"
-      };
-      read.textContent = readouts[total] || (total + " que tính");
+      const total = 10 + unitCount;
+      read.textContent = "Bó que tính: 1 bó chục (10) + " + unitCount + " que rời = " + total + " (1 chục và " + unitCount + " đơn vị)";
     }
 
     function aim(pt) {
-      if (!pt) return;
-      const [u, v] = pt;
-      // If pointer is on the right half, count based on how many sticks are hovered
-      const scrU0 = P(8, 0, 3)[0];
-      if (u < scrU0) {
-        // Hovering on bundle: reset to 3
+      if (!pt) {
+        unitCount = 3;
+        looseSticks.forEach((stk, i) => { stk.spZ.t = i < unitCount ? 0 : -8; });
+        reg.wake();
         return;
       }
-      // Calculate how many sticks to activate based on Y or X position
-      looseSticks.forEach(st => {
-        const ptScr = P(26, st.baseY, 3);
-        const distY = v - ptScr[1];
-        // If pointer is above or near this stick in screen space
-        st.spX.t = (v >= ptScr[1] - 12) ? 1 : 0;
-      });
-      reg.wake();
+      const sRight = P(25, 0, 5)[0];
+      if (Math.abs(pt[0] - sRight) < 32) {
+        const topY = P(25, -12, 5)[1];
+        const botY = P(25, 12, 5)[1];
+        const norm = HL.clamp((pt[1] - topY) / (botY - topY), 0, 1);
+        unitCount = Math.min(5, Math.max(1, Math.round(1 + norm * 4)));
+        looseSticks.forEach((stk, i) => {
+          stk.spZ.t = i < unitCount ? 0 : -8;
+        });
+        reg.wake();
+      }
     }
 
     const reg = HL.register(stage, dt => {
       let moving = false;
-      looseSticks.forEach(st => {
-        if (HL.stepS(st.spX, dt)) moving = true;
+      looseSticks.forEach(stk => {
+        if (HL.stepS(stk.spZ, dt)) moving = true;
       });
       draw();
       return moving;
     });
+
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => {} }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
+    // Initial state
+    looseSticks.forEach((stk, i) => { stk.spZ.x = i < unitCount ? 0 : -8; stk.spZ.t = stk.spZ.x; });
     draw();
+
     return {
       set(v) {
-        const count = Math.round(HL.clamp(v, 0, 5));
-        looseSticks.forEach((st, i) => {
-          st.spX.t = i < count ? 1 : 0;
-        });
+        unitCount = HL.clamp(Math.round(v), 1, 5);
+        looseSticks.forEach((stk, i) => { stk.spZ.t = i < unitCount ? 0 : -8; });
         reg.wake();
       },
       destroy: bag.dispose

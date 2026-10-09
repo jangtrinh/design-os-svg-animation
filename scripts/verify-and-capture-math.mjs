@@ -28,10 +28,9 @@ if (errors.length > 0) {
 
 const artifactDir = '/Users/jang/.gemini/antigravity/brain/b6d9eb30-9c9a-4a92-8f7f-c983467a98d2';
 
-// 1. Capture Single View (Figure 1: Domino Addition Tiles)
-console.log('Capturing Figure 1: Domino Addition Tiles...');
-await page.screenshot({ path: `${artifactDir}/math-01-domino-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
-await page.screenshot({ path: `${artifactDir}/math-01-abacus-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
+// 1. Capture Single View (Figure 1: Counting Sticks Bundle)
+console.log('Capturing Figure 1: Counting Sticks Bundle...');
+await page.screenshot({ path: `${artifactDir}/math-01-sticks-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
 
 // 2. Switch to Figure 2: Balance
 console.log('Capturing Figure 2: Balance...');
@@ -57,11 +56,11 @@ await page.keyboard.press('5');
 await new Promise(r => setTimeout(r, 500));
 await page.screenshot({ path: `${artifactDir}/math-05-number-line-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
 
-// 6. Switch to Figure 6: Math Dice
-console.log('Capturing Figure 6: Math Dice...');
+// 6. Switch to Figure 6: Ruler & Pencil Measurement
+console.log('Capturing Figure 6: Ruler & Pencil Measurement...');
 await page.keyboard.press('6');
 await new Promise(r => setTimeout(r, 500));
-await page.screenshot({ path: `${artifactDir}/math-06-dice-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
+await page.screenshot({ path: `${artifactDir}/math-06-ruler-pencil-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
 
 // 7. Switch to Figure 7: Learning Clock
 console.log('Capturing Figure 7: Learning Clock...');
