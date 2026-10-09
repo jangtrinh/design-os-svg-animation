@@ -179,13 +179,6 @@ export default {
       reg.wake();
     }
 
-    function handleClick(pt) {
-      unitCount = (unitCount % 5) + 1;
-      d2Lift.x = 4.5;
-      d2Lift.t = 0;
-      reg.wake();
-    }
-
     const reg = HL.register(stage, dt => {
       const m1 = HL.stepS(d1Lift, dt);
       const m2 = HL.stepS(d2Lift, dt);
@@ -193,7 +186,7 @@ export default {
       return m1 || m2;
     });
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
 
     draw();

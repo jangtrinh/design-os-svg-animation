@@ -159,22 +159,6 @@ export default {
         setSplit(splitIdx);
       }
 
-      function handleClick(pt) {
-        if (!pt) {
-          setSplit((curSplit + 1) % 11);
-          return;
-        }
-        const scrLeft = P(-44, 0, 4)[0];
-        const scrRight = P(44, 0, 4)[0];
-        const norm = HL.clamp((pt[0] - scrLeft) / (scrRight - scrLeft), 0, 1);
-        const splitIdx = Math.round(norm * 10);
-        if (Math.abs(splitIdx - curSplit) < 1) {
-          setSplit((curSplit + 1) % 11);
-        } else {
-          setSplit(splitIdx);
-        }
-      }
-
       const reg = HL.register(stage, dt => {
         let moving = false;
         beads.forEach(b => { if (HL.stepS(b.tSp, dt)) moving = true; });
@@ -182,7 +166,10 @@ export default {
         return moving;
       });
       bag.add(reg.unregister);
-      bag.add(HL.pointer(stage, { move: aim, down: handleClick, leave: () => {} }));
+      bag.add(HL.pointer(stage, {
+        move: aim,
+        leave: () => setSplit(5)
+      }));
       bag.add(() => svg.replaceChildren());
 
       draw();

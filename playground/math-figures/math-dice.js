@@ -186,31 +186,29 @@ export default {
       }
     }
 
-    function rollDice() {
-      rollIdx = (rollIdx + 1) % ROLLS.length;
+    function aim(pt) {
+      if (!pt) {
+        wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
+        wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
+        reg.wake();
+        return;
+      }
+      const p1Scr = P(-22, 0, 12);
+      const p2Scr = P( 22, 0, 12);
+      const midX = (p1Scr[0] + p2Scr[0]) / 2;
+      const midY = (p1Scr[1] + p2Scr[1]) / 2;
 
-      // Toss into air with rotational tumble
-      lift1.x = 22;
-      lift1.t = 0;
-      wobbleX1.x = 28;
-      wobbleY1.x = -24;
-      wobbleX1.t = 0;
-      wobbleY1.t = 0;
+      const tiltX = HL.clamp((pt[1] - midY) * 0.3, -12, 12);
+      const tiltY = HL.clamp(-(pt[0] - midX) * 0.3, -12, 12);
 
-      lift2.x = 24;
-      lift2.t = 0;
-      wobbleX2.x = -24;
-      wobbleY2.x = 28;
-      wobbleX2.t = 0;
-      wobbleY2.t = 0;
-
+      wobbleX1.t = tiltX; wobbleY1.t = tiltY; lift1.t = 2.0;
+      wobbleX2.t = tiltX; wobbleY2.t = tiltY; lift2.t = 2.0;
       reg.wake();
     }
 
     function draw() {
-      const cur = ROLLS[rollIdx];
-      const cfg1 = getDieConfig(cur.val1);
-      const cfg2 = getDieConfig(cur.val2);
+      const cfg1 = getDieConfig(3);
+      const cfg2 = getDieConfig(4);
 
       const baseZ1 = 2 + Math.max(0, lift1.x);
       const baseZ2 = 2 + Math.max(0, lift2.x);
@@ -218,12 +216,7 @@ export default {
       drawDie(-22, baseZ1, wobbleX1.x, wobbleY1.x, d1FaceX, d1FaceY, d1FaceZ, d1Pips, cfg1);
       drawDie( 22, baseZ2, wobbleX2.x, wobbleY2.x, d2FaceX, d2FaceY, d2FaceZ, d2Pips, cfg2);
 
-      const isAirborne = lift1.x > 1.5 || lift2.x > 1.5;
-      if (isAirborne) {
-        read.textContent = "Đang tung xúc xắc trong không gian 3D...";
-      } else {
-        read.textContent = `Tung xúc xắc: ${cur.val1} (trái) + ${cur.val2} (phải) = ${cur.val1 + cur.val2} (Click để tung lượt mới!)`;
-      }
+      read.textContent = "Xúc xắc 3D: Mặt trên 3 + 4 = 7 (Tổng các chấm tròn đối diện = 7)";
     }
 
     const reg = HL.register(stage, dt => {
@@ -234,15 +227,24 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { down: rollDice }));
+    bag.add(HL.pointer(stage, {
+      move: aim,
+      leave: () => {
+        wobbleX1.t = 0; wobbleY1.t = 0; lift1.t = 0;
+        wobbleX2.t = 0; wobbleY2.t = 0; lift2.t = 0;
+        reg.wake();
+      }
+    }));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
-        rollIdx = HL.clamp(Math.round(v), 0, ROLLS.length - 1);
-        rollDice();
+        const t = (v - 2.5) / 2.5;
+        wobbleY1.t = t * 10;
+        wobbleY2.t = -t * 10;
+        reg.wake();
       },
       destroy: bag.dispose
     };

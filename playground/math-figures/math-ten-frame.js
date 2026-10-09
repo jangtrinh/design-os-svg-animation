@@ -176,35 +176,16 @@ export default {
       }
     }
 
-    function handleClick(pt) {
+    function aim(pt) {
       if (!pt) {
-        applyCount((count + 1) % 11);
+        applyCount(7);
         return;
       }
-      // Check if clicked near a specific slot
-      let nearestIdx = -1;
-      let minDist = 25;
-      tokens.forEach(tok => {
-        const scr = P(tok.cx, tok.cy, 3);
-        const dist = Math.hypot(pt[0] - scr[0], pt[1] - scr[1]);
-        if (dist < minDist) {
-          minDist = dist;
-          nearestIdx = tok.idx;
-        }
-      });
-
-      if (nearestIdx !== -1) {
-        if (nearestIdx < count) {
-          // Clicked an occupied slot: remove tokens down to nearestIdx
-          applyCount(nearestIdx);
-        } else {
-          // Clicked an empty slot: fill up to this slot
-          applyCount(nearestIdx + 1);
-        }
-      } else {
-        // Clicked outside slots: advance count
-        applyCount((count + 1) % 11);
-      }
+      const pLeft = P(-40, 0, 3)[0];
+      const pRight = P(40, 0, 3)[0];
+      const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
+      const targetCount = Math.round(norm * 10);
+      applyCount(targetCount);
     }
 
     const reg = HL.register(stage, dt => {
@@ -219,7 +200,8 @@ export default {
     bag.add(reg.unregister);
     bag.add(
       HL.pointer(stage, {
-        down: handleClick
+        move: aim,
+        leave: () => applyCount(7)
       })
     );
     bag.add(() => svg.replaceChildren());

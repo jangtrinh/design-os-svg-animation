@@ -113,9 +113,9 @@ export default {
       }
     }
 
-    function handleClick(pt) {
+    function aim(pt) {
       if (!pt) {
-        setShape((activeShape % 3) + 1);
+        setShape(0);
         return;
       }
       const s1 = P(-36, 0, 10)[0];
@@ -129,7 +129,7 @@ export default {
       if (d1 < 26) setShape(1);
       else if (d2 < 26) setShape(2);
       else if (d3 < 26) setShape(3);
-      else setShape((activeShape % 3) + 1);
+      else setShape(0);
     }
 
     const reg = HL.register(stage, dt => {
@@ -141,14 +141,17 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { down: handleClick }));
+    bag.add(HL.pointer(stage, {
+      move: aim,
+      leave: () => setShape(0)
+    }));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
-        setShape(HL.clamp(Math.round(v), 1, 3));
+        setShape(HL.clamp(Math.round(v), 0, 3));
       },
       destroy: bag.dispose
     };

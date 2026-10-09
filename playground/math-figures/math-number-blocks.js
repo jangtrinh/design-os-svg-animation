@@ -114,31 +114,17 @@ export default {
       }
     }
 
-    function toggleTransfer(pt) {
+    function aim(pt) {
       if (!pt) {
-        // Step cycle countA: 3 -> 4 -> 5 -> 2 -> 3
-        countA = countA >= TOTAL_BLOCKS ? 1 : countA + 1;
+        countA = 3;
         syncTargets();
         return;
       }
-
-      // Check if clicked left or right half
-      const midScr = P(0, 0, 10)[0];
-      if (pt[0] > midScr) {
-        // Clicked right side (Tower B): transfer block from B to A
-        if (countA < TOTAL_BLOCKS) {
-          countA++;
-        } else {
-          countA = 2; // Reset to split
-        }
-      } else {
-        // Clicked left side (Tower A): transfer block from A to B
-        if (countA > 0) {
-          countA--;
-        } else {
-          countA = 3; // Reset
-        }
-      }
+      const pLeft = P(-20, 0, 10)[0];
+      const pRight = P(20, 0, 10)[0];
+      const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
+      // norm 0: countA = 1, norm 1: countA = 5
+      countA = HL.clamp(Math.round(1 + norm * 4), 1, 5);
       syncTargets();
     }
 
@@ -154,7 +140,13 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { down: toggleTransfer }));
+    bag.add(HL.pointer(stage, {
+      move: aim,
+      leave: () => {
+        countA = 3;
+        syncTargets();
+      }
+    }));
     bag.add(() => svg.replaceChildren());
 
     // Initial positioning
