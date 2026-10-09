@@ -1,69 +1,104 @@
 /*
- * 9. Fraction Pie (Bánh Phân Số 1/4, 1/2, 3/4, 4/4)
- * Pure Hairline 2:1 Axonometric Line Art
- * Smooth pointer tracking transferring quarter slices across
- * Zero SVG text - clean visual line art
+ * 9. Fraction Pie (Bánh Phân Số Montessori 1/4, 1/2, 3/4, 4/4)
+ * Authentic Grade 1 Pedagogical Manipulative: Fractions of a Whole & Visual Partitioning
+ * Lucas Markes Hairline Standard:
+ * - Turned hardwood baking tray with recessed circular pocket, stepped rim & center locator pin
+ * - Turned wooden serving plate with dished concave profile & concentric rim turning lines
+ * - Precision Montessori quadrant tiles with filleted corners, top perimeter bevel creases & radial creases
+ * - Smooth parabolic transfer flight with spring kinematics & drop guidelines
+ * - Semantic highlight (hi) on airborne / transferred quadrant
+ * - Pure 2:1 axonometric line art, zero SVG text
  */
 
 export default {
   id: "math-fraction-pie",
   title: "9. Bánh Phân Số 1/4 (Fraction Pie)",
   concept: "Phân số cơ bản: một phần tư (1/4), một nửa (1/2), toàn bộ (4/4)",
-  means: "Bánh tròn chia 4 miếng quạt 90°: di chuyển con trỏ để nhấc các miếng bánh từ khay nướng sang đĩa ăn, trực quan hóa 1/4, 2/4 = 1/2, 3/4.",
-  rules: [1, 2, 4, 7, 8],
+  means: "Bánh tròn chia 4 miếng quạt 90° tinh xảo: di chuột để nhấc các miếng bánh từ khay nướng sang đĩa ăn theo cung bay 3D mượt mà, trực quan hóa 1/4, 2/4 = 1/2, 3/4.",
+  rules: [1, 2, 4, 7, 9],
   range: [0, 1, 4],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-58, -24, 0], [58, 24, 35]], 200, 160);
+    HL.fit(C, [[-60, -26, 0], [60, 26, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    const R = 18;
-    const H = 7;
-    const panX = -26;
-    const plateX = 26;
+    const R = 18.5;
+    const H = 7.5;
+    const panX = -27;
+    const plateX = 27;
 
-    // 1. Left: Baking Tray (Khay nướng)
-    const [panO, panI] = HL.rings(panX - 24, -24, panX + 24, 24, 24, 1.8);
+    // 1. Turned Hardwood Baking Tray at X = -27 (Z: 0 to 4.5)
+    const [panO, panI] = HL.rings(panX - 25, -25, panX + 25, 25, 25, 2.0);
     const panSol = HL.solid(svg);
-    HL.put(panSol, HL.prism(P, front, panO, panI, 0, 3));
+    HL.put(panSol, HL.prism(P, front, panO, panI, 0, 4.5));
 
-    // Tray etched guidelines (showing 4 quadrant slots)
-    const trayCirc = [];
-    for (let a = 0; a <= 36; a++) {
-      const rad = (a / 36) * Math.PI * 2;
-      trayCirc.push(P(panX + Math.cos(rad) * R, Math.sin(rad) * R, 3.1));
+    // Foot pads under baking tray
+    for (const [fx, fy] of [[panX - 18, -18], [panX + 18, -18], [panX - 18, 18], [panX + 18, 18]]) {
+      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
+      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
     }
-    HL.mk("polygon", { points: trayCirc.map(p => p.join(",")).join(" "), stroke: "#d0d0d6", "stroke-dasharray": "2 2", fill: "none" }, svg);
-    HL.mk("line", { x1: P(panX - R, 0, 3.1)[0], y1: P(panX - R, 0, 3.1)[1], x2: P(panX + R, 0, 3.1)[0], y2: P(panX + R, 0, 3.1)[1], stroke: "#d0d0d6", "stroke-dasharray": "2 2" }, svg);
-    HL.mk("line", { x1: P(panX, -R, 3.1)[0], y1: P(panX, -R, 3.1)[1], x2: P(panX, R, 3.1)[0], y2: P(panX, R, 3.1)[1], stroke: "#d0d0d6", "stroke-dasharray": "2 2" }, svg);
 
-    // 2. Right: Serving Plate (Đĩa ăn)
-    const [plateO, plateI] = HL.rings(plateX - 24, -24, plateX + 24, 24, 24, 1.8);
+    // Recessed circular pocket in baking tray (Z = 4.5 down to 2.2)
+    const panRim = [], panFloor = [];
+    for (let k = 0; k <= 36; k++) {
+      const a = (k / 36) * Math.PI * 2;
+      panRim.push(P(panX + 20.5 * Math.cos(a), 20.5 * Math.sin(a), 4.5));
+      panFloor.push(P(panX + 19.5 * Math.cos(a), 19.5 * Math.sin(a), 2.2));
+    }
+    HL.mk("path", { class: "lo nf", d: HL.poly(panRim) }, svg);
+    HL.mk("path", { class: "lo nf", d: HL.poly(panFloor) }, svg);
+
+    // Center locator pin in baking tray
+    HL.mk("circle", { cx: HL.r2(P(panX, 0, 2.3)[0]), cy: HL.r2(P(panX, 0, 2.3)[1]), r: 1.4, fill: "#232327" }, svg);
+
+    // Etched quadrant crosshair in tray floor
+    HL.mk("line", {
+      x1: HL.r2(P(panX - 18, 0, 2.3)[0]), y1: HL.r2(P(panX - 18, 0, 2.3)[1]),
+      x2: HL.r2(P(panX + 18, 0, 2.3)[0]), y2: HL.r2(P(panX + 18, 0, 2.3)[1]),
+      class: "lo", "stroke-dasharray": "2 2"
+    }, svg);
+    HL.mk("line", {
+      x1: HL.r2(P(panX, -18, 2.3)[0]), y1: HL.r2(P(panX, -18, 2.3)[1]),
+      x2: HL.r2(P(panX, 18, 2.3)[0]), y2: HL.r2(P(panX, 18, 2.3)[1]),
+      class: "lo", "stroke-dasharray": "2 2"
+    }, svg);
+
+    // 2. Turned Hardwood Serving Plate at X = 27 (Z: 0 to 4.5)
+    const [plateO, plateI] = HL.rings(plateX - 25, -25, plateX + 25, 25, 25, 2.0);
     const plateSol = HL.solid(svg);
-    HL.put(plateSol, HL.prism(P, front, plateO, plateI, 0, 3));
+    HL.put(plateSol, HL.prism(P, front, plateO, plateI, 0, 4.5));
 
-    const plateCirc = [];
-    for (let a = 0; a <= 36; a++) {
-      const rad = (a / 36) * Math.PI * 2;
-      plateCirc.push(P(plateX + Math.cos(rad) * R, Math.sin(rad) * R, 3.1));
+    // Foot pads under plate
+    for (const [fx, fy] of [[plateX - 18, -18], [plateX + 18, -18], [plateX - 18, 18], [plateX + 18, 18]]) {
+      const [fO] = HL.rings(fx - 2.8, fy - 2.8, fx + 2.8, fy + 2.8, 2.8, 0.5);
+      HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, fO, 0)) }, svg);
     }
-    HL.mk("polygon", { points: plateCirc.map(p => p.join(",")).join(" "), stroke: "#d0d0d6", "stroke-dasharray": "2 2", fill: "none" }, svg);
 
-    // 3. 4 Slices (Quarter Wedges)
+    // Dished concentric turning rings on serving plate
+    for (const rPlate of [20.5, 18.5, 14.0]) {
+      const plateRing = [];
+      for (let k = 0; k <= 36; k++) {
+        const a = (k / 36) * Math.PI * 2;
+        plateRing.push(P(plateX + rPlate * Math.cos(a), rPlate * Math.sin(a), 4.5));
+      }
+      HL.mk("path", { class: "lo nf", d: HL.poly(plateRing) }, svg);
+    }
+
+    // 3. Four Precision Montessori Quadrant Tiles
+    // Render order from back to front for proper isometric occlusion
     const renderOrder = [2, 1, 3, 0];
     let takenCount = initialV !== undefined ? Math.round(HL.clamp(initialV, 0, 4)) : 1;
 
     const pieces = renderOrder.map(i => {
       const a0 = (i * Math.PI) / 2;
       const a1 = ((i + 1) * Math.PI) / 2;
-      const mid = (a0 + a1) / 2;
       return {
         idx: i,
         a0,
         a1,
-        mid,
         sol: HL.solid(svg),
+        faceCrease: HL.mk("path", { class: "cr nf", d: "" }, svg),
         sp: HL.spring(i < takenCount ? 1 : 0, { k: 140, c: 14 })
       };
     });
@@ -75,10 +110,10 @@ export default {
         // Path from pan to plate with gentle lifting arc in Z
         const curX = HL.lerp(panX, plateX, u);
         const curY = 0;
-        const curZ0 = 3.0 + 4 * 14 * u * (1 - u);
+        const curZ0 = 2.4 + 4 * 16 * u * (1 - u);
         const curZ1 = curZ0 + H;
 
-        const numArc = 14;
+        const numArc = 16;
         const topPts = [P(curX, curY, curZ1)];
         const botPts = [P(curX, curY, curZ0)];
 
@@ -107,7 +142,7 @@ export default {
           crease += HL.seg(P(curX, curY, curZ0), pR1_bot);
         }
 
-        // Curved outer rim: visible bottom arc
+        // Curved outer rim bottom arc
         const frontArc = [];
         for (let k = 0; k <= numArc; k++) {
           const ang = pc.a0 + (pc.a1 - pc.a0) * (k / numArc);
@@ -120,18 +155,32 @@ export default {
         }
 
         HL.put(pc.sol, { sil, crease });
+
+        // Inset face crease on top surface for light-catching bevel
+        const rInner = R - 1.6;
+        const innerTopPts = [P(curX + 1.2 * Math.cos((pc.a0 + pc.a1) / 2), curY + 1.2 * Math.sin((pc.a0 + pc.a1) / 2), curZ1 + 0.1)];
+        for (let k = 0; k <= numArc; k++) {
+          const ang = pc.a0 + 0.05 + (pc.a1 - pc.a0 - 0.1) * (k / numArc);
+          innerTopPts.push(P(curX + rInner * Math.cos(ang), curY + rInner * Math.sin(ang), curZ1 + 0.1));
+        }
+        pc.faceCrease.setAttribute("d", HL.poly(innerTopPts));
+
+        // Focal highlight: active flying or transferred quadrant
+        const isAirborne = u > 0.05 && u < 0.95;
+        const isFocal = (pc.idx === takenCount - 1 && u >= 0.95) || isAirborne;
+        pc.sol.sil.classList.toggle("hi", isFocal);
       });
 
       if (takenCount === 0) {
-        read.textContent = "Bánh nguyên vẹn: 4/4 = 1 cái bánh";
+        read.textContent = "Fraction Pie: 4/4 = 1 Whole";
       } else if (takenCount === 1) {
-        read.textContent = "Bốc 1 miếng (1/4) ra đĩa: Trong khay còn 3/4 cái bánh";
+        read.textContent = "Fraction Pie: 1/4 on plate, 3/4 remaining in tray";
       } else if (takenCount === 2) {
-        read.textContent = "Bốc 2 miếng (2/4) ra đĩa: Trong khay còn đúng 1/2 cái bánh (một nửa)";
+        read.textContent = "Fraction Pie: 2/4 = 1/2 on plate (One Half)";
       } else if (takenCount === 3) {
-        read.textContent = "Bốc 3 miếng (3/4) ra đĩa: Trong khay còn lại 1/4 cái bánh";
+        read.textContent = "Fraction Pie: 3/4 on plate, 1/4 in tray";
       } else {
-        read.textContent = "Đã bốc hết 4/4 miếng ra đĩa: Khay bánh trống";
+        read.textContent = "Fraction Pie: 4/4 transferred (Whole Pie on Plate)";
       }
     }
 
@@ -148,8 +197,8 @@ export default {
         setSlices(1);
         return;
       }
-      const pLeft = P(panX, 0, 3)[0];
-      const pRight = P(plateX, 0, 3)[0];
+      const pLeft = P(panX, 0, 4)[0];
+      const pRight = P(plateX, 0, 4)[0];
       const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
       const targetSlices = Math.round(norm * 4);
       setSlices(targetSlices);
