@@ -28,8 +28,9 @@ if (errors.length > 0) {
 
 const artifactDir = '/Users/jang/.gemini/antigravity/brain/b6d9eb30-9c9a-4a92-8f7f-c983467a98d2';
 
-// 1. Capture Single View (Figure 1: Abacus)
-console.log('Capturing Figure 1: Abacus...');
+// 1. Capture Single View (Figure 1: Counting Sticks)
+console.log('Capturing Figure 1: Counting Sticks...');
+await page.screenshot({ path: `${artifactDir}/math-01-sticks-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
 await page.screenshot({ path: `${artifactDir}/math-01-abacus-proof.png`, clip: { x: 180, y: 120, width: 840, height: 700 } });
 
 // 2. Switch to Figure 2: Balance
