@@ -16,6 +16,7 @@ A motion engineering pipeline that compiles Motion IR storyboards to CSS and GSA
 - [Art Direction Specification](https://jangtrinh.github.io/design-os-svg-animation/art-direction.html): Unified standards for monochrome isometric technical illustrations.
 - [Payment Terminal Specimen](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html): Interactive EMV card insertion and tactile keypad PIN entry figure.
 - [Machine Vise Specimen](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html): Interactive constrained lead screw and sliding jaw CAD figure.
+- [Grade 1 Math Suite (10 Figures)](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html): Complete Grade 1 elementary math laboratory featuring 10 interactive manipulatives in 2:1 axonometric projection.
 - [GitHub Repository](https://github.com/jangtrinh/design-os-svg-animation): Source code, CLI commands, and test suites.
 
 ## Core Features & Workflow

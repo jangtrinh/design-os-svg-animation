@@ -77,7 +77,14 @@ const server = http.createServer((req, res) => {
 
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
-  const stat = fs.statSync(filePath);
+  let stat;
+  try {
+    stat = fs.statSync(filePath);
+  } catch {
+    res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
+    res.end(`404 Not Found: ${req.url}`);
+    return;
+  }
 
   // Handle Range requests for video seeking (.mp4)
   const range = req.headers.range;

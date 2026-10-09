@@ -39,6 +39,7 @@ Live site: [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.githu
 | **Payment Terminal** | [💳 Launch case-terminal](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html) ([local](playground/case-terminal.html)) | *The Instrument* · 2:1 Axonometric | EMV chip card slides into front slot; 12 tactile keys depress $-1.4\text{mm}$ with spring return and semantic `.hi` transfer. |
 | **Machine Vise** | [🔩 Launch vise-sol](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html) ([local](playground/vise-sol.html)) | *Kinematic Linkage* · CAD Master | Constrained lead screw turns offset crank while translating sliding jaw against stationary anvil. |
 | **Design Vault** | [🏛️ Launch design-vault](https://jangtrinh.github.io/design-os-svg-animation/playground/design-vault.html) ([local](playground/design-vault.html)) | *The Discrete Array* · Isometric Grid | 9-station modular vault grid with coordinate tracking and floating accent pedestals. |
+| **Grade 1 Math Suite** | [📐 Launch math-grade1](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html) ([local](playground/math-grade1.html)) | *Pedagogical Manipulatives* · 10 Figures | Complete Grade 1 curriculum set (abacus, balance scale, ten-frame, Unifix towers, number line, dice, clock, 3D solids, fraction pie, bead string) with keyboard navigation and classroom gallery mode. |
 
 ### How to Build & Validate Hairline Figures
 
