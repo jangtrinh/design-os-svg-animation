@@ -26,6 +26,7 @@ const html = `<!doctype html>
     --pill-text-active: #ffffff;
   }
   * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
   body {
     margin: 0; min-height: 100vh;
     background: var(--ground); color: var(--ink);
