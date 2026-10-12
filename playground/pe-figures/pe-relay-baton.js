@@ -1,11 +1,11 @@
 /*
  * 3. 4x100m Relay Baton & Exchange Zone (Gậy Tiếp Sức & Làn Chạy Điền Kinh)
  * Physical Concept: Kỹ thuật trao nhận gậy tiếp sức tốc độ cao (Blind Pass):
- *   - Vùng trao gậy tiêu chuẩn World Athletics (WA): Chiều dài 20m (từ -10m đến +10m quanh mốc chuẩn).
+ *   - Vùng trao gậy tiêu chuẩn World Athletics (WA Rule 24.19): Chiều dài 30m (từ -15m đến +15m quanh vạch chuẩn).
  *   - Trao gậy trong vùng: Hợp lệ ([VALID] - kích hoạt trạng thái .hi).
  *   - Trao gậy ngoài vùng: Phạm quy tức thì ([DISQUALIFIED - DQ]).
  *   - Đồng bộ vận tốc: VĐV số 1 và số 2 phải đạt vận tốc tiệm cận v ≈ 11.2 m/s tại thời điểm trao gậy.
- * Geometry: Đoạn đường chạy điền kinh tartan đặc, vạch phân làn trắng, vạch vàng giới hạn vùng 20m,
+ * Geometry: Đoạn đường chạy điền kinh tartan đặc, vạch phân làn trắng, vạch vàng giới hạn vùng 30m,
  *   mũi tên chevron tâm vùng; gậy tiếp sức bằng hợp kim nhôm dạng trụ tròn đặc 3D 100% opaque.
  * Kinematics: Di chuột kéo vị trí trao gậy dọc làn chạy (-25m -> +25m); gậy trượt êm ái,
  *   nhún nhẹ theo quán tính bước chạy, bóng đổ trên mặt đường, hiển thị trạng thái hợp lệ/phạm quy.
@@ -14,14 +14,14 @@
 export default {
   id: "pe-relay-baton",
   title: "3. Gậy Tiếp Sức (Relay Baton & Track)",
-  concept: "Điền kinh 4x100m: Vùng trao gậy 20m · Quy tắc hợp lệ vs Phạm quy (DQ)",
-  means: "Di chuột di chuyển vị trí trao gậy dọc đường chạy (-25m đến +25m). Trạng thái [HỢP LỆ] kích hoạt khi gậy nằm trọn vẹn trong vùng 20m, cảnh báo [DQ] khi rơi ra ngoài.",
+  concept: "Điền kinh 4x100m: Vùng trao gậy 30m chuẩn World Athletics Rule 24.19 · Hợp lệ vs DQ",
+  means: "Di chuột di chuyển vị trí trao gậy dọc đường chạy (-25m đến +25m). Trạng thái [HỢP LỆ] kích hoạt khi gậy nằm trọn vẹn trong vùng 30m, cảnh báo [DQ] khi rơi ra ngoài.",
   rules: [1, 2, 4, 6, 9],
   range: [-20, 0, 20],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 35]], 200, 160);
+    const C = HL.Cam(45, 0.5, 2.0);
+    HL.fit(C, [[-48, -20, 0], [48, 20, 32]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Running Track Platform (Bề mặt đường chạy điền kinh Z: 0 to 2.5)
@@ -55,7 +55,7 @@ export default {
       "stroke-dasharray": "3,3"
     }, svg);
 
-    // 2. Takeover Zone Markings (from X = -15 to +15, representing 20m zone)
+    // 2. Takeover Zone Markings (from X = -15 to +15, representing 30m zone per WA Rule 24.19)
     const zoneEntryX = -15.0;
     const zoneExitX = 15.0;
     const zoneGroup = HL.mk("g", {}, svg);
@@ -92,12 +92,12 @@ export default {
       opacity: 0.35
     }, svg);
 
-    // 4. 3D Cylindrical Relay Baton (Gậy tiếp sức dạng trụ tròn đặc 3D 100% opaque)
+    // 4. 3D Cylindrical Relay Baton (Hero Scale, 3D perpendicular cross-section caps)
     const batonGroup = HL.mk("g", {}, svg);
     const batonBody = HL.mk("polygon", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
     const batonBand = HL.mk("polygon", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, batonGroup);
-    const batonCapTop = HL.mk("ellipse", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
-    const batonCapBot = HL.mk("ellipse", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
+    const batonCapTop = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
+    const batonCapBot = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
 
     // Kinematics Springs
     const initialPos = initialV != null ? initialV : 0;
@@ -108,56 +108,55 @@ export default {
       const isInZone = x >= zoneEntryX && x <= zoneExitX;
 
       // Baton Geometry in 3D:
-      // Tilted forward in running direction: length 20, radius 2.6, center at (x, 0, 11.5)
-      const bLen = 22.0;
-      const bRad = 2.6;
-      const bAng = (30 * Math.PI) / 180; // Slanted 30 deg forward in X-Z plane
-      const bCenter = [x, 0.0, 12.0];
+      // Tilted forward in running direction: length 30, radius 3.2, center at (x, 0, 13.0)
+      const bLen = 30.0;
+      const bRad = 3.2;
+      const bAng = (28 * Math.PI) / 180; // Slanted 28 deg forward in X-Z plane
+      const bCenter = [x, 0.0, 13.0];
 
       const cosB = Math.cos(bAng), sinB = Math.sin(bAng);
       const e0_3D = [bCenter[0] - (bLen / 2) * cosB, bCenter[1], bCenter[2] - (bLen / 2) * sinB]; // Lower end
       const e1_3D = [bCenter[0] + (bLen / 2) * cosB, bCenter[1], bCenter[2] + (bLen / 2) * sinB]; // Upper end
 
-      const p0 = P(e0_3D[0], e0_3D[1], e0_3D[2]);
-      const p1 = P(e1_3D[0], e1_3D[1], e1_3D[2]);
+      // Unit normal vectors perpendicular to baton axis in 3D
+      // Axis is along (cosB, 0, sinB)
+      // Perpendicular 1: (0, 1, 0)
+      // Perpendicular 2: (-sinB, 0, cosB)
+      const capBotPts = [], capTopPts = [];
+      const numCapPts = 24;
+      for (let i = 0; i < numCapPts; i++) {
+        const phi = (i / numCapPts) * Math.PI * 2;
+        const cp = Math.cos(phi), sp = Math.sin(phi);
+        const dx = bRad * sp * (-sinB);
+        const dy = bRad * cp;
+        const dz = bRad * sp * cosB;
+        capBotPts.push(P(e0_3D[0] + dx, e0_3D[1] + dy, e0_3D[2] + dz));
+        capTopPts.push(P(e1_3D[0] + dx, e1_3D[1] + dy, e1_3D[2] + dz));
+      }
 
-      // Projected vector from p0 to p1
-      const dx = p1[0] - p0[0];
-      const dy = p1[1] - p0[1];
-      const len2D = Math.hypot(dx, dy);
-      const nx = -dy / len2D;
-      const ny = dx / len2D;
+      batonCapBot.setAttribute("d", HL.poly(capBotPts));
+      batonCapTop.setAttribute("d", HL.poly(capTopPts));
 
-      // Radius in 2D pixels
-      const rPix = bRad * 1.85;
+      // Baton cylinder body: convex hull of two 3D end rings
+      const allPts = capBotPts.concat(capTopPts);
+      const bodyHull = HL.hull(allPts);
+      batonBody.setAttribute("points", bodyHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // 4 corners of cylinder body
-      const c0L = [p0[0] + nx * rPix, p0[1] + ny * rPix];
-      const c0R = [p0[0] - nx * rPix, p0[1] - ny * rPix];
-      const c1L = [p1[0] + nx * rPix, p1[1] + ny * rPix];
-      const c1R = [p1[0] - nx * rPix, p1[1] - ny * rPix];
-
-      batonBody.setAttribute("points", `${HL.r2(c0L[0])},${HL.r2(c0L[1])} ${HL.r2(c1L[0])},${HL.r2(c1L[1])} ${HL.r2(c1R[0])},${HL.r2(c1R[1])} ${HL.r2(c0R[0])},${HL.r2(c0R[1])}`);
-
-      // Contrast band in middle (from 40% to 60% of length)
-      const b0 = [p0[0] + dx * 0.4, p0[1] + dy * 0.4];
-      const b1 = [p0[0] + dx * 0.6, p0[1] + dy * 0.6];
-      const b0L = [b0[0] + nx * rPix, b0[1] + ny * rPix];
-      const b0R = [b0[0] - nx * rPix, b0[1] - ny * rPix];
-      const b1L = [b1[0] + nx * rPix, b1[1] + ny * rPix];
-      const b1R = [b1[0] - nx * rPix, b1[1] - ny * rPix];
-      batonBand.setAttribute("points", `${HL.r2(b0L[0])},${HL.r2(b0L[1])} ${HL.r2(b1L[0])},${HL.r2(b1L[1])} ${HL.r2(b1R[0])},${HL.r2(b1R[1])} ${HL.r2(b0R[0])},${HL.r2(b0R[1])}`);
-
-      // End caps ellipses
-      batonCapTop.setAttribute("cx", HL.r2(p1[0]));
-      batonCapTop.setAttribute("cy", HL.r2(p1[1]));
-      batonCapTop.setAttribute("rx", HL.r2(rPix));
-      batonCapTop.setAttribute("ry", HL.r2(rPix * 0.5));
-
-      batonCapBot.setAttribute("cx", HL.r2(p0[0]));
-      batonCapBot.setAttribute("cy", HL.r2(p0[1]));
-      batonCapBot.setAttribute("rx", HL.r2(rPix));
-      batonCapBot.setAttribute("ry", HL.r2(rPix * 0.5));
+      // Center grip band (middle 25% of cylinder)
+      const band0_3D = [bCenter[0] - 3.5 * cosB, bCenter[1], bCenter[2] - 3.5 * sinB];
+      const band1_3D = [bCenter[0] + 3.5 * cosB, bCenter[1], bCenter[2] + 3.5 * sinB];
+      const bandPts0 = [], bandPts1 = [];
+      for (let i = 0; i < numCapPts; i++) {
+        const phi = (i / numCapPts) * Math.PI * 2;
+        const cp = Math.cos(phi), sp = Math.sin(phi);
+        const dx = (bRad + 0.15) * sp * (-sinB);
+        const dy = (bRad + 0.15) * cp;
+        const dz = (bRad + 0.15) * sp * cosB;
+        bandPts0.push(P(band0_3D[0] + dx, band0_3D[1] + dy, band0_3D[2] + dz));
+        bandPts1.push(P(band1_3D[0] + dx, band1_3D[1] + dy, band1_3D[2] + dz));
+      }
+      const bandHull = HL.hull(bandPts0.concat(bandPts1));
+      batonBand.setAttribute("points", bandHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
       // Ground shadow
       const s0 = P(e0_3D[0], e0_3D[1], 2.6);
@@ -173,13 +172,13 @@ export default {
       chevronMark.classList.toggle("hi", isInZone);
 
       // Header Readout
-      const mStr = HL.r2(x * (20 / 30)); // Scale to meters (-13.3m to +13.3m)
+      const mStr = HL.r2(x); // In meters (-22m to +22m, zone is -15m to +15m = 30m)
       if (isInZone) {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [HỢP LỆ] Đang trong vùng trao gậy 20m · Duy trì vận tốc v ≈ 11.2 m/s (.hi)`;
+        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [HỢP LỆ] Đang trong vùng trao gậy 30m (WA Rule 24.19) · v ≈ 11.2 m/s`;
       } else if (x < zoneEntryX) {
         read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [CHƯA VÀO VÙNG] Cự ly tiếp cận, người nhận tăng tốc`;
       } else {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [PHẠM QUY - DQ] Vượt quá giới hạn vùng trao gậy 20m!`;
+        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [PHẠM QUY - DQ] Vượt quá giới hạn vùng trao gậy 30m!`;
       }
     }
 

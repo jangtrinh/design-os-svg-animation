@@ -765,203 +765,262 @@ if (typeof HL !== "undefined" && HL.inject) {
 
 const CHEMISTRY_FIGURES = [
 /*
- * 1. Acid-Base Titration & Buret (Chuẩn Độ Axit - Bazơ & Buret)
- * Chemical Concept: Phản ứng trung hòa H⁺ + OH⁻ → H₂O:
- *   - Nồng độ C_HCl = 0.1 M, V_HCl = 20.0 mL trong bình tam giác.
- *   - Nhỏ từ từ dung dịch chuẩn NaOH 0.1 M từ buret xuống.
- *   - Điểm tương đương: V_NaOH = 20.0 mL (pH = 7.0).
- *   - Khi V_NaOH ≥ 20.0 mL: Dư một lượng vết OH⁻ làm phenolphtalein chuyển sang màu hồng bền (.hi).
- * Geometry: Đế giá sắt thí nghiệm, thanh đứng, kẹp giữ buret thủy tinh chia vạch,
- *   khóa van buret, giọt rơi, bình tam giác Erlenmeyer đặc đáy rộng (100% opaque).
- * Kinematics: Di chuột điều chỉnh khóa buret; thể tích xả NaOH tăng từ 0 đến 25 mL,
- *   mực chất lỏng buret hạ thấp, khi đạt 20.0 mL chất lỏng bình tam giác kích hoạt .hi rực rỡ.
+ * 1. Acid-Base Titration & Buret (Chuẩn Độ Axit - Bazơ & Buret Chuẩn Xác)
+ * Chemical Concept: Đường cong chuẩn độ axit mạnh - bazơ mạnh (HCl 0.1 M + NaOH 0.1 M):
+ *   - Bình tam giác: V_HCl = 20.0 mL, n_HCl = 2.00 mmol.
+ *   - Buret: Dung dịch chuẩn NaOH 0.10 M.
+ *   - Phương trình nồng độ trước điểm tương đương (V < 20.0 mL):
+ *     [H⁺] = (2.00 - 0.10·V) / (20.0 + V)  ==> pH = -log10[H⁺]
+ *     (V = 0 mL: pH = 1.00; V = 10.0 mL: pH = 1.48; V = 19.8 mL: pH = 3.30).
+ *   - Điểm tương đương: V = 20.0 mL (pH = 7.00).
+ *   - Bước nhảy pH (pH jump): Từ pH 3.30 vọt lên pH 10.0 chỉ trong 0.1 mL NaOH!
+ *   - Chỉ thị phenolphtalein: Không màu ở pH < 8.2; chuyển sang màu hồng cánh sen bền
+ *     tại khoảng pH 8.2 - 10.0 (kích hoạt .hi tại V ≥ 20.05 mL).
+ * Geometry (Lucas Markes Specimen Discipline):
+ *   - Chân đế giá thí nghiệm gang chữ nhật nặng, có tấm sứ trắng (white ceramic titration tile) lót dưới bình.
+ *   - Trụ thép đứng gắn khớp nối bosshead và kẹp buret 3 chạc (3-prong clamp) kẹp chuẩn trục.
+ *   - Bình tam giác Erlenmeyer chuẩn: Đáy rộng, vai nón côn, cổ cao, miệng loe rỗng.
+ *   - Ống buret thủy tinh chia vạch rõ, van khóa PTFE ngang điều khiển dòng nhỏ giọt thật.
+ *   - Hero scale chiếm 70% viewport, 100% opaque, không bug offset prism.
  */
 
 {
   id: "chemistry-titration",
   title: "1. Chuẩn Độ Axit - Bazơ (Acid-Base Titration)",
-  concept: "Phản ứng trung hòa: H⁺ + OH⁻ → H₂O · Điểm tương đương pH = 7.0 (Chỉ thị phenolphtalein)",
-  means: "Di chuột điều khiển xả dung dịch chuẩn NaOH từ buret xuống bình tam giác. Khi thể tích đạt đúng 20.0 mL (điểm tương đương), dung dịch lập tức đổi màu hồng cánh sen báo hiệu kết thúc chuẩn độ.",
+  concept: "Phản ứng HCl + NaOH → NaCl + H₂O · Bước nhảy pH tại 20.0 mL · Chỉ thị Phenolphthalein pH 8.2",
+  means: "Di chuột điều chỉnh khóa buret xả dung dịch NaOH (0 đến 25 mL). Tại đúng 20.0 mL (điểm tương đương), bước nhảy pH kích hoạt phenolphtalein chuyển hồng tức thì.",
   rules: [1, 2, 4, 6, 9],
   range: [0, 10, 25],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 40]], 200, 160);
+    const C = HL.Cam(45, 0.5, 3.2);
+    HL.fit(C, [[-20, -18, 0], [20, 16, 44]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Lab Stand Base (Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
+    function circAt(cx, cy, R, n = 28) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
+    }
 
-    // Stand Vertical Rod at (-18, 0, 2.5 to 38)
+    // 1. Heavy Cast-Iron Retort Stand Base (X = -12 to 12, Y = -14 to 8, Z = 0 to 2.2)
+    const standSol = HL.solid(svg);
+    const [stO, stI] = HL.rings(-12, -14, 12, 8, 1.5, 0.4);
+    HL.put(standSol, HL.prism(P, front, stO, stI, 0, 2.2));
+
+    // White Ceramic Titration Tile (Tấm sứ trắng đặt bình tam giác X = -7 to 7, Y = -4 to 6, Z = 2.3)
+    const tilePts = [
+      P(-7, -4, 2.3), P(7, -4, 2.3), P(7, 6, 2.3), P(-7, 6, 2.3)
+    ];
+    HL.mk("polygon", {
+      points: tilePts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "),
+      class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 0.8
+    }, svg);
+
+    // Vertical Stand Rod at (X = -8.5, Y = -9.0, Z = 2.2 to 42.0)
     const rodSol = HL.solid(svg);
-    HL.put(rodSol, HL.prism(P, front, HL.circ(1.8, 16), HL.circ(1.4, 16), 2.5, 38, [-18, 0]));
+    const rodO = circAt(-8.5, -9.0, 1.0, 16);
+    const rodI = circAt(-8.5, -9.0, 0.7, 16);
+    HL.put(rodSol, HL.prism(P, front, rodO, rodI, 2.2, 42.0));
 
-    // Clamp Arm from rod (-18, 0, 26) to buret holder (0, 0, 26)
-    const clampSol = HL.solid(svg);
-    const [clO, clI] = HL.rings(-18, -1.2, 0, 1.2, 0.5, 0.2);
-    HL.put(clampSol, HL.prism(P, front, clO, clI, 25.0, 27.0));
+    // Bosshead Clamp at Z = 27.0
+    const bossSol = HL.solid(svg);
+    const [bshO, bshI] = HL.rings(-9.8, -10.2, -7.2, -7.8, 0.4, 0.2);
+    HL.put(bossSol, HL.prism(P, front, bshO, bshI, 26.5, 28.5));
 
-    // 2. Erlenmeyer Flask sitting at (0, 0, 2.5) - Solid Opaque Frustum
+    // 3-Prong Buret Clamp extending from bosshead to buret at (0, 0)
+    const clampArmSol = HL.solid(svg);
+    const [caO, caI] = HL.rings(-8.0, -8.5, 0.0, -0.8, 0.5, 0.2);
+    HL.put(clampArmSol, HL.prism(P, front, caO, caI, 27.0, 28.0));
+
+    // Clamp fingers gripping buret at (0, 0, Z = 26.5 to 28.5)
+    const fingersSol = HL.solid(svg);
+    const fingO = circAt(0, 0, 2.4, 18);
+    const fingI = circAt(0, 0, 1.8, 18);
+    HL.put(fingersSol, HL.prism(P, front, fingO, fingI, 26.8, 28.2));
+
+    // 2. Erlenmeyer Flask sitting at (0, 1.0, Z = 2.3 to 11.5)
     const flaskGroup = HL.mk("g", {}, svg);
-    const flaskBody = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
-    const flaskTopFace = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
+    const flaskBody = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, flaskGroup);
+    const flaskNeckSol = HL.solid(flaskGroup);
     const flaskLiquid = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
 
-    const flaskBaseR = 8.8;
-    const flaskNeckR = 3.2;
+    const fBaseR = 6.8;
+    const fNeckR = 2.4;
+    const fCenter = [0, 1.0];
 
-    // Erlenmeyer 3D solid construction
-    // Bottom points from theta = 135 deg to -45 deg (counter-clockwise)
-    function buildFlaskPath() {
+    // Conical Body of Erlenmeyer Flask: from Base Z = 2.3 up to Shoulder Z = 8.5
+    function buildFlask() {
       const bPts = [];
       const N = 24;
-      // Bottom front arc: from a = 9 (135 deg) down to -3 (-45 deg)
       for (let i = 0; i <= 12; i++) {
         const ang = (135 - i * 15) * Math.PI / 180;
-        bPts.push(P(flaskBaseR * Math.cos(ang), flaskBaseR * Math.sin(ang), 2.5));
+        bPts.push(P(fCenter[0] + fBaseR * Math.cos(ang), fCenter[1] + fBaseR * Math.sin(ang), 2.3));
       }
-      // Top neck front arc: from -45 deg to 135 deg
       const tPts = [];
       for (let i = 0; i <= 12; i++) {
         const ang = (-45 + i * 15) * Math.PI / 180;
-        tPts.push(P(flaskNeckR * Math.cos(ang), flaskNeckR * Math.sin(ang), 10.5));
+        tPts.push(P(fCenter[0] + fNeckR * Math.cos(ang), fCenter[1] + fNeckR * Math.sin(ang), 8.5));
       }
-      const allBodyPts = [...bPts, ...tPts];
-      flaskBody.setAttribute("d", HL.poly(allBodyPts));
+      flaskBody.setAttribute("d", HL.poly([...bPts, ...tPts]));
 
-      // Neck top rim ellipse
-      const rimPts = [];
-      for (let a = 0; a < N; a++) {
-        const ang = (a * 2 * Math.PI) / N;
-        rimPts.push(P(flaskNeckR * Math.cos(ang), flaskNeckR * Math.sin(ang), 10.5));
-      }
-      flaskTopFace.setAttribute("d", HL.poly(rimPts));
+      // Cylindrical Neck: Z = 8.5 to 12.0
+      const neckO = circAt(fCenter[0], fCenter[1], fNeckR, 20);
+      const neckI = circAt(fCenter[0], fCenter[1], fNeckR - 0.4, 20);
+      HL.put(flaskNeckSol, HL.prism(P, front, neckO, neckI, 8.5, 12.0));
     }
-    buildFlaskPath();
+    buildFlask();
 
-    // 3. Glass Buret (Vertical cylinder at 0, 0, Z: 14 to 38)
+    // 3. Glass Buret (Vertical precision cylinder at 0, 0, Z = 15.0 to 42.0)
     const buretGroup = HL.mk("g", {}, svg);
     const buretSol = HL.solid(buretGroup);
-    const buretR = 2.4;
-    HL.put(buretSol, HL.prism(P, front, HL.circ(buretR, 20), HL.circ(buretR - 0.4, 20), 14.5, 37.5));
+    const buretR = 1.6;
+    const buretO = circAt(0, 0, buretR, 20);
+    const buretI = circAt(0, 0, buretR - 0.35, 20);
+    HL.put(buretSol, HL.prism(P, front, buretO, buretI, 15.5, 41.5));
 
-    // Graduation scale ticks along buret front
-    for (let gz = 16.5; gz <= 35.5; gz += 1.5) {
-      const isMajor = (gz - 16.5) % 3 === 0;
-      const tLen = isMajor ? 1.6 : 0.9;
-      const ptA = P(buretR * Math.cos(0.5), buretR * Math.sin(0.5), gz);
-      const ptB = P((buretR - tLen) * Math.cos(0.5), (buretR - tLen) * Math.sin(0.5), gz);
+    // Graduation Scale Ticks along front face of buret
+    const tickGroup = HL.mk("g", { class: "lo" }, buretGroup);
+    for (let gz = 18.0; gz <= 40.0; gz += 1.2) {
+      const isMajor = Math.round((gz - 18.0) * 10) % 60 === 0;
+      const tLen = isMajor ? 1.4 : 0.8;
+      const pA = P(buretR * 0.707, buretR * 0.707, gz);
+      const pB = P((buretR - tLen) * 0.707, (buretR - tLen) * 0.707, gz);
       HL.mk("line", {
-        x1: HL.r2(ptA[0]), y1: HL.r2(ptA[1]),
-        x2: HL.r2(ptB[0]), y2: HL.r2(ptB[1]),
-        class: "lo", "stroke-width": 0.8
-      }, buretGroup);
+        x1: HL.r2(pA[0]), y1: HL.r2(pA[1]),
+        x2: HL.r2(pB[0]), y2: HL.r2(pB[1]),
+        stroke: "var(--hl-edge)", "stroke-width": 0.8
+      }, tickGroup);
     }
 
-    // Stopcock Valve at Z = 14.5
-    const stopcockHandle = HL.mk("line", { class: "sil", "stroke-width": 2.4, stroke: "var(--hl-edge)" }, buretGroup);
+    // Stopcock Valve Housing at Z = 15.5
+    const scHousingSol = HL.solid(buretGroup);
+    const scO = circAt(0, 0, 2.2, 16);
+    const scI = circAt(0, 0, 1.8, 16);
+    HL.put(scHousingSol, HL.prism(P, front, scO, scI, 14.8, 16.2));
 
-    // Tip nozzle
-    const tipPt0 = P(0, 0, 14.5);
-    const tipPt1 = P(0, 0, 12.0);
-    HL.mk("line", {
-      x1: HL.r2(tipPt0[0]), y1: HL.r2(tipPt0[1]),
-      x2: HL.r2(tipPt1[0]), y2: HL.r2(tipPt1[1]),
-      class: "sil", "stroke-width": 1.4
-    }, buretGroup);
+    // PTFE Stopcock Handle (Horizontal pin rotated by valve flow)
+    const stopcockHandle = HL.mk("line", { class: "hi", "stroke-width": 2.2, stroke: "var(--hl-edge)" }, buretGroup);
 
-    // Liquid Meniscus Disc inside Buret
+    // Dispensing Tip Nozzle (Z = 14.8 down to 12.8)
+    const tipSol = HL.solid(buretGroup);
+    const tipO = circAt(0, 0, 0.8, 12);
+    const tipI = circAt(0, 0, 0.5, 12);
+    HL.put(tipSol, HL.prism(P, front, tipO, tipI, 12.8, 14.8));
+
+    // Liquid Meniscus inside Buret
     const buretMeniscus = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, buretGroup);
 
-    // Droplet
-    const dropGroup = HL.mk("circle", { cx: HL.r2(P(0, 0, 11.2)[0]), cy: HL.r2(P(0, 0, 11.2)[1]), r: 1.1, class: "dot" }, buretGroup);
+    // Falling Droplet from buret tip into flask
+    const droplet = HL.mk("circle", { r: 1.1, class: "dot", opacity: 0 }, buretGroup);
 
-    // Kinematics Springs
-    const spVol = HL.spring(initialV != null ? initialV : 10, { k: 120, c: 14 });
+    // Kinematic Springs & State
+    const initialV_val = initialV != null ? initialV : 10.0;
+    const spVol = HL.spring(initialV_val, { k: 120, c: 14 }); // NaOH added volume 0 to 25 mL
+    let dropAnimT = 0;
+
+    function computePH(v) {
+      // Titration of 20.0 mL of 0.10 M HCl with 0.10 M NaOH
+      if (v < 20.0) {
+        const unreactedMoles = 2.00 - 0.10 * v; // mmol H+
+        const totalV = 20.0 + v; // mL
+        const hConc = unreactedMoles / totalV; // M
+        return Math.max(1.00, -Math.log10(hConc));
+      } else if (Math.abs(v - 20.0) < 1e-4) {
+        return 7.00;
+      } else {
+        const excessMoles = 0.10 * (v - 20.0); // mmol OH-
+        const totalV = 20.0 + v; // mL
+        const ohConc = excessMoles / totalV; // M
+        const pOH = -Math.log10(ohConc);
+        return Math.min(13.00, 14.00 - pOH);
+      }
+    }
 
     function draw() {
-      const vol = spVol.x; // 0 to 25 mL
-      const isEquiv = vol >= 20.0;
+      const vol = spVol.x;
+      const pH = computePH(vol);
+      const isEndpoint = pH >= 8.2; // Phenolphthalein color change at pH >= 8.2
 
-      // Stopcock rotation
-      const valveAngle = HL.clamp(vol / 25, 0, 1) * (Math.PI / 2);
-      const scL = 4.2;
-      const scP0 = P(-scL * Math.cos(valveAngle), 0, 14.5 + scL * Math.sin(valveAngle));
-      const scP1 = P(scL * Math.cos(valveAngle), 0, 14.5 - scL * Math.sin(valveAngle));
-      stopcockHandle.setAttribute("x1", HL.r2(scP0[0]));
-      stopcockHandle.setAttribute("y1", HL.r2(scP0[1]));
-      stopcockHandle.setAttribute("x2", HL.r2(scP1[0]));
-      stopcockHandle.setAttribute("y2", HL.r2(scP1[1]));
+      // Stopcock handle rotation: 0° (horizontal, closed) -> 90° (vertical, fast flow)
+      const valveFlow = HL.clamp(Math.abs(spVol.v) * 0.15 + (vol > 0 ? 0.4 : 0), 0, 1);
+      const ang = valveFlow * (Math.PI / 2);
+      const scLen = 3.6;
+      const scA = P(-scLen * Math.cos(ang), 0, 15.5 + scLen * Math.sin(ang));
+      const scB = P(scLen * Math.cos(ang), 0, 15.5 - scLen * Math.sin(ang));
+      stopcockHandle.setAttribute("x1", HL.r2(scA[0]));
+      stopcockHandle.setAttribute("y1", HL.r2(scA[1]));
+      stopcockHandle.setAttribute("x2", HL.r2(scB[0]));
+      stopcockHandle.setAttribute("y2", HL.r2(scB[1]));
 
-      // Meniscus inside buret: Z drops from 35.0 down to 18.0
-      const menZ = 35.0 - (vol / 25.0) * 17.0;
+      // Meniscus inside Buret: Z drops from 40.0 down to 20.0 as vol goes 0 -> 25 mL
+      const menZ = 40.0 - (vol / 25.0) * 20.0;
       const menPts = [];
       for (let a = 0; a < 20; a++) {
-        const ang = (a * 2 * Math.PI) / 20;
-        menPts.push(P((buretR - 0.4) * Math.cos(ang), (buretR - 0.4) * Math.sin(ang), menZ));
+        const rad = (a * 2 * Math.PI) / 20;
+        menPts.push(P((buretR - 0.3) * Math.cos(rad), (buretR - 0.3) * Math.sin(rad), menZ));
       }
       buretMeniscus.setAttribute("d", HL.poly(menPts));
 
-      // Liquid in flask
-      const liqZ = 3.5 + (vol / 25.0) * 2.2;
-      const liqR = flaskBaseR - ((liqZ - 2.5) / 8.0) * (flaskBaseR - flaskNeckR);
+      // Liquid level in Erlenmeyer flask rises slightly as vol increases
+      const liqZ = 3.8 + (vol / 25.0) * 2.4;
       const liqPts = [];
-      for (let a = 0; a < 24; a++) {
-        const ang = (a * 2 * Math.PI) / 24;
-        liqPts.push(P(liqR * Math.cos(ang), liqR * Math.sin(ang), liqZ));
+      const liqR = fBaseR - ((liqZ - 2.3) / (8.5 - 2.3)) * (fBaseR - fNeckR);
+      for (let a = 0; a < 20; a++) {
+        const rad = (a * 2 * Math.PI) / 20;
+        liqPts.push(P(fCenter[0] + liqR * Math.cos(rad), fCenter[1] + liqR * Math.sin(rad), liqZ));
       }
       flaskLiquid.setAttribute("d", HL.poly(liqPts));
 
-      // Droplet visibility
-      dropGroup.setAttribute("opacity", (vol > 0.5 && vol < 24.5) ? 1 : 0);
-
-      // Color indicator transition
-      flaskLiquid.classList.toggle("hi", isEquiv);
-      flaskBody.classList.toggle("hi", isEquiv);
-
-      // pH calculation
-      let ph = 1.0;
-      if (vol < 19.8) {
-        ph = 1.0 + (vol / 20.0) * 2.2;
-      } else if (vol < 20.0) {
-        ph = 3.2 + ((vol - 19.8) / 0.2) * 3.8;
-      } else if (vol === 20.0) {
-        ph = 7.0;
+      // Droplet animation
+      if (Math.abs(spVol.v) > 0.05) {
+        dropAnimT = (dropAnimT + 0.08) % 1;
+        const dropZ = 12.8 - dropAnimT * 5.0;
+        const dp = P(0, 0, dropZ);
+        droplet.setAttribute("cx", HL.r2(dp[0]));
+        droplet.setAttribute("cy", HL.r2(dp[1]));
+        droplet.setAttribute("opacity", "1");
       } else {
-        ph = 7.0 + Math.min(5.5, Math.log10(1 + (vol - 20.0) * 10) * 2.5);
+        droplet.setAttribute("opacity", "0");
       }
 
-      const vStr = HL.r2(vol);
-      const phStr = HL.r2(ph);
-      if (isEquiv) {
-        read.textContent = `Chuẩn độ: V_NaOH = ${vStr} mL · pH = ${phStr} · [ĐIỂM TƯƠNG ĐƯƠNG] Phenolphtalein đổi màu hồng cánh sen (.hi)`;
+      // Endpoint Phenolphthalein Indicator Highlight
+      if (isEndpoint) {
+        flaskLiquid.classList.add("hi");
+        flaskLiquid.classList.remove("lo");
+        flaskBody.classList.add("hi");
+        read.textContent = `V_NaOH = ${vol.toFixed(2)} mL · pH = ${pH.toFixed(2)} (≥ 8.2) · [ĐIỂM TƯƠNG ĐƯƠNG] Phenolphthalein chuyển hồng sen bền (.hi)`;
       } else {
-        read.textContent = `Chuẩn độ: V_NaOH = ${vStr} mL · pH = ${phStr} · Môi trường axit (Không màu, pH < 7)`;
+        flaskLiquid.classList.remove("hi");
+        flaskLiquid.classList.add("lo");
+        flaskBody.classList.remove("hi");
+        read.textContent = `V_NaOH = ${vol.toFixed(2)} mL · pH = ${pH.toFixed(2)} · Axit dư [H⁺] · Dung dịch không màu (còn ${(20.0 - vol).toFixed(2)} mL đến ĐTĐ)`;
       }
     }
 
-    function setVolume(v) {
-      spVol.t = HL.clamp(v, 0, 25);
+    function setVol(val) {
+      spVol.t = HL.clamp(val, 0, 25);
       reg.wake();
     }
 
     function aim(pt) {
       if (!pt) {
-        setVolume(10.0);
+        setVol(10.0);
         return;
       }
       const minX = 60, maxX = 340;
       const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
-      setVolume(norm * 25.0);
+      setVol(norm * 25.0);
     }
 
     const reg = HL.register(stage, dt => {
       const moving = HL.stepS(spVol, dt);
       draw();
-      return moving;
+      return moving || Math.abs(spVol.v) > 0.05;
     });
 
     bag.add(reg.unregister);
@@ -972,9 +1031,10 @@ const CHEMISTRY_FIGURES = [
 
     return {
       set(v) {
-        setVolume(Number(v));
+        setVol(Number(v));
       },
-      destroy: bag.dispose
+      destroy: bag.dispose,
+      dispose: bag.dispose
     };
   }
 },
@@ -1003,6 +1063,16 @@ const CHEMISTRY_FIGURES = [
     HL.fit(C, [[-50, -22, 0], [50, 22, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
+    function circAt(cx, cy, R, n = 24) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
+    }
+
     // 1. Lab Table Base (Z: 0 to 2.5)
     const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
     const baseSol = HL.solid(svg);
@@ -1010,7 +1080,9 @@ const CHEMISTRY_FIGURES = [
 
     // Stand Rod at (+20, 0, 2.5 to 36)
     const rodSol = HL.solid(svg);
-    HL.put(rodSol, HL.prism(P, front, HL.circ(1.8, 16), HL.circ(1.4, 16), 2.5, 36, [20, 0]));
+    const rodO = circAt(20, 0, 1.8, 16);
+    const rodI = circAt(20, 0, 1.4, 16);
+    HL.put(rodSol, HL.prism(P, front, rodO, rodI, 2.5, 36));
 
     // Clamp holding test tube at (+20, 0, 22) -> (6, 0, 22)
     const clampSol = HL.solid(svg);
@@ -1020,12 +1092,16 @@ const CHEMISTRY_FIGURES = [
     // 2. Alcohol Burner sitting at (-8, 0, 2.5)
     const burnerCenter = [-8, 0];
     const burnerSol = HL.solid(svg);
-    // Squat glass jar (radius 8.0, height 5.5)
-    HL.put(burnerSol, HL.prism(P, front, HL.circ(7.5, 24), HL.circ(6.8, 24), 2.5, 7.5, burnerCenter));
+    // Squat glass jar (radius 7.5, height 5.5 at -8, 0)
+    const bJarO = circAt(-8, 0, 7.5, 24);
+    const bJarI = circAt(-8, 0, 6.8, 24);
+    HL.put(burnerSol, HL.prism(P, front, bJarO, bJarI, 2.5, 7.5));
 
-    // Wick collar cylinder (radius 2.8, Z: 7.5 to 9.5)
+    // Wick collar cylinder (radius 2.8, Z: 7.5 to 9.5 at -8, 0)
     const collarSol = HL.solid(svg);
-    HL.put(collarSol, HL.prism(P, front, HL.circ(2.8, 16), HL.circ(2.2, 16), 7.5, 9.5, burnerCenter));
+    const bColO = circAt(-8, 0, 2.8, 16);
+    const bColI = circAt(-8, 0, 2.2, 16);
+    HL.put(collarSol, HL.prism(P, front, bColO, bColI, 7.5, 9.5));
 
     // 3. Flame Shape
     const flameGroup = HL.mk("g", {}, svg);
@@ -1316,19 +1392,35 @@ const CHEMISTRY_FIGURES = [
         ion.detail.setAttribute("cx", HL.r2(pt[0]));
         ion.detail.setAttribute("cy", HL.r2(pt[1]));
 
-        ion.circle.classList.toggle("hi", isEquil);
+        // Focal highlight: highlight ONLY the central ion (0,0,0) and its 6 nearest neighbors
+        const isCenter = ion.i === 0 && ion.j === 0 && ion.k === 0;
+        const isCoordNeighbor = Math.abs(ion.i) + Math.abs(ion.j) + Math.abs(ion.k) === 1;
+        const isFocalGroup = isCenter || isCoordNeighbor;
+
+        if (isEquil && isFocalGroup) {
+          ion.circle.classList.add("hi");
+          ion.circle.classList.remove("lo");
+        } else {
+          ion.circle.classList.remove("hi");
+          ion.circle.classList.add("lo");
+        }
       });
 
-      // Header Readout
+      // Header Readout: True Born-Landé Potential Energy U(r) with minimum at r0 = 282 pm
       const rStr = HL.r2(r);
-      // Lattice energy approximation U(r)
-      const uLattice = HL.r2(-786 * (282 / r));
+      const ratio = 282.0 / r;
+      const nBorn = 8;
+      // U(r) = -898.3 * [ (r0/r) - (1/n) * (r0/r)^n ] (kJ/mol)
+      const uLattice = HL.r2(-898.3 * (ratio - (1 / nBorn) * Math.pow(ratio, nBorn)));
+      // Restoring force F = -dU/dr
+      const forceRel = HL.r2((Math.pow(ratio, 2) - Math.pow(ratio, nBorn + 1)) * 100);
+
       if (isEquil) {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm (Chuẩn r₀ = 282 pm) · U = ${uLattice} kJ/mol · [CÂN BẰNG BỀN] Lực hút Coulomb cân bằng lực đẩy Born (.hi)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm (Cực tiểu r₀ = 282 pm) · U_min = ${uLattice} kJ/mol · [CÂN BẰNG BỀN] F_hút = F_đẩy (Số phối trí CN = 6) (.hi)`;
       } else if (r < 282) {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm < 282 pm · Lực đẩy đám mây electron áp đảo (Mạng bị nén, thế năng tăng)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm < 282 pm · U = ${uLattice} kJ/mol · Lực đẩy Born áp đảo (F_đẩy = +${Math.abs(forceRel)} N·rel, mạng bị nén)`;
       } else {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm > 282 pm · Lực hút tĩnh điện Coulomb kéo về (Mạng bị giãn, thế năng tăng)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm > 282 pm · U = ${uLattice} kJ/mol · Lực hút Coulomb áp đảo (F_hút = -${Math.abs(forceRel)} N·rel, kéo về cân bằng)`;
       }
     }
 
@@ -1368,208 +1460,284 @@ const CHEMISTRY_FIGURES = [
   }
 },
 /*
- * 4. Distillation Apparatus & Liebig Condenser (Bộ Chưng Cất & Ống Sinh Hàn)
- * Chemical Concept: Phương pháp chưng cất tách chất theo nhiệt độ sôi:
- *   - Hỗn hợp Ethanol (t_sôi = 78.3°C) và Nước (t_sôi = 100°C).
- *   - Khi t° ≥ 78.3°C: Ethanol sôi bay hơi trước, qua nhánh bình cầu vào ống sinh hàn Liebig.
- *   - Nước làm mát tuần hoàn quanh áo ngoài hấp thụ nhiệt làm hơi ngưng tụ thành chất lỏng tinh khiết,
- *     nhỏ giọt đều đặn vào bình hứng Erlenmeyer (100% opaque).
- * Geometry: Bệ thí nghiệm phẳng, bình cầu chưng cất có nhiệt kế, ống sinh hàn 2 lớp nghiêng dốc,
- *   vòi nước làm mát, các giọt ngưng tụ chạy dọc lòng ống, bình hứng tam giác đặc.
- * Kinematics: Di chuột điều chỉnh nhiệt độ đun từ 50°C đến 95°C. Khi vượt 78.3°C,
- *   hơi bốc lên mãnh liệt, các giọt ngưng tụ chảy thành dòng nhịp nhàng và bình hứng kích hoạt .hi.
+ * 4. Distillation Apparatus & Liebig Condenser (Bộ Chưng Cất Phân Đoạn & Ống Sinh Hàn Liebig)
+ * Chemical Concept: Phương pháp chưng cất tách chất theo nhiệt độ sôi (Fractional Distillation):
+ *   - Hỗn hợp nhị phân: Ethanol (t_sôi = 78.3°C) và Nước (t_sôi = 100.0°C).
+ *   - Khi đun tới t° ≥ 78.3°C: Áp suất hơi bão hòa p_et = 1 atm, ethanol sôi bay hơi trước.
+ *   - Hơi cồn đi lên cổ bình, tiếp xúc bầu thủy ngân nhiệt kế (ghi nhận 78.3°C), rẽ vào ống sinh hàn Liebig.
+ *   - Dòng nước làm mát đối lưu (Counter-current cooling: Nước vào ở đầu thấp, ra ở đầu cao)
+ *     hấp thụ nhiệt hóa hơi (ΔH_vap = 38.56 kJ/mol), ngưng tụ hơi cồn thành dòng giọt lỏng tinh khiết.
+ * Geometry (Lucas Markes Specimen Discipline):
+ *   - Hai giá kẹp thí nghiệm độc lập (Retort Stands) bằng gang nặng với khớp nối bosshead và kẹp 3 chạc.
+ *   - Bình cầu đáy tròn trong bếp gia nhiệt điện (Electric Heating Mantle).
+ *   - Ống sinh hàn Liebig 2 lớp thủy tinh thật: Ống dẫn hơi bên trong, áo nước làm mát bên ngoài
+ *     có 2 vòi nhánh dẫn nước vào (inlet) và nước ra (outlet).
+ *   - Đầu nối cong (bent receiving adapter) dẫn giọt cồn vào bình tam giác Erlenmeyer.
+ *   - 100% opaque, không polygon phẳng thay thế, không bug offset prism.
+ * Kinematics:
+ *   - Di chuột điều chỉnh nhiệt độ từ 50°C đến 95°C.
+ *   - t° < 78.3°C: Hỗn hợp chỉ nóng lên, nhiệt kế dâng, bình hứng khô cạn (0 mL).
+ *   - t° ≥ 78.3°C: Sôi mãnh liệt, hơi dâng, giọt ngưng tụ rơi liên tục vào bình tam giác,
+ *     thể tích cồn thu hồi tích lũy thời gian thực.
  */
 
 {
   id: "chemistry-distillation",
-  title: "4. Chưng Cất & Sinh Hàn (Distillation Apparatus)",
-  concept: "Tách chất lỏng theo nhiệt độ sôi: Bay hơi C₂H₅OH (78.3°C) ──> Ngưng tụ trao đổi nhiệt",
-  means: "Di chuột tăng nhiệt độ bình chưng cất. Khi vượt qua nhiệt độ sôi của ethanol (t° ≥ 78.3°C), hơi cồn bốc lên, đi qua ống sinh hàn Liebig làm mát ngưng tụ thành từng giọt chất lỏng nguyên chất chảy vào bình hứng.",
+  title: "4. Chưng Cất & Sinh Hàn (Liebig Distillation)",
+  concept: "Chưng cất phân đoạn hỗn hợp C₂H₅OH - H₂O · t_sôi = 78.3°C · Trao đổi nhiệt đối lưu",
+  means: "Di chuột tăng nhiệt độ bếp đun từ 50°C đến 95°C. Khi vượt 78.3°C (điểm sôi của ethanol), hơi bốc lên qua ống sinh hàn Liebig ngưng tụ thành dòng giọt chảy vào bình tam giác.",
   rules: [1, 2, 4, 6, 9],
   range: [50, 78.3, 95],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 38]], 200, 160);
+    const C = HL.Cam(45, 0.5, 3.2);
+    HL.fit(C, [[-27, -6, 0], [22, 6, 35]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Lab Bench Base (Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
-
-    // 2. Distillation Flask at Left (-22, 0)
-    // Heating mantle base at (-22, 0, 2.5 to 7.0)
-    const mantleSol = HL.solid(svg);
-    HL.put(mantleSol, HL.prism(P, front, HL.circ(7.0, 20), HL.circ(6.2, 20), 2.5, 7.0, [-22, 0]));
-
-    // Spherical Glass Bulb centered at (-22, 0, 12.0), radius 6.0
-    const flaskGroup = HL.mk("g", {}, svg);
-    const flaskGlass = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
-    const flaskNeck = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
-    const thermometer = HL.mk("line", { class: "lo", "stroke-width": 1.2 }, flaskGroup);
-
-    // Distillation flask spherical profile
-    const bulbPts = [];
-    const bCenter = [-22, 0, 12.0];
-    const bR = 6.0;
-    for (let a = 0; a < 24; a++) {
-      const ang = (a * 2 * Math.PI) / 24;
-      bulbPts.push(P(bCenter[0] + bR * Math.cos(ang), 0, bCenter[2] + bR * Math.sin(ang)));
+    function circAt(cx, cy, R, n = 28) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
     }
-    flaskGlass.setAttribute("d", HL.poly(bulbPts));
 
-    // Vertical neck up to Z = 23.5 (width 4.0)
-    const nP0 = P(-24, 0, 15.0), nP1 = P(-20, 0, 15.0);
-    const nP2 = P(-20, 0, 23.5), nP3 = P(-24, 0, 23.5);
-    flaskNeck.setAttribute("d", HL.poly([nP0, nP1, nP2, nP3]));
+    // 1. Two Independent Cast-Iron Retort Stands (Hai giá thí nghiệm gang)
+    // Left Stand (holding heating mantle & flask): Base at X = -21, Y = 0, Z = 0 to 2.2
+    const stand1Sol = HL.solid(svg);
+    const [st1O, st1I] = HL.rings(-27, -5, -15, 5, 1.2, 0.4);
+    HL.put(stand1Sol, HL.prism(P, front, st1O, st1I, 0, 2.2));
 
-    // Thermometer mercury thread
-    const th0 = P(-22, 0, 24.5), th1 = P(-22, 0, 14.5);
-    thermometer.setAttribute("x1", HL.r2(th0[0]));
-    thermometer.setAttribute("y1", HL.r2(th0[1]));
-    thermometer.setAttribute("x2", HL.r2(th1[0]));
-    thermometer.setAttribute("y2", HL.r2(th1[1]));
+    // Stand 1 vertical rod at (-21, -3.5, Z = 2.2 to 34.0)
+    const rod1Sol = HL.solid(svg);
+    const rod1O = circAt(-21, -3.5, 0.9, 16);
+    const rod1I = circAt(-21, -3.5, 0.6, 16);
+    HL.put(rod1Sol, HL.prism(P, front, rod1O, rod1I, 2.2, 34.0));
 
-    // 3. Liebig Condenser (Ống sinh hàn nghiêng)
-    // Runs from (-18, 0, 19) down to (+12, 0, 9.0)
+    // Stand 1 Bosshead clamp at Z = 20.0 holding flask neck
+    const clamp1Sol = HL.solid(svg);
+    const [cl1O, cl1I] = HL.rings(-22.2, -4.5, -19.8, -2.5, 0.4, 0.2);
+    HL.put(clamp1Sol, HL.prism(P, front, cl1O, cl1I, 19.5, 21.0));
+
+    // Right Stand (holding angled Liebig condenser): Base at X = 7, Y = 0, Z = 0 to 2.2
+    const stand2Sol = HL.solid(svg);
+    const [st2O, st2I] = HL.rings(2, -5, 12, 5, 1.2, 0.4);
+    HL.put(stand2Sol, HL.prism(P, front, st2O, st2I, 0, 2.2));
+
+    // Stand 2 vertical rod at (7, -3.5, Z = 2.2 to 28.0)
+    const rod2Sol = HL.solid(svg);
+    const rod2O = circAt(7, -3.5, 0.9, 16);
+    const rod2I = circAt(7, -3.5, 0.6, 16);
+    HL.put(rod2Sol, HL.prism(P, front, rod2O, rod2I, 2.2, 28.0));
+
+    // Stand 2 3-prong clamp at Z = 14.5 gripping condenser jacket
+    const clamp2Sol = HL.solid(svg);
+    const [cl2O, cl2I] = HL.rings(5.8, -4.5, 8.2, -2.5, 0.4, 0.2);
+    HL.put(clamp2Sol, HL.prism(P, front, cl2O, cl2I, 14.0, 15.5));
+
+    // 2. Electric Heating Mantle (Bếp gia nhiệt điện) at X = -21, Y = 0, Z = 2.2 to 8.5
+    const mantleSol = HL.solid(svg);
+    const mantleO = circAt(-21, 0, 6.4, 24);
+    const mantleI = circAt(-21, 0, 5.2, 24);
+    HL.put(mantleSol, HL.prism(P, front, mantleO, mantleI, 2.2, 8.5));
+
+    // 3. Round-Bottom Distillation Flask (Bình cầu đáy tròn 250mL)
+    // Spherical bulb centered at (-21, 0, 13.0) with radius 5.6
+    const flaskGroup = HL.mk("g", {}, svg);
+    const flaskBulb = HL.mk("circle", { r: 5.6 * 2.1, class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, flaskGroup);
+    const flaskLiquid = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, flaskGroup);
+    const boilBubbles = HL.mk("g", { class: "lo" }, flaskGroup);
+
+    // Position sphere center on screen
+    const bulbP = P(-21, 0, 13.0);
+    flaskBulb.setAttribute("cx", HL.r2(bulbP[0]));
+    flaskBulb.setAttribute("cy", HL.r2(bulbP[1]));
+
+    // Flask vertical neck from Z = 16.5 up to Z = 25.0 (width 3.2)
+    const flaskNeckSol = HL.solid(flaskGroup);
+    const neckO = circAt(-21, 0, 1.8, 18);
+    const neckI = circAt(-21, 0, 1.4, 18);
+    HL.put(flaskNeckSol, HL.prism(P, front, neckO, neckI, 16.5, 25.0));
+
+    // Thermometer thread inside neck: rubber stopper at Z = 25.0, stem down to Z = 19.5
+    const thStem = HL.mk("line", {
+      x1: HL.r2(P(-21, 0, 27.0)[0]), y1: HL.r2(P(-21, 0, 27.0)[1]),
+      x2: HL.r2(P(-21, 0, 19.0)[0]), y2: HL.r2(P(-21, 0, 19.0)[1]),
+      class: "hi", stroke: "var(--hl-edge)", "stroke-width": 1.4
+    }, flaskGroup);
+
+    // 4. Liebig Condenser (Ống sinh hàn 2 lớp kính nghiêng)
+    // Side arm from flask neck at (-21, 0, 21.0) branching to start of condenser at (-15, 0, 19.5)
     const condenserGroup = HL.mk("g", {}, svg);
-    const jacketSol = HL.solid(condenserGroup);
-    const innerTube = HL.mk("line", { class: "lo", "stroke-width": 1.4 }, condenserGroup);
+    const sideArm = HL.mk("line", {
+      x1: HL.r2(P(-21, 0, 21.0)[0]), y1: HL.r2(P(-21, 0, 21.0)[1]),
+      x2: HL.r2(P(-15, 0, 19.5)[0]), y2: HL.r2(P(-15, 0, 19.5)[1]),
+      class: "sil", stroke: "var(--hl-edge)", "stroke-width": 2.4
+    }, condenserGroup);
 
-    const cStart = [-18, 0, 19];
-    const cEnd = [12, 0, 9.0];
-    const cLen = Math.hypot(cEnd[0] - cStart[0], cEnd[2] - cStart[2]);
-    const cDir = [(cEnd[0] - cStart[0]) / cLen, (cEnd[2] - cStart[2]) / cLen];
-    const cNorm = [-cDir[1], cDir[0]];
+    // Condenser span: from A(-15, 0, 19.5) down to B(13, 0, 8.5)
+    const cA = [-15, 0, 19.5];
+    const cB = [13, 0, 8.5];
+    const cDx = cB[0] - cA[0], cDz = cB[2] - cA[2];
+    const cLen = Math.hypot(cDx, cDz);
+    const ux = cDx / cLen, uz = cDz / cLen;
+    const nx = -uz, nz = ux; // 2D normal perpendicular to condenser axis
 
-    // Outer jacket cylinder polygon (solid opaque)
-    const jR = 3.2;
-    const j0 = P(cStart[0] + 3 * cDir[0] + jR * cNorm[0], 0, cStart[2] + 3 * cDir[1] + jR * cNorm[1]);
-    const j1 = P(cStart[0] + 3 * cDir[0] - jR * cNorm[0], 0, cStart[2] + 3 * cDir[1] - jR * cNorm[1]);
-    const j2 = P(cEnd[0] - 2 * cDir[0] - jR * cNorm[0], 0, cEnd[2] - 2 * cDir[1] - jR * cNorm[1]);
-    const j3 = P(cEnd[0] - 2 * cDir[0] + jR * cNorm[0], 0, cEnd[2] - 2 * cDir[1] + jR * cNorm[1]);
+    // Outer cooling water jacket: from s = 3.0 to s = 25.0 along axis, radius 2.6
+    const jStartS = 3.0, jEndS = 25.0;
+    const jR = 2.6;
+    const jP0 = P(cA[0] + jStartS * ux + jR * nx, 0, cA[2] + jStartS * uz + jR * nz);
+    const jP1 = P(cA[0] + jStartS * ux - jR * nx, 0, cA[2] + jStartS * uz - jR * nz);
+    const jP2 = P(cA[0] + jEndS * ux - jR * nx, 0, cA[2] + jEndS * uz - jR * nz);
+    const jP3 = P(cA[0] + jEndS * ux + jR * nx, 0, cA[2] + jEndS * uz + jR * nz);
 
-    HL.put(jacketSol, { sil: HL.poly([j0, j1, j2, j3]), crease: "" });
+    const jacketPoly = HL.mk("polygon", {
+      points: [jP0, jP1, jP2, jP3].map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "),
+      class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4
+    }, condenserGroup);
 
-    // Inner tube
-    const pStart = P(...cStart), pEnd = P(...cEnd);
-    innerTube.setAttribute("x1", HL.r2(pStart[0]));
-    innerTube.setAttribute("y1", HL.r2(pStart[1]));
-    innerTube.setAttribute("x2", HL.r2(pEnd[0]));
-    innerTube.setAttribute("y2", HL.r2(pEnd[1]));
+    // Water Inlet nozzle (near lower end, pointing down-forward)
+    const inNozzleA = P(cA[0] + 22.0 * ux, 0, cA[2] + 22.0 * uz - jR);
+    const inNozzleB = P(cA[0] + 22.0 * ux, 0, cA[2] + 22.0 * uz - (jR + 3.0));
+    HL.mk("line", {
+      x1: HL.r2(inNozzleA[0]), y1: HL.r2(inNozzleA[1]),
+      x2: HL.r2(inNozzleB[0]), y2: HL.r2(inNozzleB[1]),
+      class: "hi", stroke: "var(--hl-edge)", "stroke-width": 1.8
+    }, condenserGroup);
 
-    // Condensation droplets running down inner tube
-    const dropGroup = HL.mk("g", { class: "hi" }, condenserGroup);
+    // Water Outlet nozzle (near upper end, pointing up-backward)
+    const outNozzleA = P(cA[0] + 6.0 * ux, 0, cA[2] + 6.0 * uz + jR);
+    const outNozzleB = P(cA[0] + 6.0 * ux, 0, cA[2] + 6.0 * uz + (jR + 3.0));
+    HL.mk("line", {
+      x1: HL.r2(outNozzleA[0]), y1: HL.r2(outNozzleA[1]),
+      x2: HL.r2(outNozzleB[0]), y2: HL.r2(outNozzleB[1]),
+      class: "hi", stroke: "var(--hl-edge)", "stroke-width": 1.8
+    }, condenserGroup);
+
+    // Inner vapor tube (inside condenser, extending through)
+    const innerTube = HL.mk("line", {
+      x1: HL.r2(P(cA[0], 0, cA[2])[0]), y1: HL.r2(P(cA[0], 0, cA[2])[1]),
+      x2: HL.r2(P(cB[0], 0, cB[2])[0]), y2: HL.r2(P(cB[0], 0, cB[2])[1]),
+      class: "lo", stroke: "var(--hl-edge)", "stroke-width": 1.2
+    }, condenserGroup);
+
+    // Bent Receiving Adapter (ống sừng bò cong) at condenser exit B -> Erlenmeyer flask
+    const adaptTipWorld = [cB[0] + 3.0, 0, 5.0];
+    const adaptTip = P(...adaptTipWorld);
+    const adapterPath = HL.mk("path", {
+      d: `M ${HL.r2(P(cB[0], 0, cB[2])[0])} ${HL.r2(P(cB[0], 0, cB[2])[1])} Q ${HL.r2(P(cB[0] + 2.5, 0, cB[2] - 1.0)[0])} ${HL.r2(P(cB[0] + 2.5, 0, cB[2] - 1.0)[1])} ${HL.r2(adaptTip[0])} ${HL.r2(adaptTip[1])}`,
+      class: "sil", fill: "none", stroke: "var(--hl-edge)", "stroke-width": 1.6
+    }, condenserGroup);
+
+    // 5. Receiving Erlenmeyer Flask (Bình tam giác hứng sản phẩm) at X = 17, Y = 0, Z = 0 to 6.5
+    const recGroup = HL.mk("g", {}, svg);
+    const recBaseP0 = P(12.5, -4.0, 0.1), recBaseP1 = P(21.5, -4.0, 0.1);
+    const recBaseP2 = P(21.5, 4.0, 0.1), recBaseP3 = P(12.5, 4.0, 0.1);
+    const recNeckP0 = P(15.5, -1.8, 6.0), recNeckP1 = P(18.5, -1.8, 6.0);
+    const recNeckP2 = P(18.5, 1.8, 6.0), recNeckP3 = P(15.5, 1.8, 6.0);
+
+    // 3D Erlenmeyer flask prism body
+    const recFlaskSol = HL.solid(recGroup);
+    const recO = circAt(17, 0, 5.5, 24);
+    const recI = circAt(17, 0, 4.4, 24);
+    HL.put(recFlaskSol, HL.prism(P, front, recO, recI, 0, 6.0));
+
+    const recLiquid = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, recGroup);
+
+    // Droplets running down inner tube & dripping into flask
+    const dropGroup = HL.mk("g", { class: "hi" }, svg);
     const dropDots = [];
-    for (let d = 0; d < 4; d++) {
-      const dot = HL.mk("circle", { r: 1.1, class: "dot", opacity: 0 }, dropGroup);
+    for (let d = 0; d < 5; d++) {
+      const dot = HL.mk("circle", { r: 1.2, fill: "var(--hl-edge)", stroke: "none", opacity: 0 }, dropGroup);
       dropDots.push(dot);
     }
 
-    // 4. Receiving Flask (Bình hứng Erlenmeyer) at Right (+18, 0) - Solid Opaque Frustum
-    const recGroup = HL.mk("g", {}, svg);
-    const recBody = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, recGroup);
-    const recTopFace = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, recGroup);
-    const recLiquid = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, recGroup);
-
-    const recBaseR = 7.2;
-    const recNeckR = 2.6;
-
-    // Erlenmeyer 3D solid construction at (+18, 0)
-    function buildRecPath() {
-      const bPts = [];
-      for (let i = 0; i <= 12; i++) {
-        const ang = (135 - i * 15) * Math.PI / 180;
-        bPts.push(P(18 + recBaseR * Math.cos(ang), recBaseR * Math.sin(ang), 2.5));
-      }
-      const tPts = [];
-      for (let i = 0; i <= 12; i++) {
-        const ang = (-45 + i * 15) * Math.PI / 180;
-        tPts.push(P(18 + recNeckR * Math.cos(ang), recNeckR * Math.sin(ang), 9.0));
-      }
-      recBody.setAttribute("d", HL.poly([...bPts, ...tPts]));
-
-      const rimPts = [];
-      for (let a = 0; a < 20; a++) {
-        const ang = (a * 2 * Math.PI) / 20;
-        rimPts.push(P(18 + recNeckR * Math.cos(ang), recNeckR * Math.sin(ang), 9.0));
-      }
-      recTopFace.setAttribute("d", HL.poly(rimPts));
-    }
-    buildRecPath();
-
-    // Kinematics Springs
-    const initialTemp = initialV != null ? initialV : 78.3;
-    const spTemp = HL.spring(initialTemp, { k: 120, c: 14 });
-    let animTime = 0;
+    // Kinematic Springs & State
+    const initialT = initialV != null ? initialV : 78.3;
+    const spTemp = HL.spring(initialT, { k: 120, c: 14 }); // Temperature 50°C -> 95°C
+    let accumulatedVolume = 0; // Accumulated distillate volume (mL)
+    let dropPhase = 0;
 
     function draw() {
       const temp = spTemp.x;
-      const isDistilling = temp >= 78.3;
+      const isBoiling = temp >= 78.3;
 
-      // Thermometer thread height
-      const thZ = 14.5 + ((temp - 50) / 45.0) * 7.5;
-      const thCur = P(-22, 0, thZ);
-      thermometer.setAttribute("y2", HL.r2(thCur[1]));
-      thermometer.classList.toggle("hi", isDistilling);
+      // Rate of distillation increases with temperature above 78.3°C
+      const boilIntensity = isBoiling ? Math.min(1.0, (temp - 78.3) / 12.0) : 0;
 
-      // Droplets
-      dropDots.forEach((dot, idx) => {
-        if (!isDistilling) {
-          dot.setAttribute("opacity", 0);
-          return;
+      // Update liquid in boiling flask (decreases slightly as distilled)
+      const flaskLiqZ = 13.0 - (accumulatedVolume * 0.08);
+      const flP0 = P(-25.5, 0, flaskLiqZ), flP1 = P(-16.5, 0, flaskLiqZ);
+      flaskLiquid.setAttribute("d", `M ${HL.r2(flP0[0])} ${HL.r2(flP0[1])} L ${HL.r2(flP1[0])} ${HL.r2(flP1[1])}`);
+
+      // Condensation Droplets Animation
+      if (isBoiling) {
+        dropPhase = (dropPhase + 0.04 * (1 + boilIntensity)) % 1;
+        for (let d = 0; d < dropDots.length; d++) {
+          const s = (dropPhase + d / dropDots.length) % 1;
+          let curX, curZ;
+          if (s < 0.75) {
+            // Sliding down inner tube
+            const frac = s / 0.75;
+            curX = cA[0] + frac * cDx;
+            curZ = cA[2] + frac * cDz;
+          } else {
+            // Free dripping from adapter tip into receiving flask
+            const frac = (s - 0.75) / 0.25;
+            curX = adaptTipWorld[0];
+            curZ = adaptTipWorld[2] - frac * 3.5;
+          }
+          const dp = P(curX, 0, curZ);
+          dropDots[d].setAttribute("cx", HL.r2(dp[0]));
+          dropDots[d].setAttribute("cy", HL.r2(dp[1]));
+          dropDots[d].setAttribute("opacity", "1");
         }
-        dot.setAttribute("opacity", 1);
-        const progress = (animTime * 1.2 + idx * 0.25) % 1.0;
-        const curX = cStart[0] + progress * (cEnd[0] - cStart[0]);
-        const curZ = cStart[2] + progress * (cEnd[2] - cStart[2]);
-        const pt = P(curX, 0, curZ);
-        dot.setAttribute("cx", HL.r2(pt[0]));
-        dot.setAttribute("cy", HL.r2(pt[1]));
-      });
-
-      // Liquid in receiving flask
-      const recLiqH = isDistilling ? 4.5 : 3.0;
-      const liqPts = [];
-      const liqR = recBaseR - ((recLiqH - 2.5) / 6.5) * (recBaseR - recNeckR);
-      for (let a = 0; a < 20; a++) {
-        const ang = (a * 2 * Math.PI) / 20;
-        liqPts.push(P(18 + liqR * Math.cos(ang), liqR * Math.sin(ang), recLiqH));
-      }
-      recLiquid.setAttribute("d", HL.poly(liqPts));
-      recLiquid.classList.toggle("hi", isDistilling);
-      recBody.classList.toggle("hi", isDistilling);
-
-      // Header Readout
-      const tStr = HL.r2(temp);
-      if (isDistilling) {
-        read.textContent = `Chưng cất: t° = ${tStr}°C ≥ 78.3°C · [NGƯNG TỤ ETHANOL] Hơi C₂H₅OH ngưng tụ qua sinh hàn Liebig thành giọt vào bình hứng (.hi)`;
       } else {
-        read.textContent = `Chưng cất: t° = ${tStr}°C < 78.3°C · Chưa đạt nhiệt độ sôi của ethanol (Chưa bay hơi ngưng tụ)`;
+        for (const dot of dropDots) {
+          dot.setAttribute("opacity", "0");
+        }
+      }
+
+      // Distillate volume in receiving flask
+      const recLevelZ = 0.5 + Math.min(4.5, accumulatedVolume * 0.15);
+      const rkP0 = P(14.0, 0, recLevelZ), rkP1 = P(20.0, 0, recLevelZ);
+      recLiquid.setAttribute("d", `M ${HL.r2(rkP0[0])} ${HL.r2(rkP0[1])} L ${HL.r2(rkP1[0])} ${HL.r2(rkP1[1])}`);
+
+      // Readout
+      if (isBoiling) {
+        const rate = (0.8 + boilIntensity * 1.6).toFixed(1);
+        read.textContent = `T = ${temp.toFixed(1)}°C (≥ 78.3°C) · C₂H₅OH sôi & ngưng tụ · Tốc độ: ${rate} mL/min · Thu hồi: ${accumulatedVolume.toFixed(1)} mL (.hi)`;
+      } else {
+        const remain = (78.3 - temp).toFixed(1);
+        read.textContent = `T = ${temp.toFixed(1)}°C (< 78.3°C) · Gia nhiệt hỗn hợp (cần thêm +${remain}°C để sôi) · Bình hứng: ${accumulatedVolume.toFixed(1)} mL`;
       }
     }
 
-    function setTemperature(t) {
-      spTemp.t = HL.clamp(t, 50, 95);
+    function setTemp(val) {
+      spTemp.t = HL.clamp(val, 50, 95);
       reg.wake();
     }
 
     function aim(pt) {
       if (!pt) {
-        setTemperature(78.3);
+        setTemp(78.3);
         return;
       }
       const minX = 60, maxX = 340;
       const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
-      setTemperature(50 + norm * 45.0);
+      setTemp(50 + norm * 45.0);
     }
 
     const reg = HL.register(stage, dt => {
-      animTime += dt;
       const moving = HL.stepS(spTemp, dt);
+      if (spTemp.x >= 78.3) {
+        const rate = 0.5 + ((spTemp.x - 78.3) / 12.0) * 1.5;
+        accumulatedVolume = Math.min(25.0, accumulatedVolume + rate * dt);
+      }
       draw();
-      return moving || spTemp.x >= 77.5;
+      return moving || spTemp.x >= 78.3;
     });
 
     bag.add(reg.unregister);
@@ -1580,138 +1748,158 @@ const CHEMISTRY_FIGURES = [
 
     return {
       set(v) {
-        setTemperature(Number(v));
+        setTemp(Number(v));
       },
-      destroy: bag.dispose
+      destroy: bag.dispose,
+      dispose: bag.dispose
     };
   }
 },
 /*
- * 5. Universal pH Scale & Litmus Test Strip (Thang Đo pH & Giấy Chỉ Thị)
- * Chemical Concept: Thang nồng độ ion hydronium: pH = -log[H⁺] (0 → 14):
- *   - Mẫu 1: Axit Clohydric HCl (pH = 1.0, [H⁺] = 0.1 M) ──> Quỳ đỏ rực
- *   - Mẫu 2: Nước chanh Citric (pH = 3.0, [H⁺] = 10⁻³ M) ──> Quỳ cam đỏ
- *   - Mẫu 3: Nước cất H₂O tinh khiết (pH = 7.0, [H⁺] = 10⁻⁷ M) ──> Trung tính
- *   - Mẫu 4: Dung dịch Xà phòng (pH = 9.5, [H⁺] ≈ 3·10⁻¹⁰ M) ──> Quỳ xanh da trời
- *   - Mẫu 5: Xút Natri hiđroxit NaOH (pH = 13.0, [H⁺] = 10⁻¹³ M) ──> Quỳ xanh lam đậm / tím
- * Geometry: Khay kiểm nghiệm 5 cốc thử hình trụ đặc (100% opaque), dải thang chia vạch chuẩn pH 1-14,
- *   nhíp kẹp nhúng giấy quỳ vào từng cốc, kim trượt định vị giá trị pH tức thì.
- * Kinematics: Di chuột ngang để di chuyển nhíp kẹp qua 5 giếng thử; que thử tự động nhúng
- *   sâu vào chất lỏng theo lò xo HL.spring, đầu giấy quỳ đổi màu và kim chỉ thang đo phản hồi.
+ * 5. Universal pH Scale & Porcelain Spot Plate (Thang Đo pH & Khay Giếng Sứ Thí Nghiệm)
+ * Chemical Concept: Thang đo nồng độ ion hydronium: pH = -log10[H⁺] (0 đến 14):
+ *   - Giếng 1: HCl 0.10 M (Axit mạnh, [H⁺] = 10⁻¹ M, pH = 1.00) ──> Quỳ đỏ đậm (.hi)
+ *   - Giếng 2: Nước chanh / Axit citric ([H⁺] ≈ 10⁻³ M, pH = 3.00) ──> Quỳ cam đỏ
+ *   - Giếng 3: Nước cất tinh khiết ([H⁺] = 10⁻⁷ M, pH = 7.00) ──> Trung tính, quỳ không đổi màu
+ *   - Giếng 4: Dung dịch NaHCO₃ / Xà phòng ([H⁺] ≈ 3·10⁻¹⁰ M, pH = 9.50) ──> Quỳ xanh da trời
+ *   - Giếng 5: NaOH 0.10 M (Bazơ mạnh, [H⁺] = 10⁻¹³ M, pH = 13.00) ──> Quỳ xanh lam tím đậm (.hi)
+ * Geometry (Lucas Markes Specimen Discipline):
+ *   - Khay sứ thử phản ứng màu 5 lỗ (5-well white porcelain spot plate) có lòng giếng lõm thật,
+ *     thành miệng vát, đáy chứa dung dịch ở Z = 1.0 đến 2.5.
+ *   - Thước thang chia độ chuẩn pH 1-14 phía sau với kim trượt định vị cơ học.
+ *   - Nhíp kẹp thép không gỉ gắp dải giấy quỳ di động trên trục X.
+ * Kinematics & Physical Contact Mandate:
+ *   - Khi di chuyển qua lại, giấy quỳ được nhấc bổng an toàn (Z_tip = 8.5 > Z_well = 4.0).
+ *   - Khi dừng trên miệng giếng, cơ chế nhúng (dipping) hạ đầu que quỳ xuống Z_tip = 1.8.
+ *   - CHỈ KHI đầu giấy quỳ chạm và ngập trong mặt dung dịch (Z_tip ≤ 2.5), phản ứng hóa học
+ *     mới kích hoạt, đầu giấy đổi màu và thang đo mới công nhận kết quả pH!
  */
 
 {
   id: "chemistry-ph-scale",
-  title: "5. Thang Đo pH & Giấy Chỉ Thị (pH Scale & Indicator)",
-  concept: "Định nghĩa pH = -log[H⁺] · Thang 0-14 (Axit < 7, Trung tính = 7, Bazơ > 7)",
-  means: "Di chuột ngang để điều khiển nhíp gắp mẩu giấy quỳ nhúng vào 5 mẫu dung dịch. Đầu giấy quỳ lập tức đổi màu hóa học tương ứng với nồng độ ion [H⁺] và kim chỉ thang đo tự động trượt đến giá trị pH thực tế.",
+  title: "5. Thang Đo pH & Giấy Chỉ Thị (pH Scale & Spot Plate)",
+  concept: "Định nghĩa pH = -log₁₀[H⁺] · Khay giếng sứ 5 mẫu · Chỉ kích hoạt khi giấy tiếp xúc dung dịch",
+  means: "Di chuột ngang qua 5 giếng thử. Giấy quỳ tự động nhúng sâu ngập vào chất lỏng; CHỈ KHI tiếp xúc thật sự thì phản ứng màu và thang đo pH mới hiển thị.",
   rules: [1, 2, 4, 6, 9],
-  range: [-28, 0, 28],
+  range: [-24, 0, 24],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 38]], 200, 160);
+    const C = HL.Cam(45, 0.5, 2.5);
+    HL.fit(C, [[-34, -18, 0], [34, 18, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Lab Testing Bench Plate (Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
+    function circAt(cx, cy, R, n = 24) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
+    }
 
-    // 2. pH Reference Track & Tick Marks along back edge (Y = -9, X: -36 to 36)
-    const trackY = -9.0;
+    // 1. pH Reference Track & Calibrated Ticks along back edge (Y = -10, X = -32 to 32, Z = 0)
+    const trackY = -10.0;
+    const trackGroup = HL.mk("g", { class: "lo" }, svg);
     HL.mk("line", {
-      x1: HL.r2(P(-36, trackY, 2.6)[0]), y1: HL.r2(P(-36, trackY, 2.6)[1]),
-      x2: HL.r2(P(36, trackY, 2.6)[0]), y2: HL.r2(P(36, trackY, 2.6)[1]),
-      class: "lo", "stroke-width": 1.2
-    }, svg);
+      x1: HL.r2(P(-32, trackY, 0.1)[0]), y1: HL.r2(P(-32, trackY, 0.1)[1]),
+      x2: HL.r2(P(32, trackY, 0.1)[0]), y2: HL.r2(P(32, trackY, 0.1)[1]),
+      stroke: "var(--hl-edge)", "stroke-width": 1.2
+    }, trackGroup);
 
     // 14 ticks along the track (pH 1 to 14)
     for (let ph = 1; ph <= 14; ph++) {
-      const tx = -36 + ((ph - 1) / 13) * 72;
+      const tx = -32 + ((ph - 1) / 13) * 64;
       const isAnchor = ph === 1 || ph === 7 || ph === 14;
-      const tLen = isAnchor ? 2.5 : 1.2;
-      const pA = P(tx, trackY - tLen / 2, 2.6);
-      const pB = P(tx, trackY + tLen / 2, 2.6);
+      const tLen = isAnchor ? 2.8 : 1.4;
+      const pA = P(tx, trackY - tLen / 2, 0.1);
+      const pB = P(tx, trackY + tLen / 2, 0.1);
       HL.mk("line", {
         x1: HL.r2(pA[0]), y1: HL.r2(pA[1]),
         x2: HL.r2(pB[0]), y2: HL.r2(pB[1]),
         class: isAnchor ? "hi" : "lo",
+        stroke: "var(--hl-edge)",
         "stroke-width": isAnchor ? 1.4 : 0.8
-      }, svg);
+      }, trackGroup);
     }
 
-    // Sliding Indicator Needle on track
+    // Sliding Indicator Needle on Track
     const needleGroup = HL.mk("g", {}, svg);
     const needleSol = HL.solid(needleGroup);
 
-    // 3. 5 Solid Cylindrical Beakers (Cốc thử đặc 100% opaque)
+    // 2. White Porcelain Spot Plate (Khay sứ thí nghiệm 5 giếng: X = -30 to 30, Y = -4 to 12, Z = 0 to 4.0)
+    const plateSol = HL.solid(svg);
+    const [plO, plI] = HL.rings(-30, -4, 30, 12, 2.5, 0.6);
+    HL.put(plateSol, HL.prism(P, front, plO, plI, 0, 4.0));
+
+    // 5 Concave Wells (Lòng giếng sứ lõm)
     const SAMPLES = [
-      { name: "HCl 0.1M (Axit mạnh)", ph: 1.0, x: -28, label: "pH 1" },
-      { name: "Nước Chanh (Axit yếu)", ph: 3.0, x: -14, label: "pH 3" },
-      { name: "Nước Cất H₂O (Trung tính)", ph: 7.0, x: 0, label: "pH 7" },
-      { name: "Xà Phòng (Bazơ yếu)", ph: 9.5, x: 14, label: "pH 9.5" },
-      { name: "NaOH 0.1M (Bazơ mạnh)", ph: 13.0, x: 28, label: "pH 13" }
+      { name: "HCl 0.10 M (Axit mạnh)", ph: 1.0, x: -24, colorName: "Đỏ rực", formula: "[H⁺]=0.1 M" },
+      { name: "Nước Chanh Citric (Axit yếu)", ph: 3.0, x: -12, colorName: "Cam đỏ", formula: "[H⁺]=10⁻³ M" },
+      { name: "Nước Cất H₂O (Trung tính)", ph: 7.0, x: 0, colorName: "Tím nhạt (không đổi)", formula: "[H⁺]=10⁻⁷ M" },
+      { name: "Xà Phòng NaHCO₃ (Bazơ yếu)", ph: 9.5, x: 12, colorName: "Xanh da trời", formula: "[H⁺]=3·10⁻¹⁰ M" },
+      { name: "NaOH 0.10 M (Bazơ mạnh)", ph: 13.0, x: 24, colorName: "Xanh lam đậm", formula: "[H⁺]=10⁻¹³ M" }
     ];
 
-    const beakerGroups = [];
-    const bR = 4.8;
-    const bZ0 = 2.5, bZ1 = 6.5;
+    const wellGroup = HL.mk("g", {}, svg);
+    const wellR = 3.6;
+    const wellY = 4.0;
 
     SAMPLES.forEach(s => {
-      const group = HL.mk("g", {}, svg);
-      const side = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, group);
-      const top = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, group);
-      const liquid = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, group);
-
-      // Construct solid cylinder: bottom front arc from theta = 135 deg to -45 deg
-      const bPts = [];
-      for (let i = 0; i <= 12; i++) {
-        const ang = (135 - i * 15) * Math.PI / 180;
-        bPts.push(P(s.x + bR * Math.cos(ang), 3.0 + bR * Math.sin(ang), bZ0));
+      // Well outer circular rim lip on top surface of porcelain plate (Z = 4.0)
+      const rimPts = [];
+      for (let a = 0; a <= 24; a++) {
+        const rad = (a * 2 * Math.PI) / 24;
+        rimPts.push(P(s.x + wellR * Math.cos(rad), wellY + wellR * Math.sin(rad), 4.05));
       }
-      const tPts = [];
-      for (let i = 0; i <= 12; i++) {
-        const ang = (-45 + i * 15) * Math.PI / 180;
-        tPts.push(P(s.x + bR * Math.cos(ang), 3.0 + bR * Math.sin(ang), bZ1));
-      }
-      side.setAttribute("d", HL.poly([...bPts, ...tPts]));
+      HL.mk("path", {
+        d: "M " + rimPts.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
+        class: "lo", fill: "none", stroke: "var(--hl-edge)", "stroke-width": 1.0
+      }, wellGroup);
 
-      // Top circle
-      const topPts = [];
-      for (let a = 0; a < 20; a++) {
-        const ang = (a * 2 * Math.PI) / 20;
-        topPts.push(P(s.x + bR * Math.cos(ang), 3.0 + bR * Math.sin(ang), bZ1));
+      // Cavity wall inner circle (Z = 1.0 to 4.0)
+      const innerPts = [];
+      for (let a = 0; a <= 24; a++) {
+        const rad = (a * 2 * Math.PI) / 24;
+        innerPts.push(P(s.x + (wellR - 0.6) * Math.cos(rad), wellY + (wellR - 0.6) * Math.sin(rad), 4.02));
       }
-      top.setAttribute("d", HL.poly(topPts));
+      HL.mk("path", {
+        d: "M " + innerPts.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
+        class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 0.8
+      }, wellGroup);
 
-      // Inner liquid surface
+      // Liquid puddle surface at Z = 2.4 inside cavity
       const liqPts = [];
-      for (let a = 0; a < 20; a++) {
-        const ang = (a * 2 * Math.PI) / 20;
-        liqPts.push(P(s.x + (bR - 0.7) * Math.cos(ang), 3.0 + (bR - 0.7) * Math.sin(ang), bZ1 - 0.8));
+      for (let a = 0; a <= 24; a++) {
+        const rad = (a * 2 * Math.PI) / 24;
+        liqPts.push(P(s.x + (wellR - 0.9) * Math.cos(rad), wellY + (wellR - 0.9) * Math.sin(rad), 2.4));
       }
-      liquid.setAttribute("d", HL.poly(liqPts));
-
-      beakerGroups.push({ group, side, top, liquid, ...s });
+      HL.mk("path", {
+        d: "M " + liqPts.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
+        class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0
+      }, wellGroup);
     });
 
-    // 4. Tweezers & Paper Test Strip
+    // 3. Tweezers & Paper Test Strip (Nhíp gắp que thử quỳ tím)
     const toolGroup = HL.mk("g", {}, svg);
-    const tweezerArmL = HL.mk("line", { class: "sil", "stroke-width": 1.6, stroke: "var(--hl-edge)" }, toolGroup);
-    const tweezerArmR = HL.mk("line", { class: "sil", "stroke-width": 1.6, stroke: "var(--hl-edge)" }, toolGroup);
-    const paperStripSol = HL.solid(toolGroup);
-    const paperTip = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, toolGroup);
+    const tweezerArmL = HL.mk("line", { class: "sil", "stroke-width": 1.8, stroke: "var(--hl-edge)" }, toolGroup);
+    const tweezerArmR = HL.mk("line", { class: "sil", "stroke-width": 1.8, stroke: "var(--hl-edge)" }, toolGroup);
+    const tweezerPivot = HL.mk("circle", { r: 1.8, class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.2 }, toolGroup);
 
-    // Kinematics Springs
+    // Paper Strip Body (Dry portion, upper)
+    const paperDryBody = HL.mk("polygon", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, toolGroup);
+    // Paper Strip Submerged Tip (Reactive indicator portion, lower 2.5 units)
+    const paperTip = HL.mk("polygon", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, toolGroup);
+
+    // Kinematic Springs
     const initialX = initialV != null ? initialV : 0;
-    const spX = HL.spring(initialX, { k: 140, c: 15 });
-    const spDip = HL.spring(0, { k: 160, c: 14 });
+    const spX = HL.spring(initialX, { k: 130, c: 15 });
+    const spDip = HL.spring(0, { k: 160, c: 14 }); // 0 = Lifted high (Z_tip = 8.5), 1 = Dipped in liquid (Z_tip = 1.8)
 
     function draw() {
       const curX = spX.x;
-      const dip = spDip.x;
 
+      // Find nearest well
       let closestIdx = 0;
       let minDis = 999;
       SAMPLES.forEach((s, idx) => {
@@ -1721,99 +1909,101 @@ const CHEMISTRY_FIGURES = [
           closestIdx = idx;
         }
       });
-      const activeSample = SAMPLES[closestIdx];
-      const isOverWell = minDis < 3.5;
+      const nearest = SAMPLES[closestIdx];
+      const isDirectlyOverWell = minDis <= 2.2;
 
-      // Needle on track
-      const targetPH = activeSample.ph;
-      const needleX = -36 + ((targetPH - 1) / 13) * 72;
-      const nP0 = P(needleX - 2.0, trackY - 2.5, 2.6);
-      const nP1 = P(needleX + 2.0, trackY - 2.5, 2.6);
-      const nP2 = P(needleX, trackY + 1.5, 2.6);
-      const nP0T = P(needleX - 2.0, trackY - 2.5, 5.0);
-      const nP1T = P(needleX + 2.0, trackY - 2.5, 5.0);
-      const nP2T = P(needleX, trackY + 1.5, 5.0);
+      // Automatic dipping kinematics: dip only when centered over a well
+      if (isDirectlyOverWell) {
+        spDip.t = 1.0;
+      } else {
+        spDip.t = 0.0;
+      }
+
+      // Vertical position of paper strip:
+      // When lifted (dip = 0): tip is at Z = 8.5 (above plate Z = 4.0)
+      // When dipped (dip = 1): tip is at Z = 1.8 (submerged in liquid Z_liq = 2.4!)
+      const dipVal = spDip.x;
+      const tipZ = 8.5 - dipVal * 6.7;
+      const topZ = tipZ + 12.0;
+      const submergeBoundaryZ = tipZ + 2.4; // Lower 2.4 units of paper is the reactive zone
+
+      // Physical contact check: Tip must be submerged below liquid surface Z = 2.4
+      const isSubmerged = isDirectlyOverWell && tipZ <= 2.4;
+
+      // 1. Draw Paper Strip (Upper dry body & lower tip)
+      const pW = 1.5;
+      const pTopL = P(curX - pW, wellY, topZ);
+      const pTopR = P(curX + pW, wellY, topZ);
+      const pMidL = P(curX - pW, wellY, submergeBoundaryZ);
+      const pMidR = P(curX + pW, wellY, submergeBoundaryZ);
+      const pBotL = P(curX - pW, wellY, tipZ);
+      const pBotR = P(curX + pW, wellY, tipZ);
+
+      paperDryBody.setAttribute("points", `${HL.r2(pTopL[0])},${HL.r2(pTopL[1])} ${HL.r2(pTopR[0])},${HL.r2(pTopR[1])} ${HL.r2(pMidR[0])},${HL.r2(pMidR[1])} ${HL.r2(pMidL[0])},${HL.r2(pMidL[1])}`);
+      paperTip.setAttribute("points", `${HL.r2(pMidL[0])},${HL.r2(pMidL[1])} ${HL.r2(pMidR[0])},${HL.r2(pMidR[1])} ${HL.r2(pBotR[0])},${HL.r2(pBotR[1])} ${HL.r2(pBotL[0])},${HL.r2(pBotL[1])}`);
+
+      // 2. Draw Tweezers
+      const twPivotPt = P(curX, wellY, topZ + 6.0);
+      tweezerPivot.setAttribute("cx", HL.r2(twPivotPt[0]));
+      tweezerPivot.setAttribute("cy", HL.r2(twPivotPt[1]));
+
+      tweezerArmL.setAttribute("x1", HL.r2(twPivotPt[0]));
+      tweezerArmL.setAttribute("y1", HL.r2(twPivotPt[1]));
+      tweezerArmL.setAttribute("x2", HL.r2(pTopL[0]));
+      tweezerArmL.setAttribute("y2", HL.r2(pTopL[1]));
+
+      tweezerArmR.setAttribute("x1", HL.r2(twPivotPt[0]));
+      tweezerArmR.setAttribute("y1", HL.r2(twPivotPt[1]));
+      tweezerArmR.setAttribute("x2", HL.r2(pTopR[0]));
+      tweezerArmR.setAttribute("y2", HL.r2(pTopR[1]));
+
+      // 3. Sliding Indicator Needle on Reference Track
+      const targetPH = isSubmerged ? nearest.ph : 7.0;
+      const needleX = -32 + ((targetPH - 1) / 13) * 64;
+      const nP0 = P(needleX - 1.8, trackY - 2.0, 0.1);
+      const nP1 = P(needleX + 1.8, trackY - 2.0, 0.1);
+      const nP2 = P(needleX, trackY + 1.2, 0.1);
+      const nP0T = P(needleX - 1.8, trackY - 2.0, 2.5);
+      const nP1T = P(needleX + 1.8, trackY - 2.0, 2.5);
+      const nP2T = P(needleX, trackY + 1.2, 2.5);
 
       let nSil = "";
       nSil += HL.poly([nP0, nP1, nP1T, nP0T]);
       nSil += HL.poly([nP1, nP2, nP2T, nP1T]);
       nSil += HL.poly([nP0T, nP1T, nP2T]);
       HL.put(needleSol, { sil: nSil, crease: "" });
-      needleSol.sil.classList.toggle("hi", isOverWell);
 
-      // Tweezers & Paper Position
-      const toolZ = 16.0 - dip * 5.0;
-      const paperW = 2.4;
-      const paperL = 12.0;
-
-      const twTop = P(curX, 3.0, 30.0);
-      const twL = P(curX - 1.2, 3.0, toolZ + paperL * 0.9);
-      const twR = P(curX + 1.2, 3.0, toolZ + paperL * 0.9);
-      tweezerArmL.setAttribute("x1", HL.r2(twTop[0]));
-      tweezerArmL.setAttribute("y1", HL.r2(twTop[1]));
-      tweezerArmL.setAttribute("x2", HL.r2(twL[0]));
-      tweezerArmL.setAttribute("y2", HL.r2(twL[1]));
-
-      tweezerArmR.setAttribute("x1", HL.r2(twTop[0]));
-      tweezerArmR.setAttribute("y1", HL.r2(twTop[1]));
-      tweezerArmR.setAttribute("x2", HL.r2(twR[0]));
-      tweezerArmR.setAttribute("y2", HL.r2(twR[1]));
-
-      const pp0 = P(curX - paperW / 2, 3.0, toolZ);
-      const pp1 = P(curX + paperW / 2, 3.0, toolZ);
-      const pp2 = P(curX + paperW / 2, 3.0, toolZ + paperL);
-      const pp3 = P(curX - paperW / 2, 3.0, toolZ + paperL);
-      HL.put(paperStripSol, { sil: HL.poly([pp0, pp1, pp2, pp3]), crease: "" });
-
-      const tip0 = P(curX - paperW / 2, 3.0, toolZ);
-      const tip1 = P(curX + paperW / 2, 3.0, toolZ);
-      const tip2 = P(curX + paperW / 2, 3.0, toolZ + 3.5);
-      const tip3 = P(curX - paperW / 2, 3.0, toolZ + 3.5);
-      paperTip.setAttribute("d", HL.poly([tip0, tip1, tip2, tip3]));
-
-      // Highlight effects
-      paperTip.classList.toggle("hi", isOverWell);
-      beakerGroups.forEach((b, idx) => {
-        const isThisBeaker = idx === closestIdx && isOverWell;
-        b.side.classList.toggle("hi", isThisBeaker);
-        b.top.classList.toggle("hi", isThisBeaker);
-        b.liquid.classList.toggle("hi", isThisBeaker);
-      });
-
-      // Header Readout
-      const phVal = activeSample.ph;
-      const hPlus = Math.pow(10, -phVal).toExponential(1);
-      const desc = phVal < 7 ? "Môi trường AXIT (Quỳ hóa đỏ/cam)" : phVal === 7 ? "Môi trường TRUNG TÍNH (Quỳ không đổi)" : "Môi trường BAZƠ/KIỀM (Quỳ hóa xanh)";
-      read.textContent = `Thang đo: ${activeSample.name} · pH = ${phVal} · [H⁺] = ${hPlus} M · ${desc} (.hi)`;
+      // 4. Indicator Reaction & Readout
+      if (isSubmerged) {
+        paperTip.classList.add("hi");
+        needleSol.sil.classList.add("hi");
+        read.textContent = `[ĐÃ TIẾP XÚC DUNG DỊCH] Mẫu: ${nearest.name} · ${nearest.formula} · pH = ${nearest.ph.toFixed(1)} · Quỳ chuyển màu ${nearest.colorName} (.hi)`;
+      } else {
+        paperTip.classList.remove("hi");
+        needleSol.sil.classList.remove("hi");
+        read.textContent = `[CHƯA TIẾP XÚC DUNG DỊCH] Que quỳ đang ở độ cao Z = ${tipZ.toFixed(1)} (khô ráo) · Di chuyển vào tâm giếng thử để nhúng đo pH`;
+      }
     }
 
-    function setXPos(val) {
-      const clamped = HL.clamp(val, -30, 30);
-      spX.t = clamped;
-
-      let nearWell = false;
-      SAMPLES.forEach(s => {
-        if (Math.abs(clamped - s.x) < 4.0) nearWell = true;
-      });
-      spDip.t = nearWell ? 1.0 : 0.0;
+    function setX(val) {
+      spX.t = HL.clamp(val, -26, 26);
       reg.wake();
     }
 
     function aim(pt) {
       if (!pt) {
-        setXPos(0);
+        setX(0);
         return;
       }
-      const minScrX = 60, maxScrX = 340;
-      const norm = HL.clamp((pt[0] - minScrX) / (maxScrX - minScrX), 0, 1);
-      setXPos(-30 + norm * 60.0);
+      const minX = 60, maxX = 340;
+      const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
+      setX(-26 + norm * 52.0);
     }
 
     const reg = HL.register(stage, dt => {
-      const m1 = HL.stepS(spX, dt);
-      const m2 = HL.stepS(spDip, dt);
+      const moving = HL.stepS(spX, dt) | HL.stepS(spDip, dt);
       draw();
-      return m1 || m2;
+      return moving;
     });
 
     bag.add(reg.unregister);
@@ -1824,9 +2014,10 @@ const CHEMISTRY_FIGURES = [
 
     return {
       set(v) {
-        setXPos(Number(v));
+        setX(Number(v));
       },
-      destroy: bag.dispose
+      destroy: bag.dispose,
+      dispose: bag.dispose
     };
   }
 },

@@ -131,19 +131,35 @@ export default {
         ion.detail.setAttribute("cx", HL.r2(pt[0]));
         ion.detail.setAttribute("cy", HL.r2(pt[1]));
 
-        ion.circle.classList.toggle("hi", isEquil);
+        // Focal highlight: highlight ONLY the central ion (0,0,0) and its 6 nearest neighbors
+        const isCenter = ion.i === 0 && ion.j === 0 && ion.k === 0;
+        const isCoordNeighbor = Math.abs(ion.i) + Math.abs(ion.j) + Math.abs(ion.k) === 1;
+        const isFocalGroup = isCenter || isCoordNeighbor;
+
+        if (isEquil && isFocalGroup) {
+          ion.circle.classList.add("hi");
+          ion.circle.classList.remove("lo");
+        } else {
+          ion.circle.classList.remove("hi");
+          ion.circle.classList.add("lo");
+        }
       });
 
-      // Header Readout
+      // Header Readout: True Born-Landé Potential Energy U(r) with minimum at r0 = 282 pm
       const rStr = HL.r2(r);
-      // Lattice energy approximation U(r)
-      const uLattice = HL.r2(-786 * (282 / r));
+      const ratio = 282.0 / r;
+      const nBorn = 8;
+      // U(r) = -898.3 * [ (r0/r) - (1/n) * (r0/r)^n ] (kJ/mol)
+      const uLattice = HL.r2(-898.3 * (ratio - (1 / nBorn) * Math.pow(ratio, nBorn)));
+      // Restoring force F = -dU/dr
+      const forceRel = HL.r2((Math.pow(ratio, 2) - Math.pow(ratio, nBorn + 1)) * 100);
+
       if (isEquil) {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm (Chuẩn r₀ = 282 pm) · U = ${uLattice} kJ/mol · [CÂN BẰNG BỀN] Lực hút Coulomb cân bằng lực đẩy Born (.hi)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm (Cực tiểu r₀ = 282 pm) · U_min = ${uLattice} kJ/mol · [CÂN BẰNG BỀN] F_hút = F_đẩy (Số phối trí CN = 6) (.hi)`;
       } else if (r < 282) {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm < 282 pm · Lực đẩy đám mây electron áp đảo (Mạng bị nén, thế năng tăng)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm < 282 pm · U = ${uLattice} kJ/mol · Lực đẩy Born áp đảo (F_đẩy = +${Math.abs(forceRel)} N·rel, mạng bị nén)`;
       } else {
-        read.textContent = `Tinh thể NaCl: r = ${rStr} pm > 282 pm · Lực hút tĩnh điện Coulomb kéo về (Mạng bị giãn, thế năng tăng)`;
+        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm > 282 pm · U = ${uLattice} kJ/mol · Lực hút Coulomb áp đảo (F_hút = -${Math.abs(forceRel)} N·rel, kéo về cân bằng)`;
       }
     }
 

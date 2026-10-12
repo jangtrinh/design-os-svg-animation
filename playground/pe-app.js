@@ -9,182 +9,309 @@ if (typeof HL !== "undefined" && HL.inject) {
 
 const PE_FIGURES = [
 /*
- * 1. Mechanical Sports Stopwatch (Đồng Hồ Bấm Giờ Thể Thao)
- * Physical Concept: Đo thời lượng điền kinh cự ly ngắn (Sprint timing):
- *   - Mặt số chia vạch 60 giây, kim quét cơ học êm ái.
- *   - Vận tốc trung bình cự ly chạy 100m: v = 100 / t (m/s).
- *   - Kỷ lục thế giới 100m: Usain Bolt 9.58s (v_max ≈ 10.44 m/s).
- * Geometry: Thân vỏ kim loại mạ crom tròn đặc (100% opaque), vành bezel vát,
- *   núm bấm đỉnh (Crown pusher), 2 núm bấm phụ hai bên vai, mặt số 60 vạch khắc,
- *   kim giây thanh mảnh có đối trọng đuôi tròn.
- * Kinematics: Di chuột điều chỉnh kim giây quét từ 0 đến 30 giây hoặc bấm núm;
- *   kim giây lướt mượt mà qua các vạch chia, núm đỉnh nhún đàn hồi và kích hoạt .hi.
+ * 1. Mechanical Sports Stopwatch (Đồng Hồ Bấm Giờ Thể Thao Cao Cấp)
+ * Benchmark Lucas Markes Hairline Craftsmanship:
+ *   - Loại bỏ hoàn toàn tấm ván trượt vô nghĩa; Đồng hồ bấm giờ là Hero Object chiếm 70% viewport.
+ *   - Cấu trúc vỏ thép cơ khí 3 tầng (Main case, Bezel stepped chamfer, Inward crystal flange, Recessed dial).
+ *   - Cụm núm đỉnh (Crown Pusher Assembly): Khớp hoàn hảo với cao độ Z của vành bezel (Z: 8.5 -> 12.5),
+ *     núm bấm đỉnh nhún sâu đàn hồi k=220 khi bấm Start/Stop, vòng quai treo (Lanyard bow) uốn cung thép vút cao.
+ *   - Núm phụ Split/Lap ở góc 10h (35° tilt) nhô ra ngoài thân vỏ chân thực.
+ *   - Mặt số phân giải cao: Vòng 60 giây, vạch chia 1/5s, mặt số phụ 30 phút (30-minute subdial).
+ *   - Kim quét chính có đối trọng đuôi tròn (counterweight pear/ring), kim phút phụ đồng bộ.
+ * Kinematics: Click núm để START / STOP / RESET như đồng hồ cơ thật; kéo chuột để scrub thời gian.
  */
 
 {
   id: "pe-stopwatch",
-  title: "1. Đồng Hồ Bấm Giờ (Sports Stopwatch)",
-  concept: "Đo thời gian điền kinh: v = s / t · Độ chính xác 1/100 s · Tính vận tốc chạy 100m",
-  means: "Di chuột điều khiển kim giây quét trên mặt đồng hồ bấm giờ thể thao. Thời gian trôi theo từng phần trăm giây và vận tốc trung bình cự ly 100m tương ứng được tính toán tức thì.",
-  rules: [1, 2, 4, 6, 9],
-  range: [0, 9.58, 30],
+  title: "1. Đồng Hồ Bấm Giờ Thể Thao (Olympic Stopwatch)",
+  concept: "Đo thời gian điền kinh: v = s / t · Chuẩn cơ học 1/100 s · Kỷ lục 100m thế giới 9.58s",
+  means: "Click vào đồng hồ để BẮT ĐẦU (START), DỪNG (STOP) hoặc TRẢ VỀ (RESET). Núm cơ học thụt sâu đàn hồi k=220, kim giây quét thời gian thực với đối trọng cân bằng.",
+  rules: [1, 2, 4, 6, 7, 8, 9],
+  range: [0, 9.58, 60],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
     const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 38]], 200, 160);
+    // Tight hero framing: fills 70-75% of viewport
+    HL.fit(C, [[-36, -44, 0], [36, 36, 26]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
+    const toRing = pts => pts.map(([u, v]) => ({ u, v, nu: 0, nv: 0 }));
 
-    // 1. Bench Mat Base (Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
+    const caseR = 30.0; // Hero scale (đường kính 60 units)
+    const cos45 = Math.cos(Math.PI / 4);
+    const sin45 = Math.sin(Math.PI / 4);
 
-    // 2. Stopwatch Case (Cylindrical solid at 0, 0, Z: 2.5 to 7.5)
-    const caseR = 15.5;
+    // 1. Ergonomic Inclined Desk Stand / Base Ring (Chân đế nghiêng công thái học Z: 0 -> 2.5)
+    const standSol = HL.solid(svg);
+    const [stO, stI] = HL.rings(-20, -20, 20, 20, 2.5, 0.8);
+    HL.put(standSol, HL.prism(P, front, stO, stI, 0, 2.5));
+
+    // 2. Main Steel Watch Case (Thân vỏ thép không gỉ Z: 2.5 -> 9.0)
     const caseSol = HL.solid(svg);
-    HL.put(caseSol, HL.prism(P, front, HL.circ(caseR, 32), HL.circ(caseR - 0.8, 32), 2.5, 7.5));
+    const caseRingO = HL.circ(caseR, 36);
+    const caseRingI = HL.circ(caseR - 1.2, 36);
+    HL.put(caseSol, HL.prism(P, front, caseRingO, caseRingI, 2.5, 9.0));
 
-    // Bezel ring (Z: 7.5 to 8.8, radius 14.5)
+    // 3. Stepped Bezel with Chamfer (Vành bezel vát cơ khí Z: 9.0 -> 11.5, R: 28.5)
     const bezelSol = HL.solid(svg);
-    HL.put(bezelSol, HL.prism(P, front, HL.circ(14.5, 32), HL.circ(13.8, 32), 7.5, 8.8));
+    const bezelRingO = HL.circ(28.5, 36);
+    const bezelRingI = HL.circ(27.2, 36);
+    HL.put(bezelSol, HL.prism(P, front, bezelRingO, bezelRingI, 9.0, 11.5));
 
-    // Dial face disc (solid polygon at Z = 8.8, radius 13.8)
+    // 4. Inward Crystal Flange & Recessed Dial (Mặt số lồi hạ âm tại Z = 11.2, R = 27.0)
     const dialFace = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, svg);
     const dialPts = [];
-    for (let a = 0; a < 32; a++) {
-      const ang = (a * 2 * Math.PI) / 32;
-      dialPts.push(P(13.8 * Math.cos(ang), 13.8 * Math.sin(ang), 8.8));
+    for (let a = 0; a < 36; a++) {
+      const ang = (a * 2 * Math.PI) / 36;
+      dialPts.push(P(27.0 * Math.cos(ang), 27.0 * Math.sin(ang), 11.2));
     }
     dialFace.setAttribute("d", HL.poly(dialPts));
 
-    // 3. Dial Scale Markings (60 ticks around dial)
-    const dialGroup = HL.mk("g", {}, svg);
+    // Inner dial decorative ring at R = 21.0
+    const dialInnerPts = [];
+    for (let a = 0; a < 36; a++) {
+      const ang = (a * 2 * Math.PI) / 36;
+      dialInnerPts.push(P(21.0 * Math.cos(ang), 21.0 * Math.sin(ang), 11.3));
+    }
+    HL.mk("path", { d: HL.poly(dialInnerPts), class: "lo", "stroke-width": 0.8, fill: "none" }, svg);
+
+    // 5. Dial Graduations (Vòng chia 60 giây và 1/5 giây)
+    const baseDialAngle = (225 * Math.PI) / 180;
+    const dialMarksGroup = HL.mk("g", {}, svg);
     for (let s = 0; s < 60; s++) {
-      const ang = (s * 6 * Math.PI) / 180 - Math.PI / 2; // 0s at top (-Y)
+      const ang = baseDialAngle - (s * 6 * Math.PI) / 180; // Clockwise
       const isMajor = s % 5 === 0;
-      const rOut = 13.2;
-      const rIn = isMajor ? 11.0 : 12.2;
-      const pOut = P(rOut * Math.cos(ang), rOut * Math.sin(ang), 8.9);
-      const pIn = P(rIn * Math.cos(ang), rIn * Math.sin(ang), 8.9);
+      const rOut = 26.2;
+      const rIn = isMajor ? 22.8 : 24.8;
+      const pOut = P(rOut * Math.cos(ang), rOut * Math.sin(ang), 11.3);
+      const pIn = P(rIn * Math.cos(ang), rIn * Math.sin(ang), 11.3);
       HL.mk("line", {
         x1: HL.r2(pIn[0]), y1: HL.r2(pIn[1]),
         x2: HL.r2(pOut[0]), y2: HL.r2(pOut[1]),
         class: isMajor ? "hi" : "lo",
-        "stroke-width": isMajor ? 1.2 : 0.6
-      }, dialGroup);
+        "stroke-width": isMajor ? 1.4 : 0.7
+      }, dialMarksGroup);
     }
 
-    // Small sub-dial (30-minute register at upper center (0, -6, 8.9))
+    // 6. Sub-dial: 30-Minute Register at upper 12h position (along -cos45, -sin45 at dist 11.5)
+    const subDist = 11.5;
+    const subCenterX = -subDist * cos45;
+    const subCenterY = -subDist * sin45;
+    const subCenter = [subCenterX, subCenterY, 11.3];
+    const subR = 6.8;
     const subPts = [];
-    for (let a = 0; a < 20; a++) {
-      const ang = (a * 2 * Math.PI) / 20;
-      subPts.push(P(3.2 * Math.cos(ang), -6.0 + 3.2 * Math.sin(ang), 8.9));
+    for (let a = 0; a < 24; a++) {
+      const ang = (a * 2 * Math.PI) / 24;
+      subPts.push(P(subCenter[0] + subR * Math.cos(ang), subCenter[1] + subR * Math.sin(ang), 11.3));
     }
-    HL.mk("path", { d: HL.poly(subPts), class: "lo", "stroke-width": 0.8 }, dialGroup);
+    HL.mk("path", { d: HL.poly(subPts), class: "lo", "stroke-width": 0.9, fill: "none" }, dialMarksGroup);
 
-    // 4. Crown Pusher at 12 o'clock (Y = -15.5 to -19.5, Z = 5.0)
-    const crownGroup = HL.mk("g", {}, svg);
-    const crownSol = HL.solid(crownGroup);
-    // Shoulder pushers at 10h and 2h
-    const btnL = HL.mk("line", {
-      x1: HL.r2(P(-11, -11, 5.0)[0]), y1: HL.r2(P(-11, -11, 5.0)[1]),
-      x2: HL.r2(P(-14, -14, 5.0)[0]), y2: HL.r2(P(-14, -14, 5.0)[1]),
-      class: "sil", "stroke-width": 2.2, stroke: "var(--hl-edge)"
-    }, crownGroup);
-    const btnR = HL.mk("line", {
-      x1: HL.r2(P(11, -11, 5.0)[0]), y1: HL.r2(P(11, -11, 5.0)[1]),
-      x2: HL.r2(P(14, -14, 5.0)[0]), y2: HL.r2(P(14, -14, 5.0)[1]),
-      class: "sil", "stroke-width": 2.2, stroke: "var(--hl-edge)"
-    }, crownGroup);
+    // Sub-dial ticks (0, 10, 20, 30 min)
+    for (let m = 0; m < 12; m++) {
+      const ang = baseDialAngle - (m * 30 * Math.PI) / 180;
+      const isMaj = m % 3 === 0;
+      const p1 = P(subCenter[0] + (subR - (isMaj ? 2.0 : 1.2)) * Math.cos(ang), subCenter[1] + (subR - (isMaj ? 2.0 : 1.2)) * Math.sin(ang), 11.3);
+      const p2 = P(subCenter[0] + (subR - 0.4) * Math.cos(ang), subCenter[1] + (subR - 0.4) * Math.sin(ang), 11.3);
+      HL.mk("line", {
+        x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
+        x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
+        class: isMaj ? "hi" : "lo",
+        "stroke-width": isMaj ? 1.0 : 0.6
+      }, dialMarksGroup);
+    }
 
-    // 5. Sweeping Hands
+    // Sub-dial mini hand
+    const subHand = HL.mk("line", { class: "hi", "stroke-width": 1.2 }, dialMarksGroup);
+
+    // 7. Crown & Pusher Assembly at 12 o'clock Apex (elevated at Z = 8.5 to 12.0)
+    // Fixed Neck collar extending from D = 28.5 to 34.0 outside the case
+    const crownNeckSol = HL.solid(svg);
+    const neckD0 = 28.5, neckD1 = 34.0;
+    const nW = 3.2; // Half width
+    const neckPtsO = [
+      [-neckD0 * cos45 - nW * sin45, -neckD0 * sin45 + nW * cos45],
+      [-neckD1 * cos45 - nW * sin45, -neckD1 * sin45 + nW * cos45],
+      [-neckD1 * cos45 + nW * sin45, -neckD1 * sin45 - nW * cos45],
+      [-neckD0 * cos45 + nW * sin45, -neckD0 * sin45 - nW * cos45]
+    ];
+    const neckPtsI = neckPtsO.map(pt => [pt[0] * 0.96, pt[1] * 0.96]);
+    HL.put(crownNeckSol, HL.prism(P, front, toRing(neckPtsO), toRing(neckPtsI), 8.5, 12.0));
+
+    // Lanyard Loop / Crown Bow (Vòng quai treo bằng thép uốn cung qua đỉnh cao)
+    const bowPts = [];
+    const bowRadius = 8.5;
+    const bowOriginD = 36.5;
+    const bowOriginX = -bowOriginD * cos45;
+    const bowOriginY = -bowOriginD * sin45;
+    for (let a = -75; a <= 75; a += 10) {
+      const rad = (a * Math.PI) / 180;
+      const u = bowRadius * Math.cos(rad);
+      const v = bowRadius * Math.sin(rad);
+      const bx = bowOriginX - u * cos45 - v * sin45;
+      const by = bowOriginY - u * sin45 + v * cos45;
+      bowPts.push(P(bx, by, 10.5));
+    }
+    HL.mk("path", {
+      d: "M " + bowPts.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
+      class: "sil",
+      "stroke-width": 2.2,
+      stroke: "var(--hl-edge)",
+      fill: "none"
+    }, svg);
+
+    // Main Crown Pusher Plunger (Núm bấm đỉnh nhún sâu vào thân)
+    const pusherSol = HL.solid(svg);
+
+    // Lap/Split Secondary Pusher at 10 o'clock (elevated at Z = 8.0 to 11.5, D = 28.5 to 33.5)
+    const lapPusherSol = HL.solid(svg);
+    const lapAngle = baseDialAngle + (35 * Math.PI) / 180;
+    const lapD0 = 28.5, lapD1 = 33.5;
+    const lpW = 2.4;
+    const lapPtsO = [
+      [lapD0 * Math.cos(lapAngle) - lpW * Math.sin(lapAngle), lapD0 * Math.sin(lapAngle) + lpW * Math.cos(lapAngle)],
+      [lapD1 * Math.cos(lapAngle) - lpW * Math.sin(lapAngle), lapD1 * Math.sin(lapAngle) + lpW * Math.cos(lapAngle)],
+      [lapD1 * Math.cos(lapAngle) + lpW * Math.sin(lapAngle), lapD1 * Math.sin(lapAngle) - lpW * Math.cos(lapAngle)],
+      [lapD0 * Math.cos(lapAngle) + lpW * Math.sin(lapAngle), lapD0 * Math.sin(lapAngle) - lpW * Math.cos(lapAngle)]
+    ];
+    const lapPtsI = lapPtsO.map(pt => [pt[0] * 0.95, pt[1] * 0.95]);
+    HL.put(lapPusherSol, HL.prism(P, front, toRing(lapPtsO), toRing(lapPtsI), 8.0, 11.5));
+
+    // 8. Dynamic Central Sweep Second Hand Assembly
     const handGroup = HL.mk("g", {}, svg);
-    const secHand = HL.mk("line", { class: "hi", "stroke-width": 1.4 }, handGroup);
-    const counterTail = HL.mk("line", { class: "lo", "stroke-width": 1.4 }, handGroup);
-    const centerCap = HL.mk("circle", { cx: HL.r2(P(0, 0, 9.2)[0]), cy: HL.r2(P(0, 0, 9.2)[1]), r: 1.6, class: "dot" }, handGroup);
+    const secHand = HL.mk("line", { class: "hi", "stroke-width": 1.6 }, handGroup);
+    const secCounterTail = HL.mk("line", { class: "lo", "stroke-width": 1.6 }, handGroup);
+    const secTailRing = HL.mk("circle", { r: 2.2, class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, handGroup);
+    const centerBoss = HL.mk("circle", { cx: HL.r2(P(0, 0, 11.6)[0]), cy: HL.r2(P(0, 0, 11.6)[1]), r: 2.0, class: "dot" }, handGroup);
 
     // Kinematics Springs
     const initialT = initialV != null ? initialV : 9.58;
-    const spTime = HL.spring(initialT, { k: 130, c: 14 });
-    const spPusher = HL.spring(0, { k: 200, c: 16 });
+    const spTime = HL.spring(initialT, { k: 140, c: 15 });
+    const spPusherDisp = HL.spring(0, { k: 220, c: 14 }); // Crown displacement when clicked
+
+    // Real mechanical stopwatch states: 0: STOPPED, 1: RUNNING
+    let watchRunning = false;
+    let accumulatedTime = initialT;
 
     function draw() {
-      const curT = spTime.x; // seconds (0 to 30)
-      const push = spPusher.x;
+      const curT = spTime.x; // seconds (0 to 60)
+      const secNorm = (curT % 60) / 60;
+      const minNorm = (curT / 1800) % 1; // 30-minute dial
 
-      // Crown Pusher Depress along -Y
-      const crY0 = -15.5;
-      const crY1 = -18.5 + push * 1.5;
-      const [crO, crI] = HL.rings(-2.5, crY1, 2.5, crY0, 0.6, 0.2);
-      HL.put(crownSol, HL.prism(P, front, crO, crI, 4.0, 6.0));
-
-      // Hand Angle: 60s per full 360 deg
-      // 0s at -Y (12 o'clock) -> angle = -Math.PI / 2
-      const ang = (curT * 6 * Math.PI) / 180 - Math.PI / 2;
-      const tipR = 12.0;
-      const tailR = 3.5;
-
-      const pTip = P(tipR * Math.cos(ang), tipR * Math.sin(ang), 9.0);
-      const pTail = P(-tailR * Math.cos(ang), -tailR * Math.sin(ang), 9.0);
-      const pCenter = P(0, 0, 9.0);
+      // Angle for sweep seconds hand: starts at 12h (baseDialAngle), sweeps clockwise
+      const secRad = baseDialAngle - secNorm * 2 * Math.PI;
+      const pCenter = P(0, 0, 11.5);
+      const tipR = 25.0;
+      const tailR = 6.5;
+      const pTip = P(tipR * Math.cos(secRad), tipR * Math.sin(secRad), 11.5);
+      const pTail = P(-tailR * Math.cos(secRad), -tailR * Math.sin(secRad), 11.5);
 
       secHand.setAttribute("x1", HL.r2(pCenter[0]));
       secHand.setAttribute("y1", HL.r2(pCenter[1]));
       secHand.setAttribute("x2", HL.r2(pTip[0]));
       secHand.setAttribute("y2", HL.r2(pTip[1]));
 
-      counterTail.setAttribute("x1", HL.r2(pCenter[0]));
-      counterTail.setAttribute("y1", HL.r2(pCenter[1]));
-      counterTail.setAttribute("x2", HL.r2(pTail[0]));
-      counterTail.setAttribute("y2", HL.r2(pTail[1]));
+      secCounterTail.setAttribute("x1", HL.r2(pCenter[0]));
+      secCounterTail.setAttribute("y1", HL.r2(pCenter[1]));
+      secCounterTail.setAttribute("x2", HL.r2(pTail[0]));
+      secCounterTail.setAttribute("y2", HL.r2(pTail[1]));
 
-      // Header Readout
-      const secStr = HL.r2(curT);
-      const vAvg = curT > 0.5 ? HL.r2(100.0 / curT) : 0;
-      const isWR = Math.abs(curT - 9.58) < 0.2;
+      secTailRing.setAttribute("cx", HL.r2(pTail[0]));
+      secTailRing.setAttribute("cy", HL.r2(pTail[1]));
 
-      if (isWR) {
-        read.textContent = `Bấm giờ: t = ${secStr}s (Kỷ lục thế giới 100m: 9.58s) · Vận tốc trung bình v = ${vAvg} m/s (37.6 km/h) (.hi)`;
+      // Sub-dial minute hand
+      const minRad = baseDialAngle - minNorm * 2 * Math.PI;
+      const pSubCenter = P(subCenter[0], subCenter[1], 11.4);
+      const pSubTip = P(subCenter[0] + 5.2 * Math.cos(minRad), subCenter[1] + 5.2 * Math.sin(minRad), 11.4);
+      subHand.setAttribute("x1", HL.r2(pSubCenter[0]));
+      subHand.setAttribute("y1", HL.r2(pSubCenter[1]));
+      subHand.setAttribute("x2", HL.r2(pSubTip[0]));
+      subHand.setAttribute("y2", HL.r2(pSubTip[1]));
+
+      // Crown pusher dynamic displacement (plunges into watch body)
+      const pushDepress = spPusherDisp.x * 2.8;
+      const pshD0 = 34.0 - pushDepress;
+      const pshD1 = 38.5 - pushDepress;
+      const pW = 2.8;
+      const pshPtsO = [
+        [-pshD0 * cos45 - pW * sin45, -pshD0 * sin45 + pW * cos45],
+        [-pshD1 * cos45 - pW * sin45, -pshD1 * sin45 + pW * cos45],
+        [-pshD1 * cos45 + pW * sin45, -pshD1 * sin45 - pW * cos45],
+        [-pshD0 * cos45 + pW * sin45, -pshD0 * sin45 - pW * cos45]
+      ];
+      const pshPtsI = pshPtsO.map(pt => [pt[0] * 0.95, pt[1] * 0.95]);
+      HL.put(pusherSol, HL.prism(P, front, toRing(pshPtsO), toRing(pshPtsI), 8.8, 12.0));
+
+      // Header Readout & Sprint Calculation
+      const tSec = Math.max(0.01, curT);
+      const vAvg = (100.0 / tSec).toFixed(2);
+      const kmh = (Number(vAvg) * 3.6).toFixed(1);
+      const stateLabel = watchRunning ? "[RUNNING]" : "[STOPPED]";
+
+      read.textContent = `${stateLabel} t = ${tSec.toFixed(2)}s · Cự ly 100m: v = ${vAvg} m/s (${kmh} km/h) · Click để Start/Stop`;
+    }
+
+    function triggerClick() {
+      // Plunge pusher button
+      spPusherDisp.x = 1.0;
+      spPusherDisp.t = 0.0;
+
+      if (!watchRunning) {
+        if (accumulatedTime >= 59.9) {
+          // Reset
+          accumulatedTime = 0;
+          spTime.t = 0;
+        }
+        watchRunning = true;
       } else {
-        read.textContent = `Bấm giờ: t = ${secStr}s · Vận tốc cự ly 100m: v = ${vAvg} m/s · Đo thời gian chính xác 1/100s`;
+        // Stop
+        watchRunning = false;
       }
+      reg.wake();
     }
 
     function setTime(val) {
-      spTime.t = HL.clamp(val, 0, 30);
-      spPusher.t = 1.0;
-      setTimeout(() => { spPusher.t = 0.0; }, 120);
+      accumulatedTime = HL.clamp(val, 0, 60);
+      spTime.t = accumulatedTime;
       reg.wake();
     }
 
     function aim(pt) {
-      if (!pt) {
-        setTime(9.58);
-        return;
-      }
+      if (!pt) return;
+      // If user drags across stage, scrub time intuitively
       const minX = 60, maxX = 340;
       const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
-      setTime(norm * 30.0);
+      watchRunning = false;
+      setTime(norm * 60.0);
     }
 
     const reg = HL.register(stage, dt => {
-      const m1 = HL.stepS(spTime, dt);
-      const m2 = HL.stepS(spPusher, dt);
+      if (watchRunning) {
+        accumulatedTime += dt;
+        if (accumulatedTime >= 60.0) {
+          accumulatedTime = 60.0;
+          watchRunning = false;
+        }
+        spTime.t = accumulatedTime;
+      }
+      const moving = HL.stepS(spTime, dt) | HL.stepS(spPusherDisp, dt) | watchRunning;
       draw();
-      return m1 || m2;
+      return moving;
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, leave: () => {} }));
+    stage.addEventListener("pointerdown", triggerClick);
+    bag.add(() => stage.removeEventListener("pointerdown", triggerClick));
     bag.add(() => svg.replaceChildren());
 
     draw();
 
     return {
       set(v) {
+        watchRunning = false;
         setTime(Number(v));
       },
-      destroy: bag.dispose
+      destroy: bag.dispose,
+      dispose: bag.dispose
     };
   }
 },
@@ -407,11 +534,11 @@ const PE_FIGURES = [
 /*
  * 3. 4x100m Relay Baton & Exchange Zone (Gậy Tiếp Sức & Làn Chạy Điền Kinh)
  * Physical Concept: Kỹ thuật trao nhận gậy tiếp sức tốc độ cao (Blind Pass):
- *   - Vùng trao gậy tiêu chuẩn World Athletics (WA): Chiều dài 20m (từ -10m đến +10m quanh mốc chuẩn).
+ *   - Vùng trao gậy tiêu chuẩn World Athletics (WA Rule 24.19): Chiều dài 30m (từ -15m đến +15m quanh vạch chuẩn).
  *   - Trao gậy trong vùng: Hợp lệ ([VALID] - kích hoạt trạng thái .hi).
  *   - Trao gậy ngoài vùng: Phạm quy tức thì ([DISQUALIFIED - DQ]).
  *   - Đồng bộ vận tốc: VĐV số 1 và số 2 phải đạt vận tốc tiệm cận v ≈ 11.2 m/s tại thời điểm trao gậy.
- * Geometry: Đoạn đường chạy điền kinh tartan đặc, vạch phân làn trắng, vạch vàng giới hạn vùng 20m,
+ * Geometry: Đoạn đường chạy điền kinh tartan đặc, vạch phân làn trắng, vạch vàng giới hạn vùng 30m,
  *   mũi tên chevron tâm vùng; gậy tiếp sức bằng hợp kim nhôm dạng trụ tròn đặc 3D 100% opaque.
  * Kinematics: Di chuột kéo vị trí trao gậy dọc làn chạy (-25m -> +25m); gậy trượt êm ái,
  *   nhún nhẹ theo quán tính bước chạy, bóng đổ trên mặt đường, hiển thị trạng thái hợp lệ/phạm quy.
@@ -420,14 +547,14 @@ const PE_FIGURES = [
 {
   id: "pe-relay-baton",
   title: "3. Gậy Tiếp Sức (Relay Baton & Track)",
-  concept: "Điền kinh 4x100m: Vùng trao gậy 20m · Quy tắc hợp lệ vs Phạm quy (DQ)",
-  means: "Di chuột di chuyển vị trí trao gậy dọc đường chạy (-25m đến +25m). Trạng thái [HỢP LỆ] kích hoạt khi gậy nằm trọn vẹn trong vùng 20m, cảnh báo [DQ] khi rơi ra ngoài.",
+  concept: "Điền kinh 4x100m: Vùng trao gậy 30m chuẩn World Athletics Rule 24.19 · Hợp lệ vs DQ",
+  means: "Di chuột di chuyển vị trí trao gậy dọc đường chạy (-25m đến +25m). Trạng thái [HỢP LỆ] kích hoạt khi gậy nằm trọn vẹn trong vùng 30m, cảnh báo [DQ] khi rơi ra ngoài.",
   rules: [1, 2, 4, 6, 9],
   range: [-20, 0, 20],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 35]], 200, 160);
+    const C = HL.Cam(45, 0.5, 2.0);
+    HL.fit(C, [[-48, -20, 0], [48, 20, 32]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Running Track Platform (Bề mặt đường chạy điền kinh Z: 0 to 2.5)
@@ -461,7 +588,7 @@ const PE_FIGURES = [
       "stroke-dasharray": "3,3"
     }, svg);
 
-    // 2. Takeover Zone Markings (from X = -15 to +15, representing 20m zone)
+    // 2. Takeover Zone Markings (from X = -15 to +15, representing 30m zone per WA Rule 24.19)
     const zoneEntryX = -15.0;
     const zoneExitX = 15.0;
     const zoneGroup = HL.mk("g", {}, svg);
@@ -498,12 +625,12 @@ const PE_FIGURES = [
       opacity: 0.35
     }, svg);
 
-    // 4. 3D Cylindrical Relay Baton (Gậy tiếp sức dạng trụ tròn đặc 3D 100% opaque)
+    // 4. 3D Cylindrical Relay Baton (Hero Scale, 3D perpendicular cross-section caps)
     const batonGroup = HL.mk("g", {}, svg);
     const batonBody = HL.mk("polygon", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
     const batonBand = HL.mk("polygon", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, batonGroup);
-    const batonCapTop = HL.mk("ellipse", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
-    const batonCapBot = HL.mk("ellipse", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
+    const batonCapTop = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
+    const batonCapBot = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
 
     // Kinematics Springs
     const initialPos = initialV != null ? initialV : 0;
@@ -514,56 +641,55 @@ const PE_FIGURES = [
       const isInZone = x >= zoneEntryX && x <= zoneExitX;
 
       // Baton Geometry in 3D:
-      // Tilted forward in running direction: length 20, radius 2.6, center at (x, 0, 11.5)
-      const bLen = 22.0;
-      const bRad = 2.6;
-      const bAng = (30 * Math.PI) / 180; // Slanted 30 deg forward in X-Z plane
-      const bCenter = [x, 0.0, 12.0];
+      // Tilted forward in running direction: length 30, radius 3.2, center at (x, 0, 13.0)
+      const bLen = 30.0;
+      const bRad = 3.2;
+      const bAng = (28 * Math.PI) / 180; // Slanted 28 deg forward in X-Z plane
+      const bCenter = [x, 0.0, 13.0];
 
       const cosB = Math.cos(bAng), sinB = Math.sin(bAng);
       const e0_3D = [bCenter[0] - (bLen / 2) * cosB, bCenter[1], bCenter[2] - (bLen / 2) * sinB]; // Lower end
       const e1_3D = [bCenter[0] + (bLen / 2) * cosB, bCenter[1], bCenter[2] + (bLen / 2) * sinB]; // Upper end
 
-      const p0 = P(e0_3D[0], e0_3D[1], e0_3D[2]);
-      const p1 = P(e1_3D[0], e1_3D[1], e1_3D[2]);
+      // Unit normal vectors perpendicular to baton axis in 3D
+      // Axis is along (cosB, 0, sinB)
+      // Perpendicular 1: (0, 1, 0)
+      // Perpendicular 2: (-sinB, 0, cosB)
+      const capBotPts = [], capTopPts = [];
+      const numCapPts = 24;
+      for (let i = 0; i < numCapPts; i++) {
+        const phi = (i / numCapPts) * Math.PI * 2;
+        const cp = Math.cos(phi), sp = Math.sin(phi);
+        const dx = bRad * sp * (-sinB);
+        const dy = bRad * cp;
+        const dz = bRad * sp * cosB;
+        capBotPts.push(P(e0_3D[0] + dx, e0_3D[1] + dy, e0_3D[2] + dz));
+        capTopPts.push(P(e1_3D[0] + dx, e1_3D[1] + dy, e1_3D[2] + dz));
+      }
 
-      // Projected vector from p0 to p1
-      const dx = p1[0] - p0[0];
-      const dy = p1[1] - p0[1];
-      const len2D = Math.hypot(dx, dy);
-      const nx = -dy / len2D;
-      const ny = dx / len2D;
+      batonCapBot.setAttribute("d", HL.poly(capBotPts));
+      batonCapTop.setAttribute("d", HL.poly(capTopPts));
 
-      // Radius in 2D pixels
-      const rPix = bRad * 1.85;
+      // Baton cylinder body: convex hull of two 3D end rings
+      const allPts = capBotPts.concat(capTopPts);
+      const bodyHull = HL.hull(allPts);
+      batonBody.setAttribute("points", bodyHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // 4 corners of cylinder body
-      const c0L = [p0[0] + nx * rPix, p0[1] + ny * rPix];
-      const c0R = [p0[0] - nx * rPix, p0[1] - ny * rPix];
-      const c1L = [p1[0] + nx * rPix, p1[1] + ny * rPix];
-      const c1R = [p1[0] - nx * rPix, p1[1] - ny * rPix];
-
-      batonBody.setAttribute("points", `${HL.r2(c0L[0])},${HL.r2(c0L[1])} ${HL.r2(c1L[0])},${HL.r2(c1L[1])} ${HL.r2(c1R[0])},${HL.r2(c1R[1])} ${HL.r2(c0R[0])},${HL.r2(c0R[1])}`);
-
-      // Contrast band in middle (from 40% to 60% of length)
-      const b0 = [p0[0] + dx * 0.4, p0[1] + dy * 0.4];
-      const b1 = [p0[0] + dx * 0.6, p0[1] + dy * 0.6];
-      const b0L = [b0[0] + nx * rPix, b0[1] + ny * rPix];
-      const b0R = [b0[0] - nx * rPix, b0[1] - ny * rPix];
-      const b1L = [b1[0] + nx * rPix, b1[1] + ny * rPix];
-      const b1R = [b1[0] - nx * rPix, b1[1] - ny * rPix];
-      batonBand.setAttribute("points", `${HL.r2(b0L[0])},${HL.r2(b0L[1])} ${HL.r2(b1L[0])},${HL.r2(b1L[1])} ${HL.r2(b1R[0])},${HL.r2(b1R[1])} ${HL.r2(b0R[0])},${HL.r2(b0R[1])}`);
-
-      // End caps ellipses
-      batonCapTop.setAttribute("cx", HL.r2(p1[0]));
-      batonCapTop.setAttribute("cy", HL.r2(p1[1]));
-      batonCapTop.setAttribute("rx", HL.r2(rPix));
-      batonCapTop.setAttribute("ry", HL.r2(rPix * 0.5));
-
-      batonCapBot.setAttribute("cx", HL.r2(p0[0]));
-      batonCapBot.setAttribute("cy", HL.r2(p0[1]));
-      batonCapBot.setAttribute("rx", HL.r2(rPix));
-      batonCapBot.setAttribute("ry", HL.r2(rPix * 0.5));
+      // Center grip band (middle 25% of cylinder)
+      const band0_3D = [bCenter[0] - 3.5 * cosB, bCenter[1], bCenter[2] - 3.5 * sinB];
+      const band1_3D = [bCenter[0] + 3.5 * cosB, bCenter[1], bCenter[2] + 3.5 * sinB];
+      const bandPts0 = [], bandPts1 = [];
+      for (let i = 0; i < numCapPts; i++) {
+        const phi = (i / numCapPts) * Math.PI * 2;
+        const cp = Math.cos(phi), sp = Math.sin(phi);
+        const dx = (bRad + 0.15) * sp * (-sinB);
+        const dy = (bRad + 0.15) * cp;
+        const dz = (bRad + 0.15) * sp * cosB;
+        bandPts0.push(P(band0_3D[0] + dx, band0_3D[1] + dy, band0_3D[2] + dz));
+        bandPts1.push(P(band1_3D[0] + dx, band1_3D[1] + dy, band1_3D[2] + dz));
+      }
+      const bandHull = HL.hull(bandPts0.concat(bandPts1));
+      batonBand.setAttribute("points", bandHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
       // Ground shadow
       const s0 = P(e0_3D[0], e0_3D[1], 2.6);
@@ -579,13 +705,13 @@ const PE_FIGURES = [
       chevronMark.classList.toggle("hi", isInZone);
 
       // Header Readout
-      const mStr = HL.r2(x * (20 / 30)); // Scale to meters (-13.3m to +13.3m)
+      const mStr = HL.r2(x); // In meters (-22m to +22m, zone is -15m to +15m = 30m)
       if (isInZone) {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [HỢP LỆ] Đang trong vùng trao gậy 20m · Duy trì vận tốc v ≈ 11.2 m/s (.hi)`;
+        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [HỢP LỆ] Đang trong vùng trao gậy 30m (WA Rule 24.19) · v ≈ 11.2 m/s`;
       } else if (x < zoneEntryX) {
         read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [CHƯA VÀO VÙNG] Cự ly tiếp cận, người nhận tăng tốc`;
       } else {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [PHẠM QUY - DQ] Vượt quá giới hạn vùng trao gậy 20m!`;
+        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [PHẠM QUY - DQ] Vượt quá giới hạn vùng trao gậy 30m!`;
       }
     }
 
@@ -802,222 +928,316 @@ const PE_FIGURES = [
   }
 },
 /*
- * 5. Basketball Breakaway Rim & Trajectory (Vành Rổ & Quỹ Đạo Bóng)
- * Physical Concept: Cơ chế vành rổ đàn hồi FIBA (Breakaway Rim) & Quỹ đạo ném parabol:
- *   - Bảng rổ tiêu chuẩn: Kích thước 180cm x 105cm, ô chữ nhật định vị 59cm x 45cm.
- *   - Vành rổ giảm chấn lò xo: Hấp thụ xung lực ném/dunk (F ≥ 82N - 105N, gập tối đa 30° rồi nhún nảy về ban đầu).
- *   - Quỹ đạo ném rổ: Điểm phát bóng bay theo parabol y(x), bóng lọt vành rổ làm lưới rung và vành rổ nhún mạnh.
- * Geometry: Bảng kính/gỗ đặc gắn trên trụ thép chữ L, vành rổ kim loại dạng xuyến đặc có hộp lò xo,
- *   lưới rủ đa giác đặc, quả bóng rổ đặc với các đường gân nổi (100% opaque, không nhìn xuyên).
- * Kinematics: Di chuột điều chỉnh tiến trình ném bóng (0% -> 100%); bóng bay theo parabol rơi đúng tâm rổ;
- *   khi lọt rổ, vành rổ nhún đàn hồi k=160, c=10, lưới rủ rung lắc và header hiển thị trạng thái SWISH / SCORE!
+ * 5. Basketball Breakaway Rim & Trajectory (Vành Rổ FIBA 3D Isometric & Quỹ Đạo Parabol)
+ * Physical Concept: Cơ chế vành rổ đàn hồi FIBA Official Breakaway Rim (EN 1270 / FIBA Level 1):
+ *   - Bảng rổ tiêu chuẩn: Kích thước 180cm x 105cm, ô chữ nhật ngắm bắn 59cm x 45cm.
+ *   - Cơ chế lò xo giảm chấn: Khóa ngàm cứng khi tải F < 805 N (~82 kg). Khi slam dunk / va chạm
+ *     mạnh F = 820 N - 1050 N, lò xo nén giải phóng góc gập xuống θ ≤ 25°, bảo vệ bảng kính tempered.
+ *   - Khi bóng rời rổ, hệ lò xo - giảm chấn đưa vành nảy hồi vị tức thì (k = 240 N/rad, c = 16 N·s/rad).
+ * Geometry (Lucas Markes Specimen Discipline):
+ *   - Hero Scale: Chiếm 70% viewport, góc chiếu 3/4 isometric 2:1 chuẩn xác.
+ *   - Trụ rổ di động có đệm vinyl bảo vệ FIBA và 2 thanh giằng chịu lực vươn đỡ bảng rổ.
+ *   - Bảng rổ viền thép đặc, khung ngắm bắn chuẩn xác.
+ *   - Hộp lò xo cơ khí có chốt bản lề ngang và cặp lò xo trụ nén.
+ *   - Vành rổ xuyến rỗng (open torus ring, đường kính trong 450mm), TÁCH CUNG TRƯỚC / SAU để
+ *     che khuất quả bóng khi bóng chui vào lòng rổ.
+ *   - Lưới rổ đan kim cương (12 loop diamond mesh) rỗng ruột, phồng nở và rung lắc khi bóng xuyên qua.
+ * Kinematics & Physics:
+ *   - Quỹ đạo ném parabol thật từ vạch 3 điểm bay vào tâm rổ.
+ *   - Di chuột điều khiển quỹ đạo; click vào vành rổ để kích hoạt bài test tải trọng Slam Dunk (F = 950 N).
  */
 
 {
   id: "pe-basketball-hoop",
   title: "5. Vành Rổ & Đàn Hồi (FIBA Breakaway Rim)",
-  concept: "Cơ chế vành rổ giảm chấn FIBA · Lò xo hấp thụ xung lực dunk F ≥ 82 N · Quỹ đạo parabol",
-  means: "Di chuột điều khiển quỹ đạo ném bóng (0% - 100%). Bóng bay vồng theo parabol lọt vào tâm rổ làm vành rổ nhún đàn hồi cực nảy và lưới rung sống động.",
+  concept: "Cơ chế vành rổ giảm chấn FIBA · Ngưỡng nhả lò xo F ≥ 805 N · Quỹ đạo parabol",
+  means: "Di chuột điều khiển quỹ đạo ném bóng (0% - 100%). Click vào vành rổ để thử tải slam-dunk 950 N gập vành rổ.",
   rules: [1, 2, 4, 6, 9],
   range: [0, 50, 100],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-45, -25, 0], [45, 25, 42]], 200, 160);
+    // High-impact Hero scale S = 3.4
+    const C = HL.Cam(45, 0.5, 3.4);
+    HL.fit(C, [[-26, -26, 0], [24, 18, 44]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Court Ground Platform (Sân bóng rổ Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-42, -18, 42, 18, 2.5, 0.8);
-    const baseSol = HL.solid(svg);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
+    // 1. Court Baseline & Restricted Area Key Markings (Z = 0.1)
+    const floorGroup = HL.mk("g", { class: "lo" }, svg);
+    const blA = P(-30, -12, 0.1), blB = P(24, -12, 0.1);
+    HL.mk("line", {
+      x1: HL.r2(blA[0]), y1: HL.r2(blA[1]),
+      x2: HL.r2(blB[0]), y2: HL.r2(blB[1]),
+      stroke: "var(--hl-edge)", "stroke-width": 1.2
+    }, floorGroup);
 
-    // Free-throw key arc on the court surface
-    const arcPoints = [];
-    for (let a = -90; a <= 90; a += 15) {
+    // Free-throw key arc on court (center X = 0, Y = 0, R = 15)
+    const keyArcPts = [];
+    for (let a = -70; a <= 120; a += 10) {
       const rad = (a * Math.PI) / 180;
-      const x = -10 + 12 * Math.cos(rad);
-      const y = 12 * Math.sin(rad);
-      arcPoints.push(P(x, y, 2.6));
+      const x = 15 * Math.cos(rad);
+      const y = 15 * Math.sin(rad);
+      keyArcPts.push(P(x, y, 0.1));
     }
     HL.mk("path", {
-      d: "M " + arcPoints.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
-      class: "lo",
-      fill: "none",
-      stroke: "var(--hl-edge)",
-      "stroke-dasharray": "2,2"
-    }, svg);
+      d: "M " + keyArcPts.map(p => `${HL.r2(p[0])} ${HL.r2(p[1])}`).join(" L "),
+      fill: "none", stroke: "var(--hl-edge)", "stroke-width": 0.9, "stroke-dasharray": "3,3"
+    }, floorGroup);
 
-    // 2. Heavy Back Pole & Cantilever Support (Trụ đỡ rổ kiên cố phía sau)
-    // Pole at X = 28, Y = 0, Z = 2.5 to 30.0
-    const poleSol = HL.solid(svg);
-    const [poleO, poleI] = HL.rings(25.5, -2.5, 30.5, 2.5, 1.0, 0.3);
-    HL.put(poleSol, HL.prism(P, front, poleO, poleI, 2.5, 30.0));
+    // 2. Heavy Stanchion Base & Protective Vinyl Padding (Behind backboard, Y = -26 to -18)
+    // Stanchion base block
+    const [stO, stI] = HL.rings(-10, -26, 10, -18, 2.0, 0.8);
+    const stSol = HL.solid(svg);
+    HL.put(stSol, HL.prism(P, front, stO, stI, 0, 10));
 
-    // Cantilever boom extending from pole (X=28) forward to backboard (X=14) at Z = 26 to 29
-    const boomSol = HL.solid(svg);
-    const [bmO, bmI] = HL.rings(14.0, -1.8, 28.0, 1.8, 0.8, 0.3);
-    HL.put(boomSol, HL.prism(P, front, bmO, bmI, 26.5, 29.0));
+    // Angled vinyl protective front pad on stanchion
+    const [padO, padI] = HL.rings(-8.5, -18, 8.5, -14.5, 1.2, 0.5);
+    const padSol = HL.solid(svg);
+    HL.put(padSol, HL.prism(P, front, padO, padI, 0, 12));
 
-    // 3. Backboard (Bảng rổ đặc tại X = 13.0 to 14.2, Y = -16 to +16, Z = 20.0 to 36.0)
+    // Dual steel cantilever support booms from padding up to backboard
+    // Left strut (X = -6 to -4, Y = -16 to -11, Z = 11 to 24)
+    const [strutLO, strutLI] = HL.rings(-6.5, -16.0, -4.0, -11.0, 0.8, 0.3);
+    const strutLSol = HL.solid(svg);
+    HL.put(strutLSol, HL.prism(P, front, strutLO, strutLI, 11, 24));
+
+    // Right strut (X = 4 to 6.5, Y = -16 to -11, Z = 11 to 24)
+    const [strutRO, strutRI] = HL.rings(4.0, -16.0, 6.5, -11.0, 0.8, 0.3);
+    const strutRSol = HL.solid(svg);
+    HL.put(strutRSol, HL.prism(P, front, strutRO, strutRI, 11, 24));
+
+    // 3. Backboard (Bảng rổ tiêu chuẩn: X = -17 to 17, Y = -11.5 to -10.0, Z = 20 to 36)
+    const [boardO, boardI] = HL.rings(-17, -11.5, 17, -10.0, 1.0, 0.4);
     const boardSol = HL.solid(svg);
-    const [bdO, bdI] = HL.rings(13.0, -16.0, 14.2, 16.0, 0.6, 0.2);
-    HL.put(boardSol, HL.prism(P, front, bdO, bdI, 20.0, 36.0));
+    HL.put(boardSol, HL.prism(P, front, boardO, boardI, 20, 36));
 
-    // Inner targeting box on front of backboard (Y = -5.5 to +5.5, Z = 22.0 to 28.0 at X = 12.9)
+    // Inner targeting box (59cm x 45cm) at front face Y = -9.9
     const boxPts = [
-      P(12.9, -5.5, 22.0),
-      P(12.9, 5.5, 22.0),
-      P(12.9, 5.5, 28.0),
-      P(12.9, -5.5, 28.0)
+      P(-5.5, -9.9, 22.5),
+      P(5.5, -9.9, 22.5),
+      P(5.5, -9.9, 28.5),
+      P(-5.5, -9.9, 28.5)
     ];
     HL.mk("polygon", {
       points: boxPts.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "),
-      class: "hi",
-      fill: "none",
-      stroke: "var(--hl-edge)",
-      "stroke-width": 1.2
+      class: "hi", fill: "none", stroke: "var(--hl-edge)", "stroke-width": 1.2
     }, svg);
 
-    // 4. Rim Mounting Bracket / Spring Housing (Hộp lò xo gắn vành rổ X = 11.2 to 13.0, Y = -2.0 to 2.0, Z = 22.2 to 24.2)
+    // 4. Breakaway Spring Housing (Hộp lò xo gắn vành rổ X = -2.5 to 2.5, Y = -10.0 to -7.0, Z = 22.5 to 24.5)
+    const [bracketO, bracketI] = HL.rings(-2.5, -10.0, 2.5, -7.0, 0.6, 0.3);
     const bracketSol = HL.solid(svg);
-    const [brO, brI] = HL.rings(11.2, -2.0, 13.0, 2.0, 0.5, 0.2);
-    HL.put(bracketSol, HL.prism(P, front, brO, brI, 22.2, 24.2));
+    HL.put(bracketSol, HL.prism(P, front, bracketO, bracketI, 22.5, 24.5));
 
-    // 5. Dynamic Breakaway Rim & Net Assembly
-    const hoopAssembly = HL.mk("g", {}, svg);
-    const netPath = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, hoopAssembly);
-    const netLinesGroup = HL.mk("g", { class: "lo" }, hoopAssembly);
-    const netRibs = [];
-    for (let r = 0; r < 8; r++) {
-      const line = HL.mk("line", { stroke: "var(--hl-edge)", "stroke-width": 0.8 }, netLinesGroup);
-      netRibs.push(line);
-    }
-    const rimPath = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, hoopAssembly);
+    // Horizontal hinge pin across spring housing at Y = -7.0, Z = 23.6
+    const pinA = P(-2.7, -7.0, 23.6), pinB = P(2.7, -7.0, 23.6);
+    HL.mk("line", {
+      x1: HL.r2(pinA[0]), y1: HL.r2(pinA[1]),
+      x2: HL.r2(pinB[0]), y2: HL.r2(pinB[1]),
+      class: "hi", stroke: "var(--hl-edge)", "stroke-width": 1.4
+    }, svg);
 
-    // 6. Basketball (Quả bóng rổ đặc bay dọc quỹ đạo)
-    const ballGroup = HL.mk("g", {}, svg);
-    const ballBody = HL.mk("circle", { r: 4.2, fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, ballGroup);
+    // 5. Breakaway Rim & Net Geometry Parameters
+    const yHinge = -7.0, zHinge = 23.6;
+    const xCenter = 0, yCenter = 0.5;
+    const rimRadiusOut = 7.0;
+    const rimRadiusIn = 5.8; // Open hollow torus ring
+    const netHangLen = 11.0;
+
+    // SVG Layer Hierarchy for Depth Occlusion:
+    // Layer A: Rear Net cords + Rear Rim Arc (far side, Y < yCenter)
+    // Layer B: Basketball (passing through rim)
+    // Layer C: Front Net cords + Front Rim Arc (near side, Y >= yCenter)
+    const rearRimGroup = HL.mk("g", { class: "rear-rim" }, svg);
+    const rearNetCords = HL.mk("g", { class: "lo" }, rearRimGroup);
+    const rearRimPath = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, rearRimGroup);
+
+    // Basketball Group (Layer B)
+    const ballGroup = HL.mk("g", { class: "basketball" }, svg);
+    const ballBody = HL.mk("circle", { r: 4.4, fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, ballGroup);
     const seamH = HL.mk("path", { fill: "none", stroke: "var(--hl-edge)", class: "lo" }, ballGroup);
     const seamV = HL.mk("path", { fill: "none", stroke: "var(--hl-edge)", class: "lo" }, ballGroup);
 
-    // Dynamic Kinematics Springs
-    const initialT = initialV != null ? initialV : 0;
-    const spT = HL.spring(initialT, { k: 100, c: 14 }); // Shot progress 0% to 100%
-    const spRimDeflect = HL.spring(0, { k: 180, c: 10 }); // Breakaway rim downward deflection (degrees)
-    const spNetFlutter = HL.spring(0, { k: 140, c: 12 }); // Net ripple expansion factor
+    // Front Rim & Net (Layer C)
+    const frontRimGroup = HL.mk("g", { class: "front-rim" }, svg);
+    const frontNetCords = HL.mk("g", { class: "lo" }, frontRimGroup);
+    const frontRimPath = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, frontRimGroup);
 
-    // Geometry parameters for rim: center at (X = 4.5, Y = 0), nominal Z = 23.5, radius = 6.0
-    const rimCenterX = 4.5;
-    const rimRadius = 6.0;
-    const rimNominalZ = 23.5;
-    const hingeX = 11.2;
+    // Kinematic Springs
+    const initialT = initialV != null ? initialV : 0;
+    const spT = HL.spring(initialT, { k: 110, c: 14 }); // Shot progress 0% -> 100%
+    const spDeflect = HL.spring(0, { k: 240, c: 16 }); // Rim downward angle deflection (deg, 0 -> 25)
+    const spNetFlutter = HL.spring(0, { k: 180, c: 14 }); // Net ripple expansion
+    let dunkHoldTimer = 0;
+
+    function getDeflectedPoint(x, y, z, thetaRad) {
+      const dy = y - yHinge;
+      const dz = z - zHinge;
+      const yRot = yHinge + dy * Math.cos(thetaRad) + dz * Math.sin(thetaRad);
+      const zRot = zHinge - dy * Math.sin(thetaRad) + dz * Math.cos(thetaRad);
+      return P(x, yRot, zRot);
+    }
+
+    // Diamond Net Cord Segments (12 loops * 3 tiers = ~48 segments)
+    const numLoops = 12;
+    const rearLines = [], frontLines = [];
+    const maxNetSegs = 60;
+    for (let i = 0; i < maxNetSegs; i++) {
+      rearLines.push(HL.mk("line", { stroke: "var(--hl-edge)", "stroke-width": 0.8 }, rearNetCords));
+      frontLines.push(HL.mk("line", { stroke: "var(--hl-edge)", "stroke-width": 0.8 }, frontNetCords));
+    }
 
     function draw() {
-      const t = spT.x; // 0 to 100%
+      const t = spT.x;
       const normT = Math.max(0, Math.min(100, t)) / 100;
 
-      // Parabolic flight trajectory for the ball:
-      // Start at X = -32, Y = 0, Z = 14 (Shooter release point)
-      // Peak apex at X = -10, Y = 0, Z = 37.0
-      // Swish target at rim center: X = 4.5, Y = 0, Z = 23.5
-      // Follow-through falling point: X = 4.5, Y = 0, Z = 6.0 (hitting court)
-      let ballX, ballY = 0, ballZ;
-      if (normT <= 0.75) {
-        const f = normT / 0.75;
-        ballX = -32 + f * (rimCenterX - (-32));
-        const apexH = 37.0;
-        const z0 = 14.0;
-        const z1 = rimNominalZ;
-        ballZ = (1 - f) * (1 - f) * z0 + 2 * (1 - f) * f * (apexH * 1.25) + f * f * z1;
+      // Parabolic flight trajectory:
+      // Shooter at X = -22, Y = 16, Z = 14 (3-point arc)
+      // Apex at X = -9, Y = 8, Z = 43
+      // Rim target at X = 0, Y = 0.5, Z = 24.2
+      // Floor drop at X = 0.5, Y = 0.5, Z = 3.5
+      let bX, bY, bZ;
+      if (normT <= 0.74) {
+        const s = normT / 0.74;
+        bX = -22 + s * (xCenter - (-22));
+        bY = 16 + s * (yCenter - 16);
+        const apexZ = 43.0;
+        bZ = (1 - s) * (1 - s) * 14.0 + 2 * (1 - s) * s * (apexZ * 1.25) + s * s * 24.2;
       } else {
-        const f = (normT - 0.75) / 0.25;
-        ballX = rimCenterX + (Math.sin(f * Math.PI) * 0.8);
-        ballZ = rimNominalZ - f * 17.5;
+        const s = (normT - 0.74) / 0.26;
+        bX = xCenter + Math.sin(s * Math.PI) * 0.4;
+        bY = yCenter;
+        bZ = 24.2 - s * 20.7; // Drops through rim down to floor
       }
 
-      // Ball screen position
-      const ballP = P(ballX, ballY, ballZ);
+      // Ball Screen Position
+      const ballP = P(bX, bY, bZ);
       ballBody.setAttribute("cx", HL.r2(ballP[0]));
       ballBody.setAttribute("cy", HL.r2(ballP[1]));
+      const rPix = 4.4;
+      const bx = HL.r2(ballP[0]), by = HL.r2(ballP[1]);
+      seamH.setAttribute("d", `M ${HL.r2(bx - rPix)} ${by} Q ${bx} ${HL.r2(by - rPix * 0.6)} ${HL.r2(bx + rPix)} ${by}`);
+      seamV.setAttribute("d", `M ${bx} ${HL.r2(by - rPix)} Q ${HL.r2(bx + rPix * 0.6)} ${by} ${bx} ${HL.r2(by + rPix)}`);
 
-      // Seam curves on the ball (projected arc ellipses)
-      const rPix = 4.2;
-      const arcW = HL.r2(ballP[0]);
-      const arcH = HL.r2(ballP[1]);
-      seamH.setAttribute("d", `M ${HL.r2(arcW - rPix)} ${arcH} Q ${arcW} ${HL.r2(arcH - rPix * 0.6)} ${HL.r2(arcW + rPix)} ${arcH}`);
-      seamV.setAttribute("d", `M ${arcW} ${HL.r2(arcH - rPix)} Q ${HL.r2(arcW + rPix * 0.6)} ${arcH} ${arcW} ${HL.r2(arcH + rPix)}`);
-
-      // Collision trigger with Rim & Net:
-      if (normT >= 0.72 && normT <= 0.82) {
-        const impact = Math.sin(((normT - 0.72) / 0.10) * Math.PI);
-        spRimDeflect.t = impact * 8.5; // Deflect down 8.5 degrees
-        spNetFlutter.t = impact * 2.8; // Net expands outward
-      } else {
-        spRimDeflect.t = 0;
+      // Swish & Breakaway Trigger
+      const isSwish = normT >= 0.72 && normT <= 0.84;
+      if (isSwish) {
+        const impact = Math.sin(((normT - 0.72) / 0.12) * Math.PI);
+        spDeflect.t = impact * 8.5; // ~8.5° breakaway give on swish
+        spNetFlutter.t = impact * 3.8; // Net flare
+      } else if (dunkHoldTimer <= 0) {
+        spDeflect.t = 0;
         spNetFlutter.t = 0;
       }
 
-      // 1. Draw Breakaway Rim (Tilted downward by angle theta)
-      const theta = (spRimDeflect.x * Math.PI) / 180;
-      const rimPts = [];
-      const numPts = 16;
-      for (let a = 0; a < 360; a += 360 / numPts) {
-        const rad = (a * Math.PI) / 180;
-        const localX = rimRadius * Math.cos(rad);
-        const localY = rimRadius * Math.sin(rad);
-        const dx = (rimCenterX + localX) - hingeX;
-        const curX = hingeX + dx * Math.cos(theta);
-        const curZ = rimNominalZ - dx * Math.sin(theta);
-        const curY = localY;
-        rimPts.push(P(curX, curY, curZ));
-      }
-      rimPath.setAttribute("d", HL.poly(rimPts));
+      // Compute Rim Points with Downward Deflection
+      const theta = (spDeflect.x * Math.PI) / 180;
+      const N = 32;
+      const ptsOut = [], ptsIn = [];
+      for (let i = 0; i < N; i++) {
+        const ang = (i / N) * Math.PI * 2;
+        const xo = xCenter + rimRadiusOut * Math.cos(ang);
+        const yo = yCenter + rimRadiusOut * Math.sin(ang);
+        ptsOut.push(getDeflectedPoint(xo, yo, zHinge, theta));
 
-      // 2. Draw Net (Frustum hanging below rim)
-      const netBottomZ = rimNominalZ - 9.0;
+        const xi = xCenter + rimRadiusIn * Math.cos(ang);
+        const yi = yCenter + rimRadiusIn * Math.sin(ang);
+        ptsIn.push(getDeflectedPoint(xi, yi, zHinge, theta));
+      }
+
+      // In world coords: ang from 0 to pi has sin(ang) >= 0 (Y >= yCenter: FRONT ARC)
+      // ang from pi to 2pi has sin(ang) < 0 (Y < yCenter: REAR ARC)
+      const frontPtsOut = ptsOut.slice(0, 17);
+      const frontPtsIn = ptsIn.slice(0, 17).reverse();
+      const frontRimPoly = [...frontPtsOut, ...frontPtsIn];
+      frontRimPath.setAttribute("d", HL.poly(frontRimPoly));
+
+      const rearPtsOut = ptsOut.slice(16).concat([ptsOut[0]]);
+      const rearPtsIn = [ptsIn[0]].concat(ptsIn.slice(16).reverse());
+      const rearRimPoly = [...rearPtsOut, ...rearPtsIn];
+      rearRimPath.setAttribute("d", HL.poly(rearRimPoly));
+
+      // Net Geometry: 12 loop diamond mesh in 4 tiers
       const flutter = spNetFlutter.x;
-      const netBottomRadius = 3.2 + flutter * 0.9;
-      const netBotPts = [];
-      for (let a = 0; a < 360; a += 360 / numPts) {
-        const rad = (a * Math.PI) / 180;
-        const bx = rimCenterX + netBottomRadius * Math.cos(rad);
-        const by = netBottomRadius * Math.sin(rad);
-        const bz = netBottomZ - (theta * 8.0);
-        netBotPts.push(P(bx, by, bz));
+      const tiers = [
+        { z: zHinge, r: (rimRadiusOut + rimRadiusIn) / 2, rot: 0 },
+        { z: zHinge - 3.2, r: 5.2 + flutter * 0.6, rot: Math.PI / numLoops },
+        { z: zHinge - 6.8, r: 4.2 + flutter * 1.2, rot: 0 },
+        { z: zHinge - netHangLen, r: 3.4 + flutter * 1.6, rot: Math.PI / numLoops }
+      ];
+
+      const tierPoints = tiers.map(t => {
+        const pts = [];
+        for (let k = 0; k < numLoops; k++) {
+          const ang = (k / numLoops) * Math.PI * 2 + t.rot;
+          const x = xCenter + t.r * Math.cos(ang);
+          const y = yCenter + t.r * Math.sin(ang);
+          pts.push({
+            p: getDeflectedPoint(x, y, t.z, theta),
+            yMid: y
+          });
+        }
+        return pts;
+      });
+
+      // Construct Diamond Segments
+      let segIdx = 0;
+      function setLine(idx, p1, p2, isFront) {
+        if (idx >= maxNetSegs) return;
+        const target = isFront ? frontLines[idx] : rearLines[idx];
+        const other = isFront ? rearLines[idx] : frontLines[idx];
+        target.setAttribute("x1", HL.r2(p1[0]));
+        target.setAttribute("y1", HL.r2(p1[1]));
+        target.setAttribute("x2", HL.r2(p2[0]));
+        target.setAttribute("y2", HL.r2(p2[1]));
+        other.setAttribute("x1", "0");
+        other.setAttribute("y1", "0");
+        other.setAttribute("x2", "0");
+        other.setAttribute("y2", "0");
       }
 
-      // Net silhouette: outer contour connecting top rim to bottom rim
-      // Top rim left/right extrema and bottom rim left/right extrema
-      const topPts2D = rimPts;
-      const botPts2D = netBotPts;
-      // Convex hull / boundary polygon: top arc + right side + bot arc (reversed) + left side
-      const netPolyPts = [...topPts2D, ...botPts2D.slice().reverse()];
-      netPath.setAttribute("d", HL.poly(netPolyPts));
+      // Tier 0 -> Tier 1 (12 * 2 diagonals)
+      for (let k = 0; k < numLoops; k++) {
+        const p0 = tierPoints[0][k];
+        const p1A = tierPoints[1][k];
+        const p1B = tierPoints[1][(k + 1) % numLoops];
+        const isF_A = (p0.yMid + p1A.yMid) / 2 >= yCenter;
+        const isF_B = (p0.yMid + p1B.yMid) / 2 >= yCenter;
+        setLine(segIdx++, p0.p, p1A.p, isF_A);
+        setLine(segIdx++, p0.p, p1B.p, isF_B);
+      }
 
-      // Net ribs (rib lines from top rim to bottom rim)
-      for (let r = 0; r < netRibs.length; r++) {
-        const idx = r * 2;
-        const tp = topPts2D[idx];
-        const bp = botPts2D[idx];
-        netRibs[r].setAttribute("x1", HL.r2(tp[0]));
-        netRibs[r].setAttribute("y1", HL.r2(tp[1]));
-        netRibs[r].setAttribute("x2", HL.r2(bp[0]));
-        netRibs[r].setAttribute("y2", HL.r2(bp[1]));
+      // Tier 1 -> Tier 2 (12 * 2 diagonals)
+      for (let k = 0; k < numLoops; k++) {
+        const p1 = tierPoints[1][k];
+        const p2A = tierPoints[2][k];
+        const p2B = tierPoints[2][(k + 1) % numLoops];
+        const isF_A = (p1.yMid + p2A.yMid) / 2 >= yCenter;
+        const isF_B = (p1.yMid + p2B.yMid) / 2 >= yCenter;
+        setLine(segIdx++, p1.p, p2A.p, isF_A);
+        setLine(segIdx++, p1.p, p2B.p, isF_B);
+      }
+
+      // Clear remaining lines
+      while (segIdx < maxNetSegs) {
+        frontLines[segIdx].setAttribute("x1", "0");
+        frontLines[segIdx].setAttribute("y1", "0");
+        frontLines[segIdx].setAttribute("x2", "0");
+        frontLines[segIdx].setAttribute("y2", "0");
+        rearLines[segIdx].setAttribute("x1", "0");
+        rearLines[segIdx].setAttribute("y1", "0");
+        rearLines[segIdx].setAttribute("x2", "0");
+        rearLines[segIdx].setAttribute("y2", "0");
+        segIdx++;
       }
 
       // Readout Status
-      const isGoal = normT >= 0.72 && normT <= 0.88;
-      const rimForce = (spRimDeflect.x * 12.5).toFixed(0);
-      read.textContent = isGoal
-        ? `SWISH! CÚ NÉM CHÍNH XÁC · F_impact = ${rimForce} N · Vành rổ đàn hồi nhún ${spRimDeflect.x.toFixed(1)}°`
-        : `TIẾN TRÌNH NÉM: ${(normT * 100).toFixed(0)}% · Tọa độ bóng Z = ${ballZ.toFixed(1)} cm · Vành rổ FIBA cân bằng`;
-      
-      if (isGoal) {
-        rimPath.classList.add("hi");
-        rimPath.classList.remove("lo");
+      const curForce = Math.max(0, spDeflect.x * 58.5); // N
+      const isBreakaway = spDeflect.x >= 3.0;
+      if (isSwish) {
+        read.textContent = `SWISH! CÚ NÉM CHÍNH XÁC · F_impact = ${curForce.toFixed(0)} N · Vành rổ nhún ${spDeflect.x.toFixed(1)}°`;
+      } else if (isBreakaway) {
+        read.textContent = `FIBA SLAM-DUNK BREAKAWAY: F = ${curForce.toFixed(0)} N (≥ 805 N) · Vành rổ gập -${spDeflect.x.toFixed(1)}°`;
       } else {
-        rimPath.classList.remove("hi");
-        rimPath.classList.add("lo");
+        read.textContent = `TIẾN TRÌNH NÉM: ${(normT * 100).toFixed(0)}% · Tọa độ bóng Z = ${bZ.toFixed(1)} cm · Vành rổ FIBA cân bằng`;
       }
     }
 
@@ -1036,8 +1256,26 @@ const PE_FIGURES = [
       setShot(norm * 100.0);
     }
 
+    // Slam-Dunk test trigger on click/pointerdown
+    function onRimClick() {
+      spDeflect.t = 16.5; // Deflect down 16.5 degrees (~965 N dunk force)
+      spNetFlutter.t = 4.5;
+      dunkHoldTimer = 0.6; // Hold for 0.6s
+      reg.wake();
+    }
+
+    stage.addEventListener("pointerdown", onRimClick);
+    bag.add(() => stage.removeEventListener("pointerdown", onRimClick));
+
     const reg = HL.register(stage, dt => {
-      const moving = HL.stepS(spT, dt) | HL.stepS(spRimDeflect, dt) | HL.stepS(spNetFlutter, dt);
+      if (dunkHoldTimer > 0) {
+        dunkHoldTimer -= dt;
+        if (dunkHoldTimer <= 0) {
+          spDeflect.t = 0;
+          spNetFlutter.t = 0;
+        }
+      }
+      const moving = HL.stepS(spT, dt) | HL.stepS(spDeflect, dt) | HL.stepS(spNetFlutter, dt) | (dunkHoldTimer > 0 ? 1 : 0);
       draw();
       return moving;
     });

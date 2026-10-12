@@ -23,6 +23,16 @@ export default {
     HL.fit(C, [[-50, -22, 0], [50, 22, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
+    function circAt(cx, cy, R, n = 24) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
+    }
+
     // 1. Lab Table Base (Z: 0 to 2.5)
     const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
     const baseSol = HL.solid(svg);
@@ -30,7 +40,9 @@ export default {
 
     // Stand Rod at (+20, 0, 2.5 to 36)
     const rodSol = HL.solid(svg);
-    HL.put(rodSol, HL.prism(P, front, HL.circ(1.8, 16), HL.circ(1.4, 16), 2.5, 36, [20, 0]));
+    const rodO = circAt(20, 0, 1.8, 16);
+    const rodI = circAt(20, 0, 1.4, 16);
+    HL.put(rodSol, HL.prism(P, front, rodO, rodI, 2.5, 36));
 
     // Clamp holding test tube at (+20, 0, 22) -> (6, 0, 22)
     const clampSol = HL.solid(svg);
@@ -40,12 +52,16 @@ export default {
     // 2. Alcohol Burner sitting at (-8, 0, 2.5)
     const burnerCenter = [-8, 0];
     const burnerSol = HL.solid(svg);
-    // Squat glass jar (radius 8.0, height 5.5)
-    HL.put(burnerSol, HL.prism(P, front, HL.circ(7.5, 24), HL.circ(6.8, 24), 2.5, 7.5, burnerCenter));
+    // Squat glass jar (radius 7.5, height 5.5 at -8, 0)
+    const bJarO = circAt(-8, 0, 7.5, 24);
+    const bJarI = circAt(-8, 0, 6.8, 24);
+    HL.put(burnerSol, HL.prism(P, front, bJarO, bJarI, 2.5, 7.5));
 
-    // Wick collar cylinder (radius 2.8, Z: 7.5 to 9.5)
+    // Wick collar cylinder (radius 2.8, Z: 7.5 to 9.5 at -8, 0)
     const collarSol = HL.solid(svg);
-    HL.put(collarSol, HL.prism(P, front, HL.circ(2.8, 16), HL.circ(2.2, 16), 7.5, 9.5, burnerCenter));
+    const bColO = circAt(-8, 0, 2.8, 16);
+    const bColI = circAt(-8, 0, 2.2, 16);
+    HL.put(collarSol, HL.prism(P, front, bColO, bColI, 7.5, 9.5));
 
     // 3. Flame Shape
     const flameGroup = HL.mk("g", {}, svg);

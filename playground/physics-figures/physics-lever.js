@@ -1,9 +1,16 @@
 /*
  * 1. Lever & Fulcrum (Đòn Bẩy & Điểm Tựa - Định Luật Đòn Bẩy Acsimet)
- * Physical Concept: Cân bằng mô-men lực: F1 · d1 = F2 · d2
- * Geometry: Bệ đỡ phẳng, điểm tựa nêm tam giác lăng trụ trượt ngang, thanh đòn cứng, 2 quả tải trọng
- * Meaningful Kinematics: Di chuột điều chỉnh vị trí điểm tựa; thanh đòn nghiêng theo chênh lệch mô-men;
- * đạt cân bằng ngang hoàn hảo khi tỉ lệ cánh tay đòn nghịch tỉ lệ khối lượng (d2/d1 = m1/m2 = 2).
+ * Physical Concept: Cân bằng mô-men lực: M₁ = F₁ · d₁ = M₂ = F₂ · d₂
+ *   - Lực trọng trường: F₁ = m₁·g = 20 N (m₁ = 2.0 kg), F₂ = m₂·g = 10 N (m₂ = 1.0 kg)
+ *   - Cánh tay đòn: d₁ = |x₁ - x_f|, d₂ = |x₂ - x_f|
+ *   - Khi d₂ / d₁ = F₁ / F₂ = 2: Mô-men triệt tiêu hoàn toàn (M₁ == M₂ = 3.20 N·m), đòn bẩy thăng bằng tuyệt đối.
+ * Geometry (Precision Analytical Balance Discipline):
+ *   - Bệ gang kép vững chãi (Dual-foot cast-iron balance bed) với rãnh trượt khắc vạch mm.
+ *   - Điểm tựa nêm dao thép tôi (hardened knife-edge fulcrum) với kim chỉ thị độ lệch.
+ *   - Thanh đòn bẩy hợp kim xẻ rãnh chia vạch cm, có kim dọi tâm thẳng đứng (vertical plumb needle).
+ *   - 2 quả cân chuẩn bằng đồng thau có núm cầm tiện tròn (knurled knob weights).
+ * Meaningful Kinematics: Di chuột trượt điểm tựa nêm; thanh đòn bẩy nghiêng theo chênh lệch mô-men.
+ * Khi dịch điểm tựa về x_f = -8.0 cm (tỉ lệ 2:1), đòn bẩy lập tức thăng bằng, kim dọi trùng vạch tâm, kích hoạt trạng thái cân bằng.
  */
 
 export default {
@@ -12,123 +19,137 @@ export default {
   concept: "Quy tắc đòn bẩy: F₁ · d₁ = F₂ · d₂ (Cân bằng mô-men lực)",
   means: "Di chuột ngang để dịch chuyển vị trí điểm tựa nêm: thanh đòn nghiêng mượt mà theo độ lệch mô-men. Khi cánh tay đòn đạt đúng tỉ lệ 2:1 (d₂ = 2d₁), đòn bẩy thăng bằng tuyệt đối, kim chỉ tâm kích hoạt trạng thái cân bằng.",
   rules: [1, 2, 4, 6, 9],
-  range: [-20, -10.7, 15],
+  range: [-20, -8.0, 15],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-52, -22, 0], [52, 22, 28]], 200, 160);
+    const C = HL.Cam(45, 0.5, 2.5);
+    HL.fit(C, [[-44, -14, 0], [44, 14, 25]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Clean Desktop Mat (Z: 0 to 2.5)
-    const [matO, matI] = HL.rings(-48, -16, 48, 16, 3.0, 0.8);
-    const matSol = HL.solid(svg);
-    HL.put(matSol, HL.prism(P, front, matO, matI, 0, 2.5));
+    function circAt(cx, cy, R, n = 24) {
+      const out = [];
+      for (let k = 0; k < n; k++) {
+        const a = (k / n) * Math.PI * 2;
+        const ca = Math.cos(a), sa = Math.sin(a);
+        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
+      }
+      return out;
+    }
 
-    // Guide groove along the fulcrum slider track
+    // 1. Cast-Iron Laboratory Balance Bed (Z: 0 to 2.4)
+    // Heavy dual-leg chassis with precision slider guideway
+    const bedSol = HL.solid(svg);
+    const [bedO, bedI] = HL.rings(-44, -14, 44, 14, 2.4, 0.6);
+    HL.put(bedSol, HL.prism(P, front, bedO, bedI, 0, 2.4));
+
+    // Longitudinal precision guide rail on bed (Z = 2.45)
     HL.mk("line", {
-      x1: HL.r2(P(-24, 0, 2.6)[0]), y1: HL.r2(P(-24, 0, 2.6)[1]),
-      x2: HL.r2(P(20, 0, 2.6)[0]), y2: HL.r2(P(20, 0, 2.6)[1]),
-      class: "lo", "stroke-width": 1.0, "stroke-dasharray": "3 2"
+      x1: HL.r2(P(-36, 0, 2.45)[0]), y1: HL.r2(P(-36, 0, 2.45)[1]),
+      x2: HL.r2(P(36, 0, 2.45)[0]), y2: HL.r2(P(36, 0, 2.45)[1]),
+      class: "lo", "stroke-width": 1.2
     }, svg);
 
-    // Scale graduation ticks on the mat
-    for (let gx = -20; gx <= 16; gx += 4) {
+    // Bed Scale graduation ticks (-24 to +24 cm)
+    for (let gx = -24; gx <= 24; gx += 4) {
+      const p1 = P(gx, -2.5, 2.45);
+      const p2 = P(gx, 2.5, 2.45);
       HL.mk("line", {
-        x1: HL.r2(P(gx, -2.5, 2.6)[0]), y1: HL.r2(P(gx, -2.5, 2.6)[1]),
-        x2: HL.r2(P(gx, 2.5, 2.6)[0]), y2: HL.r2(P(gx, 2.5, 2.6)[1]),
-        class: "lo", "stroke-width": 0.8
+        x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
+        x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
+        class: gx === -8 || gx === 0 ? "hi" : "lo",
+        "stroke-width": gx === -8 || gx === 0 ? 1.2 : 0.6
       }, svg);
     }
 
-    // 2. Triangular Wedge Fulcrum (Điểm tựa tam giác lăng trụ di động)
+    // 2. Triangular Knife-Edge Fulcrum (Điểm tựa nêm dao thép)
     const fulcrumGroup = HL.mk("g", {}, svg);
     const fulcrumSide = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, fulcrumGroup);
     const fulcrumTop = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, fulcrumGroup);
-    const fulcrumNeedle = HL.mk("line", { class: "hi", "stroke-width": 1.4 }, fulcrumGroup);
+    const fulcrumIndexNeedle = HL.mk("line", { class: "hi", "stroke-width": 1.4 }, fulcrumGroup);
 
-    // 3. Tilting Lever Beam (Thanh đòn bẩy)
-    const beamLength = 72; // X from -36 to +36 relative to lever center
-    const beamWidth = 6.0;  // Y from -3.0 to +3.0
-    const beamH = 2.2;      // Thickness in Z
+    // 3. Tilting Balance Beam (Thanh đòn bẩy chia vạch)
+    const beamHalfL = 36.0; // Total length 72.0 (-36 to +36)
+    const beamW = 5.2;      // Width Y: -2.6 to +2.6
+    const beamH = 2.4;      // Height in Z
 
     const beamGroup = HL.mk("g", {}, svg);
     const beamSide = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, beamGroup);
     const beamTop = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, beamGroup);
-    const centerIndicator = HL.mk("circle", { r: 1.4, class: "dot" }, beamGroup);
+    const beamTicks = HL.mk("path", { class: "lo", fill: "none", "stroke-width": 0.8 }, beamGroup);
 
-    // 4. Two Loads: Mass 1 (2 kg, Left end) & Mass 2 (1 kg, Right end)
-    const load1Group = HL.mk("g", {}, svg);
-    const load1Sol = HL.solid(load1Group);
-    const load2Group = HL.mk("g", {}, svg);
-    const load2Sol = HL.solid(load2Group);
+    // Center Plumb Needle & Indicator Arch (Kim dọi tâm thẳng đứng)
+    const plumbNeedle = HL.mk("line", { class: "lo", "stroke-width": 1.4, stroke: "var(--hl-edge)" }, beamGroup);
+    const plumbBob = HL.mk("circle", { r: 1.5, class: "dot" }, beamGroup);
+    const plumbZeroMark = HL.mk("line", { class: "hi", "stroke-width": 1.2 }, fulcrumGroup);
 
-    // Mass dimensions:
-    // M1 = 2kg (taller cylinder, r=3.2, h=7.0 at relative X = -31)
-    // M2 = 1kg (shorter cylinder, r=3.2, h=3.5 at relative X = +31)
-    const cylRing = HL.circ(3.2, 24);
-    const cylInner = HL.circ(2.8, 24);
+    // 4. Two Brass Precision Calibration Weights
+    // Mass 1: 2.0 kg (Weight F1 = 20 N) at relative lever position x = -24
+    // Mass 2: 1.0 kg (Weight F2 = 10 N) at relative lever position x = +24
+    const load1Sol = HL.solid(svg);
+    const load2Sol = HL.solid(svg);
 
-    // Kinematics springs
-    // Fulcrum X position
-    const spXf = HL.spring(initialV != null ? initialV : -10.7, { k: 140, c: 15 });
+    // Kinematics Springs
+    // Initial fulcrum position
+    const spXf = HL.spring(initialV != null ? initialV : -8.0, { k: 140, c: 15 });
     // Beam tilt angle (radians)
-    const spTheta = HL.spring(0, { k: 100, c: 14 });
+    const spTheta = HL.spring(0, { k: 90, c: 14 });
 
     function draw() {
       const xf = spXf.x;
-      const th = spTheta.x; // Tilt angle
+      const th = spTheta.x;
 
-      // A. Draw Sliding Wedge Fulcrum
-      // Base: X from xf - 4 to xf + 4, Y: -6 to 6, Z: 2.5
-      // Apex ridge: X = xf, Y: -6 to 6, Z: 10.5
-      const apexZ = 10.5;
-      const fBaseL0 = P(xf - 4.5, -6.0, 2.5), fBaseL1 = P(xf - 4.5, 6.0, 2.5);
-      const fBaseR0 = P(xf + 4.5, -6.0, 2.5), fBaseR1 = P(xf + 4.5, 6.0, 2.5);
-      const fApex0 = P(xf, -6.0, apexZ), fApex1 = P(xf, 6.0, apexZ);
+      // A. Draw Sliding Wedge Fulcrum (Apex at X = xf, Z = 9.8)
+      const apexZ = 9.8;
+      const fBaseL0 = P(xf - 4.5, -5.5, 2.4), fBaseL1 = P(xf - 4.5, 5.5, 2.4);
+      const fBaseR0 = P(xf + 4.5, -5.5, 2.4), fBaseR1 = P(xf + 4.5, 5.5, 2.4);
+      const fApex0 = P(xf, -5.5, apexZ), fApex1 = P(xf, 5.5, apexZ);
 
-      // Fulcrum sides
+      // Fulcrum surfaces
       let fSideD = "";
-      // Front triangular end at Y = 6.0
+      // Front triangular face at Y = 5.5
       fSideD += HL.poly([fBaseL1, fBaseR1, fApex1]);
-      // Right sloped face
+      // Right sloped facet
       fSideD += HL.poly([fBaseR1, fApex1, fApex0, fBaseR0]);
       fulcrumSide.setAttribute("d", fSideD);
-
-      // Left sloped face
+      // Left sloped facet
       fulcrumTop.setAttribute("d", HL.poly([fBaseL0, fApex0, fApex1, fBaseL1]));
 
-      // Fulcrum reference mark
-      fulcrumNeedle.setAttribute("x1", HL.r2(fApex1[0]));
-      fulcrumNeedle.setAttribute("y1", HL.r2(fApex1[1]));
-      fulcrumNeedle.setAttribute("x2", HL.r2(fApex1[0]));
-      fulcrumNeedle.setAttribute("y2", HL.r2(fApex1[1] + 6));
+      // Fulcrum vernier indicator mark on base
+      fulcrumIndexNeedle.setAttribute("x1", HL.r2(fApex1[0]));
+      fulcrumIndexNeedle.setAttribute("y1", HL.r2(fApex1[1]));
+      fulcrumIndexNeedle.setAttribute("x2", HL.r2(fApex1[0]));
+      fulcrumIndexNeedle.setAttribute("y2", HL.r2(fApex1[1] + 5));
+
+      // Plumb zero index on fulcrum
+      const fZero0 = P(xf, 5.5, apexZ);
+      const fZero1 = P(xf, 5.5, apexZ + 5.0);
+      plumbZeroMark.setAttribute("x1", HL.r2(fZero0[0]));
+      plumbZeroMark.setAttribute("y1", HL.r2(fZero0[1]));
+      plumbZeroMark.setAttribute("x2", HL.r2(fZero1[0]));
+      plumbZeroMark.setAttribute("y2", HL.r2(fZero1[1]));
 
       // B. Draw Tilting Beam
       // Pivot point is at (xf, 0, apexZ + beamH/2)
-      // Any point along beam at relative distance s from fulcrum:
-      // X = xf + s * cos(th), Z = apexZ + beamH/2 + s * sin(th)
       const cosT = Math.cos(th), sinT = Math.sin(th);
-      const sMin = -36 - xf; // Left end relative to fulcrum
-      const sMax = 36 - xf;  // Right end relative to fulcrum
+      const sMin = -beamHalfL - xf; // Left end relative to fulcrum
+      const sMax = beamHalfL - xf;  // Right end relative to fulcrum
 
       const beamPt = (s, y, zRel) => {
         const x = xf + s * cosT - zRel * sinT;
-        const z = apexZ + 1.1 + s * sinT + zRel * cosT;
+        const z = apexZ + beamH / 2 + s * sinT + zRel * cosT;
         return P(x, y, z);
       };
 
-      // 8 corners of the beam box:
-      const b0 = beamPt(sMin, -3.0, -1.1); // Left-back-bottom
-      const b1 = beamPt(sMax, -3.0, -1.1); // Right-back-bottom
-      const b2 = beamPt(sMax, 3.0, -1.1);  // Right-front-bottom
-      const b3 = beamPt(sMin, 3.0, -1.1);  // Left-front-bottom
+      const b0 = beamPt(sMin, -beamW / 2, -beamH / 2);
+      const b1 = beamPt(sMax, -beamW / 2, -beamH / 2);
+      const b2 = beamPt(sMax, beamW / 2, -beamH / 2);
+      const b3 = beamPt(sMin, beamW / 2, -beamH / 2);
 
-      const t0 = beamPt(sMin, -3.0, 1.1);  // Left-back-top
-      const t1 = beamPt(sMax, -3.0, 1.1);  // Right-back-top
-      const t2 = beamPt(sMax, 3.0, 1.1);   // Right-front-top
-      const t3 = beamPt(sMin, 3.0, 1.1);   // Left-front-top
+      const t0 = beamPt(sMin, -beamW / 2, beamH / 2);
+      const t1 = beamPt(sMax, -beamW / 2, beamH / 2);
+      const t2 = beamPt(sMax, beamW / 2, beamH / 2);
+      const t3 = beamPt(sMin, beamW / 2, beamH / 2);
 
-      // Front side & right/left ends
       let bSideD = "";
       bSideD += HL.poly([b3, b2, t2, t3]); // Front longitudinal wall
       if (th < 0) {
@@ -137,78 +158,100 @@ export default {
         bSideD += HL.poly([b3, b0, t0, t3]); // Left end face
       }
       beamSide.setAttribute("d", bSideD);
-
-      // Top face
       beamTop.setAttribute("d", HL.poly([t0, t1, t2, t3]));
 
-      // Center indicator dot at beam midpoint (s = -xf)
-      const centerPt = beamPt(-xf, 0, 1.15);
-      centerIndicator.setAttribute("cx", HL.r2(centerPt[0]));
-      centerIndicator.setAttribute("cy", HL.r2(centerPt[1]));
+      // Engraved graduation lines along beam
+      let tickD = "";
+      for (let s = -32; s <= 32; s += 4) {
+        const pA = beamPt(s - xf, -beamW / 2 + 0.6, beamH / 2);
+        const pB = beamPt(s - xf, beamW / 2 - 0.6, beamH / 2);
+        tickD += `M ${HL.r2(pA[0])} ${HL.r2(pA[1])} L ${HL.r2(pB[0])} ${HL.r2(pB[1])} `;
+      }
+      beamTicks.setAttribute("d", tickD);
 
-      // C. Draw Masses on Beam
-      // M1 (2kg) at absolute X = -31, relative s1 = -31 - xf
-      const s1 = -31 - xf;
-      const m1BaseZ = apexZ + 1.1 + s1 * sinT + 1.1 * cosT;
-      const m1BaseX = xf + s1 * cosT - 1.1 * sinT;
-      const m1Ring = cylRing.map(q => ({ u: m1BaseX + q.u, v: q.v, nu: q.nu, nv: q.nv }));
-      HL.put(load1Sol, HL.prism(P, front, m1Ring, cylInner, m1BaseZ, m1BaseZ + 7.5));
+      // Center Plumb Needle pointing upwards from beam midpoint
+      const plumbBase = beamPt(-xf, 0, beamH / 2);
+      const plumbTip = beamPt(-xf, 0, beamH / 2 + 7.5);
+      plumbNeedle.setAttribute("x1", HL.r2(plumbBase[0]));
+      plumbNeedle.setAttribute("y1", HL.r2(plumbBase[1]));
+      plumbNeedle.setAttribute("x2", HL.r2(plumbTip[0]));
+      plumbNeedle.setAttribute("y2", HL.r2(plumbTip[1]));
+      plumbBob.setAttribute("cx", HL.r2(plumbTip[0]));
+      plumbBob.setAttribute("cy", HL.r2(plumbTip[1]));
 
-      // M2 (1kg) at absolute X = +31, relative s2 = 31 - xf
-      const s2 = 31 - xf;
-      const m2BaseZ = apexZ + 1.1 + s2 * sinT + 1.1 * cosT;
-      const m2BaseX = xf + s2 * cosT - 1.1 * sinT;
-      const m2Ring = cylRing.map(q => ({ u: m2BaseX + q.u, v: q.v, nu: q.nu, nv: q.nv }));
-      HL.put(load2Sol, HL.prism(P, front, m2Ring, cylInner, m2BaseZ, m2BaseZ + 4.0));
+      // C. Draw 2 Brass Calibration Weights on the Beam
+      // M1 (2.0 kg, F1 = 20 N) at absolute beam station s = -24
+      const s1 = -24.0 - xf;
+      const m1BaseZ = apexZ + beamH / 2 + s1 * sinT + (beamH / 2) * cosT;
+      const m1BaseX = xf + s1 * cosT - (beamH / 2) * sinT;
+      const m1RingO = circAt(m1BaseX, 0, 3.4, 20);
+      const m1RingI = circAt(m1BaseX, 0, 3.0, 20);
+      HL.put(load1Sol, HL.prism(P, front, m1RingO, m1RingI, m1BaseZ, m1BaseZ + 7.5));
 
-      // Balance status & highlight
-      const isBalanced = Math.abs(th) < 0.015;
+      // M2 (1.0 kg, F2 = 10 N) at absolute beam station s = +24
+      const s2 = 24.0 - xf;
+      const m2BaseZ = apexZ + beamH / 2 + s2 * sinT + (beamH / 2) * cosT;
+      const m2BaseX = xf + s2 * cosT - (beamH / 2) * sinT;
+      const m2RingO = circAt(m2BaseX, 0, 3.4, 20);
+      const m2RingI = circAt(m2BaseX, 0, 3.0, 20);
+      HL.put(load2Sol, HL.prism(P, front, m2RingO, m2RingI, m2BaseZ, m2BaseZ + 4.2));
+
+      // D. Physics Balance Calculation
+      const d1Cm = Math.abs(-24.0 - xf);
+      const d2Cm = Math.abs(24.0 - xf);
+      const d1M = d1Cm / 100.0;
+      const d2M = d2Cm / 100.0;
+      const m1Torque = 20.0 * d1M; // F1 * d1 (N*m)
+      const m2Torque = 10.0 * d2M; // F2 * d2 (N*m)
+      const isBalanced = Math.abs(m1Torque - m2Torque) < 0.08;
+
       beamTop.classList.toggle("hi", isBalanced);
-      fulcrumNeedle.classList.toggle("hi", isBalanced);
+      plumbNeedle.classList.toggle("hi", isBalanced);
+      plumbZeroMark.classList.toggle("hi", isBalanced);
 
-      const d1 = HL.r2(Math.abs(-31 - xf));
-      const d2 = HL.r2(Math.abs(31 - xf));
-      const torque1 = HL.r2(2 * d1);
-      const torque2 = HL.r2(1 * d2);
+      const d1Str = HL.r2(d1Cm);
+      const d2Str = HL.r2(d2Cm);
+      const t1Str = HL.r2(m1Torque);
+      const t2Str = HL.r2(m2Torque);
 
       if (isBalanced) {
-        read.textContent = `Đòn bẩy: CÂN BẰNG HOÀN HẢO! M₁·d₁ = 2×${d1} = ${torque1} N·cm == M₂·d₂ = 1×${d2} = ${torque2} N·cm (d₂ = 2·d₁)`;
+        read.textContent = `Đòn bẩy: [CÂN BẰNG HOÀN HẢO] M₁ = 20N×${d1Str}cm = ${t1Str} N·m == M₂ = 10N×${d2Str}cm = ${t2Str} N·m (d₂ = 2·d₁)`;
       } else if (th > 0) {
-        read.textContent = `Đòn bẩy: Lệch trái! M₁·d₁ (${torque1}) > M₂·d₂ (${torque2}). Di chuyển điểm tựa sang trái để cân bằng.`;
+        read.textContent = `Đòn bẩy: Lệch trái! M₁ (${t1Str} N·m) > M₂ (${t2Str} N·m) · Kéo điểm tựa sang trái để cân bằng`;
       } else {
-        read.textContent = `Đòn bẩy: Lệch phải! M₁·d₁ (${torque1}) < M₂·d₂ (${torque2}). Di chuyển điểm tựa sang phải để cân bằng.`;
+        read.textContent = `Đòn bẩy: Lệch phải! M₁ (${t1Str} N·m) < M₂ (${t2Str} N·m) · Kéo điểm tựa sang phải để cân bằng`;
       }
     }
 
     function setFulcrumX(targetX) {
-      const clampedX = HL.clamp(targetX, -22, 16);
+      const clampedX = HL.clamp(targetX, -20, 16);
       spXf.t = clampedX;
 
-      // Compute physical torque:
-      // M1 = 2kg at X = -31, arm d1 = clampedX - (-31) = clampedX + 31
-      // M2 = 1kg at X = 31, arm d2 = 31 - clampedX
-      // Torque clockwise (positive tilts left):
-      const t1 = 2 * (clampedX + 31);
-      const t2 = 1 * (31 - clampedX);
-      const netTorque = t1 - t2; // >0: left drops, <0: right drops
+      // Physical torque:
+      // M1 = 20N at x = -24 => arm d1 = clampedX - (-24) = clampedX + 24
+      // M2 = 10N at x = +24 => arm d2 = 24 - clampedX
+      // Torque clockwise (positive tilts left down):
+      const t1 = 20.0 * (clampedX + 24) * 0.01;
+      const t2 = 10.0 * (24 - clampedX) * 0.01;
+      const netTorque = t1 - t2;
 
-      // Physical angle with mechanical stops at +- 11 degrees (+- 0.19 rad)
-      const targetAngle = HL.clamp((netTorque / 40) * 0.19, -0.19, 0.19);
+      // Mechanical stops at +- 11 degrees
+      const targetAngle = HL.clamp((netTorque / 1.8) * 0.19, -0.19, 0.19);
       // Snap to exact zero when within balance tolerance
-      spTheta.t = Math.abs(netTorque) < 1.8 ? 0 : targetAngle;
+      spTheta.t = Math.abs(netTorque) < 0.08 ? 0.0 : targetAngle;
 
       reg.wake();
     }
 
     function aim(pt) {
       if (!pt) {
-        setFulcrumX(-10.7); // Reset to exact physical balance
+        setFulcrumX(-8.0); // Exact physical balance position
         return;
       }
       const sMinX = P(-24, 0, 5)[0];
       const sMaxX = P(20, 0, 5)[0];
       const norm = HL.clamp((pt[0] - sMinX) / (sMaxX - sMinX), 0, 1);
-      const targetX = -22 + norm * 38;
+      const targetX = -20 + norm * 36;
       setFulcrumX(targetX);
     }
 
