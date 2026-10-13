@@ -1729,8 +1729,9 @@ const MATH_FIGURES = [
 },
 ];
 
-// App Controller & View Logic
+// App Controller & View Logic for Grade 1 Math Figures Suite (Hairline 2:1 Axonometric Standard)
 (() => {
+  const RULES = ["hit", "order", "reach", "accent", "rest", "honesty", "cost", "clock", "radius", "quiet"];
   const $ = id => document.getElementById(id);
   const navTabs = $("nav-tabs");
   const stage = $("stage");
@@ -1738,43 +1739,58 @@ const MATH_FIGURES = [
   const valOut = $("value");
   const nameEl = $("name");
   const readEl = $("read");
-  const metaTitle = $("meta-title");
-  const metaDesc = $("meta-desc");
-  const metaRule = $("meta-rule");
-  const singleView = $("single-view");
-  const galleryView = $("gallery-view");
+  const meansEl = $("means");
+  const rulesEl = $("rules");
+  const btnPrev = $("btn-prev");
+  const btnNext = $("btn-next");
 
   let currentIndex = 0;
   let currentHandle = null;
-  let isGalleryMode = false;
+
+  function formatReadout(str) {
+    if (!str) return "rest";
+    if (str.length <= 24) return str;
+    const br = str.match(/\[(.*?)\]/);
+    const eq = str.match(/[a-zA-Z_θ°\u0394][a-zA-Z_0-9°]*\s*=\s*[^·\n⇒=()]{1,12}/g);
+    if (br && eq) {
+      const tag = br[1].replace(/HOÀN HẢO|- KÍN|- HỞ/g, "").trim();
+      return (tag + " · " + eq[0].trim()).slice(0, 24);
+    }
+    if (eq && eq.length >= 2) {
+      return (eq[0].trim() + " · " + eq[1].trim()).slice(0, 24);
+    }
+    if (eq) return eq[0].trim().slice(0, 24);
+    if (br) return br[1].slice(0, 24);
+    const parts = str.split(":");
+    if (parts.length > 1) return parts[1].trim().slice(0, 24);
+    return str.slice(0, 24);
+  }
 
   const readBridge = {
     get textContent() { return readEl.textContent; },
-    set textContent(v) { readEl.textContent = v; }
+    set textContent(v) {
+      if (!v) { readEl.textContent = "rest"; return; }
+      const str = String(v);
+      readEl.textContent = formatReadout(str);
+      meansEl.textContent = str;
+    }
   };
 
   function renderTabs() {
     navTabs.innerHTML = "";
     MATH_FIGURES.forEach((fig, idx) => {
       const btn = document.createElement("button");
-      btn.className = "nav-btn" + (idx === currentIndex && !isGalleryMode ? " active" : "");
-      btn.textContent = fig.title.split(" (")[0];
+      btn.className = "nav-btn" + (idx === currentIndex ? " active" : "");
+      btn.textContent = String(idx + 1).padStart(2, "0") + ". " + fig.id.replace(/^math-/, "");
+      btn.setAttribute("role", "tab");
+      btn.setAttribute("aria-selected", idx === currentIndex ? "true" : "false");
       btn.onclick = () => switchTo(idx);
       navTabs.appendChild(btn);
     });
-
-    const galleryBtn = document.createElement("button");
-    galleryBtn.className = "nav-btn view-mode-toggle" + (isGalleryMode ? " active" : "");
-    galleryBtn.textContent = isGalleryMode ? "Tập Trung (Focus)" : "Xem Cả 10 Hình (Gallery)";
-    galleryBtn.onclick = toggleGalleryMode;
-    navTabs.appendChild(galleryBtn);
   }
 
   function switchTo(idx) {
-    isGalleryMode = false;
-    galleryView.hidden = true;
-    singleView.hidden = false;
-    currentIndex = idx;
+    currentIndex = (idx + MATH_FIGURES.length) % MATH_FIGURES.length;
     renderTabs();
 
     if (currentHandle) {
@@ -1783,90 +1799,56 @@ const MATH_FIGURES = [
     }
     stage.replaceChildren();
 
-    const fig = MATH_FIGURES[idx];
+    const fig = MATH_FIGURES[currentIndex];
+    document.title = "Hairline · " + fig.id;
     stage.setAttribute("data-hairline", fig.id);
+    stage.setAttribute("role", "img");
+    stage.setAttribute("aria-label", fig.means);
     nameEl.textContent = fig.id;
-    metaTitle.textContent = fig.title;
-    metaDesc.textContent = fig.means;
-    metaRule.textContent = "Khái niệm toán học: " + fig.concept + " · Quy tắc: " + fig.rules.join(", ");
+    meansEl.textContent = fig.means;
+    rulesEl.textContent = (fig.rules || []).map(n => String(n).padStart(2, "0") + " " + RULES[n - 1]).join(" · ");
 
-    slider.min = fig.range[0];
-    slider.max = fig.range[2];
-    slider.value = fig.range[1];
-    valOut.textContent = String(fig.range[1]);
+    slider.value = "0.5";
+    const [lo, mid, hi] = fig.range;
+    const at = (i) => Math.round((i <= 0.5 ? lo + (i / 0.5) * (mid - lo) : mid + ((i - 0.5) / 0.5) * (hi - mid)) * 1000) / 1000;
+    valOut.textContent = String(at(0.5));
 
     const svg = HL.mk("svg", { viewBox: "0 0 400 320", "aria-hidden": "true" }, stage);
-    currentHandle = fig.mount({ stage, svg, read: readBridge }, fig.range[1]);
+    readEl.textContent = "rest";
+    currentHandle = fig.mount({ stage, svg, read: readBridge }, at(0.5));
+
+    slider.oninput = () => {
+      const v = at(Number(slider.value));
+      valOut.textContent = String(v);
+      if (currentHandle && currentHandle.set) currentHandle.set(v);
+    };
   }
 
-  function toggleGalleryMode() {
-    isGalleryMode = !isGalleryMode;
-    if (isGalleryMode) {
-      if (currentHandle) { currentHandle.destroy(); currentHandle = null; }
-      singleView.hidden = true;
-      galleryView.hidden = false;
-      renderTabs();
-      buildGallery();
-    } else {
-      switchTo(currentIndex);
-    }
-  }
-
-  function buildGallery() {
-    galleryView.innerHTML = "";
-    MATH_FIGURES.forEach((fig, idx) => {
-      const card = document.createElement("div");
-      card.className = "grid-card";
-      
-      const gStage = document.createElement("div");
-      gStage.className = "grid-stage";
-      gStage.id = "gstage-" + idx;
-      gStage.setAttribute("data-hairline", fig.id);
-
-      const gMeta = document.createElement("div");
-      gMeta.className = "grid-meta";
-      
-      const gName = document.createElement("div");
-      gName.className = "grid-name";
-      gName.textContent = fig.title;
-
-      const gDesc = document.createElement("div");
-      gDesc.className = "grid-desc";
-      gDesc.textContent = fig.means;
-
-      gMeta.appendChild(gName);
-      gMeta.appendChild(gDesc);
-
-      card.appendChild(gStage);
-      card.appendChild(gMeta);
-      card.onclick = () => switchTo(idx);
-      galleryView.appendChild(card);
-
-      const gSvg = HL.mk("svg", { viewBox: "0 0 400 300", "aria-hidden": "true" }, gStage);
-      const dummyRead = { textContent: "" };
-      fig.mount({ stage: gStage, svg: gSvg, read: dummyRead }, fig.range[1]);
-    });
-  }
-
-  slider.oninput = () => {
-    valOut.textContent = slider.value;
-    if (currentHandle) currentHandle.set(Number(slider.value));
-  };
-
-  $("btn-prev").onclick = () => {
-    switchTo((currentIndex - 1 + MATH_FIGURES.length) % MATH_FIGURES.length);
-  };
-  $("btn-next").onclick = () => {
-    switchTo((currentIndex + 1) % MATH_FIGURES.length);
-  };
+  if (btnPrev) btnPrev.onclick = () => switchTo(currentIndex - 1);
+  if (btnNext) btnNext.onclick = () => switchTo(currentIndex + 1);
 
   window.addEventListener("keydown", e => {
-    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT")) return;
-    if (e.key === "ArrowLeft") $("btn-prev").click();
-    if (e.key === "ArrowRight") $("btn-next").click();
-    if (e.key >= "1" && e.key <= "9") switchTo(Number(e.key) - 1);
-    if (e.key === "0") switchTo(9);
+    if (e.target.tagName === "INPUT") return;
+    if (e.key === "ArrowLeft") {
+      switchTo(currentIndex - 1);
+    } else if (e.key === "ArrowRight") {
+      switchTo(currentIndex + 1);
+    } else {
+      const num = parseInt(e.key, 10);
+      if (num >= 1 && num <= MATH_FIGURES.length) {
+        switchTo(num - 1);
+      }
+    }
   });
 
+  window.addEventListener("error", e => {
+    const err = $("error");
+    if (err) {
+      err.hidden = false;
+      err.textContent = String((e.error && e.error.message) || e.message);
+    }
+  });
+
+  renderTabs();
   switchTo(0);
 })();
