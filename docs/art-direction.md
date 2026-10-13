@@ -1,6 +1,6 @@
 # DESIGN:OS Hairline Art Direction Specification
 > Chuẩn mực nghệ thuật & Chỉ dẫn thị giác cho toàn bộ hệ thống Isometric Line Figures.
-> Kế thừa từ 27 nguyên mẫu của Lucas Markes và hệ thống Art Direction của Jang Personal Site.
+> Kế thừa từ 27 nguyên mẫu Hairline và hệ thống Art Direction của Jang Personal Site.
 
 ---
 
@@ -42,11 +42,11 @@ Học hỏi trực tiếp từ kiến trúc Art Direction của Jang Personal Si
 
 ---
 
-## 4. Bảng Phân loại 6 Archetype Động học (Từ 27 Figures của Lucas)
+## 4. Bảng Phân loại 6 Archetype Động học (Từ 27 Hairline Figures)
 
 Mọi figure mới khi khởi tạo BẮT BUỘC phải quy về 1 trong 6 archetype mẫu mực dưới đây:
 
-| Archetype | Bản mẫu Lucas tiêu biểu | Bản chất Động học | Điểm nhấn lúc Nghỉ (`Rest`) $\rightarrow$ Tương tác (`Active`) |
+| Archetype | Bản mẫu tiêu biểu | Bản chất Động học | Điểm nhấn lúc Nghỉ (`Rest`) $\rightarrow$ Tương tác (`Active`) |
 |---|---|---|---|
 | **1. The Exploded Stack** | `phone`, `exploded`, `sieve` | Các lớp tách rời theo trục $Z$ khi chuột rê theo trục $X$; trục $Y$ chọn lớp. | Lớp bo mạch ở giữa nhấc nhẹ (`hi`) $\rightarrow$ chuyển sang lớp được chọn. |
 | **2. The Discrete Array** | `riffle`, `keyboard`, `drawer`, `lockers`, `cabinet` | Mảng linh kiện lặp lại; chuyển động độc lập trên đường cong 700ms cubic-bezier. | Một phần tử trung tâm hơi nhô ra (`hi`) $\rightarrow$ chuyển sang phần tử dưới con trỏ. |

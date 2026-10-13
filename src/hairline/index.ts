@@ -28,7 +28,7 @@ import { mount as turntableEngine } from "./figures/turntable";
 import { mount as vaultEngine } from "./figures/vault";
 
 /**
- * @lucasmarkes/hairline — twenty-seven isometric line figures that answer the pointer.
+ * Hairline — twenty-seven isometric line figures that answer the pointer.
  *
  * One function per figure. Each takes an element and the same options, draws
  * into the element, and returns `{ update, destroy }`. Each function names

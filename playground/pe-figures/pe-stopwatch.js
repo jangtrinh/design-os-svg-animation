@@ -1,6 +1,6 @@
 /*
  * 1. Mechanical Sports Stopwatch (Đồng Hồ Bấm Giờ Thể Thao Cao Cấp)
- * Benchmark Lucas Markes Hairline Craftsmanship:
+ * Benchmark Hairline Craftsmanship:
  *   - Loại bỏ hoàn toàn tấm ván trượt vô nghĩa; Đồng hồ bấm giờ là Hero Object chiếm 70% viewport.
  *   - Cấu trúc vỏ thép cơ khí 3 tầng (Main case, Bezel stepped chamfer, Inward crystal flange, Recessed dial).
  *   - Cụm núm đỉnh (Crown Pusher Assembly): Khớp hoàn hảo với cao độ Z của vành bezel (Z: 8.5 -> 12.5),

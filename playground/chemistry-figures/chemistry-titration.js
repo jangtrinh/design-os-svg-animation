@@ -10,7 +10,7 @@
  *   - Bước nhảy pH (pH jump): Từ pH 3.30 vọt lên pH 10.0 chỉ trong 0.1 mL NaOH!
  *   - Chỉ thị phenolphtalein: Không màu ở pH < 8.2; chuyển sang màu hồng cánh sen bền
  *     tại khoảng pH 8.2 - 10.0 (kích hoạt .hi tại V ≥ 20.05 mL).
- * Geometry (Lucas Markes Specimen Discipline):
+ * Geometry (Hairline Specimen Discipline):
  *   - Chân đế giá thí nghiệm gang chữ nhật nặng, có tấm sứ trắng (white ceramic titration tile) lót dưới bình.
  *   - Trụ thép đứng gắn khớp nối bosshead và kẹp buret 3 chạc (3-prong clamp) kẹp chuẩn trục.
  *   - Bình tam giác Erlenmeyer chuẩn: Đáy rộng, vai nón côn, cổ cao, miệng loe rỗng.

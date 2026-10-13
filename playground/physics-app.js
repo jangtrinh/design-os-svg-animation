@@ -295,7 +295,7 @@ const PHYSICS_FIGURES = [
  *   - Tính toán động năng THẬT TỪ VẬN TỐC GÓC ω (rad/s), không dùng giả định W_đ = 100 - W_t.
  *   - Khi con lắc đứng yên tại VTCB (θ = 0, ω = 0): W_t = 0% VÀ W_đ = 0% (hệ nghỉ).
  *   - Phương trình vi phân dao động có cản: d²θ/dt² + 2β·dθ/dt + (g/L)·sin θ = 0
- * Geometry (Lucas Markes Specimen Discipline):
+ * Geometry (Hairline Specimen Discipline):
  *   - Chân đế gang đúc chữ T vững chãi (Heavy T-frame cast-iron base).
  *   - Cột đứng thép đặc, tay đòn ngang vươn ra điểm treo chính giữa.
  *   - Quả nặng hình cầu kim loại đặc 3D thật (true spherical projection, không bị elip hóa dẹt).

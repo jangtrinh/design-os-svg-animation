@@ -10,7 +10,7 @@ if (typeof HL !== "undefined" && HL.inject) {
 const PE_FIGURES = [
 /*
  * 1. Mechanical Sports Stopwatch (Đồng Hồ Bấm Giờ Thể Thao Cao Cấp)
- * Benchmark Lucas Markes Hairline Craftsmanship:
+ * Benchmark Hairline Craftsmanship:
  *   - Loại bỏ hoàn toàn tấm ván trượt vô nghĩa; Đồng hồ bấm giờ là Hero Object chiếm 70% viewport.
  *   - Cấu trúc vỏ thép cơ khí 3 tầng (Main case, Bezel stepped chamfer, Inward crystal flange, Recessed dial).
  *   - Cụm núm đỉnh (Crown Pusher Assembly): Khớp hoàn hảo với cao độ Z của vành bezel (Z: 8.5 -> 12.5),
@@ -934,7 +934,7 @@ const PE_FIGURES = [
  *   - Cơ chế lò xo giảm chấn: Khóa ngàm cứng khi tải F < 805 N (~82 kg). Khi slam dunk / va chạm
  *     mạnh F = 820 N - 1050 N, lò xo nén giải phóng góc gập xuống θ ≤ 25°, bảo vệ bảng kính tempered.
  *   - Khi bóng rời rổ, hệ lò xo - giảm chấn đưa vành nảy hồi vị tức thì (k = 240 N/rad, c = 16 N·s/rad).
- * Geometry (Lucas Markes Specimen Discipline):
+ * Geometry (Hairline Specimen Discipline):
  *   - Hero Scale: Chiếm 70% viewport, góc chiếu 3/4 isometric 2:1 chuẩn xác.
  *   - Trụ rổ di động có đệm vinyl bảo vệ FIBA và 2 thanh giằng chịu lực vươn đỡ bảng rổ.
  *   - Bảng rổ viền thép đặc, khung ngắm bắn chuẩn xác.

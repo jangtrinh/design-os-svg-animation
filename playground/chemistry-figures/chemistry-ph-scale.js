@@ -6,7 +6,7 @@
  *   - Giếng 3: Nước cất tinh khiết ([H⁺] = 10⁻⁷ M, pH = 7.00) ──> Trung tính, quỳ không đổi màu
  *   - Giếng 4: Dung dịch NaHCO₃ / Xà phòng ([H⁺] ≈ 3·10⁻¹⁰ M, pH = 9.50) ──> Quỳ xanh da trời
  *   - Giếng 5: NaOH 0.10 M (Bazơ mạnh, [H⁺] = 10⁻¹³ M, pH = 13.00) ──> Quỳ xanh lam tím đậm (.hi)
- * Geometry (Lucas Markes Specimen Discipline):
+ * Geometry (Hairline Specimen Discipline):
  *   - Khay sứ thử phản ứng màu 5 lỗ (5-well white porcelain spot plate) có lòng giếng lõm thật,
  *     thành miệng vát, đáy chứa dung dịch ở Z = 1.0 đến 2.5.
  *   - Thước thang chia độ chuẩn pH 1-14 phía sau với kim trượt định vị cơ học.

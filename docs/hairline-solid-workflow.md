@@ -1,5 +1,5 @@
 # Hairline Solid-First Kinematics Workflow (v2.0 Airtight)
-> Quy chuẩn phổ quát sản xuất Figure Isometric 2:1 chuẩn Lucas Markes & Codex Astra (gpt-6.1-sol)
+> Quy chuẩn phổ quát sản xuất Figure Isometric 2:1 chuẩn Hairline & Codex Astra (gpt-6.1-sol)
 
 Mọi figure cơ khí, đồ gá hoặc hệ thống chuyển động tương tác trong hệ sinh thái DESIGN:OS / Hairline BẮT BUỘC tuân thủ 5 nguyên lý bất biến (invariants) dưới đây:
 

@@ -32,7 +32,7 @@ Live site: [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.githu
 ## Hairline Engine — Interactive 2:1 Isometric Kinematics
 
 > **Vector CAD precision meets 60fps tactile physics.**  
-> Native port and expansion of `@lucasmarkes/hairline` directly into Design OS. Generates self-contained, resolution-independent SVG instruments that answer the pointer under real-world mechanical constraints.
+> Native 2:1 isometric vector engine integrated into Design OS. Generates self-contained, resolution-independent SVG instruments that answer the pointer under real-world mechanical constraints.
 
 | Specimen | Live Interactive Player | Art Direction Archetype | Meaningful Interaction (Rule 06 Honesty) |
 |---|---|---|---|
