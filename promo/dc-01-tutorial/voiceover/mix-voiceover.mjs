@@ -13,6 +13,8 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.dirname(HERE);
 const LEAD = 0.5;      // seconds of picture before the voice enters each chapter
 const GAP = 0.3;       // minimum clearance a clip must leave before its chapter ends
+// bed gain per track: 'Technology' at 0.42 measured -17.9 dB (louder than the voice), 0.17 puts it near -26 dB
+const MUSIC_GAIN = 0.17;
 
 const ctx = { window: { DOS: {} } }; ctx.window.window = ctx.window;
 vm.createContext(ctx.window);
@@ -24,7 +26,7 @@ const dur = (f) => parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_ent
 const rows = script.segments.map((s) => {
   const c = CH.find((x) => x.id === s.id);
   if (!c) throw new Error(`no chapter for segment ${s.id}`);
-  const file = path.join(HERE, 'clips-v4', `${s.id}.mp3`);
+  const file = path.join(HERE, 'clips', `${s.id}.mp3`);
   const start = Math.max(c.t0, 0) + LEAD, d = dur(file);
   return { id: s.id, file, start, end: start + d, limit: Math.min(c.t1, T) };
 });
@@ -43,7 +45,7 @@ const delays = rows.map((r, i) => `[${i + 1}:a]aresample=48000,aformat=channel_l
 const filter = [...delays,
   `${rows.map((_, i) => `[v${i}]`).join('')}amix=inputs=${rows.length}:normalize=0,apad=whole_dur=${T}[vo]`,
   '[vo]asplit=2[vkey][vmix]',
-  '[0:a]aresample=48000,volume=0.42[mus]',
+  `[0:a]aresample=48000,volume=${MUSIC_GAIN}[mus]`,
   '[mus][vkey]sidechaincompress=threshold=0.02:ratio=8:attack=40:release=700[duck]',
   `[duck][vmix]amix=inputs=2:normalize=0,atrim=0:${T},loudnorm=I=-16:TP=-1.5:LRA=11[out]`].join(';');
 const out = path.join(ROOT, 'out', 'tutorial-audio.wav');

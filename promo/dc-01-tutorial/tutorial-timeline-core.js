@@ -6,8 +6,9 @@
   const D = root.DOS, E = root.EVIDENCE;
   const BAR = 4 * 60 / 135, DB0 = 0.654, B = BAR / 4;
   // Story bars (as authored in the act files) warp onto music bars so each chapter fits its voiceover clip.
-  // Identity until the clips exist; then add integer-bar knots exactly as in the CK-001 timeline.
-  const WARP = [[-1, -1], [200, 200]];
+  // Measured clips (voiceover/clips): the title gains 2 bars and the trap 1 bar, both taken from the ladder,
+  // which had 11.7 s of slack. Knots are integer bars, so every chapter boundary stays on a downbeat.
+  const WARP = [[-1, -1], [9, 11], [44, 46], [74, 73], [82, 82], [200, 200]];
   const warp = (n) => {
     let i = WARP.findIndex(([s]) => s >= n);
     i = i < 0 ? WARP.length - 1 : Math.max(1, i);
