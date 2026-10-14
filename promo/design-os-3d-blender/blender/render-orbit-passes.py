@@ -10,7 +10,14 @@ from mathutils import Matrix, Vector
 A = json.loads(sys.argv[sys.argv.index('--') + 1])
 sc = bpy.context.scene
 sc.frame_set(A.get('frame', 1))
-cam = bpy.data.objects[A['cam']]; sc.camera = cam
+if A.get('cam_json'):  # recreate a recorded camera so different build stages share one view
+    J = json.load(open(A['cam_json']))
+    cam = bpy.data.objects.new('STAGE_CAMERA', bpy.data.cameras.new('STAGE_CAMERA')); sc.collection.objects.link(cam)
+    for k in ('lens', 'sensor_width', 'sensor_fit', 'shift_x', 'shift_y', 'clip_start', 'clip_end'): setattr(cam.data, k, J[k])
+    cam.matrix_world = Matrix(J['matrix'])
+else:
+    cam = bpy.data.objects[A['cam']]
+sc.camera = cam
 STUDIO = re.compile(A.get('studio_re', r'(?i)(^studio|studio_|_ground$|^ground|cyclo|backdrop)'))
 model = [o for o in sc.objects if o.type == 'MESH' and not o.hide_render and not STUDIO.search(o.name)]
 studio = [o for o in sc.objects if o.type == 'MESH' and not o.hide_render and STUDIO.search(o.name)]

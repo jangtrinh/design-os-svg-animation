@@ -1,0 +1,263 @@
+{
+ "ref_roles": {
+  "path": "builds/reference-keyboard/state.md",
+  "from": 38,
+  "to": 40,
+  "lines": [
+   "User supplied a perspective photo, blueprint, 360-degree sheet and parts catalog. The photo",
+   "is the visual authority; explicit dimensions on the blueprint are dimensional",
+   "input. These are design references, not verified vendor manufacturing drawings. The image"
+  ]
+ },
+ "ref_conflict": {
+  "path": "builds/reference-keyboard/state.md",
+  "from": 47,
+  "to": 51,
+  "lines": [
+   "Known authored dimensions: 284 x 92 mm footprint; knobs diameter 16 x 18 mm;",
+   "keycap upper face 14 x 14 mm and height 9.5 mm; drawn switch width 15.6 mm and",
+   "height 11 mm. Blueprint maximum height is inconsistent (32 mm front/table,",
+   "41 mm side). The later parts catalog repeats 32 mm, which is the current design",
+   "envelope. The older 41 mm dimension remains recorded as a reference conflict."
+  ]
+ },
+ "secondary": {
+  "path": "builds/reference-keyboard/state.md",
+  "from": 20,
+  "to": 20,
+  "lines": [
+   "the original upload transport. Secondary sheets remain derivative design guides."
+  ]
+ },
+ "purpose": {
+  "path": "builds/reference-keyboard/interfaces.json",
+  "from": 4,
+  "to": 4,
+  "lines": [
+   "  \"purpose\": \"both; digital prototype with physical qualification pending\","
+  ]
+ },
+ "layout_json": {
+  "path": "builds/reference-keyboard/layout.json",
+  "from": 4,
+  "to": 8,
+  "lines": [
+   "  \"width_mm\": 284,",
+   "  \"depth_mm\": 92,",
+   "  \"height_options_mm\": [32,41],",
+   "  \"height_mm\": 32,",
+   "  \"height_status\": \"catalog-latest-design-envelope\","
+  ]
+ },
+ "spec_base": {
+  "path": "builds/reference-keyboard/spec-B.json",
+  "from": 13,
+  "to": 23,
+  "lines": [
+   "      \"id\": \"RK_BASE\",",
+   "      \"object\": \"RK_BASE\",",
+   "      \"target_dims_mm\": [",
+   "        284,",
+   "        92,",
+   "        4",
+   "      ],",
+   "      \"tol_mm\": 0.05,",
+   "      \"min_wall_mm\": 1.2,",
+   "      \"expected_shells\": 1,",
+   "      \"orientation_up\": \"+z\","
+  ]
+ },
+ "pass01_doc": {
+  "path": "builds/reference-keyboard/pass-01-layout.py",
+  "from": 1,
+  "to": 1,
+  "lines": [
+   "\"\"\"XY layout blockout only; unresolved final Z is not manufacturing acceptance.\"\"\""
+  ]
+ },
+ "ok_layout": {
+  "path": "builds/reference-keyboard/runs/layout-r01/steps/layout/attempt-0001/stdout.log",
+  "from": 4,
+  "to": 4,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"depth_mm\": 92, \"keys\": 58, \"knobs\": 5, \"width_mm\": 284}, \"step\": \"reference-keyboard-layout\"}"
+  ]
+ },
+ "pass02_emit": {
+  "path": "builds/reference-keyboard/pass-02-geometry.py",
+  "from": 59,
+  "to": 60,
+  "lines": [
+   "emit_ok('reference-keyboard-geometry',keys=len(rows),knobs=5,mesh_objects=len(measurements['objects']),",
+   "        gn_width_change_m=bpy.data.objects['RK_SWITCH_HOUSINGS']['gn_measured_width_change_m'])"
+  ]
+ },
+ "ok_geometry": {
+  "path": "builds/reference-keyboard/runs/geometry-B03/steps/geometry/attempt-0001/stdout.log",
+  "from": 135,
+  "to": 135,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"gn_width_change_m\": 0.0005999952554702759, \"keys\": 58, \"knobs\": 5, \"mesh_objects\": 556}, \"step\": \"reference-keyboard-geometry\"}"
+  ]
+ },
+ "gate_doc": {
+  "path": "scripts/production-gate.py",
+  "from": 3,
+  "to": 5,
+  "lines": [
+   "",
+   "    python3 scripts/production-gate.py --scene part.blend --spec build.spec.json \\",
+   "        --report out/report.json [--parts id,id] [--export-dir out/stl]"
+  ]
+ },
+ "ok_gate": {
+  "path": "builds/reference-keyboard/runs/geometry-B03/steps/gate/attempt-0001/stdout.log",
+  "from": 3,
+  "to": 3,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"failed_parts\": 0, \"part_families\": 8, \"stl_files\": 8}, \"step\": \"reference-keyboard-digital-gate\"}"
+  ]
+ },
+ "interfaces": {
+  "path": "builds/reference-keyboard/interfaces.json",
+  "from": 6,
+  "to": 9,
+  "lines": [
+   "    \"total_height\": 9.5, \"visible_shell_bottom\": 4.5, \"boss_diameter\": 6.4,",
+   "    \"receiver_span\": 4.12, \"receiver_horizontal_arm\": 1.22,",
+   "    \"receiver_vertical_arm\": 1.40, \"receiver_depth\": 3.2,",
+   "    \"mating_cross_span\": 4.0, \"mating_horizontal_arm\": 1.10,"
+  ]
+ },
+ "pass05_asserts": {
+  "path": "builds/reference-keyboard/pass-05-inspect.py",
+  "from": 43,
+  "to": 48,
+  "lines": [
+   "interfaces=evidence['interfaces']",
+   "assert not interfaces['key_stem']['key_material_stem_collision_indices']",
+   "assert not interfaces['key_stem']['stem_static_collision_indices']",
+   "assert interfaces['wide_guides']['collision_free']",
+   "assert interfaces['encoder_dshaft']['matching_rotations_collision_free']",
+   "assert interfaces['encoder_dshaft']['negative_controls_detect_collision']"
+  ]
+ },
+ "ok_inspect": {
+  "path": "builds/reference-keyboard/runs/verification-B03/steps/inspect/attempt-0001/stdout.log",
+  "from": 2,
+  "to": 2,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"collision_pairs\": 0, \"layout_checks\": 29, \"meshes\": 781, \"sampled_key_travels\": 7, \"switch_cells\": 58}, \"step\": \"reference-keyboard-inspect\"}"
+  ]
+ },
+ "pass04_bind": {
+  "path": "builds/reference-keyboard/pass-04-presentation.py",
+  "from": 16,
+  "to": 18,
+  "lines": [
+   "assert not gate['failed'] and not gate['required_checks_missing']",
+   "assert gate['inputs']['scene_sha256']==sha(source),'gate is bound to another scene'",
+   "assert gate['inputs']['spec_sha256']==sha(spec_path()),'gate is bound to another spec'"
+  ]
+ },
+ "ok_presentation": {
+  "path": "builds/reference-keyboard/runs/presentation-B03/steps/presentation/attempt-0001/stdout.log",
+  "from": 9,
+  "to": 9,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"drivers\": 58, \"legends\": 58, \"meshes\": 781, \"sampled_frames\": 11, \"views\": 6}, \"step\": \"reference-keyboard-presentation\"}"
+  ]
+ },
+ "pass07_assert": {
+  "path": "builds/reference-keyboard/pass-07-reopen.py",
+  "from": 11,
+  "to": 14,
+  "lines": [
+   "               inputs['artifacts']['export:keyboard.glb'],out/'glb-roundtrip.json')",
+   "assert result['pass'],'GLB surface/motion comparison failed; inspect glb-roundtrip.json'",
+   "worst=max(r['surface_max_error_mm'] for f in result['frames'].values() for r in f['objects'])",
+   "emit_ok('reference-keyboard-reopen',frames=len(result['frames']),"
+  ]
+ },
+ "ok_reopen": {
+  "path": "builds/reference-keyboard/runs/verification-B03/steps/reopen/attempt-0001/stdout.log",
+  "from": 728,
+  "to": 728,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"frames\": 3, \"max_sample_surface_error_mm\": 0.0, \"mesh_names\": 781}, \"step\": \"reference-keyboard-reopen\"}"
+  ]
+ },
+ "ok_final_gate": {
+  "path": "builds/reference-keyboard/runs/verification-B03/steps/final-gate/attempt-0001/stdout.log",
+  "from": 3,
+  "to": 3,
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"failed_parts\": 0, \"families\": 8, \"stl_files\": 8}, \"step\": \"reference-keyboard-final-gate\"}"
+  ]
+ },
+ "status": {
+  "path": "builds/reference-keyboard/delivery/r02/status.json",
+  "from": 38,
+  "to": 41,
+  "lines": [
+   "  \"media\": \"PASS_NATIVE_FULLHD\",",
+   "  \"motion\": \"PASS_DECLARED_DIGITAL_SCOPE\",",
+   "  \"fit\": \"PASS_DECLARED_DIGITAL_SCOPE\",",
+   "  \"manufacture\": \"BLOCKED\","
+  ]
+ },
+ "r01_missing": {
+  "path": "builds/reference-keyboard/README-r01-history.md",
+  "from": 71,
+  "to": 72,
+  "lines": [
+   "The keycap shell has no qualified stem receiver, and the knob's circular 6 mm bore",
+   "has no sourced D-flat or qualified retention. The knob neck, PCB seating rebate,"
+  ]
+ },
+ "first_gate_failed": {
+  "path": "builds/reference-keyboard/state.md",
+  "from": 70,
+  "to": 72,
+  "lines": [
+   "The first completed gate failed: long-plate axial probes exceeded the checker's",
+   "fixed 200 mm ray reach, and the knob carried 12 unreferenced vertices. Those",
+   "failures are preserved. Independent inspection of this scene found 58 switch"
+  ]
+ },
+ "never_run": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 44,
+  "to": 44,
+  "lines": [
+   "| CK-001 `pass-B-rotation.py` | authored, reviewed into the plan, never run — no manifest step, no run directory | the only check designed to prove a rotated knob pose survives GLB export does not exist as evidence | verified by `scripts/check-pass-coverage.py` |"
+  ]
+ },
+ "gate_report_head": {
+  "path": "runs/geometry-B03/.../gate-report.json",
+  "value": {
+   "failed": [],
+   "required_checks_missing": []
+  }
+ },
+ "rerun_p01": {
+  "path": "scratch re-run 2026-10-14 · p01.log",
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"depth_mm\": 92, \"keys\": 58, \"knobs\": 5, \"width_mm\": 284}, \"step\": \"reference-keyboard-layout\"}"
+  ]
+ },
+ "rerun_pcov": {
+  "path": "scratch re-run 2026-10-14 · pcov.log",
+  "lines": [
+   "builds/reference-keyboard: 11 authored, 10 declared by a manifest",
+   "  UNREFERENCED pass-B-rotation.py — authored but no manifest step runs it",
+   "FAIL"
+  ]
+ },
+ "rerun_rot": {
+  "path": "scratch re-run 2026-10-14 · rot.log",
+  "lines": [
+   "AGENT_OK {\"error\": null, \"postconditions\": {\"encoder_pairs\": 5, \"frame\": 18, \"max_error_mm\": 0.00012624573719222099, \"mesh_names\": 781}, \"step\": \"reference-keyboard-rotation-roundtrip\"}"
+  ]
+ }
+}

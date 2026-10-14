@@ -1,0 +1,18 @@
+# Music: Free To Use licence does not allow redistributing the file itself (also not inside a mix)
+audio/
+out/*.wav
+voiceover/tutorial-mix-preview.mp3
+# Superseded takes: eleven_v3 clips (northern drift) and the A/B listening files
+voiceover/clips/
+voiceover/ab/
+voiceover/voiceover-preview-*.mp3
+voiceover/*.png
+# Scratch renders and debug captures; regenerable with render-tutorial.mjs --beats
+out/beats-*/
+out/contact-v4/
+out/*.mjs
+out/*.log
+out/*.png
+out/check-*.jpg
+out/style-mock-sheet.jpg
+out/contact-tutorial.jpg

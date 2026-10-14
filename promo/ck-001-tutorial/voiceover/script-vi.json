@@ -1,0 +1,67 @@
+{
+ "voice_id": "ZsjEJaLQy3sgvwxicmDx",
+ "model_id": "eleven_v4",
+ "note": "One clip per chapter; window_s is the chapter length on the Dawn bar grid (bar = 2 s). Text is read verbatim. Model eleven_v4 chosen by owner A/B 2026-10-14: eleven_v3 drifted to a northern accent because this Professional Voice Clone is not fine-tuned for v3.",
+ "segments": [
+  {
+   "id": "title",
+   "window_s": 9.6,
+   "text": "Xin chào, tôi là Jang. Đây là video giới thiệu cách dùng repo DESIGN:OS 3D Blender, qua việc dựng bàn phím CK-001 từ đầu đến cuối."
+  },
+  {
+   "id": "input",
+   "window_s": 20,
+   "text": "Mọi thứ bắt đầu từ một tấm ảnh chụp. Từ ảnh đó, tôi gen thêm góc ba trăm sáu mươi độ, catalog chi tiết và bản vẽ, chỉ để tham khảo. Ảnh quyết định hình dáng, bản vẽ quyết định kích thước. Bản vẽ gen ra còn tự mâu thuẫn chiều cao, ba mươi hai hay bốn mươi mốt mi-li-mét, và repo ghi lại, không giấu."
+  },
+  {
+   "id": "contract",
+   "window_s": 16,
+   "text": "Trước khi dựng hình, mọi con số được viết xuống: hai trăm tám mươi tư nhân chín mươi hai nhân ba mươi hai mi-li-mét, năm mươi tám phím. Mỗi chi tiết có dung sai và độ dày tường tối thiểu. Thiếu số liệu thì agent dừng lại hỏi, không đoán."
+  },
+  {
+   "id": "layout",
+   "window_s": 12,
+   "text": "Pass đầu tiên chỉ dàn bố cục trên mặt phẳng. Kết quả không đọc bằng mắt, mà bằng dòng cuối cùng: agent OK, kèm con số."
+  },
+  {
+   "id": "geometry",
+   "window_s": 16,
+   "text": "Cùng một camera, bố cục biến thành hình khối thật, năm trăm năm mươi sáu mesh. Mỗi pass là một file, và mỗi file kết thúc bằng một dòng agent OK."
+  },
+  {
+   "id": "gate",
+   "window_s": 16,
+   "text": "Rồi đến cổng kiểm tra hình dạng: tám họ chi tiết, không lỗi nào, và file STL được đọc lại. Gate cũng nói rõ những gì nó chưa kiểm, như tải trọng hay in thật."
+  },
+  {
+   "id": "fit",
+   "window_s": 20,
+   "text": "Receiver của keycap, thanh dẫn hướng phím cách, trục D của núm xoay, tất cả là hình khối thật. Có cả bài test âm: lệch trục thì phải bắt được va chạm. Năm mươi tám phím, bảy vị trí hành trình, không một va chạm."
+  },
+  {
+   "id": "present",
+   "window_s": 20,
+   "text": "Chỉ khi gate đã qua, mới thêm vật liệu và ánh sáng. Ảnh Full HD và hoạt ảnh bốn giây đều render thẳng trong Blender. Bước trình bày bị khoá vào mã hash của gate, nên không thể trình bày một mô hình khác với mô hình đã kiểm."
+  },
+  {
+   "id": "export",
+   "window_s": 8,
+   "text": "Xuất GLB, mở lại, so từng mesh: bảy trăm tám mươi mốt mesh khớp."
+  },
+  {
+   "id": "deliver",
+   "window_s": 14,
+   "text": "Gói giao gồm trang review và sáu mươi hai file có hash. Nhưng gia công vẫn bị chặn, vì lực giữ phím, dung sai và mạch điện chưa được thử thật."
+  },
+  {
+   "id": "lessons",
+   "window_s": 18,
+   "text": "Và tôi đã sai. Bản đầu thiếu receiver, gate đầu tiên thất bại, và một pass được viết ra nhưng chưa từng chạy. Bài học: mọi check đã viết, đều phải được chạy."
+  },
+  {
+   "id": "outro",
+   "window_s": 7.5,
+   "text": "Repo DESIGN:OS 3D Blender là mã nguồn mở, bạn tự chạy lại được. Tôi là Jang, hẹn gặp lại."
+  }
+ ]
+}
