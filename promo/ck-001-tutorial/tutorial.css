@@ -78,3 +78,29 @@ body { font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antiali
 .repo .r-cmd { margin-top:18px; font:400 22px/1.6 var(--mono); color:#e9e7e3; background:rgba(255,255,255,.06); border-radius:14px; padding:18px 22px; }
 .repo .r-cmd span { color:#8f8d88; }
 #credit { position:absolute; left:0; right:0; bottom:28px; text-align:center; font:400 15px var(--mono); color:var(--ink-3); }
+
+/* 9:16 (tutorial-portrait-layout.js maps the rects; type grows so a phone screen can read it) */
+.portrait #stage { width:1080px; height:1920px; }
+.portrait #rail { left:48px; right:48px; top:64px; gap:6px; }
+.portrait #rail .lbl { min-width:220px; font-size:18px; }
+.portrait #cap { left:48px; right:48px; bottom:96px; }
+.portrait #cap .vi { font-size:44px; line-height:1.22; }
+.portrait #cap .en { font-size:21px; line-height:1.4; }
+.portrait #credit { bottom:40px; font-size:16px; }
+.portrait .file { font-size:20px; }
+.portrait .file .path { font-size:16px; }
+.portrait .file .ln.prose { font-size:26px; }
+.portrait .term { font-size:22px; padding:28px 30px; }
+.portrait .callout .b { font-size:24px; }
+.portrait .tag, .portrait .media .lab { font-size:18px; }
+.portrait .grid { grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:repeat(3,minmax(0,1fr)); }
+.portrait .chap h1 { font-size:120px; }
+.portrait .chap h2 { top:196px; font-size:30px; }
+.portrait .hero { width:984px; }
+.portrait .hero h1 { width:984px; font-size:100px; }
+.portrait .hero h2 { top:290px; font-size:28px; }
+.portrait .hero .note { top:360px; width:984px; font-size:28px; }
+.portrait .repo { padding:0 52px; gap:24px; }
+.portrait .repo .r-title { flex-wrap:wrap; font-size:46px; white-space:normal; gap:18px; }
+.portrait .repo .r-url { font-size:26px; word-break:break-all; }
+.portrait .repo .r-cmd { font-size:20px; word-break:break-all; }

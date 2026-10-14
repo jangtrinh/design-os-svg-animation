@@ -49,7 +49,8 @@
   // 1 · input: one photo, then generated secondary sheets, then the roles and the conflict
   el({ type: 'img', t0: bar(5), t1: bar(14), keys: [[bar(5), ...R.F], [bar(6.6), 72, 132, 860, 640]], src: 'ref/original-work-louder.png', tag: 'ảnh gốc · visual authority' });
   ['360-product-view', 'parts-catalog-rev01', 'blueprint-rev01'].forEach((n, i) => el({ type: 'img', t0: bar(7) + i * 2 * B, t1: bar(10.5), src: `ref/${n}.png`,
-    keys: [[bar(7) + i * 2 * B, 980 + i * 300, 160 + i * 190, 520, 360]], tag: ['gen · 360°', 'gen · parts catalog', 'gen · blueprint'][i], ghost: true, tilt: [-2, 1.5, -1][i] }));
+    keys: [[bar(7) + i * 2 * B, 980 + i * 300, 160 + i * 190, 520, 360]], tag: ['gen · 360°', 'gen · parts catalog', 'gen · blueprint'][i], ghost: true, tilt: [-2, 1.5, -1][i],
+    p: [[bar(7) + i * 2 * B, 48 + i * 170, 920 + i * 120, 644, 420]] }));
   el({ type: 'file', t0: bar(10.5), t1: bar(14), rect: [980, 132, 868, 300], ...ex('ref_roles', null, true) });
   el({ type: 'file', t0: bar(11.5), t1: bar(14), rect: [980, 462, 868, 310], ...ex('ref_conflict', [2, 3, 4]), hl: [0, 1], lead: true });
   cap(5, 7, 'Mọi thứ bắt đầu từ 1 ảnh chụp.', 'It all starts from one photo.');
@@ -110,8 +111,8 @@
   el({ type: 'wipe', t0: bar(55), t1: bar(58), rect: R.F, layers: [['assets/geometry/clay/o000.jpg', 55, 55.2], ['assets/presentation/hifi/o000.jpg', 56, 56.8]], fit: 'cover',
        label: [[bar(55), 'geometry · 556 mesh'], [bar(56), 'presentation · 781 mesh']] });
   el({ type: 'seq', t0: bar(58), t1: bar(60.2), rect: R.F, pattern: 'assets/anim/a%03d.jpg', n: 96, fps: 24, label: 'native Full HD · 96 frames · 24 fps' });
-  el({ type: 'grid', t0: bar(60.2), t1: bar(64), rect: R.F, srcs: ['hero', 'top', 'exploded', 'key-detail', 'knob-detail', 'usb-mount'].map((n) => `assets/stills/${n}.jpg`) });
-  el({ type: 'file', t0: bar(61.6), t1: bar(64), rect: [72, 600, 1100, 172], ...ex('pass04_bind', [1, 2]) });
+  el({ type: 'grid', t0: bar(60.2), t1: bar(64), rect: R.F, srcs: ['hero', 'top', 'exploded', 'key-detail', 'knob-detail', 'usb-mount'].map((n) => `assets/stills/${n}.jpg`), p: [48, 150, 984, 1190] });
+  el({ type: 'file', t0: bar(61.6), t1: bar(64), rect: [72, 600, 1100, 172], p: [48, 1370, 984, 210], ...ex('pass04_bind', [1, 2]) });
   cap(55, 58, 'Vật liệu và ánh sáng chỉ thêm sau khi gate PASS.', 'Materials and light come only after the gate passes.');
   cap(58, 60.2, 'Hoạt ảnh Full HD 4 giây, render native trong Blender.', 'A 4 s native Full HD animation, rendered in Blender.');
   cap(60.2, 64, 'Presentation bị khóa vào hash của gate.', 'Presentation is locked to the gate\'s hashes.');
@@ -140,7 +141,7 @@
   cap(80.6, 84, 'Mọi check đã viết ra đều phải được chạy.', 'Every check you write must actually run.');
 
   // outro
-  el({ type: 'repo', t0: bar(84.2), t1: T + 1, rect: [220, 200, 1480, 560] });
+  el({ type: 'repo', t0: bar(84.2), t1: T + 1, rect: [220, 200, 1480, 560], p: [48, 470, 984, 820] });
   cap(84.6, 87.6, 'Tự chạy lại toàn bộ trong repo.', 'Re-run the whole build yourself from the repo.');
 
   Object.assign(D, { BAR, DB0, B, T, bar, CH, EL, CAP });

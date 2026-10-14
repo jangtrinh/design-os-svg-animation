@@ -115,11 +115,12 @@
   } };
 
   R.hero = { build(node, s) {
-    const txt = mk('div', 'hero', node); txt.style.cssText = 'position:absolute;left:72px;top:250px;';
+    const P = D.PORTRAIT;  // 9:16: text block on top, render below it
+    const txt = mk('div', 'hero', node); txt.style.cssText = P ? 'position:absolute;left:48px;top:230px;' : 'position:absolute;left:72px;top:250px;';
     mk('div', 'k', txt, esc(s.kicker)); mk('h1', '', txt, esc(s.title)); mk('h2', '', txt, esc(s.sub)); mk('div', 'note', txt, esc(s.note));
-    const pic = mk('div', 'card', node); pic.style.cssText = 'position:absolute;left:1000px;top:200px;width:980px;height:620px;';
+    const pic = mk('div', 'card', node); pic.style.cssText = P ? 'position:absolute;left:48px;top:720px;width:984px;height:820px;' : 'position:absolute;left:1000px;top:200px;width:980px;height:620px;';
     mk('img', '', pic, '').src = s.img; pic.firstChild.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-    return (t) => { pic.style.transform = `translateX(${(60 * (1 - D.spring(t - s.t0 - 0.6, 7, 0.95))).toFixed(2)}px)`; pic.style.opacity = D.vis(t, s.t0 + 0.5, null, 0.6).toFixed(3); };
+    return (t) => { pic.style.transform = `translate${P ? 'Y' : 'X'}(${(60 * (1 - D.spring(t - s.t0 - 0.6, 7, 0.95))).toFixed(2)}px)`; pic.style.opacity = D.vis(t, s.t0 + 0.5, null, 0.6).toFixed(3); };
   } };
 
   R.repo = { build(node, s) {

@@ -50,8 +50,8 @@
 
     for (const k of cards) {
       const v = D.vis(t, k.c.t0, k.c.t0 + k.dur - 0.12, 0.3, 0.28);
-      place(k.box, [72, 300, 1000, 300]); D.applyVis(k.box, v, 18);
-      if (k.pic) { place(k.pic, [1120, 220, 800, 520]); D.applyVis(k.pic, D.vis(t, k.c.t0 + 0.12, k.c.t0 + k.dur - 0.12, 0.34, 0.28), 26); }
+      place(k.box, D.PORTRAIT ? [48, 300, 984, 300] : [72, 300, 1000, 300]); D.applyVis(k.box, v, 18);
+      if (k.pic) { place(k.pic, D.PORTRAIT ? [48, 700, 984, 700] : [1120, 220, 800, 520]); D.applyVis(k.pic, D.vis(t, k.c.t0 + 0.12, k.c.t0 + k.dur - 0.12, 0.34, 0.28), 26); }
     }
 
     let cv = 0;
@@ -66,7 +66,7 @@
       const v = D.vis(t, e.spec.t0, e.spec.t1 - 0.3, 0.32, 0.26);
       // display:none, not visibility:hidden: a child with visibility:visible would still show through
       if (v <= 0.001) { e.node.style.display = 'none'; continue; }
-      e.node.style.display = 'block';
+      e.node.style.display = '';  // '' restores the stylesheet value (grid cells need display:grid)
       place(e.node, rectAt(e.spec, t));
       D.applyVis(e.node, v, 16);
       e.paint(t, v);

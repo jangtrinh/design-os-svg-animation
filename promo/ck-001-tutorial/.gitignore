@@ -16,3 +16,6 @@ out/*.png
 out/check-*.jpg
 out/style-mock-sheet.jpg
 out/contact-tutorial.jpg
+out/portrait-zoom-*.jpg
+out/portrait-input-check.jpg
+out/landscape-committed-*.jpg
