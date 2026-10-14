@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DESIGN:OS 3D Blender — Promo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<link rel="stylesheet" href="promo.css">
+</head>
+<body>
+<div id="stage">
+  <div id="camera">
+    <div id="shape">
+      <div class="c c-prompt">
+        <span class="p-text"><span class="p-ph">Describe a product to build…</span><span class="p-typed"></span><span class="caret"></span></span>
+        <span class="p-send"><svg viewBox="0 0 256 256"><path d="M205.66,117.66a8,8,0,0,1-11.32,0L136,59.31V216a8,8,0,0,1-16,0V59.31L61.66,117.66a8,8,0,0,1-11.32-11.32l72-72a8,8,0,0,1,11.32,0l72,72A8,8,0,0,1,205.66,117.66Z"/></svg></span>
+      </div>
+      <div class="c c-purpose">
+        <span class="knob"></span>
+        <span class="opt">Render</span><span class="opt">Print</span><span class="opt">Both</span>
+      </div>
+      <div class="c c-passes">
+        <div class="ps-head"><span>builds/dc-01</span><span class="mono">headless · Blender 5.2</span></div>
+        <div class="ps-row"><i></i><span>pass-01 blockout</span><em>AGENT_OK</em></div>
+        <div class="ps-row"><i></i><span>pass-02 shell + bosses</span><em>AGENT_OK</em></div>
+        <div class="ps-row"><i></i><span>pass-03 holes, exact boolean</span><em>AGENT_OK</em></div>
+        <div class="ps-row"><i></i><span>pass-04 print orientation</span><em>AGENT_OK</em></div>
+      </div>
+      <div class="c c-check"><svg viewBox="0 0 256 256"><polyline points="48,136 104,192 216,72"/></svg></div>
+      <div class="c c-img" id="imgs"></div>
+      <div class="c c-scrub-ui"><div class="sc-track"><div class="sc-fill"></div><div class="sc-knob"></div></div><span class="mono sc-label">frame 001</span></div>
+      <div class="c c-gate">
+        <div class="g-head"><span>Production gate</span><span class="g-badge">PASS</span></div>
+        <div class="g-row"><span>wall thickness</span><b class="mono">≥ 1.20 mm</b><i></i></div>
+        <div class="g-row"><span>topology · manifold</span><b class="mono">0 open edges</b><i></i></div>
+        <div class="g-row"><span>dimensions vs spec</span><b class="mono">± 0.20 mm</b><i></i></div>
+        <div class="g-row"><span>export roundtrip</span><b class="mono">STL · 3MF</b><i></i></div>
+      </div>
+      <div class="c c-cmdk">
+        <div class="k-in"><svg viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"/></svg><span class="k-typed"></span><span class="caret"></span><span class="k-kbd mono">⌘K</span></div>
+        <div class="k-list">
+          <div class="k-item" data-m="export stl"><span>Export STL per plate</span><span class="mono">print</span></div>
+          <div class="k-item" data-m="export glb"><span>Export GLB review</span><span class="mono">media</span></div>
+          <div class="k-item" data-m="render turntable"><span>Render turntable</span><span class="mono">media</span></div>
+          <div class="k-item" data-m="run production gate"><span>Run production gate</span><span class="mono">gate</span></div>
+        </div>
+        <div class="k-foot mono"><span>↑↓ navigate</span><span class="k-enter"><svg viewBox="0 0 256 256"><path d="M200,32V176a8,8,0,0,1-8,8H67.31l34.35,34.34a8,8,0,0,1-11.32,11.32l-48-48a8,8,0,0,1,0-11.32l48-48a8,8,0,0,1,11.32,11.32L67.31,168H184V32a8,8,0,0,1,16,0Z"/></svg> run</span></div>
+      </div>
+      <div class="c c-toast"><svg viewBox="0 0 256 256"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg><span>6 print plates exported · gate PASS</span></div>
+      <div class="c c-lockup">
+        <span class="l-kicker mono">DESIGN:OS</span>
+        <span class="l-name">3D Blender</span>
+        <span class="l-tag">Evidence-first Blender for AI agents</span>
+      </div>
+      <div class="c c-repo">
+        <div class="r-title"><svg class="r-gh" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8C0 11.54 2.29 14.53 5.47 15.59C5.87 15.66 6.02 15.42 6.02 15.21C6.02 15.02 6.01 14.39 6.01 13.72C4 14.09 3.48 13.23 3.32 12.78C3.23 12.55 2.84 11.84 2.5 11.65C2.22 11.5 1.82 11.13 2.49 11.12C3.12 11.11 3.57 11.7 3.72 11.94C4.44 13.15 5.59 12.81 6.05 12.6C6.12 12.08 6.33 11.73 6.56 11.53C4.78 11.33 2.92 10.64 2.92 7.58C2.92 6.71 3.23 5.99 3.74 5.43C3.66 5.23 3.38 4.41 3.82 3.31C3.82 3.31 4.49 3.1 6.02 4.13C6.66 3.95 7.34 3.86 8.02 3.86C8.7 3.86 9.38 3.95 10.02 4.13C11.55 3.09 12.22 3.31 12.22 3.31C12.66 4.41 12.38 5.23 12.3 5.43C12.81 5.99 13.12 6.7 13.12 7.58C13.12 10.65 11.25 11.33 9.47 11.53C9.76 11.78 10.01 12.26 10.01 13.01C10.01 14.08 10 14.94 10 15.21C10 15.42 10.15 15.67 10.55 15.59C13.71 14.53 16 11.53 16 8C16 3.58 12.42 0 8 0Z"/></svg><span>jangtrinh / <b>design-os-3d-blender</b></span></div>
+        <div class="r-url mono">github.com/jangtrinh/design-os-3d-blender</div>
+        <div class="r-foot">
+          <span class="r-chip mono">Open source</span><span class="r-chip mono">MIT</span><span class="r-chip mono">Blender 5.2 LTS</span>
+          <span class="r-star"><span class="r-ico"><svg class="s-o" viewBox="0 0 256 256"><path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z"/></svg><svg class="s-f" viewBox="0 0 256 256"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z"/></svg></span><span class="s-txt">Star on GitHub</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="caption" class="mono"></div>
+  <div id="credit" class="mono">Music: Edge of Motion by Aetheric · freetouse.com/music</div>
+  <svg id="cursor" viewBox="0 0 256 256"><path class="cu-o" d="M220.49,207.8,207.8,220.49a12,12,0,0,1-17,0l-56.57-56.57L115,214.08l-.13.33A15.84,15.84,0,0,1,100.26,224l-.78,0a15.82,15.82,0,0,1-14.41-11L32.8,52.92A15.95,15.95,0,0,1,52.92,32.8L213,85.07a16,16,0,0,1,1.41,29.8l-.33.13-50.16,19.27,56.57,56.56A12,12,0,0,1,220.49,207.8Z"/><path class="cu-f" d="M220.49,207.8,207.8,220.49a12,12,0,0,1-17,0l-56.57-56.57L115,214.08l-.13.33A15.84,15.84,0,0,1,100.26,224l-.78,0a15.82,15.82,0,0,1-14.41-11L32.8,52.92A15.95,15.95,0,0,1,52.92,32.8L213,85.07a16,16,0,0,1,1.41,29.8l-.33.13-50.16,19.27,56.57,56.56A12,12,0,0,1,220.49,207.8Z"/></svg>
+</div>
+<script src="motion-core.js"></script>
+<script src="promo-timeline.js"></script>
+<script src="promo-scene.js"></script>
+<script src="promo-scene-states.js"></script>
+<script src="promo-scene-sequences.js"></script>
+</body>
+</html>

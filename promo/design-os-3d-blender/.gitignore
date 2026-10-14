@@ -1,0 +1,16 @@
+# Regenerable from the source .blend files and videos (blender/render-all-orbits.py, ffmpeg extracts)
+assets/orbit/
+assets/orbit-web/
+assets/scrub/
+assets/dc-clip/
+# Music: Free To Use licence does not allow redistributing the file itself
+audio/
+out/*.wav
+out/beats-*/
+out/*.json
+out/*.mjs
+out/*check*.jpg
+out/showcase-*.jpg
+out/outro-*.jpg
+out/portrait-check.jpg
+out/render-full.log
