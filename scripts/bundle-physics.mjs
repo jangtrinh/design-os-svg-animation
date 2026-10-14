@@ -12,7 +12,9 @@ const figureFiles = [
   'physics-switch.js'
 ];
 
-let appCode = `/*
+const geo = readFileSync(path.join(figuresDir, 'physics-lever-geometry.mjs'), 'utf8').replace(/^export /gm, '');
+let appCode = `globalThis.LEVER = (function () {\n${geo}\nreturn { model, readout, frame, markup, contribute, restFulcrum, deckZ };\n})();\n\n`;
+appCode += `/*
  * 5 Physics Figures Definitions (Hairline 2:1 Axonometric Standard)
  * Modularized Architecture - Auto-bundled
  */
