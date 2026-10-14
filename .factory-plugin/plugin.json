@@ -1,0 +1,20 @@
+{
+  "name": "design-os-svg-animation",
+  "description": "Deterministic vector motion engine, virtual-clock studio player, and 1080p 60fps MP4/WebM launch-video compiler for AI agents.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jang Trinh",
+    "url": "https://github.com/jangtrinh"
+  },
+  "homepage": "https://jangtrinh.github.io/design-os-svg-animation/",
+  "repository": "https://github.com/jangtrinh/design-os-svg-animation",
+  "license": "MIT",
+  "keywords": [
+    "svg-animation",
+    "motion-design",
+    "launch-video",
+    "virtual-clock",
+    "anti-flop-gate",
+    "design-os"
+  ]
+}

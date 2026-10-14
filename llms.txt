@@ -1,0 +1,43 @@
+# design-os-svg-animation
+
+> Deterministic vector animation and 1080p 60fps motion video pipeline for AI coding agents (Claude Code, Codex, Antigravity). Motion IR compiler, virtual clock quantizing, proactive pre-flight guard, and 6 anti-flop verification gates.
+
+A motion engineering pipeline that compiles Motion IR storyboards to CSS and GSAP, renders broadcast MP4s with headless Chromium virtual clocks, and audits output against proactive pre-flight quality guards and 6 anti-flop gates.
+
+## Documentation
+
+- [Overview & Dual Carousel Showcase](https://jangtrinh.github.io/design-os-svg-animation/): Interactive landing page with live animations and dual video showcase (Claude Design 82s & OpenAI Codex App 38s).
+- [Reference Recreation Contract](https://jangtrinh.github.io/design-os-svg-animation/pipelines/motion-video-recreation-pipeline.html): Source evidence, HyperFrames staging, transition review, encoded-output checks, acceptance states, and session handoff.
+- [Recreation Lessons and Review Guide](https://jangtrinh.github.io/design-os-svg-animation/pipelines/motion-video-recreation-workflow-guide.html): Astra case failures and evidence-based review method.
+- [Motion IR Specification](https://jangtrinh.github.io/design-os-svg-animation/reference/motion-ir.html): Full specification for the intermediate representation.
+- [Architecture Overview](https://jangtrinh.github.io/design-os-svg-animation/architecture/architecture-overview.html): Multi-stage video rendering pipeline and virtual clock mechanism.
+- [Quality & Safety Gates](https://jangtrinh.github.io/design-os-svg-animation/reference/quality-and-safety-gates.html): The 6 deterministic anti-flop validation criteria and pre-flight guard.
+- [Hairline Solid-First Workflow](https://jangtrinh.github.io/design-os-svg-animation/hairline-solid-workflow.html): 5-step discipline for authoring interactive 2:1 axonometric figures.
+- [Art Direction Specification](https://jangtrinh.github.io/design-os-svg-animation/art-direction.html): Unified standards for monochrome isometric technical illustrations.
+- [Payment Terminal Specimen](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html): Interactive EMV card insertion and tactile keypad PIN entry figure.
+- [Machine Vise Specimen](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html): Interactive constrained lead screw and sliding jaw CAD figure.
+- [Grade 1 Math Suite (10 Figures)](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html): Complete Grade 1 elementary math laboratory featuring 10 interactive manipulatives in 2:1 axonometric projection.
+- [GitHub Repository](https://github.com/jangtrinh/design-os-svg-animation): Source code, CLI commands, and test suites.
+
+## Core Features & Workflow
+
+- **Motion IR**: JSON intermediate representation capturing keyframes, easings, spatial trajectories, and timeline markers.
+- **Virtual Clock Engine**: Drives headless Chromium via explicit timestamp increments (1/60s), eliminating dropped frames.
+- **Hairline Engine**: Interactive 2:1 axonometric vector instruments with spring-driven kinematics, dynamic SVG depth sorting, and meaningful physical interaction.
+- **Pre-Flight Guard & 6 Anti-Flop Gates**: Boundary clipping prevention, SVG glyph fill audits, camera decoupling, frame drift, color gamut, font loading, and timeline integrity audits.
+
+## DESIGN:OS Ecosystem
+
+- [design-os](https://jangtrinh.github.io/design-os/): DESIGN:OS CLI — Multi-runtime design CLI for Claude Code, Codex & Antigravity (cli)
+- [design-os-knowledge-builder](https://jangtrinh.github.io/design-os-knowledge-builder/): Knowledge Builder — Multimodal knowledge compiler with UKMC.v1 contract & epistemic gate (compiler)
+- [design-os-figma-plugin](https://jangtrinh.github.io/design-os-figma-plugin/): Figma Plugin & CLI — Live canvas bridge for AI coding agents on Figma Free (plugin)
+- [design-os-svg-animation](https://jangtrinh.github.io/design-os-svg-animation/): SVG Animation Engine — Deterministic vector animation & 1080p 60fps video pipeline (engine)
+- [design-os-3d-blender](https://jangtrinh.github.io/design-os-3d-blender/): 3D Blender Agent — Mechanical parts generation with embedded Three.js CAD viewer (3d / cad)
+- [design-os-drone-showcase](https://jangtrinh.github.io/design-os-drone-showcase/): OPAH ONE — 249g indoor drone showcase with scroll-scrub kinematics (hardware)
+- [design-os-github-page](https://jangtrinh.github.io/design-os-github-page/): GitHub Pages Engine — 9-tier zero-dependency scaffolder with SEO, AEO & GEO (pages)
+- [design-os-apple](https://jangtrinh.github.io/design-os-apple/): Apple Design OS — Native SwiftUI 6.2 component system for iOS, iPadOS & macOS (swiftui)
+- [design-os-pedagogy](https://jangtrinh.github.io/design-os-pedagogy/): Agent Teacher — Evidence-graded pedagogy library and curriculum tree runtime (pedagogy)
+- [design-os-origami](https://jangtrinh.github.io/design-os-origami/): Origami CAD — Parametric packaging dielines, spot-color PDFs & 3D fold previews (packaging)
+- [design-os-voice-ux](https://jangtrinh.github.io/design-os-voice-ux/): Voice UX & AI Agent Architecture — Full-duplex barge-in FSMs & sub-500ms voice specs (voice-ai)
+- [design-os-code2flow](https://jangtrinh.github.io/design-os-code2flow/): Code2Flow — Local-first codebase-to-user-flow audit CLI across 7 UI frameworks (ast / audit)
+- [design-os-generative-ui](https://jangtrinh.github.io/design-os-generative-ui/): Generative UI — Streaming interactive visual runtime with morphdom & WebGL (runtime)
