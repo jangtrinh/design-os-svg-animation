@@ -86,7 +86,21 @@ Every deliverable produced by `design-os-svg-animation` is backed by a determini
 | :--- | :--- | :--- | :--- |
 | **Universal StudioPlayer HTML** | Self-contained interactive promo player with transport dock and viewport auto-scaler | `Single HTML + JS/CSS runtime` | `Gate 9 Universal Player PASS` |
 | **Motion IR & Walkthrough Timeline** | Declarative JSON/JS choreography for camera punches and pointer clicks | `Validated Motion IR JSON` | `Gates 5, 6, 7, 8 PASS` |
-| **1080p 60fps Clean Export** | Headless browser frame capture via `?clean=1` virtual clock seeking | `MP4 / WebM / PNG sequence` | `10/10 Anti-Flop Gate PASS` |
+| **1080p 60fps 3x `tmix` Showreel Export** | Pure `window.seek(t)` headless capture with 3-subframe shutter motion blur & audio | `MP4 / GIF / Beat Sheet` | `Gate 10 Showreel Anti-Flop PASS` |
+
+### Featured Showreel & Interactive Suites
+
+<p align="center">
+  <a href="docs/promo/origami-cad/origami-cad-promo.mp4"><img src="docs/assets/example-5-origami-cad-promo.gif" alt="DESIGN:OS Origami CAD — 15s 120BPM Monochrome Showreel" width="840"></a><br>
+  <sub><b>DESIGN:OS Origami CAD (15s · 120 BPM · 60fps 3x <code>tmix</code> · B&amp;W + 50 Shades of Gray · SF Pro Display)</b> — <a href="docs/promo/origami-cad/origami-cad-promo.mp4">Download 1080p 60fps MP4</a> · <a href="docs/promo/origami-cad/origami-cad-promo.html">Open Pure-Time <code>window.seek(t)</code> HTML</a></sub>
+</p>
+
+| Interactive Suite | Live Playground | Cover Preview |
+| :--- | :--- | :--- |
+| **Grade 1 Math (25 Figures)** | [`docs/playground/math-grade1.html`](docs/playground/math-grade1.html) | [`docs/assets/math-gallery-cover.png`](docs/assets/math-gallery-cover.png) |
+| **Physics Mechanics** | [`docs/playground/physics.html`](docs/playground/physics.html) | [`docs/assets/physics-gallery-cover.png`](docs/assets/physics-gallery-cover.png) |
+| **Chemistry Reactions** | [`docs/playground/chemistry.html`](docs/playground/chemistry.html) | [`docs/assets/chemistry-gallery-cover.png`](docs/assets/chemistry-gallery-cover.png) |
+| **Physical Education Kinematics** | [`docs/playground/pe.html`](docs/playground/pe.html) | [`docs/assets/pe-gallery-cover.png`](docs/assets/pe-gallery-cover.png) |
 
 ---
 
