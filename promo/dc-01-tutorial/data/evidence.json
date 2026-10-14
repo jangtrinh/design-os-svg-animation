@@ -1,0 +1,730 @@
+{
+ "reg_context": {
+  "path": "builds/desktop-companion/references/source-registry.json",
+  "from": 3,
+  "to": 3,
+  "lines": [
+   "  \"verification_context\": \"Files inspected and SHA256 calculated in this conversation's mounted runtime. These bytes have not yet been copied to the user's macOS project.\","
+  ]
+ },
+ "reg_rows": {
+  "path": "builds/desktop-companion/references/source-registry.json",
+  "from": 6,
+  "to": 10,
+  "lines": [
+   "    {\"id\": \"REF01\", \"kind\": \"owner original photograph\", \"conversation_file\": \"image(1).png\", \"expected_local_name\": \"original.png\", \"sha256\": \"647e22964fd2f490f06b0b3100ad05f7dfc05fd11c45dc4c5c4fb13ac4ec83e2\", \"pixels\": [335,597], \"local_copy_exists\": false, \"authority\": \"visible form only; no absolute dimensions\"},",
+   "    {\"id\": \"REF02\", \"kind\": \"generated turnaround concept\", \"conversation_file\": \"cute_robot_toy_turnaround_sheet.png\", \"expected_local_name\": \"turnaround.png\", \"sha256\": \"77b0bdc60e69cfa7ab8fd4644db20bd1d1e2fe0e0998a6318036c8ec913ee7ae\", \"pixels\": [1448,1086], \"local_copy_exists\": false, \"authority\": \"inferred secondary form\"},",
+   "    {\"id\": \"REF03\", \"kind\": \"generated blueprint concept\", \"conversation_file\": \"desktop_robot_blueprint_concept.png\", \"expected_local_name\": \"blueprint-concept.png\", \"sha256\": \"7f3ddcdd68703f53b520580a1726daf471d32a939747764b43bac2a6c71650f0\", \"pixels\": [1448,1086], \"local_copy_exists\": false, \"authority\": \"concept only; measurements and date untrusted\"},",
+   "    {\"id\": \"REF04\", \"kind\": \"generated exploded concept\", \"conversation_file\": \"cute_robot_exploded_assembly_diagram.png\", \"expected_local_name\": \"exploded-concept.png\", \"sha256\": \"f921ea88a054fe7b76b30d3b9f608b72c1298faccec8e0d1f388f7b66f40c679\", \"pixels\": [1448,1086], \"local_copy_exists\": false, \"authority\": \"concealed construction proposal, not a BOM\"},",
+   "    {\"id\": \"REF05\", \"kind\": \"generated parts catalog concept\", \"conversation_file\": \"desktop_robot_parts_catalog.png\", \"expected_local_name\": \"parts-concept.png\", \"sha256\": \"deacf8a6089099bb27d9c6e6ccf115db698bfe970ecedbcc0fe3833e6f262380\", \"pixels\": [1448,1086], \"local_copy_exists\": false, \"authority\": \"not a verified parts count or electrical design\"}"
+  ]
+ },
+ "reg_sources": {
+  "path": "builds/desktop-companion/references/source-registry.json",
+  "value": [
+   {
+    "id": "REF01",
+    "kind": "owner original photograph",
+    "sha256": "647e22964fd2f490f06b0b3100ad05f7dfc05fd11c45dc4c5c4fb13ac4ec83e2",
+    "local_copy_exists": false
+   },
+   {
+    "id": "REF02",
+    "kind": "generated turnaround concept",
+    "sha256": "77b0bdc60e69cfa7ab8fd4644db20bd1d1e2fe0e0998a6318036c8ec913ee7ae",
+    "local_copy_exists": false
+   },
+   {
+    "id": "REF03",
+    "kind": "generated blueprint concept",
+    "sha256": "7f3ddcdd68703f53b520580a1726daf471d32a939747764b43bac2a6c71650f0",
+    "local_copy_exists": false
+   },
+   {
+    "id": "REF04",
+    "kind": "generated exploded concept",
+    "sha256": "f921ea88a054fe7b76b30d3b9f608b72c1298faccec8e0d1f388f7b66f40c679",
+    "local_copy_exists": false
+   },
+   {
+    "id": "REF05",
+    "kind": "generated parts catalog concept",
+    "sha256": "deacf8a6089099bb27d9c6e6ccf115db698bfe970ecedbcc0fe3833e6f262380",
+    "local_copy_exists": false
+   }
+  ]
+ },
+ "reg_disagree": {
+  "path": "builds/desktop-companion/references/source-registry.json",
+  "from": 14,
+  "to": 14,
+  "lines": [
+   "    \"Generated catalog and exploded sheet disagree on shell count, feet count, battery capacity and internal construction; native mechanical BOM is authoritative for DC-01.\","
+  ]
+ },
+ "state_generated": {
+  "path": "builds/desktop-companion/state.md",
+  "from": 23,
+  "to": 23,
+  "lines": [
+   "DC-01 is a proposed compact electronic desktop companion. The original photo governs its visible shape. Generated views guide inferred surfaces; their dimensions, internal hardware, labels and dates are not measurements of the photographed product."
+  ]
+ },
+ "params": {
+  "path": "builds/desktop-companion/design-parameters.json",
+  "from": 3,
+  "to": 9,
+  "lines": [
+   "  \"purpose\": \"both\",",
+   "  \"units\": \"mm\",",
+   "  \"blender_units\": \"1 BU = 1 metre\",",
+   "  \"dimension_status\": \"proposed engineering dimensions, not measured from image\",",
+   "  \"axes\": {\"x\": \"right\", \"y\": \"back\", \"z\": \"up\", \"front\": \"negative Y\", \"ground_z_mm\": 0},",
+   "  \"shell\": {\"width_mm\": 80, \"depth_mm\": 64, \"height_mm\": 94, \"wall_nominal_mm\": 2.4, \"wall_min_mm\": 2.0},",
+   "  \"overall_target\": {\"width_mm\": 96, \"depth_max_mm\": 76, \"height_max_mm\": 116},"
+  ]
+ },
+ "params_duty": {
+  "path": "builds/desktop-companion/design-parameters.json",
+  "from": 16,
+  "to": 16,
+  "lines": [
+   "  \"duty\": {\"role\": \"stationary indoor desktop expressions and button interaction\", \"mechanical_payload_design_kg\": 0.35, \"actuated_limbs\": false, \"physical_load_test\": \"pending\"},"
+  ]
+ },
+ "ok_blockout": {
+  "path": "builds/desktop-companion/runs/blockout-A01/steps/blockout/attempt-0001/stdout.log",
+  "from": 7,
+  "to": 7,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-blockout\", \"postconditions\": {\"body_height_mm\": 93.99999678134918, \"meshes\": 12, \"non_manifold_edges\": 0, \"views\": 4}}"
+  ]
+ },
+ "gate_M02": {
+  "path": "builds/desktop-companion/mechanical/M02/shell-gate.json",
+  "value": {
+   "failed": [
+    "DC01_LOWER_SHELL",
+    "DC01_UPPER_SHELL"
+   ],
+   "parts": 2,
+   "wall_min_mm": {
+    "DC01_LOWER_SHELL": 2.153,
+    "DC01_UPPER_SHELL": 0.046
+   }
+  }
+ },
+ "gate_M19": {
+  "path": "builds/desktop-companion/mechanical/M19/form-gate.json",
+  "value": {
+   "failed": [
+    "DC01_LOWER_SHELL",
+    "DC01_UPPER_SHELL",
+    "DC01_CHARGER_FRAME"
+   ],
+   "parts": 15,
+   "wall_min_mm": {
+    "DC01_LOWER_SHELL": 0.806,
+    "DC01_UPPER_SHELL": 0.5,
+    "DC01_CHARGER_FRAME": 0.201
+   }
+  }
+ },
+ "fit_M19": {
+  "path": "builds/desktop-companion/mechanical/M19/fit-E02.json",
+  "value": {
+   "status": "FAIL",
+   "candidate_pairs": 2111,
+   "collisions": [
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_L_-10_43"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_L_10_43"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_L_10_24.5"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_R_-10_43"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_R_10_43"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_SIDE_STANDOFF_R_10_24.5"
+     ],
+     "volume_mm3": 2.5997
+    },
+    {
+     "parts": [
+      "DC01_UPPER_SHELL",
+      "DC01_BOLT_REGULATOR_49"
+     ],
+     "volume_mm3": 2.5754
+    },
+    {
+     "parts": [
+      "DC01_UPPER_SHELL",
+      "DC01_WASHER_REGULATOR_49"
+     ],
+     "volume_mm3": 0.5217
+    },
+    {
+     "parts": [
+      "DC01_MAINBOARD_FRAME",
+      "DC01_BOLT_REGULATOR_49"
+     ],
+     "volume_mm3": 0.047
+    },
+    {
+     "parts": [
+      "DC01_MAINBOARD_FRAME",
+      "DC01_NUT_REGULATOR_49"
+     ],
+     "volume_mm3": 4.1063
+    },
+    {
+     "parts": [
+      "DC01_MAINBOARD_FRAME",
+      "DC01_EL02_BACK_LAND_038"
+     ],
+     "volume_mm3": 0.0145
+    },
+    {
+     "parts": [
+      "DC01_MAINBOARD_FRAME",
+      "DC01_EL02_BACK_LAND_028"
+     ],
+     "volume_mm3": 0.0032
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_FRONT_SPACER_-18.415_49.125",
+      "DC01_EL01_PAD_028"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_REAR_SPACER_-18.415_49.125",
+      "DC01_EL01_OPPOSITE_PAD_028"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_FRONT_SPACER_-18.415_80.875",
+      "DC01_EL01_PAD_027"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_REAR_SPACER_-18.415_80.875",
+      "DC01_EL01_OPPOSITE_PAD_027"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_FRONT_SPACER_20.32_49.125",
+      "DC01_EL01_PAD_026"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_REAR_SPACER_20.32_49.125",
+      "DC01_EL01_OPPOSITE_PAD_026"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_FRONT_SPACER_20.32_80.875",
+      "DC01_EL01_PAD_025"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_DISPLAY_REAR_SPACER_20.32_80.875",
+      "DC01_EL01_OPPOSITE_PAD_025"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0136"
+     ],
+     "volume_mm3": 0.034
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0128"
+     ],
+     "volume_mm3": 0.0993
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0115"
+     ],
+     "volume_mm3": 0.0308
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0101"
+     ],
+     "volume_mm3": 0.0308
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0084"
+     ],
+     "volume_mm3": 0.0308
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0075"
+     ],
+     "volume_mm3": 0.0015
+    },
+    {
+     "parts": [
+      "DC01_CHARGER_FRAME",
+      "DC01_EL04_CU_0074"
+     ],
+     "volume_mm3": 0.0415
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_-13.97_-9.51",
+      "DC01_EL04_PAD_041"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_-13.97_23.51",
+      "DC01_EL04_PAD_038"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_13.97_-9.51",
+      "DC01_EL04_PAD_040"
+     ],
+     "volume_mm3": 0.1094
+    },
+    {
+     "parts": [
+      "DC01_BOLT_CHARGER_PCB_13.97_23.51",
+      "DC01_EL04_X3"
+     ],
+     "volume_mm3": 0.2587
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_13.97_23.51",
+      "DC01_EL04_X3"
+     ],
+     "volume_mm3": 0.4635
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_13.97_23.51",
+      "DC01_EL04_PAD_039"
+     ],
+     "volume_mm3": 0.1094
+    }
+   ]
+  }
+ },
+ "gate_M25": {
+  "path": "builds/desktop-companion/mechanical/M25/form-gate.json",
+  "value": {
+   "failed": [
+    "DC01_UPPER_SHELL",
+    "DC01_MAINBOARD_FRAME"
+   ],
+   "parts": 15,
+   "wall_min_mm": {
+    "DC01_UPPER_SHELL": 0.794,
+    "DC01_MAINBOARD_FRAME": 2.325
+   }
+  }
+ },
+ "gate_M26": {
+  "path": "builds/desktop-companion/mechanical/M26/form-gate.json",
+  "value": {
+   "failed": [
+    "DC01_UPPER_SHELL"
+   ],
+   "parts": 15,
+   "wall_min_mm": {
+    "DC01_UPPER_SHELL": 1.632
+   }
+  }
+ },
+ "gate_M27": {
+  "path": "builds/desktop-companion/mechanical/M27/form-gate.json",
+  "value": {
+   "failed": [
+    "DC01_UPPER_SHELL"
+   ],
+   "parts": 15,
+   "wall_min_mm": {
+    "DC01_UPPER_SHELL": 1.792
+   }
+  }
+ },
+ "gate_M28": {
+  "path": "builds/desktop-companion/mechanical/M28/form-gate.json",
+  "value": {
+   "failed": [],
+   "parts": 15
+  }
+ },
+ "fit_M28": {
+  "path": "builds/desktop-companion/mechanical/M28/fit-E02.json",
+  "value": {
+   "status": "FAIL",
+   "candidate_pairs": 1962,
+   "collisions": [
+    {
+     "parts": [
+      "DC01_BOLT_CHARGER_PCB_13.97_23.51",
+      "DC01_EL04_X3"
+     ],
+     "volume_mm3": 0.2587
+    },
+    {
+     "parts": [
+      "DC01_WASHER_CHARGER_PCB_13.97_23.51",
+      "DC01_EL04_X3"
+     ],
+     "volume_mm3": 0.4635
+    },
+    {
+     "parts": [
+      "DC01_LOWER_SHELL",
+      "DC01_UPPER_SHELL"
+     ],
+     "volume_mm3": 0.0202
+    }
+   ]
+  }
+ },
+ "gate_M29": {
+  "path": "builds/desktop-companion/mechanical/M29/form-gate.json",
+  "value": {
+   "failed": [],
+   "parts": 15
+  }
+ },
+ "fit_M29": {
+  "path": "builds/desktop-companion/mechanical/M29/fit-E02.json",
+  "value": {
+   "status": "PASS",
+   "candidate_pairs": 1966,
+   "collisions": []
+  }
+ },
+ "freeze_M29": {
+  "path": "builds/desktop-companion/mechanical/M29/freeze.json",
+  "value": {
+   "status": {
+    "form": "PASS",
+    "E02_static_fit": "PASS",
+    "specified_opening_samples": "PASS",
+    "adapter_nominal_bearing": "PASS",
+    "visual_fidelity": "NOT_ACCEPTED",
+    "full_integrated_product": "PENDING_PRIME",
+    "manufacture": "BLOCKED"
+   }
+  }
+ },
+ "ok_run_M19": {
+  "path": "builds/desktop-companion/mechanical/run-M19.log",
+  "from": 184,
+  "to": 184,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-appendages\", \"postconditions\": {\"parts\": 15, \"scene_sha256\": \"341dcb04d666ec335e6dddfa19fcd148ca944d0b66e94ee2e236addb734fec7c\"}}"
+  ]
+ },
+ "fail_fit_M19": {
+  "path": "builds/desktop-companion/mechanical/M19/fit.log",
+  "from": 3,
+  "to": 3,
+  "excerpt": true,
+  "lines": [
+   "AGENT_FAIL {\"step\": \"check-saved-assembly.py\", \"postconditions\": {}, \"error\": {\"message\": \"Read source-bound fit-E02.json for actual collisions\"}}"
+  ]
+ },
+ "fail_controls_C01": {
+  "path": "builds/desktop-companion/runs/controls-C01/steps/controls/attempt-0001/stdout.log",
+  "from": 29,
+  "to": 29,
+  "excerpt": true,
+  "lines": [
+   "AGENT_FAIL {\"step\": \"pass-04-controls.py\", \"postconditions\": {}, \"error\": {\"message\": \"DC01_BUTTON_REAR_KEEPER\"}}"
+  ]
+ },
+ "ok_controls_C02": {
+  "path": "builds/desktop-companion/runs/controls-C02/steps/controls/attempt-0001/stdout.log",
+  "from": 38,
+  "to": 38,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-controls\", \"postconditions\": {\"control_parts\": 3, \"printable_parts\": 4, \"views\": 2}}"
+  ]
+ },
+ "erc_a01": {
+  "path": "builds/desktop-companion/electronics/native-a01/erc.log",
+  "from": 2,
+  "to": 2,
+  "lines": [
+   "Failed to load schematic"
+  ]
+ },
+ "erc_a02": {
+  "path": "builds/desktop-companion/electronics/native-a02/erc.log",
+  "from": 1,
+  "to": 1,
+  "lines": [
+   "Found 84 violations"
+  ]
+ },
+ "erc_a03": {
+  "path": "builds/desktop-companion/electronics/native-a03/erc.log",
+  "from": 1,
+  "to": 1,
+  "lines": [
+   "Found 0 violations"
+  ]
+ },
+ "erc_a04": {
+  "path": "builds/desktop-companion/electronics/native-a04/erc.log",
+  "from": 1,
+  "to": 1,
+  "lines": [
+   "Found 0 violations"
+  ]
+ },
+ "drc_a04": {
+  "path": "builds/desktop-companion/electronics/native-a04/drc.log",
+  "from": 1,
+  "to": 3,
+  "lines": [
+   "Found 0 violations",
+   "Found 0 unconnected items",
+   "Found 0 schematic parity issues"
+  ]
+ },
+ "el_faults": {
+  "path": "builds/desktop-companion/electronics/README.md",
+  "from": 64,
+  "to": 64,
+  "lines": [
+   "The five injected faults remove ISET copper, reverse diode nets, short the display supply to ground, restore an excessive ISET current, and change a schematic label. All five were detected. The checked carrier contains351 tracks,13 vias,63 electrical pads and19 functional nets plus an isolated strapping-pin NC identity. The custom geometric screen finds a0.285mm minimum foreign-copper gap. Native KiCad10.0.6 attemptA04 independently reports zero ERC violations, zero DRC violations, zero unconnected items and zero schematic-parity issues. The native reports and exported files bind to the final source hashes. Native drill export contains41 plated1.0mm holes,13 plated0.3mm vias and four nonplated2.5mm mounting holes."
+  ]
+ },
+ "el_blocked": {
+  "path": "builds/desktop-companion/electronics/README.md",
+  "from": 5,
+  "to": 5,
+  "lines": [
+   "**Fabrication and battery operation remain BLOCKED.** The digital checks establish the recorded circuit connectivity and geometric constraints. They do not establish a qualified battery charging window, operating undervoltage cutoff, component temperatures, or a tested physical assembly."
+  ]
+ },
+ "ok_electronics": {
+  "path": "builds/desktop-companion/runs/electronics-E02/steps/electronics/attempt-0001/stdout.log",
+  "from": 9,
+  "to": 9,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-electronics\", \"postconditions\": {\"carrier_pads\": 63, \"measured_substrates\": 4, \"native_meshes\": 1241, \"scene_sha256\": \"2e2a25774a65359535c311369fa11e051e8dcc8c184d308db6d2ddddc41743e3\", \"views\": 4}}"
+  ]
+ },
+ "i06_handoff": {
+  "path": "builds/desktop-companion/integration/engineering/I06/handoff.json",
+  "value": {
+   "statuses": {
+    "form": "PASS_18_PARTS",
+    "assembly_STL_roundtrip": "PASS_18_PARTS",
+    "coverage": "PASS_DECLARED_PART_COVERAGE",
+    "static_fit": "PASS_DECLARED_SCOPE",
+    "service": "PASS_SAMPLED",
+    "tool_access": "PASS_EXPECTED_RESULTS",
+    "visual": "REVIEWED_512PX",
+    "delivery_media": "PRIME_OWNED",
+    "harness": "SEPARATE_INTEGRATION_EVIDENCE",
+    "manufacture": "BLOCKED"
+   }
+  }
+ },
+ "ok_harness": {
+  "path": "builds/desktop-companion/integration/harness/I06-H13-preview.log",
+  "from": 4,
+  "to": 4,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-harness-native-preview\", \"postconditions\": {\"curves\": 54, \"routed_connections\": 26, \"views\": 2}}"
+  ]
+ },
+ "ok_combined": {
+  "path": "builds/desktop-companion/integration/harness/I06-H09-combined.log",
+  "from": 28,
+  "to": 28,
+  "excerpt": true,
+  "lines": [
+   "AGENT_OK {\"step\": \"dc01-combined-native-harness-verification\", \"postconditions\": {\"installed_legs\": 26, \"routed_connections\": 25, \"static_obstacles\": 252, \"unchanged_meshes\": 1401}}"
+  ]
+ },
+ "lesson_h12": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 38,
+  "to": 38,
+  "lines": [
+   "| DC-01 harness H12 \"PASS\" was false | the curvature sampler skipped one side of a curve join; the true minimum was 2.996432 mm against a 3 mm requirement | the D04 media set was discarded and the whole demo source superseded by H13 | `plans/260917-desktop-companion/harness-integration.md` |"
+  ]
+ },
+ "gate_P01": {
+  "path": "builds/desktop-companion/print-kit/P01/final-gate.json",
+  "value": {
+   "failed": [
+    "DC01_CHARGER_FRAME",
+    "DC01_BUTTON_DIAPHRAGM"
+   ],
+   "parts": 18,
+   "wall_min_mm": {
+    "DC01_CHARGER_FRAME": 2.2,
+    "DC01_BUTTON_DIAPHRAGM": 1.2
+   }
+  }
+ },
+ "gate_P03": {
+  "path": "builds/desktop-companion/print-kit/P03/final-gate.json",
+  "value": {
+   "failed": [],
+   "parts": 18
+  }
+ },
+ "p03_plates": {
+  "path": "builds/desktop-companion/print-kit/P03/README.md",
+  "from": 11,
+  "to": 12,
+  "lines": [
+   "| PETG plate | 17 parts, 113,602 triangles |",
+   "| TPU 95A prototype plate | One diaphragm, 2,540 triangles |"
+  ]
+ },
+ "p03_noslicer": {
+  "path": "builds/desktop-companion/print-kit/P03/README.md",
+  "from": 17,
+  "to": 17,
+  "lines": [
+   "| Manufacturing process |No slicer, supports, printer profile, G-code or physical printing performed |"
+  ]
+ },
+ "lesson_film": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 37,
+  "to": 37,
+  "lines": [
+   "| DC-01 film rejected by the owner | D05 was 120 poses at a **5 fps pose rate**, encoded to 30 fps by repeating frames. It passed every numeric and visual gate. | 2,125 s of GPU re-render (35 min) on top of D05's 1,164 s, plus new verification, preflight and final reviews, plus a new package | `builds/desktop-companion/state.md`, `presentation/D05/native-frames/receipt.json` |"
+  ]
+ },
+ "completion": {
+  "path": "builds/desktop-companion/delivery/completion-R03.json",
+  "value": {
+   "status": "DIGITAL_DEMO_DELIVERED",
+   "manufacture": "BLOCKED",
+   "physical_samples": 0,
+   "verified_html_links": 65,
+   "archive_bytes": 66782285
+  }
+ },
+ "r03_blocked": {
+  "path": "builds/desktop-companion/delivery/R03/README.md",
+  "from": 33,
+  "to": 33,
+  "lines": [
+   "**Digital geometry/export checks: complete in the recorded scope. Physical manufacture and battery operation: BLOCKED. Physical sample count:0.**"
+  ]
+ },
+ "readme_likeness": {
+  "path": "builds/desktop-companion/README.md",
+  "from": 25,
+  "to": 25,
+  "lines": [
+   "The final model retains visible front hardware and sharper edges/seams than the original photograph. Exact likeness is not accepted. Small catalog keepers are clarified by the separate native detail views. Concealed construction and absolute dimensions are recorded design choices, not measurements inferred from generated concept images."
+  ]
+ },
+ "lesson_counts": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 27,
+  "to": 29,
+  "lines": [
+   "Revision counts show what \"one phase\" really means. DC-01: blockout ×3, electronics ×2 plus four",
+   "native KiCad attempts, controls ×3, mechanical →M29, integration →I06, harness →H13, print kit",
+   "×3, animatic ×6, delivery ×3. CK-001: r01 → revision B with three geometry, three presentation,"
+  ]
+ },
+ "lesson_i05": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 41,
+  "to": 41,
+  "lines": [
+   "| DC-01 I05 form failure | an *optional* triangulation/collinear cleanup broke the charger mesh | recoverable only because a checkpoint existed; otherwise a rebuild | `plans/260917-desktop-companion/engineering-integration.md` |"
+  ]
+ },
+ "lesson_metal": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 42,
+  "to": 42,
+  "lines": [
+   "| DC-01 Metal render rejected | the GPU was 3.12× faster and visibly wrong: bands around the visor, max channel difference 38 | six profile renders plus a follow-up before CPU/MetalRT-OFF was qualified | `presentation/performance/image-comparison.json` |"
+  ]
+ },
+ "lesson_manifest": {
+  "path": "docs/native-build-pipeline-lessons.md",
+  "from": 104,
+  "to": 104,
+  "lines": [
+   "`builds/desktop-companion/pass-05-integration.py` ran outside any manifest. Neither is silenced"
+  ]
+ }
+}

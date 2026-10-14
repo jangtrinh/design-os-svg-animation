@@ -1,0 +1,11 @@
+# Music: the Pixabay Content License does not allow redistributing the track as a standalone file (raw, looped or mixed)
+audio/
+out/*.wav
+voiceover/*.mp3
+voiceover/ab/
+# Scratch renders, logs and debug captures; regenerable with render-tutorial.mjs --beats
+out/beats-*/
+out/contact-*/
+out/*.log
+out/*.png
+out/check-*.jpg
