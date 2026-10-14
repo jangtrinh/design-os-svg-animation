@@ -39,7 +39,18 @@ Live site: [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.githu
 | **Payment Terminal** | [💳 Launch case-terminal](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html) ([local](playground/case-terminal.html)) | *The Instrument* · 2:1 Axonometric | EMV chip card slides into front slot; 12 tactile keys depress $-1.4\text{mm}$ with spring return and semantic `.hi` transfer. |
 | **Machine Vise** | [🔩 Launch vise-sol](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html) ([local](playground/vise-sol.html)) | *Kinematic Linkage* · CAD Master | Constrained lead screw turns offset crank while translating sliding jaw against stationary anvil. |
 | **Design Vault** | [🏛️ Launch design-vault](https://jangtrinh.github.io/design-os-svg-animation/playground/design-vault.html) ([local](playground/design-vault.html)) | *The Discrete Array* · Isometric Grid | 9-station modular vault grid with coordinate tracking and floating accent pedestals. |
-| **Grade 1 Math Suite** | [📐 Launch math-grade1](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html) ([local](playground/math-grade1.html)) | *Pedagogical Manipulatives* · 10 Figures | Complete Grade 1 curriculum set (abacus, balance scale, ten-frame, Unifix towers, number line, dice, clock, 3D solids, fraction pie, bead string) with keyboard navigation and classroom gallery mode. |
+| **Grade 1 Math Suite** | [📐 Launch math-grade1](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html) ([local](playground/math-grade1.html)) | *Pedagogical Manipulatives* · 10 Figures | Counting sticks bundle, balance scale, ten-frame, Unifix block towers, number line hops, ruler & pencil measurement, teaching clock, 3D solids, fraction pie, and bead string. |
+| **Physics Suite** | [⚙️ Launch physics](https://jangtrinh.github.io/design-os-svg-animation/playground/physics.html) ([local](playground/physics.html)) | *Kinematics & Mechanics* · 5 Figures | Archimedes' lever & fulcrum, harmonic pendulum energy exchange, Hooke's spring dynamometer, inclined plane friction threshold, and knife-switch electric circuit. |
+| **Chemistry Suite** | [🧪 Launch chemistry](https://jangtrinh.github.io/design-os-svg-animation/playground/chemistry.html) ([local](playground/chemistry.html)) | *Experimental Chemistry* · 5 Figures | Acid-base buret titration, alcohol burner thermal decomposition, FCC NaCl crystal lattice, Liebig condenser distillation, and universal pH indicator scale. |
+| **Physical Education Suite** | [🏅 Launch pe](https://jangtrinh.github.io/design-os-svg-animation/playground/pe.html) ([local](playground/pe.html)) | *Olympic Kinematics* · 5 Figures | Mechanical sprint stopwatch, Olympic barbell squat deflection, $4\times 100\text{m}$ relay takeover zone, track hurdle counterweight release, and FIBA breakaway rim. |
+
+| Payment Terminal (`case-terminal`) | Machine Vise (`vise-sol`) |
+| :---: | :---: |
+| ![Payment Terminal Specimen](docs/assets/hairline-case-terminal.png) | ![Machine Vise Specimen](docs/assets/hairline-vise-sol.png) |
+| **Grade 1 Math Suite (10 Figures)** | **Physics Suite (5 Figures)** |
+| ![Grade 1 Math Suite](docs/assets/math-gallery-cover.png) | ![Physics Suite](docs/assets/physics-gallery-cover.png) |
+| **Chemistry Suite (5 Figures)** | **Physical Education Suite (5 Figures)** |
+| ![Chemistry Suite](docs/assets/chemistry-gallery-cover.png) | ![Physical Education Suite](docs/assets/pe-gallery-cover.png) |
 
 ### How to Build & Validate Hairline Figures
 
