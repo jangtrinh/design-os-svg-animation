@@ -49,7 +49,7 @@
   // 1 · input: one photo, then generated secondary sheets, then the roles and the conflict
   el({ type: 'img', t0: bar(5), t1: bar(14), keys: [[bar(5), ...R.F], [bar(6.6), 72, 132, 860, 640]], src: 'ref/original-work-louder.png', tag: 'ảnh gốc · visual authority' });
   ['360-product-view', 'parts-catalog-rev01', 'blueprint-rev01'].forEach((n, i) => el({ type: 'img', t0: bar(7) + i * 2 * B, t1: bar(10.5), src: `ref/${n}.png`,
-    keys: [[bar(7) + i * 2 * B, 980 + i * 300, 160 + i * 190, 520, 360]], tag: ['gen · 360°', 'gen · parts catalog', 'gen · blueprint'][i], ghost: true, tilt: [-2, 1.5, -1][i],
+    keys: [[bar(7) + i * 2 * B, 980 + i * 174, 160 + i * 190, 520, 360]], tag: ['gen · 360°', 'gen · parts catalog', 'gen · blueprint'][i], ghost: true, tilt: [-2, 1.5, -1][i],
     p: [[bar(7) + i * 2 * B, 48 + i * 170, 920 + i * 120, 644, 420]] }));
   el({ type: 'file', t0: bar(10.5), t1: bar(14), rect: [980, 132, 868, 300], ...ex('ref_roles', null, true) });
   el({ type: 'file', t0: bar(11.5), t1: bar(14), rect: [980, 462, 868, 310], ...ex('ref_conflict', [2, 3, 4]), hl: [0, 1], lead: true });

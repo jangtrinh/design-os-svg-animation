@@ -3,7 +3,8 @@ Purpose: render-only marketing media. Never saves the .blend (read-only use of t
 Usage: blender -b --factory-startup <file.blend> --python render-orbit-passes.py -- '<json args>'
 args: cam, frame, out, res [w,h], orbit_n, arc_deg, indices [..], passes ["wire","clay","hifi"], samples, device"""
 import bpy, json, math, os, re, sys, time
-sys.path.insert(0, "/Users/jang/Products/design-os-3d-blender/scripts")
+from pathlib import Path
+sys.path.insert(0, str(Path.home() / "Products/design-os-3d-blender/scripts"))
 import agent_runtime as rt
 from mathutils import Matrix, Vector
 

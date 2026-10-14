@@ -67,7 +67,8 @@
       if (portrait && ['build:dc', 'build:arm', 'build:ww', 'clip:dc'].includes(key)) [w, h] = [980, 1100];
       [r, lum, fill] = [28, key.startsWith('build') ? 244 : 221, 0.92]; // build states sit on the blueprint paper
     }
-    const zoom = Math.min((fill * W) / w, (fill * H) / h, 2.4);
+    // the caption sits 34px under the shape: keep that line (~40px) and a 24px margin on the stage
+    const zoom = Math.min((fill * W) / w, (fill * H) / h, 2.4, (H - 98 - H / 2) * 2 / h);
     return { w, h, r, lum, zoom, W, H };
   }
 

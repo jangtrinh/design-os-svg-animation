@@ -1,11 +1,11 @@
 {
  "voice_id": "ZsjEJaLQy3sgvwxicmDx",
  "model_id": "eleven_v4",
- "note": "One clip per chapter; window_s is the chapter length on the Dawn bar grid (bar = 2 s). Text is read verbatim. Model eleven_v4 chosen by owner A/B 2026-10-14: eleven_v3 drifted to a northern accent because this Professional Voice Clone is not fine-tuned for v3.",
+ "note": "One clip per chapter; window_s is the chapter length after the WARP in tutorial-timeline.js (Dawn bar grid, bar = 2 s); a clip must be <= window_s - 0.8 s (0.5 s lead + 0.3 s clearance). Text is read verbatim. Model eleven_v4 chosen by owner A/B 2026-10-14: eleven_v3 drifted to a northern accent because this Professional Voice Clone is not fine-tuned for v3.",
  "segments": [
   {
    "id": "title",
-   "window_s": 9.6,
+   "window_s": 11.56,
    "text": "Xin chào, tôi là Jang. Đây là video giới thiệu cách dùng repo DESIGN:OS 3D Blender, qua việc dựng bàn phím CK-001 từ đầu đến cuối."
   },
   {
@@ -20,7 +20,7 @@
   },
   {
    "id": "layout",
-   "window_s": 12,
+   "window_s": 10,
    "text": "Pass đầu tiên chỉ dàn bố cục trên mặt phẳng. Kết quả không đọc bằng mắt, mà bằng dòng cuối cùng: agent OK, kèm con số."
   },
   {
@@ -55,12 +55,12 @@
   },
   {
    "id": "lessons",
-   "window_s": 18,
+   "window_s": 16,
    "text": "Và tôi đã sai. Bản đầu thiếu receiver, gate đầu tiên thất bại, và một pass được viết ra nhưng chưa từng chạy. Bài học: mọi check đã viết, đều phải được chạy."
   },
   {
    "id": "outro",
-   "window_s": 7.5,
+   "window_s": 9.52,
    "text": "Repo DESIGN:OS 3D Blender là mã nguồn mở, bạn tự chạy lại được. Tôi là Jang, hẹn gặp lại."
   }
  ]
