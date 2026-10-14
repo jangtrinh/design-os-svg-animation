@@ -75,7 +75,21 @@ Mọi figure cơ khí, đồ gá hoặc hệ thống chuyển động tương t�
    }
    ```
 2. **Quy chuẩn Kiểm định Đóng gói (Verification Contract)**:
-   - [x] **Source Budget**: Giới hạn $\le 150$ dòng code sạch (không vượt trần 200 dòng).
+   - [x] **Source Budget**: Giới hạn $\le 200$ dòng code riêng cho mỗi figure, mỗi dòng ≤110 ký tự (xem §7).
    - [x] **Static Validator**: Chạy `node scripts/create-hairline-figure.mjs validate <file.html>` đạt `Exit 0`.
    - [x] **Clearance Assertion**: Kiểm tra toán học tại $X_{\min}$ (tiếp xúc khít), $X_{\text{rest}}$ (khoảng hở thẩm mỹ), $X_{\max}$ (khoảng cách an toàn tới gối đỡ).
    - [x] **Visual Evidence Proof**: Chụp screenshot thực tế qua headless browser cả 2 trạng thái `rest` và `active`, nhúng trực tiếp bằng chứng trực quan vào artifact.
+
+---
+
+### 6. Craft Doctrine adopt từ anatomy (owner 2026-10-14)
+Nguồn: `wheresryan22/anatomy` (MIT) — `SKILL.md`, `references/craft.md`. Báo cáo: `plans/reports/research-261013-anatomy-repo-adoption.md`.
+1. **Đồ vật là lời giải thích**: chọn một máy/dụng cụ thật mà cơ cấu của nó ánh xạ 1-1 lên khái niệm; viết một câu "cái gì chuyển động và chuyển động đó nghĩa là gì" trước khi dựng hình.
+2. **Danh sách bộ phận trước hình học**: Figure = 40–80 bộ phận, chia nhóm base (tấm đế, chân, rãnh, vít góc, thước) · structure · mechanism · controls · subject. Mỗi bộ phận phải tựa lên một bộ phận khác.
+3. **Đường nét phải kết thúc**: mọi tick, seam, rãnh, kim chỉ đều phải kết thúc trên một stroke, một dot hoặc một outline. Tick treo từ mép một dải thước (ruler strip), không nằm trôi trên mặt đế. Gate: `npm run audit:line-ends` (vendored `vendor/anatomy/scripts/lines.mjs`) in ra `line ends: 0` cho từng figure.
+4. **Soi 4×**: trước khi xong, phóng to 4× phần subject và cơ cấu; mặt trống hay góc trống là việc chưa xong, không phải sự tĩnh lặng.
+5. **Bố cục**: figure chiếm khoảng 55–65% card và vẫn đọc được ở bề rộng 390px.
+
+### 7. Quyết định owner khi adopt (2026-10-14)
+- **Budget nguồn**: ≤200 dòng code riêng cho mỗi figure (tổng các file của figure, mỗi dòng ≤110 ký tự, không nén nhiều lệnh một dòng); kit vendor (`vendor/anatomy/`) là thư viện dùng chung, nằm ngoài budget. (Nới từ 150 lên 200 sau pilot physics-lever, owner 2026-10-14.)
+- **Exploded / apart pose**: cho phép **chỉ khi việc tháo rời chính là khái niệm cần giải thích**. Tách rời tùy tiện, không có nghĩa cơ học thì vẫn là "Exploded CAD Slop" (CONTEXT.md).

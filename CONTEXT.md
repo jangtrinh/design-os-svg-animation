@@ -13,7 +13,7 @@
 - *AI-only Generator*: Do not use — implies LLM directly generating raw animation strings without deterministic safety.
 - *Flash SVG*: Obsolete terminology.
 - *SMIL-only Pipeline*: Do not use — SMIL has deprecation warnings and inconsistent engine support across modern frameworks.
-- *Exploded CAD Slop*: Do not use — arbitrary vertical separation of disconnected parts that lack functional mechanical meaning.
+- *Exploded CAD Slop*: Do not use — arbitrary vertical separation of disconnected parts that lack functional mechanical meaning. A meaningful apart pose is allowed only when disassembly itself is the concept being explained (owner, 2026-10-14).
 
 ## Durable Lessons
 - **Hairline Meaningful Kinematics vs. Exploded CAD Slop (2026-10-08)**: Static 2-frame raster cross-fades and arbitrary exploded disassemblies fail Hairline Rule 06 (Honesty). Real bench instruments must perform their authentic physical function: a payment terminal accepts card insertion along its slot axis and depresses tactile buttons with spring return and localized `.hi` highlight, preserving solid chassis integrity and 60fps vector responsiveness.
