@@ -60,3 +60,29 @@ test('All 25 interactive figures pass static Hairline quality gate', () => {
   ], { encoding: 'utf8' });
   assert.ok(out.includes('AUDIT PASSED'), 'Static audit across all 25 figures should pass');
 });
+
+test('README.md and docs/index.html reference all 4 interactive suites and updated cover screenshots', () => {
+  const readme = readFileSync(path.join(ROOT, 'README.md'), 'utf8');
+  const docsIndex = readFileSync(path.join(ROOT, 'docs/index.html'), 'utf8');
+  const covers = [
+    'math-gallery-cover.png',
+    'physics-gallery-cover.png',
+    'chemistry-gallery-cover.png',
+    'pe-gallery-cover.png'
+  ];
+  const pages = [
+    'playground/math-grade1.html',
+    'playground/physics.html',
+    'playground/chemistry.html',
+    'playground/pe.html'
+  ];
+  for (const c of covers) {
+    assert.ok(existsSync(path.join(ROOT, 'docs/assets', c)), `docs/assets/${c} should exist`);
+    assert.ok(readme.includes(`docs/assets/${c}`), `README.md should embed docs/assets/${c}`);
+    assert.ok(docsIndex.includes(`assets/${c}`), `docs/index.html should embed assets/${c}`);
+  }
+  for (const p of pages) {
+    assert.ok(readme.includes(p), `README.md should link to ${p}`);
+    assert.ok(docsIndex.includes(p), `docs/index.html should link to ${p}`);
+  }
+});

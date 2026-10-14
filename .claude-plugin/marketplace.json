@@ -1,0 +1,15 @@
+{
+  "name": "design-os-svg-animation",
+  "metadata": {
+    "description": "Deterministic vector motion engine, virtual-clock studio player, and 1080p 60fps MP4/WebM launch-video compiler for AI agents."
+  },
+  "owner": {
+    "name": "Jang Trinh"
+  },
+  "plugins": [
+    {
+      "name": "design-os-svg-animation",
+      "source": "./"
+    }
+  ]
+}

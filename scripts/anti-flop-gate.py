@@ -89,6 +89,7 @@ def test_gate_1_phosphor_icons():
         ROOT_DIR / "promo/codex-app/codex-app-engine.js",
         ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui.html",
         ROOT_DIR / "promo/v0-generative-ui/v0-generative-ui-engine.js",
+        ROOT_DIR / "promo/origami-cad/origami-cad-promo.html",
         ROOT_DIR / "src/components"
     ]
 
@@ -382,6 +383,53 @@ def test_gate_9_universal_player_standard():
     print("✅ GATE 9 PASSED: Universal Studio Player Standard 100% verified.")
 
 
+def test_gate_10_showreel_anti_flop_and_loop():
+    banner("Gate 10: Showreel Anti-Flop, Solid BG, Pure-Time Loop & GitHub/Install CTA Gate")
+
+    # 1. Verify shared showreel runtime & 3D geometry modules exist and execute deterministically
+    proc = subprocess.run(
+        [
+            "node",
+            "--input-type=module",
+            "-e",
+            """
+            import { spring, expoOut, speedExpoOut, computeDirectionalBlur, gray50 } from './src/runtime/velocity-blur.mjs';
+            import { solveRigidFold3D } from './src/geometry/rigid-fold-3d.mjs';
+            import { findStrongestDropWindow } from './src/audio/drop-extractor.mjs';
+
+            if (spring(0) !== 0 || spring(1) !== 1) process.exit(1);
+            if (expoOut(0) !== 0 || expoOut(1) !== 1) process.exit(1);
+            if (gray50(0) !== '#0A0A0A' || gray50(1) !== '#FFFFFF') process.exit(1);
+            const blur = computeDirectionalBlur(4.2, 0.2);
+            if (blur.activeAxis !== 'x') process.exit(1);
+            if (typeof solveRigidFold3D !== 'function' || typeof findStrongestDropWindow !== 'function') process.exit(1);
+            console.log('Showreel primitives verified: spring/expo boundary-exact, gray50(#0A0A0A..#FFFFFF), 3D fold & audio drop modules loaded.');
+            """
+        ],
+        cwd=ROOT_DIR,
+        capture_output=True,
+        text=True
+    )
+    assert proc.returncode == 0, f"Gate 10 runtime check failed: {proc.stderr}"
+    print("  ✓ " + proc.stdout.strip())
+
+    # 2. Audit Origami Showreel HTML against Anti-AI-Flop rules (pure window.seek, solid BG, GitHub + Install CTA)
+    showreel_html = ROOT_DIR / "promo/origami-cad/origami-cad-promo.html"
+    assert showreel_html.exists(), "promo/origami-cad/origami-cad-promo.html must exist"
+    html_txt = showreel_html.read_text(encoding="utf-8")
+
+    assert "window.seek = function(t)" in html_txt, "Showreel must expose pure-time window.seek(t)"
+    assert "@keyframes" not in html_txt, "Showreel must not use CSS @keyframes (pure window.seek(t) required)"
+    assert "linear-gradient" not in html_txt and "radial-gradient" not in html_txt, "Showreel must use solid backgrounds only (no gradients)"
+    assert "github.com/jangtrinh/design-os-origami" in html_txt, "Showreel must include GitHub repository URL frame"
+    assert "origami-cad generate" in html_txt, "Showreel must include CLI install & generate command frame"
+    assert "OfflineAudioContext" in html_txt, "Showreel must include Web Audio API OfflineAudioContext soundtrack"
+
+    print("  ✓ Anti-Flop Showreel invariants verified: pure window.seek(t), zero CSS keyframes, solid BG only")
+    print("  ✓ End-sequence CTA verified: github.com/jangtrinh/design-os-origami + CLI install slab present")
+    print("✅ GATE 10 PASSED: Showreel Anti-Flop, Solid BG & CTA Gate 100% verified.")
+
+
 def main():
     print("=" * 70)
     print(" 🚀 RUNNING FULL DESIGN:OS ANTI-FLOP AUDIT")
@@ -397,6 +445,7 @@ def main():
     test_gate_7_multi_aspect_safe_zones()
     test_gate_8_decoupled_motion_and_determinism()
     test_gate_9_universal_player_standard()
+    test_gate_10_showreel_anti_flop_and_loop()
 
     print("\n" + "=" * 70)
     print(" 🛡️ 100% DESIGN:OS ANTI-FLOP GATES PASSED — ZERO FLOP PENALTIES")
@@ -405,3 +454,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

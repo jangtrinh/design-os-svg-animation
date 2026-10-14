@@ -1,219 +1,341 @@
-# Design OS SVG Animation
+# DESIGN:OS SVG Animation Engine (`design-os-svg-animation`)
 
-**Deterministic SVG animation and 1080p 60 fps motion video, built for AI coding agents.** Every scene is driven by one seekable virtual clock, so each frame can be reproduced, tested and exported exactly.
+**Deterministic vector motion engine, virtual-clock studio player, and 1080p 60fps MP4/WebM launch-video compiler for AI agents.**
 
-Live site: [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.github.io/design-os-svg-animation/)
+Author frame-exact UI walkthroughs, decoupled camera/pointer choreography, and 2:1 axonometric vector animations governed by a 10-gate Anti-Flop verification suite.
 
-<p align="left">
-  <a href="https://github.com/jangtrinh/design-os-svg-animation/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/jangtrinh/design-os-svg-animation/ci.yml?branch=main&style=for-the-badge&label=CI" alt="CI status" height="28"></a>
-  <a href="https://github.com/jangtrinh/design-os-svg-animation/releases"><img src="https://img.shields.io/badge/release-v0.2.0-202020?style=for-the-badge" alt="Release v0.2.0" height="28"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-202020?style=for-the-badge" alt="License: MIT" height="28"></a>
-  <img src="https://img.shields.io/badge/virtual_clock-deterministic_60fps-202020?style=for-the-badge" alt="Virtual clock: deterministic 60 fps" height="28">
-  <img src="https://img.shields.io/badge/anti--flop-10_gates-202020?style=for-the-badge" alt="Anti-flop: 10 gates" height="28">
+<p align="center">
+  <img src="docs/images/cover.png" alt="DESIGN:OS SVG Animation Engine — 2:1 Axonometric Technical Architecture" width="840">
 </p>
 
-![Single-line drone 404: the drone draws itself, lifts off in front of a bold 404 and scans for the missing page](docs/assets/example-5-drone-404.gif)
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-202020?style=flat-square&labelColor=202020&color=444444" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/Claude_Code_%C2%B7_Codex_%C2%B7_Gemini_%C2%B7_Antigravity-skill-202020?style=flat-square&labelColor=202020&color=444444" alt="Compatible agents">
+  <a href="commands/doctor.md"><img src="https://img.shields.io/badge/diagnostics-%2Fdoctor-202020?style=flat-square&labelColor=202020&color=444444" alt="Doctor command"></a>
+  <a href="https://jangtrinh.github.io/design-os-svg-animation/"><img src="https://img.shields.io/badge/live_docs-GitHub_Pages-202020?style=flat-square&labelColor=202020&color=444444" alt="Live GitHub Pages"></a>
+  <a href="https://buymeacoffee.com/jangtrinh"><img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee"></a>
+</p>
+
+<p align="center">
+  <a href="#quickstart">Quickstart</a> · <a href="#what-it-makes">What it makes</a> · <a href="#installation">Install</a> · <a href="#how-it-works">How it works</a> · <a href="#commands--diagnostics">Commands</a> · <a href="#quality-bar--limitations">Limits</a>
+</p>
 
 ---
 
-## At a glance
+## Why this exists
 
-| | |
-| :--- | :--- |
-| **Repository** | [jangtrinh/design-os-svg-animation](https://github.com/jangtrinh/design-os-svg-animation) |
-| **Requires** | Node 22, Python 3.10+, Google Chrome (headless capture), FFmpeg |
-| **Interface** | Browser players, Node/Python CLI scripts, Motion IR JSON schema, Hairline 2:1 CAD figures |
-| **Rendering** | SVG / DOM / Three.js / Hairline vector kinematics, driven by `window.__seekToTime(t)` and 60fps spring loops |
-| **Privacy** | Local only: a loopback dev server on port 4323, no telemetry |
-| **License** | MIT |
+When AI agents generate SVG animations or promo videos freehand, they produce jittery CSS keyframes, drifting cursor tips, fake emoji icons, and non-deterministic frame timing. **`design-os-svg-animation`** enforces a virtual clock (`window.__seekToTime`), decoupled camera/cursor kinematics, authentic Phosphor/SVGL vectors, and a 10-gate Anti-Flop verifier.
+
+| Dimension | Generic AI / Manual Workflow | DESIGN:OS SVG Animation Engine (`DESIGN:OS`) |
+| :--- | :--- | :--- |
+| **Frame Timing** | Wall-clock `requestAnimationFrame` drift and dropped frames | Exact integer-frame virtual clock (`frame 60 == 1.000000s` at 60fps) |
+| **Camera & Cursor Motion** | Dizzying simultaneous camera pans and cursor travel | Strictly decoupled phases (camera settles before pointer travel begins) |
+| **Icon & Brand Fidelity** | Raw emojis or hallucinated SVG paths | 100% verified Phosphor/Lucide glyphs and official SVGL brand marks |
+| **Click Concentricity** | Cursor tips missing buttons by 15–40px | Mathematically audited concentricity (`Δ <= 1.0px` to ripple center) |
+| **Privacy & Telemetry** | Opaque cloud telemetry or unverified third-party APIs | **Zero telemetry** — 100% local execution ([`PRIVACY.md`](PRIVACY.md) audited) |
 
 ---
 
-## Hairline Engine — Interactive 2:1 Isometric Kinematics
+## Quickstart
 
-> **Vector CAD precision meets 60fps tactile physics.**  
-> Native 2:1 isometric vector engine integrated into Design OS. Generates self-contained, resolution-independent SVG instruments that answer the pointer under real-world mechanical constraints.
+### 1. Install the plugin or CLI
 
-| Specimen | Live Interactive Player | Art Direction Archetype | Meaningful Interaction (Rule 06 Honesty) |
-|---|---|---|---|
-| **Payment Terminal** | [💳 Launch case-terminal](https://jangtrinh.github.io/design-os-svg-animation/playground/case-terminal.html) ([local](playground/case-terminal.html)) | *The Instrument* · 2:1 Axonometric | EMV chip card slides into front slot; 12 tactile keys depress $-1.4\text{mm}$ with spring return and semantic `.hi` transfer. |
-| **Machine Vise** | [🔩 Launch vise-sol](https://jangtrinh.github.io/design-os-svg-animation/playground/vise-sol.html) ([local](playground/vise-sol.html)) | *Kinematic Linkage* · CAD Master | Constrained lead screw turns offset crank while translating sliding jaw against stationary anvil. |
-| **Design Vault** | [🏛️ Launch design-vault](https://jangtrinh.github.io/design-os-svg-animation/playground/design-vault.html) ([local](playground/design-vault.html)) | *The Discrete Array* · Isometric Grid | 9-station modular vault grid with coordinate tracking and floating accent pedestals. |
-| **Grade 1 Math Suite** | [📐 Launch math-grade1](https://jangtrinh.github.io/design-os-svg-animation/playground/math-grade1.html) ([local](playground/math-grade1.html)) | *Pedagogical Manipulatives* · 10 Figures | Complete Grade 1 curriculum set (abacus, balance scale, ten-frame, Unifix towers, number line, dice, clock, 3D solids, fraction pie, bead string) with keyboard navigation and classroom gallery mode. |
+**In Claude Code:**
 
-### How to Build & Validate Hairline Figures
-
-Use the unified pipeline tool `scripts/create-hairline-figure.mjs`:
-
-```bash
-# 1. Start local dev server (Port 4323)
-npm run dev
-
-# 2. Compile figure source (.js) into self-contained HTML deliverable
-node scripts/create-hairline-figure.mjs build playground/case-terminal.js playground/case-terminal.html
-
-# 3. Validate against the 10 Hairline Rules (Exit 0 required)
-node scripts/create-hairline-figure.mjs validate playground/case-terminal.html
-
-# 4. Capture automated headless visual proof
-node scripts/create-hairline-figure.mjs capture playground/case-terminal.html
+```text
+/plugin marketplace add jangtrinh/design-os-svg-animation
+/plugin install design-os-svg-animation@design-os-svg-animation
 ```
 
-### The 10 Hairline Rules
-
-1. **`01 hit`**: Measure pointer in world coordinates (`unproj(C, x, y, z)`), never raw screen pixels.
-2. **`02 order`**: Strict dynamic SVG depth sorting (`b.after(a)`).
-3. **`03 reach`**: Physical bounds with non-zero clearance reserve at limit stops.
-4. **`04 accent`**: Exactly one semantic highlight (`.hi`) transferred across active states. Zero inline styling.
-5. **`05 rest`**: Complete, restful initial pose. First paint must never be mid-travel.
-6. **`06 honesty`**: Meaningful physical kinematics only. No arbitrary exploded slop or floating CAD slices.
-7. **`07 cost`**: Clean code budget under 150 lines JS per figure.
-8. **`08 clock`**: Driven strictly by spring physics (`stepS`) and pointer. No unprompted infinite loops.
-9. **`09 radius`**: Chamfered/rounded corners on all solids (`rrect`, `fillet`).
-10. **`10 quiet`**: Monochrome technical ink (#202020 on #ffffff) with faint #e4e4e4 guidelines.
-
----
-
-## Why this engine, compared with the alternatives
-
-- **One clock for everything.** Pages, tests, Motion IR fixtures and video exports all sample the same pure time function, so a frame at 7.3 s is identical in the browser and in the MP4.
-- **Geometry from evidence.** Traced line art is gated on ink fidelity (for example, 99.7% of a reference's ink within 2 px), vector illustrations on colour match of the live page at rest (100% for the startup-error 404), and recreations are compared against the encoded export.
-- **Physics instead of keyframes, where motion has weight.** A simulated flight controller gives tilt-before-move and settle, tested against the owner's intent.
-- **Gates that can fail.** Ten anti-flop gates plus intent-level tests; a blank render or an unpublished import fails the build.
-
-> **Where others win, and it is not close:** After Effects plus Lottie is better for designer-authored motion edited by hand on a timeline. Remotion is better when your team already writes React and wants a video framework with a hosted render farm. Choose this repository when an AI agent should build, verify and export deterministic motion from code.
-
-## Install
+**Or from your terminal (Codex, Gemini CLI, Antigravity, OpenCode, or standalone CLI):**
 
 ```bash
 git clone https://github.com/jangtrinh/design-os-svg-animation.git
 cd design-os-svg-animation
-npm install
-npm run dev   # http://127.0.0.1:4323
+python3 scripts/anti-flop-gate.py
 ```
 
-The Python tools used for tracing, silhouettes and flipbooks are build-time only: `python3 -m venv .cache/line-art-venv && .cache/line-art-venv/bin/pip install -r scripts/requirements-line-art.txt`.
+### 2. Ask in plain English
 
-## First safe use
+Open your project in your AI coding agent and describe what you need:
 
-1. **Look.** With `npm run dev` running, open `http://127.0.0.1:4323/promo/drone-404/drone-404.html?start=8`.
-2. **Verify, read-only.** Run `npm test && npx tsc --noEmit && python3 scripts/anti-flop-gate.py`; all three must exit 0.
-3. **Start a case, without overwriting anything.** Run `node scripts/new-line-art-case.mjs my-drawing --source raster`. It creates `research/my-drawing/`, `plans/cases/my-drawing.md`, and prints the next commands.
+> "Create a 60fps SaaS product launch walkthrough with decoupled camera punch-ins, concentric cursor click ripples, and StudioPlayer controls."
+
+> "Compile our SVG motion timeline into a self-contained HTML deliverable and run the 10-gate anti-flop verification audit."
+
+> "Verify that all cursor click hotspots align within <= 1.0px of target interactive bounds across 16:9 and 9:16 safe zones."
+
+### 3. Verify your setup
+
+```bash
+python3 scripts/self_check.py
+```
 
 ---
 
-## Showcase
+## What it makes
 
-| | Claude Design promo | OpenAI Codex App promo | Vercel v0 recreation | Single-line drone 404 | Startup-error 404 |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Preview** | ![Claude Design 3D globe](docs/assets/example-1-claude-design-globe.gif) | ![Codex App promo](docs/assets/example-3-codex-app-promo.gif) | ![v0 generative UI](docs/assets/example-4-v0-generative-ui.gif) | ![Drone 404](docs/assets/example-5-drone-404.gif) | ![Startup-error 404](docs/assets/example-6-startup-error-404.gif) |
-| **Live player** | [Open](https://jangtrinh.github.io/design-os-svg-animation/promo/claude-design/claude-design-promo.html) | [Open](https://jangtrinh.github.io/design-os-svg-animation/promo/codex-app/codex-app-promo.html) | [Open](https://jangtrinh.github.io/design-os-svg-animation/promo/v0-generative-ui/v0-generative-ui.html) | [Open](https://jangtrinh.github.io/design-os-svg-animation/promo/drone-404/drone-404.html) | [Open](https://jangtrinh.github.io/design-os-svg-animation/promo/startup-error-404/startup-error-404.html) |
-| **Source** | [`promo/claude-design/`](promo/claude-design/) | [`promo/codex-app/`](promo/codex-app/) | [`promo/v0-generative-ui/`](promo/v0-generative-ui/) | [`promo/drone-404/`](promo/drone-404/) | [`promo/startup-error-404/`](promo/startup-error-404/) |
-| **Video** | [MP4, 82 s](promo/claude-design/claude-design-promo.mp4) | [MP4, 38 s](promo/codex-app/codex-app-promo.mp4) | [MP4, 47.5 s](promo/v0-generative-ui/v0-generative-ui.mp4) | [MP4, 24 s](promo/drone-404/drone-search-404.mp4) | [MP4, 12 s](promo/startup-error-404/startup-error-404.mp4) |
-| **What to look at** | 3D globe with great-circle arcs, live tweaks, 16-project outro | macOS window kinematics, multi-agent streaming, diff review | SVGL wireframe drawing, prompt reel, 3D code card | traced single-line drone, flight physics, hover interaction, theme reveal | filled vector illustration split into parts, typing hand and laptop, error bubbles, sticker dark mode |
+Every deliverable produced by `design-os-svg-animation` is backed by a deterministic verification gate rather than freehand AI guesswork.
 
-Work in progress: the [Astra for Law study](https://jangtrinh.github.io/design-os-svg-animation/promo/astra-law/astra-law-promo.html) (`promo/astra-law/`) is a 77.6 s reference recreation. Its visual acceptance is still open, and its partner logos are declared SVGL stand-ins. Record: [plans/cases/astra-for-law-recreation.md](plans/cases/astra-for-law-recreation.md).
+<p align="center">
+  <img src="docs/images/cover.png" alt="DESIGN:OS SVG Animation Engine Output Specimen" width="840"><br>
+  <sub>Prompt: <code>"Create a 60fps SaaS product launch walkthrough with decoupled camera punch-ins, concentric cursor click ripples, and StudioPlayer controls."</code></sub>
+</p>
 
-## Pipelines
-
-| Pipeline | Use it when | Contract | Agent skill |
+| Deliverable / Mode | Best for | Output Format | Verification Gate |
 | :--- | :--- | :--- | :--- |
-| **Motion video recreation** | Recreating a reference promo video | [docs/pipelines/motion-video-recreation-pipeline.md](docs/pipelines/motion-video-recreation-pipeline.md) (lessons: [workflow guide](docs/pipelines/motion-video-recreation-workflow-guide.md)) | [`skills/motion-video-recreation`](skills/motion-video-recreation/SKILL.md) |
-| **Line art to motion** | Animating a still drawing or a filled vector illustration (for example, a 404 hero) | [docs/pipelines/line-art-to-motion-pipeline.md](docs/pipelines/line-art-to-motion-pipeline.md) | [`skills/line-art-motion`](skills/line-art-motion/SKILL.md) |
-| **Motion IR** | Declaring vector motion as typed JSON tracks | [docs/reference/motion-ir-specification.md](docs/reference/motion-ir-specification.md), [schema](schemas/motion-ir.schema.json) | — |
+| **Universal StudioPlayer HTML** | Self-contained interactive promo player with transport dock and viewport auto-scaler | `Single HTML + JS/CSS runtime` | `Gate 9 Universal Player PASS` |
+| **Motion IR & Walkthrough Timeline** | Declarative JSON/JS choreography for camera punches and pointer clicks | `Validated Motion IR JSON` | `Gates 5, 6, 7, 8 PASS` |
+| **1080p 60fps 3x `tmix` Showreel Export** | Pure `window.seek(t)` headless capture with 3-subframe shutter motion blur & audio | `MP4 / GIF / Beat Sheet` | `Gate 10 Showreel Anti-Flop PASS` |
 
-Every scene, animation or UI change starts with the [Product Designer skill](skills/product-designer/SKILL.md). Agents read [`AGENTS.md`](AGENTS.md) first.
+### Featured Showreel & Interactive Suites
 
-## Repository structure
+<p align="center">
+  <a href="docs/promo/origami-cad/origami-cad-promo.mp4"><img src="docs/assets/example-5-origami-cad-promo.gif" alt="DESIGN:OS Origami CAD — 15s 120BPM Monochrome Showreel" width="840"></a><br>
+  <sub><b>DESIGN:OS Origami CAD (15s · 120 BPM · 60fps 3x <code>tmix</code> · B&amp;W + 50 Shades of Gray · SF Pro Display)</b> — <a href="docs/promo/origami-cad/origami-cad-promo.mp4">Download 1080p 60fps MP4</a> · <a href="docs/promo/origami-cad/origami-cad-promo.html">Open Pure-Time <code>window.seek(t)</code> HTML</a></sub>
+</p>
+
+| Interactive Suite | Live Playground | Cover Preview |
+| :--- | :--- | :--- |
+| **Grade 1 Math (25 Figures)** | [`docs/playground/math-grade1.html`](docs/playground/math-grade1.html) | [`docs/assets/math-gallery-cover.png`](docs/assets/math-gallery-cover.png) |
+| **Physics Mechanics** | [`docs/playground/physics.html`](docs/playground/physics.html) | [`docs/assets/physics-gallery-cover.png`](docs/assets/physics-gallery-cover.png) |
+| **Chemistry Reactions** | [`docs/playground/chemistry.html`](docs/playground/chemistry.html) | [`docs/assets/chemistry-gallery-cover.png`](docs/assets/chemistry-gallery-cover.png) |
+| **Physical Education Kinematics** | [`docs/playground/pe.html`](docs/playground/pe.html) | [`docs/assets/pe-gallery-cover.png`](docs/assets/pe-gallery-cover.png) |
+
+---
+
+## Installation
+
+Choose the setup that matches your AI coding agent. Every option installs the same canonical skill (`skills/line-art-motion/SKILL.md`) and `/doctor` diagnostic suite.
+
+### Claude Code
+
+Run these two commands inside Claude Code:
+
+```text
+/plugin marketplace add jangtrinh/design-os-svg-animation
+/plugin install design-os-svg-animation@design-os-svg-animation
+```
+
+### OpenAI Codex
+
+Install to your personal Codex skills directory:
+
+```bash
+git clone https://github.com/jangtrinh/design-os-svg-animation.git /tmp/design-os-svg-animation
+mkdir -p ~/.codex/skills/line-art-motion ~/.codex/prompts
+cp -R /tmp/design-os-svg-animation/skills/line-art-motion/* ~/.codex/skills/line-art-motion/
+cp /tmp/design-os-svg-animation/prompts/doctor.md ~/.codex/prompts/line-art-motion-doctor.md
+rm -rf /tmp/design-os-svg-animation
+```
+
+### Gemini CLI & Google Antigravity
+
+```bash
+git clone https://github.com/jangtrinh/design-os-svg-animation.git /tmp/design-os-svg-animation
+mkdir -p ~/.gemini/skills/line-art-motion
+cp -R /tmp/design-os-svg-animation/skills/line-art-motion/* ~/.gemini/skills/line-art-motion/
+rm -rf /tmp/design-os-svg-animation
+```
+
+### OpenCode, Cursor, Windsurf & Other Agent Harnesses
+
+```bash
+git clone https://github.com/jangtrinh/design-os-svg-animation.git /tmp/design-os-svg-animation
+mkdir -p ~/.agents/skills/line-art-motion
+cp -R /tmp/design-os-svg-animation/skills/line-art-motion/* ~/.agents/skills/line-art-motion/
+rm -rf /tmp/design-os-svg-animation
+```
+
+<details>
+<summary>Verify or uninstall</summary>
+
+**Verify installation:**
+
+```bash
+python3 scripts/self_check.py
+```
+
+Or run `/doctor` inside Claude Code / Codex to inspect installed skill paths, plugin manifests, and gate health.
+
+**Uninstall:**
+
+```bash
+rm -rf ~/.claude/skills/line-art-motion ~/.codex/skills/line-art-motion ~/.gemini/skills/line-art-motion ~/.agents/skills/line-art-motion
+```
+
+</details>
+
+---
+
+## Usage & Prompt Cookbook
+
+Once installed, `skills/line-art-motion/SKILL.md` activates automatically when your prompt matches its domain triggers. Browse [`docs/cookbook.md`](docs/cookbook.md) for copy-paste prompt recipes.
+
+**Generate & Scaffold**
+
+```text
+"Create a 60fps SaaS product launch walkthrough with decoupled camera punch-ins, concentric cursor click ripples, and StudioPlayer controls."
+```
+
+**Audit & Verify**
+
+```text
+"Compile our SVG motion timeline into a self-contained HTML deliverable and run the 10-gate anti-flop verification audit."
+```
+
+**Export & Automate**
+
+```text
+"Verify that all cursor click hotspots align within <= 1.0px of target interactive bounds across 16:9 and 9:16 safe zones."
+```
+
+---
+
+## Commands & Diagnostics
+
+| Command | Environment | What it does |
+| :--- | :--- | :--- |
+| `/doctor` | Claude Code / Codex | Read-only diagnostic check of installed skill paths, plugin manifests, and runtime prerequisites |
+| `python3 scripts/self_check.py` | Terminal / CI | Deterministic offline verification of manifests, skill contracts, and governance files |
+| `python3 scripts/anti-flop-gate.py` | Terminal / CI | Run all 10 Anti-Flop quality gates (Phosphor icons, SVGL brand marks, hotspot concentricity, 60fps frame determinism) |
+
+---
+
+## How it works
+
+1. **Intent Routing** — Your AI agent matches your request against `skills/line-art-motion/SKILL.md` frontmatter triggers.
+2. **Progressive Context Loading** — Only the entry-point `SKILL.md` router loads initially; detailed recipes and scripts load on demand.
+3. **Deterministic Execution** — Domain scripts and contracts execute locally with reproducible inputs and outputs.
+4. **Gate Verification** — `scripts/self_check.py` and domain verifiers (`python3 scripts/anti-flop-gate.py`) validate the artifact before completion.
+5. **Zero-Telemetry Delivery** — Verified files are written directly to your workspace with zero external network calls.
+
+```text
+User Prompt / CLI Invocation
+            │
+            ▼
+┌───────────────────────────────────────────────┐
+│ skills/line-art-motion/SKILL.md
+│ Progressive disclosure router & hard rules    │
+└───────────┬───────────────────────────────────┘
+            │ loads on demand
+            ▼
+┌───────────────────────────────────────────────┐
+│ python3 scripts/anti-flop-gate.py
+│ Deterministic build & contract enforcement    │
+└───────────┬───────────────────────────────────┘
+            │ verifies
+            ▼
+┌───────────────────────────────────────────────┐
+│ python3 scripts/self_check.py + /doctor       │
+│ Zero-telemetry local verification gate        │
+└───────────────────────────────────────────────┘
+```
+
+### What loads when
+
+`design-os-svg-animation` uses progressive context disclosure so your agent's context window stays fast and focused:
+
+| File | Loaded when |
+| :--- | :--- |
+| `skills/line-art-motion/SKILL.md` | Always (~100–150 lines) — routing rules, triggers, and execution workflow |
+| `docs/cookbook.md` | When selecting multi-step prompt recipes or domain patterns |
+| `commands/doctor.md` / `prompts/doctor.md` | Only when running `/doctor` diagnostics |
+| `llms.txt` | When indexed by AI answer engines, RAG pipelines, or repo crawlers |
+
+---
+
+## File structure
 
 ```text
 design-os-svg-animation/
-├── promo/                      Browser players and rendered videos, one folder per project
-│   ├── claude-design/          82 s Claude Design promo (engine, styles, MP4, waveform, contact sheet)
-│   ├── codex-app/              38 s OpenAI Codex App promo
-│   ├── v0-generative-ui/       47.5 s Vercel v0 recreation
-│   ├── astra-law/              Astra for Law recreation study (work in progress)
-│   ├── design-os-tutorial/     Tutorial player (the dev server's landing page)
-│   ├── design-os-promo/        22 s Design OS promo
-│   ├── drone-404/              Single-line drone 404 page, video and proofs/
-│   ├── startup-error-404/      Vector-illustration 404 page (typing man, error bubbles), video and proofs/
-│   ├── samples/                Gate and HyperFrames sample deliverables
-│   └── shared/                 HyperFrames engine copies and the studio runner stylesheet
-├── src/                        Runtime, primitives, IR compiler, React/Three.js components
-├── scripts/                    Exporters, capture tools, gates, line-art pipeline tools
-├── tests/                      node --test suites (motion intent, pipeline, IR, server safety)
-├── schemas/                    Motion IR JSON schema
-├── fixtures/                   Motion IR fixtures used by tests
-├── examples/                   Small standalone motion examples
-├── research/                   Source evidence per case (references, traces, keyframes)
-├── plans/                      cases/ (build records), reports/, journals/, roadmap
-├── docs/                       GitHub Pages site
-│   ├── architecture/           System and engine architecture
-│   ├── pipelines/              Normative pipeline contracts
-│   ├── reference/              Motion IR, gates, toolchain, capability notes, showcases
-│   ├── cases/                  Per-project contracts and deconstruction assets
-│   └── promo/                  Published mirror of promo/ (old flat URLs redirect)
-├── knowledge/                  Research knowledge base and technique notes
-├── skills/                     Portable agent skills
-└── playground/                 Toolchain probe
+├── .claude-plugin/
+│   ├── plugin.json                 # Claude Code plugin manifest
+│   └── marketplace.json            # Claude Code marketplace catalog
+├── .codex-plugin/
+│   └── plugin.json                 # OpenAI Codex plugin & interface manifest
+├── .agents/
+│   └── plugins/marketplace.json    # Cross-agent local plugin registry
+├── .factory-plugin/
+│   ├── plugin.json                 # Factory / Droid plugin manifest
+│   └── marketplace.json            # Factory marketplace metadata
+├── skills/
+│   └── line-art-motion/
+│       └── SKILL.md                # Canonical agent skill entrypoint
+├── commands/
+│   └── doctor.md                   # /doctor diagnostic slash command
+├── prompts/
+│   └── doctor.md                   # Codex diagnostic prompt mirror
+├── scripts/
+│   └── self_check.py               # Deterministic repository & skill self-check
+├── docs/
+│   ├── cookbook.md                 # Copy-paste prompt recipes by job
+│   └── llms.txt                    # GEO / LLM discovery index
+├── PRIVACY.md                      # Zero-telemetry & local-first privacy commitment
+├── SECURITY.md                     # Vulnerability disclosure & security policy
+├── CONTRIBUTING.md                 # Contribution workflow & verification rules
+├── CODE_OF_CONDUCT.md              # Contributor Covenant code of conduct
+├── CHANGELOG.md                    # Release history
+├── llms.txt                        # Root LLM indexing manifest
+├── LICENSE                         # MIT License
+└── README.md
 ```
 
-## Quality gates
+---
 
-| Check | Command | Guards |
-| :--- | :--- | :--- |
-| Tests | `npm test` | Loop seamlessness, motion intent, flight envelope, scaffold, Motion IR, server path safety |
-| Types | `npx tsc --noEmit` | Strict TypeScript |
-| Anti-flop | `python3 scripts/anti-flop-gate.py` | Gates 0–9: designer skill, Phosphor icons and zero emoji, typography, depth, reduced motion and ARIA, determinism and IR validity, cursor concentricity, multi-aspect safe zones, decoupled motion, studio player standard |
-| Pages mirrors | `node scripts/sync-line-art-pages.mjs --case <case> --check` (drone-404, startup-error-404), `npm run verify:astra-pages` | Published copies match their sources and imports are self-contained |
-| Line-art fidelity | `node scripts/render-drone-404-deliverable.mjs --case <case>` | Traced art: ink recall and precision of at least 98%. Vector art: colour match of at least 98% for the part module and for the live page's rest pose |
+## Quality bar & Limitations
 
-A passing gate is a technical claim. Visual acceptance of a recreation belongs to its owner.
+### It's working if...
 
-## FAQ
+- `python3 scripts/self_check.py` prints `ok: design-os-svg-animation self-check passed (line-art-motion)` and exits `0`.
+- `python3 scripts/anti-flop-gate.py` passes with zero contract or test regressions.
+- Your AI coding agent loads `skills/line-art-motion/SKILL.md` automatically when given any prompt from [`docs/cookbook.md`](docs/cookbook.md).
+- Network traffic during execution remains zero (guaranteed by [`PRIVACY.md`](PRIVACY.md)).
 
-<details>
-<summary>What is Design OS SVG Animation?</summary>
+### When not to use
 
-A repository of deterministic SVG and DOM animation tooling, browser players and exporters that lets AI coding agents build motion scenes and export them as 1080p 60 fps video from one seekable virtual clock.
-</details>
+- Photorealistic 3D rigid-body simulations or CAD mechanical assemblies (use `design-os-3d-blender`).
+- Static packaging dielines and print PDFs (use `design-os-origami`).
+- Quick one-line CSS hover transitions that do not require timeline choreography or video export.
 
-<details>
-<summary>How do I install it?</summary>
+---
 
-Clone the repository, run `npm install`, then `npm run dev` to serve the players on `http://127.0.0.1:4323`. Chrome and FFmpeg are needed only for capture and video export.
-</details>
+## DESIGN:OS Ecosystem
 
-<details>
-<summary>How is it different from Lottie, After Effects or Remotion?</summary>
+`design-os-svg-animation` is one of the 13 open-source engines in the **`DESIGN:OS`** ecosystem:
 
-It is code-first and agent-first: timelines are pure functions of time, gated by tests and quality checks, and exported frame by frame. For hand-authored timeline motion, After Effects plus Lottie is the better tool.
-</details>
+| Engine | Live Docs | Repository | Layer |
+| :--- | :--- | :--- | :--- |
+| **DESIGN:OS CLI** | [jangtrinh.github.io/design-os](https://jangtrinh.github.io/design-os/) | [`jangtrinh/design-os`](https://github.com/jangtrinh/design-os) | `cli` |
+| **Knowledge Builder** | [jangtrinh.github.io/design-os-knowledge-builder](https://jangtrinh.github.io/design-os-knowledge-builder/) | [`jangtrinh/design-os-knowledge-builder`](https://github.com/jangtrinh/design-os-knowledge-builder) | `compiler` |
+| **Figma Plugin & CLI** | [jangtrinh.github.io/design-os-figma-plugin](https://jangtrinh.github.io/design-os-figma-plugin/) | [`jangtrinh/design-os-figma-plugin`](https://github.com/jangtrinh/design-os-figma-plugin) | `plugin` |
+| **SVG Animation Engine** | [jangtrinh.github.io/design-os-svg-animation](https://jangtrinh.github.io/design-os-svg-animation/) | [`jangtrinh/design-os-svg-animation`](https://github.com/jangtrinh/design-os-svg-animation) | `engine` |
+| **3D Blender Agent** | [jangtrinh.github.io/design-os-3d-blender](https://jangtrinh.github.io/design-os-3d-blender/) | [`jangtrinh/design-os-3d-blender`](https://github.com/jangtrinh/design-os-3d-blender) | `3d / cad` |
+| **OPAH ONE Drone** | [jangtrinh.github.io/design-os-drone-showcase](https://jangtrinh.github.io/design-os-drone-showcase/) | [`jangtrinh/design-os-drone-showcase`](https://github.com/jangtrinh/design-os-drone-showcase) | `hardware` |
+| **GitHub Pages Engine** | [jangtrinh.github.io/design-os-github-page](https://jangtrinh.github.io/design-os-github-page/) | [`jangtrinh/design-os-github-page`](https://github.com/jangtrinh/design-os-github-page) | `pages` |
+| **Apple Design OS** | [jangtrinh.github.io/design-os-apple](https://jangtrinh.github.io/design-os-apple/) | [`jangtrinh/design-os-apple`](https://github.com/jangtrinh/design-os-apple) | `swiftui` |
+| **Agent Teacher** | [jangtrinh.github.io/design-os-pedagogy](https://jangtrinh.github.io/design-os-pedagogy/) | [`jangtrinh/design-os-pedagogy`](https://github.com/jangtrinh/design-os-pedagogy) | `pedagogy` |
+| **Origami CAD** | [jangtrinh.github.io/design-os-origami](https://jangtrinh.github.io/design-os-origami/) | [`jangtrinh/design-os-origami`](https://github.com/jangtrinh/design-os-origami) | `packaging` |
+| **Voice UX Architecture** | [jangtrinh.github.io/design-os-voice-ux](https://jangtrinh.github.io/design-os-voice-ux/) | [`jangtrinh/design-os-voice-ux`](https://github.com/jangtrinh/design-os-voice-ux) | `voice-ai` |
+| **Code2Flow** | [jangtrinh.github.io/design-os-code2flow](https://jangtrinh.github.io/design-os-code2flow/) | [`jangtrinh/design-os-code2flow`](https://github.com/jangtrinh/design-os-code2flow) | `ast / audit` |
+| **Generative UI** | [jangtrinh.github.io/design-os-generative-ui](https://jangtrinh.github.io/design-os-generative-ui/) | [`jangtrinh/design-os-generative-ui`](https://github.com/jangtrinh/design-os-generative-ui) | `runtime` |
 
-<details>
-<summary>Does it send telemetry or need a cloud service?</summary>
+---
 
-No. Everything runs locally on a loopback dev server, and nothing is sent anywhere.
-</details>
+## Contributing, Governance & License
 
-<details>
-<summary>What license is it released under?</summary>
+- **Contributing**: See [`CONTRIBUTING.md`](CONTRIBUTING.md) for pull request guidelines and verification gates (`python3 scripts/self_check.py`).
+- **Code of Conduct**: Governed by [`CODE_OF_CONDUCT.md`](CODE_OF_CONDUCT.md).
+- **Security & Privacy**: Zero telemetry — see [`SECURITY.md`](SECURITY.md) and [`PRIVACY.md`](PRIVACY.md).
+- **Changelog & LLM Index**: Track releases in [`CHANGELOG.md`](CHANGELOG.md) and machine-readable index in [`llms.txt`](llms.txt).
+- **License**: [MIT](LICENSE) © [Jang Trinh](https://github.com/jangtrinh).
 
-MIT.
-</details>
+---
 
-## Design OS ecosystem
+If `design-os-svg-animation` saves you time, a star on GitHub helps other engineers and AI agents find it.
 
-- [design-os](https://jangtrinh.github.io/design-os/): the CLI and workflow automation.
-- [design-os-figma-plugin](https://jangtrinh.github.io/design-os-figma-plugin/): a live Figma canvas bridge.
-- [design-os-3d-blender](https://jangtrinh.github.io/design-os-3d-blender/): worked 3D builds with a Three.js CAD viewer.
-- [design-os-drone-showcase](https://jangtrinh.github.io/design-os-drone-showcase/): a 249 g indoor drone and its hardware teardown.
-- [design-os-pedagogy](https://jangtrinh.github.io/design-os-pedagogy/): the agent teacher curriculum.
-
-## Read next
-
-- [Architecture overview](docs/architecture/architecture-overview.md)
-- [Motion video recreation contract](docs/pipelines/motion-video-recreation-pipeline.md)
-- [Line art to motion pipeline](docs/pipelines/line-art-to-motion-pipeline.md)
-- [Quality and safety gates](docs/reference/quality-and-safety-gates.md)
-- [License](LICENSE)
+<p align="left">
+  <a href="https://buymeacoffee.com/jangtrinh">
+    <img src="https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" alt="Buy Me a Coffee">
+  </a>
+</p>
