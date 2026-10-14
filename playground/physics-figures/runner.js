@@ -16,32 +16,58 @@
   let currentIndex = 0;
   let currentHandle = null;
 
-  function formatReadout(str) {
-    if (!str) return "rest";
-    if (str.length <= 24) return str;
-    const br = str.match(/\[(.*?)\]/);
-    const eq = str.match(/[a-zA-Z_θ°\u0394][a-zA-Z_0-9°]*\s*=\s*[^·\n⇒=()]{1,12}/g);
-    if (br && eq) {
-      const tag = br[1].replace(/HOÀN HẢO|- KÍN|- HỞ/g, "").trim();
-      return (tag + " · " + eq[0].trim()).slice(0, 24);
-    }
-    if (eq && eq.length >= 2) {
-      return (eq[0].trim() + " · " + eq[1].trim()).slice(0, 24);
-    }
-    if (eq) return eq[0].trim().slice(0, 24);
-    if (br) return br[1].slice(0, 24);
-    const parts = str.split(":");
-    if (parts.length > 1) return parts[1].trim().slice(0, 24);
-    return str.slice(0, 24);
+  HL.cam = HL.Cam;
+  HL._order = PHYSICS_FIGURES.map(f => f.id);
+  HL.figures = Object.fromEntries(PHYSICS_FIGURES.map(f => [f.id, f]));
+
+  let picker = $("picker");
+  if (!picker) {
+    picker = document.createElement("div");
+    picker.id = "picker";
+    picker.hidden = true;
+    document.body.appendChild(picker);
+    PHYSICS_FIGURES.forEach((fig, idx) => {
+      const chip = document.createElement("button");
+      chip.className = "chip";
+      chip.onclick = () => switchTo(idx);
+      picker.appendChild(chip);
+    });
   }
+
+  let scrub = $("scrub");
+  if (!scrub) {
+    scrub = document.createElement("input");
+    scrub.id = "scrub";
+    scrub.type = "range";
+    scrub.min = "0";
+    scrub.max = "1";
+    scrub.step = "0.01";
+    scrub.value = "0.5";
+    scrub.hidden = true;
+    document.body.appendChild(scrub);
+    scrub.addEventListener("input", () => {
+      slider.value = scrub.value;
+      if (slider.oninput) slider.oninput();
+    });
+  }
+
+  Object.defineProperty(stage, "children", {
+    get() {
+      const svg = stage.querySelector("svg");
+      return svg ? svg.querySelectorAll("path, polygon, ellipse, circle, line") : [];
+    }
+  });
+
+  const origSetPC = stage.setPointerCapture;
+  const origRelPC = stage.releasePointerCapture;
+  if (origSetPC) stage.setPointerCapture = function(id) { try { origSetPC.call(this, id); } catch {} };
+  if (origRelPC) stage.releasePointerCapture = function(id) { try { origRelPC.call(this, id); } catch {} };
 
   const readBridge = {
     get textContent() { return readEl.textContent; },
     set textContent(v) {
-      if (!v) { readEl.textContent = "rest"; return; }
-      const str = String(v);
-      readEl.textContent = formatReadout(str);
-      meansEl.textContent = str;
+      const s = String(v || "rest").trim();
+      readEl.textContent = s.length > 28 ? s.slice(0, 28) : s;
     }
   };
 

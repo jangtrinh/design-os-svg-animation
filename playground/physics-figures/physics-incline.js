@@ -1,20 +1,8 @@
 /*
  * 4. Inclined Plane & Friction (Mặt Phẳng Nghiêng & Khối Trượt)
  * Physical Concept: Phân tích lực trên mặt phẳng nghiêng & ma sát nghỉ:
- *   - Lực kéo trượt dọc dốc: P∥ = P · sin(α)
- *   - Áp lực pháp tuyến: P⊥ = P · cos(α)
- *   - Lực ma sát nghỉ cực đại: Fms_max = μ · P⊥ = μ · P · cos(α)
- *   - Điều kiện trượt: tan(α) > μ (với hệ số ma sát gỗ/gỗ μ ≈ 0.445 ⇒ góc giới hạn α_c = 24°).
- * Geometry (Precision Classical Mechanics Apparatus Discipline):
- *   - Khung bệ gỗ/kim loại thí nghiệm có 4 bu-lông chân đế.
- *   - Cụm bản lề đồng thau chắc chắn có trục chốt xoay ngang tại chân dốc.
- *   - Thước góc độ cung tròn (quadrant protractor plate) với vạch chia 0°–45° và vạch đỏ tại góc ma sát giới hạn 24°.
- *   - Mặt phẳng nghiêng có cữ chặn cao su chân dốc.
- *   - Khối trượt lăng trụ đặc kèm móc kéo và tạ chì trung tâm.
- *   - Thanh chống đỡ nâng hạ cơ học liên kết giữa bệ và mặt nghiêng.
- * Meaningful Kinematics: Di chuột điều chỉnh góc dốc α từ 0° đến 45°.
- *   - α ≤ 24°: Cân bằng tĩnh tuyệt đối, khối trượt đứng yên trên dốc.
- *   - α > 24°: Lực kéo trượt thắng ma sát nghỉ cực đại, khối trượt gia tốc lao xuống cữ chặn chân dốc!
+ *   - Lực kéo trượt dọc dốc: P∥ = P · sin(α), Áp lực pháp tuyến: N = P · cos(α)
+ *   - Góc ma sát giới hạn: α_c = 24° (tan 24° ≈ 0.445 = μ)
  */
 
 export default {
@@ -26,247 +14,141 @@ export default {
   range: [0, 16, 45],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 2.5);
-    HL.fit(C, [[-40, -14, 0], [40, 14, 34]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.65);
+    HL.fit(C, [[-40, -15, 0], [40, 15, 34]], 200, 148);
     const P = HL.proj(C), front = HL.facing(C);
 
-    function circAt(cx, cy, R, n = 24) {
-      const out = [];
-      for (let k = 0; k < n; k++) {
-        const a = (k / n) * Math.PI * 2;
-        const ca = Math.cos(a), sa = Math.sin(a);
-        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
-      }
-      return out;
-    }
-
-    // 1. Heavy Wooden/Metal Test Bench Base (Z: 0 to 2.2)
+    // 1. Heavy Test Bench Base (Z: 0 to 2.4)
     const baseSol = HL.solid(svg);
-    const [baseO, baseI] = HL.rings(-42, -14, 42, 14, 2.2, 0.6);
-    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.2));
+    const [baseO, baseI] = HL.rings(-40, -14, 40, 14, 2.2, 0.6);
+    HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.4));
 
-    // 4 Corner Mounting Screws on base
-    const cornerPts = [
-      [-39, -11], [39, -11],
-      [-39, 11], [39, 11]
-    ];
-    for (const [cx, cy] of cornerPts) {
-      const pt = P(cx, cy, 2.25);
-      HL.mk("circle", {
-        cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 1.8,
-        class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0
-      }, svg);
-      HL.mk("circle", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 0.6, class: "dot" }, svg);
+    for (const [cx, cy] of [[-37, -11], [37, -11], [-37, 11], [37, 11]]) {
+      const pt = P(cx, cy, 2.45);
+      HL.mk("ellipse", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), rx: 1.8, ry: 1.4, class: "lo" }, svg);
+      HL.mk("circle", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 0.7, class: "dot" }, svg);
     }
 
-    // 2. Brass Hinge Bracket at X = -28, Y = 0 (Z: 2.2 to 6.2)
-    const pivotX = -28.0, pivotZ = 5.8;
+    // 2. Brass Hinge Bracket at X = -28 (Z: 2.4 to 6.0)
+    const pivotX = -28.0, pivotZ = 6.0;
     const hingeSol = HL.solid(svg);
     const [hO, hI] = HL.rings(pivotX - 3.5, -9.0, pivotX + 3.5, 9.0, 0.8, 0.3);
-    HL.put(hingeSol, HL.prism(P, front, hO, hI, 2.2, pivotZ));
+    HL.put(hingeSol, HL.prism(P, front, hO, hI, 2.4, pivotZ));
+    HL.mk("path", { d: HL.seg(P(pivotX, -9.5, pivotZ), P(pivotX, 9.5, pivotZ)), class: "sil nf" }, svg);
 
-    // Horizontal pivot axle pin
-    const pinL = P(pivotX, -9.5, pivotZ);
-    const pinR = P(pivotX, 9.5, pivotZ);
-    HL.mk("line", {
-      x1: HL.r2(pinL[0]), y1: HL.r2(pinL[1]),
-      x2: HL.r2(pinR[0]), y2: HL.r2(pinR[1]),
-      class: "hi", "stroke-width": 2.2, stroke: "var(--hl-edge)"
-    }, svg);
-
-    // 3. Steel Sector Protractor Plate (Cung đo góc gắn tại mặt trước Y = 9.2)
+    // 3. Sector Protractor Plate (front face Y = 9.2)
     const protractorGroup = HL.mk("g", {}, svg);
-    const protractorArc = HL.mk("path", { class: "lo", "stroke-width": 1.0, fill: "none", "stroke-dasharray": "2,2" }, protractorGroup);
-    const critLine = HL.mk("line", { class: "hi", "stroke-width": 1.4 }, protractorGroup);
-
-    // Protractor arc ticks
-    const arcR = 17.0;
-    let arcD = "";
+    const arcR = 18.0;
+    const arcPts = [];
+    let tickLoD = "", tickHiD = "";
     for (let deg = 0; deg <= 45; deg += 3) {
       const rad = (deg * Math.PI) / 180;
-      const px = pivotX + arcR * Math.cos(rad);
-      const pz = pivotZ + arcR * Math.sin(rad);
-      const pt = P(px, 9.2, pz);
-      if (deg === 0) arcD += `M ${HL.r2(pt[0])} ${HL.r2(pt[1])}`;
-      else arcD += ` L ${HL.r2(pt[0])} ${HL.r2(pt[1])}`;
-
+      const pt = P(pivotX + arcR * Math.cos(rad), 9.2, pivotZ + arcR * Math.sin(rad));
+      arcPts.push(pt);
       if (deg % 15 === 0 || deg === 24) {
         const pIn = P(pivotX + (arcR - 2.8) * Math.cos(rad), 9.2, pivotZ + (arcR - 2.8) * Math.sin(rad));
-        HL.mk("line", {
-          x1: HL.r2(pIn[0]), y1: HL.r2(pIn[1]),
-          x2: HL.r2(pt[0]), y2: HL.r2(pt[1]),
-          class: deg === 24 ? "hi" : "lo",
-          "stroke-width": deg === 24 ? 1.6 : 0.8
-        }, protractorGroup);
+        if (deg === 24) tickHiD += HL.seg(pIn, pt);
+        else tickLoD += HL.seg(pIn, pt);
       }
     }
-    protractorArc.setAttribute("d", arcD);
+    const angleArc = HL.mk("path", { d: HL.open(arcPts), class: "lo nf dash" }, protractorGroup);
+    HL.mk("path", { d: tickLoD, class: "lo nf" }, protractorGroup);
 
-    // Critical 24 degree line
     const critRad = (24 * Math.PI) / 180;
-    const cP0 = P(pivotX + 6.0 * Math.cos(critRad), 9.2, pivotZ + 6.0 * Math.sin(critRad));
-    const cP1 = P(pivotX + (arcR + 1.5) * Math.cos(critRad), 9.2, pivotZ + (arcR + 1.5) * Math.sin(critRad));
-    critLine.setAttribute("x1", HL.r2(cP0[0]));
-    critLine.setAttribute("y1", HL.r2(cP0[1]));
-    critLine.setAttribute("x2", HL.r2(cP1[0]));
-    critLine.setAttribute("y2", HL.r2(cP1[1]));
+    tickHiD += HL.seg(
+      P(pivotX + 6.0 * Math.cos(critRad), 9.2, pivotZ + 6.0 * Math.sin(critRad)),
+      P(pivotX + (arcR + 1.5) * Math.cos(critRad), 9.2, pivotZ + (arcR + 1.5) * Math.sin(critRad))
+    );
+    HL.mk("path", { d: tickHiD, class: "hi nf" }, protractorGroup);
 
-    // 4. Hinged Incline Ramp Plank
-    const rampLength = 60.0;
-    const rampW = 8.0; // Y from -rampW to +rampW
-    const rampH = 2.2; // Thickness in Z
+    // 4. Support Strut, Hinged Ramp Plank, Sliding Block & Force Vectors
+    const strutLine = HL.mk("path", { class: "sil nf" }, svg);
+    const rampSol = HL.solid(svg);
+    const motionTicks = HL.mk("path", { class: "lo nf dash" }, svg);
+    const blockSol = HL.solid(svg);
+    const blockKnob = HL.mk("circle", { r: 1.5, class: "dot" }, svg);
+    const vecP = HL.mk("path", { class: "hi nf" }, svg);
+    const vecF = HL.mk("path", { class: "hi nf" }, svg);
+    const vecN = HL.mk("path", { class: "lo nf" }, svg);
 
-    const rampGroup = HL.mk("g", {}, svg);
-    const rampSol = HL.solid(rampGroup);
-
-    // 5. Sliding Block on Ramp
-    const blockL = 12.0;
-    const blockW = 6.2;
-    const blockH = 5.5;
-    const blockGroup = HL.mk("g", {}, svg);
-    const blockSol = HL.solid(blockGroup);
-    const blockKnob = HL.mk("circle", { r: 1.4, class: "dot" }, blockGroup);
-
-    // 6. Adjustable Support Strut
-    const strutGroup = HL.mk("g", {}, svg);
-    const strutLine = HL.mk("line", { class: "sil", "stroke-width": 2.2, stroke: "var(--hl-edge)" }, strutGroup);
-
-    // Kinematics Springs
+    const rampLength = 60.0, rampW = 8.4, rampH = 2.4;
+    const blockL = 12.5, blockW = 6.6, blockH = 6.0;
     const initialDeg = initialV != null ? initialV : 16;
     const spAlpha = HL.spring((initialDeg * Math.PI) / 180, { k: 120, c: 14 });
-    const spBoxU = HL.spring(45.0, { k: 70, c: 10 });
+    const spBoxU = HL.spring(44.0, { k: 70, c: 10 });
+    let lastKey = "";
 
-    function transformRampPt(u, v, w, alpha) {
-      const cosA = Math.cos(alpha);
-      const sinA = Math.sin(alpha);
-      const x = pivotX + u * cosA - w * sinA;
-      const y = v;
-      const z = pivotZ + u * sinA + w * cosA;
-      return [x, y, z];
+    function rPt(u, v, w, alpha) {
+      const ca = Math.cos(alpha), sa = Math.sin(alpha);
+      return P(pivotX + u * ca - w * sa, v, pivotZ + u * sa + w * ca);
+    }
+
+    function box3D(u0, u1, v0, v1, w0, w1, alpha) {
+      const p000 = rPt(u0, v0, w0, alpha), p100 = rPt(u1, v0, w0, alpha);
+      const p110 = rPt(u1, v1, w0, alpha), p010 = rPt(u0, v1, w0, alpha);
+      const p001 = rPt(u0, v0, w1, alpha), p101 = rPt(u1, v0, w1, alpha);
+      const p111 = rPt(u1, v1, w1, alpha), p011 = rPt(u0, v1, w1, alpha);
+      const sil = HL.poly(HL.hull([p000, p100, p110, p010, p001, p101, p111, p011]));
+      const crease = HL.seg(p011, p111) + HL.seg(p111, p101) + HL.seg(p111, p110);
+      return { sil, crease };
+    }
+
+    function arrowSeg(p0, p1) {
+      const dx = p1[0] - p0[0], dy = p1[1] - p0[1];
+      const len = Math.hypot(dx, dy) || 1;
+      const ux = dx / len, uy = dy / len;
+      const nx = -uy, ny = ux;
+      const aL = [p1[0] - ux * 4.5 + nx * 2.2, p1[1] - uy * 4.5 + ny * 2.2];
+      const aR = [p1[0] - ux * 4.5 - nx * 2.2, p1[1] - uy * 4.5 - ny * 2.2];
+      return HL.seg(p0, p1) + HL.open([aL, p1, aR]);
     }
 
     function draw() {
-      const alpha = spAlpha.x;
+      const alpha = spAlpha.x, boxU = spBoxU.x;
+      const key = `${HL.r2(alpha)}:${HL.r2(boxU)}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
       const alphaDeg = (alpha * 180) / Math.PI;
-      const boxU = spBoxU.x;
+      const rampBox = box3D(0, rampLength, -rampW, rampW, 0, rampH, alpha);
+      const stopBox = box3D(4.2, 6.4, -rampW + 1.0, rampW - 1.0, rampH, rampH + 2.6, alpha);
+      HL.put(rampSol, { sil: rampBox.sil + stopBox.sil, crease: rampBox.crease + stopBox.crease });
 
-      // A. Draw Hinged Ramp Plank
-      const r000 = P(...transformRampPt(0, -rampW, 0, alpha));
-      const r100 = P(...transformRampPt(rampLength, -rampW, 0, alpha));
-      const r110 = P(...transformRampPt(rampLength, rampW, 0, alpha));
-      const r010 = P(...transformRampPt(0, rampW, 0, alpha));
+      strutLine.setAttribute("d", HL.seg(P(16, 6.5, 2.4), rPt(46, 6.5, 0, alpha)));
+      motionTicks.setAttribute("d", HL.seg(rPt(10, 0, rampH + 0.1, alpha), rPt(54, 0, rampH + 0.1, alpha)));
 
-      const r001 = P(...transformRampPt(0, -rampW, rampH, alpha));
-      const r101 = P(...transformRampPt(rampLength, -rampW, rampH, alpha));
-      const r111 = P(...transformRampPt(rampLength, rampW, rampH, alpha));
-      const r011 = P(...transformRampPt(0, rampW, rampH, alpha));
+      const blk = box3D(boxU - blockL / 2, boxU + blockL / 2, -blockW / 2, blockW / 2, rampH, rampH + blockH, alpha);
+      HL.put(blockSol, blk);
+      HL.place(blockKnob, rPt(boxU, 0, rampH + blockH + 0.2, alpha));
 
-      // Stop buffer at u = 5.0
-      const b00 = P(...transformRampPt(4.5, -rampW + 0.8, rampH, alpha));
-      const b10 = P(...transformRampPt(6.5, -rampW + 0.8, rampH, alpha));
-      const b11 = P(...transformRampPt(6.5, rampW - 0.8, rampH, alpha));
-      const b01 = P(...transformRampPt(4.5, rampW - 0.8, rampH, alpha));
-      const b00T = P(...transformRampPt(4.5, -rampW + 0.8, rampH + 2.5, alpha));
-      const b10T = P(...transformRampPt(6.5, -rampW + 0.8, rampH + 2.5, alpha));
-      const b11T = P(...transformRampPt(6.5, rampW - 0.8, rampH + 2.5, alpha));
-      const b01T = P(...transformRampPt(4.5, rampW - 0.8, rampH + 2.5, alpha));
+      // Force vectors from block front/top center along slope (P_parallel, F_ms) & normal (N)
+      const cCenter = rPt(boxU, 0, rampH + blockH / 2, alpha);
+      const pSlopeDown = rPt(boxU - 11.5, 0, rampH + blockH / 2, alpha);
+      const pFricUp = rPt(boxU + 10.5, 0, rampH + blockH / 2, alpha);
+      const pNorm = rPt(boxU, 0, rampH + blockH + 7.2, alpha);
+      vecP.setAttribute("d", arrowSeg(cCenter, pSlopeDown));
+      vecF.setAttribute("d", arrowSeg(cCenter, pFricUp));
+      vecN.setAttribute("d", arrowSeg(rPt(boxU, 0, rampH + blockH, alpha), pNorm));
+      angleArc.classList.toggle("lo", true);
 
-      let rSil = "";
-      rSil += HL.poly([r010, r110, r111, r011]);
-      rSil += HL.poly([r110, r100, r101, r111]);
-      rSil += HL.poly([r001, r101, r111, r011]);
-      rSil += HL.poly([b01, b11, b11T, b01T]);
-      rSil += HL.poly([b10, b11, b11T, b10T]);
-      rSil += HL.poly([b00T, b10T, b11T, b01T]);
-
-      let rCrease = "";
-      rCrease += `M ${HL.r2(r011[0])} ${HL.r2(r011[1])} L ${HL.r2(r111[0])} ${HL.r2(r111[1])}`;
-      rCrease += ` M ${HL.r2(r111[0])} ${HL.r2(r111[1])} L ${HL.r2(r101[0])} ${HL.r2(r101[1])}`;
-      rCrease += ` M ${HL.r2(b01T[0])} ${HL.r2(b01T[1])} L ${HL.r2(b11T[0])} ${HL.r2(b11T[1])}`;
-
-      HL.put(rampSol, { sil: rSil, crease: rCrease });
-
-      // Support strut from base at (15, 0, 2.2) to ramp underside at u = 40
-      const strutBase = P(15, 0, 2.2);
-      const strutUnder = P(...transformRampPt(40, 0, 0, alpha));
-      strutLine.setAttribute("x1", HL.r2(strutBase[0]));
-      strutLine.setAttribute("y1", HL.r2(strutBase[1]));
-      strutLine.setAttribute("x2", HL.r2(strutUnder[0]));
-      strutLine.setAttribute("y2", HL.r2(strutUnder[1]));
-
-      // B. Draw Sliding Block on top face (w = rampH)
-      const u0 = boxU - blockL / 2;
-      const u1 = boxU + blockL / 2;
-      const v0 = -blockW / 2;
-      const v1 = blockW / 2;
-      const w0 = rampH;
-      const w1 = rampH + blockH;
-
-      const bk000 = P(...transformRampPt(u0, v0, w0, alpha));
-      const bk100 = P(...transformRampPt(u1, v0, w0, alpha));
-      const bk110 = P(...transformRampPt(u1, v1, w0, alpha));
-      const bk010 = P(...transformRampPt(u0, v1, w0, alpha));
-
-      const bk001 = P(...transformRampPt(u0, v0, w1, alpha));
-      const bk101 = P(...transformRampPt(u1, v0, w1, alpha));
-      const bk111 = P(...transformRampPt(u1, v1, w1, alpha));
-      const bk011 = P(...transformRampPt(u0, v1, w1, alpha));
-
-      let bkSil = "";
-      bkSil += HL.poly([bk010, bk110, bk111, bk011]);
-      bkSil += HL.poly([bk110, bk100, bk101, bk111]);
-      bkSil += HL.poly([bk001, bk101, bk111, bk011]);
-
-      let bkCrease = "";
-      bkCrease += `M ${HL.r2(bk011[0])} ${HL.r2(bk011[1])} L ${HL.r2(bk111[0])} ${HL.r2(bk111[1])}`;
-      bkCrease += ` M ${HL.r2(bk111[0])} ${HL.r2(bk111[1])} L ${HL.r2(bk101[0])} ${HL.r2(bk101[1])}`;
-
-      HL.put(blockSol, { sil: bkSil, crease: bkCrease });
-
-      // Brass center cylinder knob on top of block
-      const knobPt = P(...transformRampPt(boxU, 0, w1 + 0.2, alpha));
-      blockKnob.setAttribute("cx", HL.r2(knobPt[0]));
-      blockKnob.setAttribute("cy", HL.r2(knobPt[1]));
-
-      // Highlight block when sliding
       const isSliding = alphaDeg > 24.0;
       blockSol.sil.classList.toggle("hi", isSliding);
-
-      // Calculations for read header
-      const sinA = Math.sin(alpha);
-      const cosA = Math.cos(alpha);
-      const mu = 0.445; // tan(24 deg)
-      const pParallel = HL.r2(sinA);
-      const fmsMax = HL.r2(mu * cosA);
-      const angleStr = HL.r2(alphaDeg);
-
-      if (isSliding) {
-        read.textContent = `Mặt phẳng nghiêng: α = ${angleStr}° > 24° (Vượt góc ma sát) · Lực kéo P∥ = ${pParallel}·P > Fms_max = ${fmsMax}·P ⇒ Khối trượt gia tốc xuống dốc!`;
-      } else {
-        read.textContent = `Mặt phẳng nghiêng: α = ${angleStr}° ≤ 24° · Lực kéo P∥ = ${pParallel}·P ≤ Fms_max = ${fmsMax}·P ⇒ Cân bằng tĩnh (Khối đứng yên)`;
-      }
+      const angleStr = alphaDeg.toFixed(1);
+      read.textContent = isSliding ? `α=${angleStr}° > 24° · Trượt!` : `α=${angleStr}° ≤ 24° · Đứng yên`;
     }
 
     function setAngle(deg) {
       const clamped = HL.clamp(deg, 0, 45);
       spAlpha.t = (clamped * Math.PI) / 180;
-      // If angle exceeds 24 deg, target position slides to buffer (u = 12.5)
-      // If angle <= 24 deg, target position returns to top section (u = 45.0)
-      if (clamped > 24.0) {
-        spBoxU.t = 12.5;
-      } else {
-        spBoxU.t = 45.0;
-      }
+      spBoxU.t = clamped > 24.0 ? 13.0 : 44.0;
       reg.wake();
     }
 
     function aim(pt) {
-      if (!pt) {
-        setAngle(16.0); // Default rest angle
-        return;
-      }
-      const minY = 30, maxY = 130;
-      const norm = HL.clamp(1.0 - (pt[1] - minY) / (maxY - minY), 0, 1);
+      if (!pt) { setAngle(16.0); return; }
+      const [wx, wy] = HL.unproj(C, pt[0], pt[1], 14);
+      const norm = HL.clamp(1.0 - (wx + wy + 18) / 36, 0, 1);
       setAngle(norm * 45.0);
     }
 
@@ -278,16 +160,10 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, down: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
-
     draw();
 
-    return {
-      set(v) {
-        setAngle(Number(v));
-      },
-      destroy: bag.dispose
-    };
+    return { set(v) { setAngle(Number(v)); }, destroy: bag.dispose };
   }
 };

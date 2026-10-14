@@ -1,8 +1,6 @@
 /*
  * 10. Counting Bead String (Chuỗi 10 Hạt Đếm Số)
  * Pedagogical Goal: Part-whole decompositions of 10 (7+3, 6+4, 8+2)
- * Simplified Geometry: Clean wooden baseboard, arched wire, 10 beads (5 dark + 5 light)
- * Meaningful Interaction: Moving pointer smoothly divides beads into left and right groups
  */
 
 export default {
@@ -14,8 +12,9 @@ export default {
   range: [0, 5, 10],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-58, -16, 0], [58, 16, 46]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.0);
+    HL.fit(C, [[-52, -14, 0], [52, 14, 38]], 200, 165);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Clean Wooden Baseboard (Z: 0 to 4.0)
@@ -24,56 +23,48 @@ export default {
     HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 4.0));
 
     // Anchor sockets for wire on base
-    HL.mk("circle", { cx: HL.r2(P(-44, 0, 4.1)[0]), cy: HL.r2(P(-44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
-    HL.mk("circle", { cx: HL.r2(P(44, 0, 4.1)[0]), cy: HL.r2(P(44, 0, 4.1)[1]), r: 2.0, fill: "#232327" }, svg);
+    const sL = HL.flatDot(svg, C, 1.5, "dot m");
+    const sR = HL.flatDot(svg, C, 1.5, "dot m");
+    HL.place(sL, P(-44, 0, 4.1));
+    HL.place(sR, P(44, 0, 4.1));
 
     // 2. Parabolic Wire on X-Z Plane
     const wirePts = [];
-    for (let s = 0; s <= 48; s++) {
-      const t = s / 48;
-      const x = HL.lerp(-44, 44, t);
-      const z = 4.0 + 130 * t * (1 - t);
-      wirePts.push(P(x, 0, z));
+    for (let s = 0; s <= 40; s++) {
+      const t = s / 40;
+      wirePts.push(P(HL.lerp(-44, 44, t), 0, 4.0 + 130 * t * (1 - t)));
     }
-    HL.mk("path", { d: HL.open(wirePts), stroke: "#232327", fill: "none", "stroke-width": 1.6 }, svg);
+    HL.mk("path", { class: "nf sil", d: HL.open(wirePts) }, svg);
 
-    // 3. Ten Clean Counting Beads (5 dark + 5 light)
+    // 3. Ten Clean Counting Beads (5 group A + 5 group B)
+    let curSplit = initialV != null ? HL.clamp(Math.round(initialV), 0, 10) : 5;
     const beads = [];
     const R = 4.5;
     const L = 5.2;
-    const r_hole = 1.2;
+    const rHole = 1.2;
     const N = 20;
 
     for (let i = 0; i < 10; i++) {
-      const dark = i < 5;
+      const groupA = i < 5;
       const sol = HL.solid(svg);
-      if (dark) {
-        sol.sil.style.fill = "#232327";
-        sol.sil.style.stroke = "#111113";
-        sol.sil.style.strokeWidth = "1.2px";
-        sol.cr.style.stroke = "#e0e0e4";
-        sol.cr.style.strokeWidth = "1.0px";
-      } else {
-        sol.sil.style.fill = "#ffffff";
-        sol.sil.style.stroke = "#232327";
-        sol.sil.style.strokeWidth = "1.2px";
-        sol.cr.style.stroke = "#5b5d64";
-        sol.cr.style.strokeWidth = "1.0px";
-      }
-
-      // Initial 5 + 5 split
-      const initialT = i < 5 ? 0.08 + i * 0.048 : 0.92 - (9 - i) * 0.048;
+      const dot = groupA ? HL.flatDot(svg, C, 0.9, "dot m") : null;
+      const initialT = i < curSplit ? 0.08 + i * 0.048 : 0.92 - (9 - i) * 0.048;
       beads.push({
         idx: i,
-        dark,
+        groupA,
         tSp: HL.spring(initialT, { k: 130, c: 14 }),
-        sol
+        sol,
+        dot
       });
     }
 
-    let curSplit = 5;
+    let lastKey = "";
 
     function draw() {
+      const key = `${curSplit}:${beads.map(b => HL.r2(b.tSp.x)).join(",")}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
       beads.forEach(b => {
         const t = b.tSp.x;
         const x = -44 + 88 * t;
@@ -93,21 +84,10 @@ export default {
           const cosA = Math.cos(ang);
           const sinA = Math.sin(ang);
 
-          // End 1
-          const p1x = x - (L / 2) * utx + R * sinA * (-utz);
-          const p1y = R * cosA;
-          const p1z = z - (L / 2) * utz + R * sinA * utx;
-          end1.push(P(p1x, p1y, p1z));
-
-          // End 2
-          const p2x = x + (L / 2) * utx + R * sinA * (-utz);
-          const p2y = R * cosA;
-          const p2z = z + (L / 2) * utz + R * sinA * utx;
-          end2.push(P(p2x, p2y, p2z));
-
-          // Hole 1 & 2
-          hole1.push(P(x - (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z - (L / 2) * utz + r_hole * sinA * utx));
-          hole2.push(P(x + (L / 2) * utx + r_hole * sinA * (-utz), r_hole * cosA, z + (L / 2) * utz + r_hole * sinA * utx));
+          end1.push(P(x - (L / 2) * utx + R * sinA * (-utz), R * cosA, z - (L / 2) * utz + R * sinA * utx));
+          end2.push(P(x + (L / 2) * utx + R * sinA * (-utz), R * cosA, z + (L / 2) * utz + R * sinA * utx));
+          hole1.push(P(x - (L / 2) * utx + rHole * sinA * (-utz), rHole * cosA, z - (L / 2) * utz + rHole * sinA * utx));
+          hole2.push(P(x + (L / 2) * utx + rHole * sinA * (-utz), rHole * cosA, z + (L / 2) * utz + rHole * sinA * utx));
         }
 
         const sil = HL.poly(HL.hull(end1.concat(end2)));
@@ -117,24 +97,21 @@ export default {
         const crease = HL.poly(visRim) + HL.poly(visHole);
 
         HL.put(b.sol, { sil, crease });
+        if (b.dot) HL.place(b.dot, P(x, 0, z + R * 0.75));
 
-        const isFocal = (b.idx === curSplit - 1);
-        b.sol.sil.classList.toggle("hi", isFocal);
+        const focalIdx = Math.max(0, curSplit - 1);
+        b.sol.sil.classList.toggle("hi", b.idx === focalIdx);
       });
 
       const leftCount = beads.filter(b => b.tSp.x < 0.5).length;
       const rightCount = 10 - leftCount;
-      read.textContent = "Chuỗi hạt: " + leftCount + " (trái) + " + rightCount + " (phải) = 10";
+      read.textContent = `Chuỗi hạt: ${leftCount} + ${rightCount} = 10`;
     }
 
     function setSplit(splitIdx) {
       curSplit = HL.clamp(splitIdx, 0, 10);
       beads.forEach((b, i) => {
-        if (i < curSplit) {
-          b.tSp.t = 0.08 + i * 0.048;
-        } else {
-          b.tSp.t = 0.92 - (9 - i) * 0.048;
-        }
+        b.tSp.t = i < curSplit ? 0.08 + i * 0.048 : 0.92 - (9 - i) * 0.048;
       });
       reg.wake();
     }
@@ -144,9 +121,9 @@ export default {
         setSplit(5);
         return;
       }
-      const scrLeft = P(-44, 0, 8)[0];
-      const scrRight = P(44, 0, 8)[0];
-      const norm = HL.clamp((pt[0] - scrLeft) / (scrRight - scrLeft), 0.05, 0.95);
+      const [wx, wy] = HL.unproj(C, pt[0], pt[1], 15.0);
+      const axis = (wx - wy) * Math.SQRT1_2;
+      const norm = HL.clamp((axis + 32) / 64, 0.05, 0.95);
       setSplit(Math.round(norm * 10));
     }
 

@@ -1,8 +1,6 @@
 /*
  * 4. Number Blocks Tower (Tháp Khối Số Học Unifix)
  * Pedagogical Goal: Part-whole addition & conservation of volume (3 + 2 = 5)
- * Simplified Geometry: Clean interlocking cubes with cylindrical top studs on a simple baseboard
- * Meaningful Interaction: Moving pointer smoothly transfers cubes across towers along a parabolic arc
  */
 
 export default {
@@ -14,14 +12,23 @@ export default {
   range: [1, 3, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -18, 0], [50, 18, 76]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 2.95);
+    HL.fit(C, [[-46, -16, 0], [46, 16, 48]], 200, 175);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Clean Hardwood Baseboard (Z: 0 to 3.5)
     const [baseO, baseI] = HL.rings(-46, -16, 46, 16, 3.0, 0.8);
     const baseSol = HL.solid(svg);
     HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 3.5));
+
+    // Center divider groove on board
+    const d0 = P(0, -14, 3.6), d1 = P(0, 14, 3.6);
+    HL.mk("line", {
+      x1: HL.r2(d0[0]), y1: HL.r2(d0[1]),
+      x2: HL.r2(d1[0]), y2: HL.r2(d1[1]),
+      class: "lo dash"
+    }, svg);
 
     // Base mounting boss studs on board at x = -20 and x = 20
     for (const bx of [-20, 20]) {
@@ -30,17 +37,15 @@ export default {
       HL.put(studSol, HL.prism(P, front, studO, studI, 3.5, 5.5));
     }
 
-    const blockH = 12.0;
+    const blockH = 11.0;
     const TOTAL_BLOCKS = 5;
-
     let countA = initialV != null ? HL.clamp(Math.round(initialV), 1, 5) : 3;
 
-    // 5 physical Unifix unit blocks
     const blocks = [];
     for (let i = 0; i < TOTAL_BLOCKS; i++) {
-      const isInitialA = i < 3;
+      const isInitialA = i < countA;
       const targetTower = isInitialA ? -20 : 20;
-      const targetStackIdx = isInitialA ? i : (i - 3);
+      const targetStackIdx = isInitialA ? i : (i - countA);
       const targetZ = 3.5 + targetStackIdx * blockH;
 
       const blockSol = HL.solid(svg);
@@ -55,14 +60,14 @@ export default {
       });
     }
 
+    let lastKey = "";
+
     function syncTargets() {
-      // Tower A gets blocks 0 .. countA - 1
       for (let i = 0; i < countA; i++) {
         const b = blocks[i];
         b.spX.t = -20;
         b.spZ.t = 3.5 + i * blockH;
       }
-      // Tower B gets blocks countA .. TOTAL_BLOCKS - 1
       let stackB = 0;
       for (let i = countA; i < TOTAL_BLOCKS; i++) {
         const b = blocks[i];
@@ -74,26 +79,28 @@ export default {
     }
 
     function draw() {
-      blocks.forEach(b => {
+      const key = `${countA}:${blocks.map(b => HL.r2(b.spX.x) + ":" + HL.r2(b.spZ.x)).join(",")}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
+      blocks.forEach((b, i) => {
         const curX = b.spX.x;
         const curZ = b.spZ.x;
 
-        // Block cube prism (16 x 16 footprint, height 12)
         const [bO, bI] = HL.rings(curX - 8.0, -8.0, curX + 8.0, 8.0, 2.0, 0.8);
         HL.put(b.blockSol, HL.prism(P, front, bO, bI, curZ, curZ + blockH));
 
-        // Interlocking stud on top face
         const [sO, sI] = HL.rings(curX - 3.5, -3.5, curX + 3.5, 3.5, 3.5, 0.5);
         HL.put(b.studSol, HL.prism(P, front, sO, sI, curZ + blockH, curZ + blockH + 2.4));
 
-        // Airborne highlight
         const isAirborne = Math.abs(curX - (-20)) > 2 && Math.abs(curX - 20) > 2;
-        b.blockSol.sil.classList.toggle("hi", isAirborne);
-        b.studSol.sil.classList.toggle("hi", isAirborne);
+        const isFocal = isAirborne || i === countA - 1;
+        b.blockSol.sil.classList.toggle("hi", isFocal);
+        b.studSol.sil.classList.toggle("hi", isFocal);
       });
 
       const countB = TOTAL_BLOCKS - countA;
-      read.textContent = "Khối ghép: " + countA + " khối + " + countB + " khối = 5 khối";
+      read.textContent = `Tháp khối: ${countA} + ${countB} = 5`;
     }
 
     function aim(pt) {
@@ -102,9 +109,9 @@ export default {
         syncTargets();
         return;
       }
-      const pLeft = P(-20, 0, 10)[0];
-      const pRight = P(20, 0, 10)[0];
-      const norm = HL.clamp((pt[0] - pLeft) / (pRight - pLeft), 0, 1);
+      const [wx, wy] = HL.unproj(C, pt[0], pt[1], 15);
+      const axis = (wx - wy) * Math.SQRT1_2;
+      const norm = HL.clamp((axis + 22) / 44, 0, 1);
       countA = HL.clamp(Math.round(1 + norm * 4), 1, 5);
       syncTargets();
     }
@@ -130,7 +137,6 @@ export default {
     }));
     bag.add(() => svg.replaceChildren());
 
-    syncTargets();
     draw();
 
     return {

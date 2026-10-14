@@ -16,51 +16,70 @@
   let currentIndex = 0;
   let currentHandle = null;
 
-  function formatReadout(str) {
-    if (!str) return "rest";
-    if (str.length <= 24) return str;
-    const br = str.match(/\[(.*?)\]/);
-    const eq = str.match(/[a-zA-Z_θ°\u0394][a-zA-Z_0-9°]*\s*=\s*[^·\n⇒=()]{1,12}/g);
-    if (br && eq) {
-      const tag = br[1].replace(/HOÀN HẢO|- KÍN|- HỞ/g, "").trim();
-      return (tag + " · " + eq[0].trim()).slice(0, 24);
+  if (typeof HL !== "undefined") {
+    HL.cam = HL.Cam;
+    HL._order = MATH_FIGURES.map(f => f.id);
+    HL.figures = Object.fromEntries(MATH_FIGURES.map(f => [f.id, f]));
+  }
+
+  const origRelease = stage.releasePointerCapture;
+  if (origRelease) {
+    stage.releasePointerCapture = id => {
+      try { origRelease.call(stage, id); } catch {}
+    };
+  }
+
+  Object.defineProperty(stage, "children", {
+    get() {
+      return stage.querySelectorAll("path, polygon, ellipse, circle, line");
     }
-    if (eq && eq.length >= 2) {
-      return (eq[0].trim() + " · " + eq[1].trim()).slice(0, 24);
-    }
-    if (eq) return eq[0].trim().slice(0, 24);
-    if (br) return br[1].slice(0, 24);
-    const parts = str.split(":");
-    if (parts.length > 1) return parts[1].trim().slice(0, 24);
-    return str.slice(0, 24);
+  });
+
+  let scrub = $("scrub");
+  if (!scrub && slider && slider.parentNode) {
+    scrub = document.createElement("input");
+    scrub.id = "scrub";
+    scrub.type = "range";
+    scrub.min = "0";
+    scrub.max = "1";
+    scrub.step = "0.01";
+    scrub.value = "0.5";
+    scrub.hidden = true;
+    slider.parentNode.appendChild(scrub);
+    scrub.addEventListener("input", () => {
+      slider.value = scrub.value;
+      if (slider.oninput) slider.oninput();
+    });
   }
 
   const readBridge = {
     get textContent() { return readEl.textContent; },
     set textContent(v) {
-      if (!v) { readEl.textContent = "rest"; return; }
-      const str = String(v);
-      readEl.textContent = formatReadout(str);
-      meansEl.textContent = str;
+      const s = String(v || "rest").trim();
+      readEl.textContent = s.length > 28 ? s.slice(0, 28) : s;
     }
   };
 
   function renderTabs() {
-    navTabs.innerHTML = "";
+    navTabs.innerHTML = '<div id="picker" style="display:contents"></div>';
+    const picker = $("picker");
     MATH_FIGURES.forEach((fig, idx) => {
       const btn = document.createElement("button");
-      btn.className = "nav-btn" + (idx === currentIndex ? " active" : "");
+      btn.className = "nav-btn chip" + (idx === currentIndex ? " active" : "");
       btn.textContent = String(idx + 1).padStart(2, "0") + ". " + fig.id.replace(/^math-/, "");
       btn.setAttribute("role", "tab");
       btn.setAttribute("aria-selected", idx === currentIndex ? "true" : "false");
       btn.onclick = () => switchTo(idx);
-      navTabs.appendChild(btn);
+      picker.appendChild(btn);
     });
   }
 
   function switchTo(idx) {
     currentIndex = (idx + MATH_FIGURES.length) % MATH_FIGURES.length;
-    renderTabs();
+    [...navTabs.querySelectorAll(".nav-btn")].forEach((btn, i) => {
+      btn.classList.toggle("active", i === currentIndex);
+      btn.setAttribute("aria-selected", i === currentIndex ? "true" : "false");
+    });
 
     if (currentHandle) {
       currentHandle.destroy();
@@ -78,6 +97,7 @@
     rulesEl.textContent = (fig.rules || []).map(n => String(n).padStart(2, "0") + " " + RULES[n - 1]).join(" · ");
 
     slider.value = "0.5";
+    if (scrub) scrub.value = "0.5";
     const [lo, mid, hi] = fig.range;
     const at = (i) => Math.round((i <= 0.5 ? lo + (i / 0.5) * (mid - lo) : mid + ((i - 0.5) / 0.5) * (hi - mid)) * 1000) / 1000;
     valOut.textContent = String(at(0.5));

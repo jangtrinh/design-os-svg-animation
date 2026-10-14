@@ -1,18 +1,8 @@
 /*
  * 3. Spring Dynamometer (Lực Kế Lò Xo - Định Luật Hooke)
  * Physical Concept: Định luật Hooke: Lực đàn hồi tỷ lệ thuận với độ giãn: F = k · Δl
- *   - Lực đo được: F = 0 N đến 5 N (tương ứng 0 đến 5 quả cân 1 N, m ≈ 102 g mỗi quả).
- *   - Độ dãn lò xo: Δl = F / k (tuyến tính tuyệt đối).
+ *   - Lực đo được: F = 0 N đến 5 N (0 đến 5 quả cân 1 N).
  *   - Độ cứng lò xo: k = 100 N/m ⇒ Mỗi 1 N dãn 10 mm.
- * Geometry (Precision Laboratory Instrument Discipline):
- *   - Bệ gang 3 chạc vững chãi (Cast-iron lab tripod/stand base) kèm cọc thép đứng và tay xà ngang có ốc siết.
- *   - Vỏ lực kế hình trụ trong suốt (transparent acrylic barrel) với nắp chụp kim loại 2 đầu.
- *   - Vạch khắc chia độ Newton 0–5 N trên thân vỏ.
- *   - Lò xo xoắn ốc axonometric biến dạng tuyến tính thực tế bên trong.
- *   - Đĩa kim chỉ thị màu nổi bật (indicator collar) gắn đồng trục với ti trượt và móc treo dưới.
- *   - Bộ quả cân đồng thau xẻ rãnh (slotted brass weights) 1 N xếp chồng tự nhiên dưới móc.
- * Meaningful Kinematics: Di chuột dọc để kéo móc tải trọng 0N–5N: lò xo dãn mượt mà theo phương trình đàn hồi,
- * kim chỉ thị trỏ chính xác từng vạch Newton, số đĩa cân 1 N tự động ăn khớp với lực đo.
  */
 
 export default {
@@ -24,11 +14,12 @@ export default {
   range: [0, 2.0, 5.0],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 3.2);
-    HL.fit(C, [[-26, -12, 0], [22, 12, 38]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.85);
+    HL.fit(C, [[-28, -14, 0], [24, 14, 36]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    function circAt(cx, cy, R, n = 24) {
+    function circAt(cx, cy, R, n = 20) {
       const out = [];
       for (let k = 0; k < n; k++) {
         const a = (k / n) * Math.PI * 2;
@@ -39,172 +30,122 @@ export default {
     }
 
     // 1. Cast-Iron Laboratory Base (Z: 0 to 2.4)
-    // Triangular heavy tripod base
     const baseSol = HL.solid(svg);
     const [bO, bI] = HL.rings(-28, -14, 24, 14, 2.4, 0.6);
     HL.put(baseSol, HL.prism(P, front, bO, bI, 0, 2.4));
 
-    // Levelling thumb screws on base
-    const lScrew1 = P(-24, -10, 2.5);
-    const lScrew2 = P(-24, 10, 2.5);
-    const lScrew3 = P(18, 0, 2.5);
-    for (const pt of [lScrew1, lScrew2, lScrew3]) {
-      HL.mk("circle", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 1.8, class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, svg);
-      HL.mk("circle", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 0.6, class: "dot" }, svg);
+    for (const pt of [P(-24, -10, 2.5), P(-24, 10, 2.5), P(18, 0, 2.5)]) {
+      HL.mk("ellipse", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), rx: 1.8, ry: 1.4, class: "lo" }, svg);
+      HL.mk("circle", { cx: HL.r2(pt[0]), cy: HL.r2(pt[1]), r: 0.7, class: "dot" }, svg);
     }
 
     // 2. Rigid Support Stand Rod & Cantilever Clamp Arm
-    // Vertical steel column at X = -16, Y = 0 (Z: 2.4 to 34.5)
     const postSol = HL.solid(svg);
-    const postO = circAt(-16, 0, 1.8, 16);
-    const postI = circAt(-16, 0, 1.4, 16);
-    HL.put(postSol, HL.prism(P, front, postO, postI, 2.4, 34.5));
+    HL.put(postSol, HL.prism(P, front, circAt(-17, 0, 1.8, 16), circAt(-17, 0, 1.4, 16), 2.4, 34.5));
 
-    // Horizontal arm clamp boss at X = -16, Z = 32.5 to 34.5
     const clampSol = HL.solid(svg);
-    const [clO, clI] = HL.rings(-18.5, -2.4, -13.5, 2.4, 0.6, 0.2);
+    const [clO, clI] = HL.rings(-19.5, -2.4, -14.5, 2.4, 0.6, 0.2);
     HL.put(clampSol, HL.prism(P, front, clO, clI, 32.2, 34.5));
 
-    // Knurled thumbscrew on clamp
-    const thumbPt = P(-16, -3.8, 33.3);
-    HL.mk("circle", { cx: HL.r2(thumbPt[0]), cy: HL.r2(thumbPt[1]), r: 1.6, class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.1 }, svg);
-
-    // Cantilever arm extending to X = 0 at Z = 33.5
     const armSol = HL.solid(svg);
-    const [armO, armI] = HL.rings(-14, -1.2, 2.0, 1.2, 0.5, 0.2);
+    const [armO, armI] = HL.rings(-15, -1.3, 2.5, 1.3, 0.5, 0.2);
     HL.put(armSol, HL.prism(P, front, armO, armI, 32.8, 34.2));
 
-    // Top suspension loop at (0, 0, 33.0)
     const topPin = P(0, 0, 33.0);
-    HL.mk("circle", {
-      cx: HL.r2(topPin[0]), cy: HL.r2(topPin[1]), r: 2.0,
-      class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.2
-    }, svg);
+    HL.mk("ellipse", { cx: HL.r2(topPin[0]), cy: HL.r2(topPin[1]), rx: 1.8, ry: 1.8, class: "sil" }, svg);
 
-    // 3. Dynamometer Outer Casing (Z: 14.5 to 32.0)
-    // Top chrome cap (Z: 30.5 to 32.0)
+    // 3. Dynamometer Outer Casing (Z: 15.5 to 32.0)
+    const capO = circAt(0, 0, 4.4, 22), capI = circAt(0, 0, 3.8, 22);
+    const barO = circAt(0, 0, 4.2, 22), barI = circAt(0, 0, 3.6, 22);
     const topCapSol = HL.solid(svg);
-    const capO = circAt(0, 0, 4.4, 24);
-    const capI = circAt(0, 0, 3.8, 24);
     HL.put(topCapSol, HL.prism(P, front, capO, capI, 30.5, 32.0));
-
-    // Transparent cylindrical casing barrel (Z: 16.0 to 30.5)
     const barrelSol = HL.solid(svg);
-    const barO = circAt(0, 0, 4.2, 24);
-    const barI = circAt(0, 0, 3.6, 24);
-    HL.put(barrelSol, HL.prism(P, front, barO, barI, 16.0, 30.5));
-
-    // Bottom cap with guide collar (Z: 14.5 to 16.0)
+    HL.put(barrelSol, HL.prism(P, front, barO, barI, 16.8, 30.5));
     const botCapSol = HL.solid(svg);
-    HL.put(botCapSol, HL.prism(P, front, capO, capI, 14.5, 16.0));
+    HL.put(botCapSol, HL.prism(P, front, capO, capI, 15.4, 16.8));
 
-    // Graduation Scale Ticks on front barrel face (0N at Z = 26.5, 5N at Z = 16.5)
-    // 2.0 units in Z per 1 Newton
-    const scaleGroup = HL.mk("g", {}, svg);
+    // Scale graduation ticks (0N at Z = 27.0, 5N at Z = 18.0 -> 1.8 units/N)
+    let ticksD = "";
     for (let i = 0; i <= 5; i++) {
-      const tickZ = 26.5 - i * 2.0;
-      // Front facing ticks
-      const tA = P(3.2, 2.2, tickZ);
-      const tB = P(4.4, 3.0, tickZ);
-      HL.mk("line", {
-        x1: HL.r2(tA[0]), y1: HL.r2(tA[1]),
-        x2: HL.r2(tB[0]), y2: HL.r2(tB[1]),
-        class: i === 0 || i === 5 ? "hi" : "lo",
-        "stroke-width": i === 0 || i === 5 ? 1.4 : 0.8
-      }, scaleGroup);
-
-      // Minor half-newton ticks
+      const tickZ = 27.0 - i * 1.8;
+      ticksD += HL.seg(P(3.2, 2.2, tickZ), P(4.6, 3.1, tickZ));
       if (i < 5) {
-        const halfZ = tickZ - 1.0;
-        const hA = P(3.4, 2.3, halfZ);
-        const hB = P(4.1, 2.8, halfZ);
-        HL.mk("line", {
-          x1: HL.r2(hA[0]), y1: HL.r2(hA[1]),
-          x2: HL.r2(hB[0]), y2: HL.r2(hB[1]),
-          class: "lo", "stroke-width": 0.6
-        }, scaleGroup);
+        const halfZ = tickZ - 0.9;
+        ticksD += HL.seg(P(3.4, 2.3, halfZ), P(4.2, 2.8, halfZ));
       }
     }
+    const scaleTicks = HL.mk("path", { d: ticksD, class: "lo nf" }, svg);
 
-    // 4. Helical Spring inside the casing
-    const springPath = HL.mk("path", { class: "hi nf", "stroke-width": 1.4 }, svg);
+    // 4. Helical Spring, Indicator Collar, Pointer Needle, Hook & Weights
+    const springHelix = HL.mk("path", { class: "hi nf" }, svg);
+    const indCollar = HL.mk("path", { class: "sil" }, svg);
+    const pointerNeedle = HL.mk("path", { class: "hi nf" }, svg);
+    const hookStem = HL.mk("path", { class: "sil nf" }, svg);
+    const hookCurve = HL.mk("path", { class: "hi nf" }, svg);
+    const forceArrow = HL.mk("path", { class: "hi nf" }, svg);
 
-    // 5. Sliding Red Indicator Collar & Hook Rod
-    const indCollar = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-hi)", "stroke-width": 1.5 }, svg);
-    const hookLine = HL.mk("path", { class: "hi nf", "stroke-width": 1.4 }, svg);
-
-    // 6. Stack of Slotted 1N Brass Weights
     const weightsGroup = HL.mk("g", {}, svg);
-    const weightSols = [];
-    for (let w = 0; w < 5; w++) {
-      weightSols.push(HL.solid(weightsGroup));
-    }
+    const weightSols = Array.from({ length: 5 }, () => HL.solid(weightsGroup));
 
-    // Kinematics spring for load force F (0 to 5 N)
     const currentF = initialV != null ? HL.clamp(initialV, 0, 5) : 2.0;
     const spF = HL.spring(currentF, { k: 140, c: 14 });
+    let lastKey = "";
 
     function draw() {
       const fVal = spF.x;
-      // Spring elongation: 2.0 units per 1 Newton
-      const deltaZ = fVal * 2.0;
-      const springTopZ = 29.5;
-      const springBotZ = 26.5 - deltaZ;
+      const key = `${HL.r2(fVal)}`;
+      if (key === lastKey) return;
+      lastKey = key;
 
-      // Draw Helical Spring inside casing
-      const coils = 9;
-      const numSteps = coils * 14;
-      const springR = 2.4;
+      const deltaZ = fVal * 1.8;
+      const springTopZ = 29.8;
+      const springBotZ = 27.0 - deltaZ;
+
+      const coils = 8, numSteps = coils * 12, springR = 2.4;
       const spPts = [];
-
       for (let k = 0; k <= numSteps; k++) {
         const t = k / numSteps;
         const ang = t * coils * Math.PI * 2;
-        const curZ = springTopZ - t * (springTopZ - springBotZ);
-        spPts.push(P(springR * Math.cos(ang), springR * Math.sin(ang), curZ));
+        spPts.push(P(springR * Math.cos(ang), springR * Math.sin(ang), springTopZ - t * (springTopZ - springBotZ)));
       }
-      springPath.setAttribute("d", HL.open(spPts));
+      springHelix.setAttribute("d", HL.open(spPts));
 
-      // Indicator Collar at spring bottom (Z = springBotZ)
-      const colTop = springBotZ;
-      const colBot = springBotZ - 1.2;
-      const colRing = circAt(0, 0, 3.4, 18);
+      const colTop = springBotZ, colBot = springBotZ - 1.1;
+      const colRing = circAt(0, 0, 3.3, 18);
       indCollar.setAttribute("d", HL.poly(HL.hull([
         ...colRing.map(q => P(q.u, q.v, colTop)),
         ...colRing.map(q => P(q.u, q.v, colBot))
       ])));
+      pointerNeedle.setAttribute("d", HL.seg(P(2.6, 1.8, springBotZ), P(4.8, 3.3, springBotZ)));
 
-      // Hook Rod hanging below the collar (from colBot down through casing bottom to hook)
-      const hookTopZ = colBot;
-      const hookBotZ = hookTopZ - 5.5;
-      const h0 = P(0, 0, hookTopZ);
-      const h1 = P(0, 0, hookBotZ);
-      const h2 = P(1.6, 0, hookBotZ - 1.4);
-      const h3 = P(3.2, 0, hookBotZ - 0.2);
-      hookLine.setAttribute("d", `M ${HL.r2(h0[0])} ${HL.r2(h0[1])} L ${HL.r2(h1[0])} ${HL.r2(h1[1])} C ${HL.r2(h2[0])} ${HL.r2(h2[1])}, ${HL.r2(h3[0])} ${HL.r2(h3[1])}, ${HL.r2(h3[0])} ${HL.r2(h3[1] - 1.2)}`);
+      const hookTopZ = colBot, hookBotZ = hookTopZ - 4.2;
+      const h0 = P(0, 0, hookTopZ), h1 = P(0, 0, hookBotZ);
+      const h2 = P(1.6, 0, hookBotZ - 1.2), h3 = P(2.8, 0, hookBotZ - 0.2);
+      hookStem.setAttribute("d", HL.seg(h0, h1));
+      hookCurve.setAttribute("d", `M ${HL.r2(h1[0])} ${HL.r2(h1[1])} C ${HL.r2(h2[0])} ${HL.r2(h2[1])}, ${HL.r2(h3[0])} ${HL.r2(h3[1])}, ${HL.r2(h3[0])} ${HL.r2(h3[1] - 1.0)}`);
 
-      // Stacked Slotted 1N Weights (Quả cân đồng 1N)
       const activeWeights = Math.min(5, Math.max(0, Math.round(fVal)));
-      const weightThickness = 1.4;
-      const weightR = 5.4;
-      const wRingO = circAt(0, 0, weightR, 20);
-      const wRingI = circAt(0, 0, 1.2, 12);
+      const weightThickness = 1.25;
+      const wRingO = circAt(0, 0, 5.2, 20), wRingI = circAt(0, 0, 1.2, 12);
 
       weightSols.forEach((sol, idx) => {
         if (idx < activeWeights) {
-          const wz0 = hookBotZ - 1.8 - (idx + 1) * (weightThickness + 0.2);
-          const wz1 = wz0 + weightThickness;
-          HL.put(sol, HL.prism(P, front, wRingO, wRingI, wz0, wz1));
-          sol.sil.style.display = "";
+          const wz0 = hookBotZ - 1.4 - (idx + 1) * (weightThickness + 0.15);
+          HL.put(sol, HL.prism(P, front, wRingO, wRingI, wz0, wz0 + weightThickness));
           sol.sil.classList.toggle("hi", idx === activeWeights - 1);
         } else {
           HL.put(sol, { sil: "", crease: "" });
+          sol.sil.classList.remove("hi");
         }
       });
 
-      const measuredN = HL.r2(fVal);
-      const deltaLmm = HL.r2(fVal * 10.0); // 10 mm per Newton (k = 100 N/m)
-      read.textContent = `Lực kế lò xo: Tải trọng F = ${measuredN} N (${activeWeights} quả cân 1N) · Độ giãn Δl = ${deltaLmm} mm · Độ cứng k = 100 N/m (F = k·Δl)`;
+      const arrTop = P(8.0, 0, 26.0), arrBot = P(8.0, 0, 25.0 - deltaZ);
+      forceArrow.setAttribute("d", HL.seg(arrTop, arrBot) + HL.seg(P(7.0, 0, 26.0 - deltaZ), arrBot) + HL.seg(P(9.0, 0, 26.0 - deltaZ), arrBot));
+      scaleTicks.classList.toggle("lo", true);
+
+      const measuredN = fVal.toFixed(1);
+      const deltaLmm = Math.round(fVal * 10);
+      read.textContent = `F=${measuredN}N · Δl=${deltaLmm}mm (${activeWeights} quả)`;
     }
 
     function setForce(targetF) {
@@ -213,13 +154,9 @@ export default {
     }
 
     function aim(pt) {
-      if (!pt) {
-        setForce(2.0); // Default rest at 2.0 N
-        return;
-      }
-      const topScrY = P(0, 0, 26)[1];
-      const botScrY = P(0, 0, 8)[1];
-      const norm = HL.clamp((pt[1] - topScrY) / (botScrY - topScrY), 0, 1);
+      if (!pt) { setForce(2.0); return; }
+      const [, wy] = HL.unproj(C, pt[0], pt[1], 18);
+      const norm = HL.clamp((wy + 12) / 24, 0, 1);
       setForce(norm * 5.0);
     }
 
@@ -230,16 +167,10 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, down: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
-
     draw();
 
-    return {
-      set(v) {
-        setForce(Number(v));
-      },
-      destroy: bag.dispose
-    };
+    return { set(v) { setForce(Number(v)); }, destroy: bag.dispose };
   }
 };

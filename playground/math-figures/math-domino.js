@@ -1,8 +1,6 @@
 /*
  * 1. Math Domino Addition Tiles (Thẻ Domino Số Học)
  * Pedagogical Goal: Place value & addition (10 + 3 = 13)
- * Simplified Geometry: Clean rounded domino tiles on a minimalist wooden tray
- * Meaningful Interaction: Moving pointer smoothly adjusts unit dots (1 to 5) with spring bounce
  */
 
 export default {
@@ -14,83 +12,70 @@ export default {
   range: [1, 3, 5],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-52, -22, 0], [52, 22, 24]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.0);
+    HL.fit(C, [[-50, -20, 0], [50, 20, 14]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // Clean Minimalist Wooden Tray (Z: 0 to 3.5)
     const [trayO, trayI] = HL.rings(-50, -20, 50, 20, 3.5, 1.0);
-    const traySol = HL.solid(svg);
-    HL.put(traySol, HL.prism(P, front, trayO, trayI, 0, 3.5));
+    HL.put(HL.solid(svg), HL.prism(P, front, trayO, trayI, 0, 3.5));
 
-    // Two clean recessed pockets on tray floor
     for (const cx of [-25, 25]) {
       const [compO] = HL.rings(cx - 14, -18, cx + 14, 18, 2.5, 0.6);
       HL.mk("path", { class: "lo nf", d: HL.poly(HL.ringAt(P, compO, 3.5)) }, svg);
     }
 
-    // Tile 1 (Left: 10 pips, 5 top + 5 bottom)
     const d1Sol = HL.solid(svg);
     const z1 = 2.0;
     const [t1O, t1I] = HL.rings(-37, -16, -13, 16, 2.5, 0.8);
     HL.put(d1Sol, HL.prism(P, front, t1O, t1I, z1, z1 + 5.0));
 
-    // Tile 1 dividing groove & center pin
     const topZ1 = z1 + 5.1;
+    const l0 = P(-36, 0, topZ1), l1 = P(-14, 0, topZ1);
     HL.mk("line", {
-      x1: HL.r2(P(-36, 0, topZ1)[0]), y1: HL.r2(P(-36, 0, topZ1)[1]),
-      x2: HL.r2(P(-14, 0, topZ1)[0]), y2: HL.r2(P(-14, 0, topZ1)[1]),
-      class: "lo", "stroke-width": 1.0
+      x1: HL.r2(l0[0]), y1: HL.r2(l0[1]),
+      x2: HL.r2(l1[0]), y2: HL.r2(l1[1]),
+      class: "lo"
     }, svg);
-    HL.mk("circle", { cx: HL.r2(P(-25, 0, topZ1)[0]), cy: HL.r2(P(-25, 0, topZ1)[1]), r: 1.4, fill: "#232327" }, svg);
+    const pin1 = HL.flatDot(svg, C, 1.2, "dot m");
+    HL.place(pin1, P(-25, 0, topZ1));
 
-    // Helper for clean projected dots
-    function makeDot() {
-      return HL.mk("ellipse", { rx: HL.r2(1.5 * C.S), ry: HL.r2(1.5 * C.S * C.k), fill: "#232327", stroke: "none" }, svg);
-    }
-
-    // 10 pips on Tile 1 (5 top, 5 bottom)
     const c1X = -25;
     const pips1Pos = [
-      [c1X - 5.5, -11.5], [c1X + 5.5, -11.5],
-      [c1X, -8.0],
-      [c1X - 5.5, -4.5],  [c1X + 5.5, -4.5],
-      [c1X - 5.5, 4.5],   [c1X + 5.5, 4.5],
-      [c1X, 8.0],
-      [c1X - 5.5, 11.5],  [c1X + 5.5, 11.5]
+      [c1X - 5.5, -11.5], [c1X + 5.5, -11.5], [c1X, -8.0], [c1X - 5.5, -4.5], [c1X + 5.5, -4.5],
+      [c1X - 5.5, 4.5], [c1X + 5.5, 4.5], [c1X, 8.0], [c1X - 5.5, 11.5], [c1X + 5.5, 11.5]
     ];
     pips1Pos.forEach(([px, py]) => {
-      const pt = P(px, py, topZ1);
-      const dot = makeDot();
-      dot.setAttribute("cx", HL.r2(pt[0]));
-      dot.setAttribute("cy", HL.r2(pt[1]));
+      const dot = HL.flatDot(svg, C, 1.4, "dot");
+      HL.place(dot, P(px, py, topZ1));
     });
 
-    // Tile 2 (Right: Units 1 to 5)
     const d2Sol = HL.solid(svg);
     const d2Lift = HL.spring(0, { k: 140, c: 14 });
-    const div2 = HL.mk("line", { class: "lo", "stroke-width": 1.0 }, svg);
-    const pin2 = HL.mk("circle", { r: 1.4, fill: "#232327" }, svg);
-    const d2Dots = Array.from({ length: 5 }, makeDot);
+    const div2 = HL.mk("line", { class: "lo" }, svg);
+    const pin2 = HL.flatDot(svg, C, 1.2, "dot m");
+    const d2Dots = Array.from({ length: 5 }, () => HL.flatDot(svg, C, 1.4, "dot"));
 
     let unitCount = initialV != null ? Math.round(HL.clamp(initialV, 1, 5)) : 3;
+    let lastKey = "";
 
     function draw() {
+      const key = `${unitCount}:${HL.r2(d2Lift.x)}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
       const z2 = 2.0 + d2Lift.x;
       const [t2O, t2I] = HL.rings(13, -16, 37, 16, 2.5, 0.8);
       HL.put(d2Sol, HL.prism(P, front, t2O, t2I, z2, z2 + 5.0));
 
       const topZ2 = z2 + 5.1;
       const c2X = 25;
-
-      div2.setAttribute("x1", HL.r2(P(14, 0, topZ2)[0]));
-      div2.setAttribute("y1", HL.r2(P(14, 0, topZ2)[1]));
-      div2.setAttribute("x2", HL.r2(P(36, 0, topZ2)[0]));
-      div2.setAttribute("y2", HL.r2(P(36, 0, topZ2)[1]));
-
-      const p2Center = P(c2X, 0, topZ2);
-      pin2.setAttribute("cx", HL.r2(p2Center[0]));
-      pin2.setAttribute("cy", HL.r2(p2Center[1]));
+      const r0 = P(14, 0, topZ2), r1 = P(36, 0, topZ2);
+      div2.setAttribute("x1", HL.r2(r0[0]));
+      div2.setAttribute("y1", HL.r2(r0[1]));
+      div2.setAttribute("x2", HL.r2(r1[0]));
+      div2.setAttribute("y2", HL.r2(r1[1]));
+      HL.place(pin2, P(c2X, 0, topZ2));
 
       const patterns = {
         1: [[c2X, -8.0]],
@@ -99,21 +84,16 @@ export default {
         4: [[c2X - 5.5, -11.5], [c2X + 5.5, -11.5], [c2X - 5.5, -4.5], [c2X + 5.5, -4.5]],
         5: [[c2X - 5.5, -11.5], [c2X + 5.5, -11.5], [c2X, -8.0], [c2X - 5.5, -4.5], [c2X + 5.5, -4.5]]
       };
-
       const pts = patterns[unitCount] || patterns[3];
       d2Dots.forEach((dot, i) => {
-        if (i < pts.length) {
-          dot.style.display = "";
-          const p = P(pts[i][0], pts[i][1], topZ2);
-          dot.setAttribute("cx", HL.r2(p[0]));
-          dot.setAttribute("cy", HL.r2(p[1]));
-        } else {
-          dot.style.display = "none";
-        }
+        const active = i < pts.length;
+        dot.classList.toggle("off", !active);
+        const target = active ? pts[i] : [c2X, 8.0];
+        HL.place(dot, P(target[0], target[1], topZ2));
       });
 
-      d2Sol.sil.classList.toggle("hi", d2Lift.x > 0.5);
-      read.textContent = "Domino: 10 + " + unitCount + " = " + (10 + unitCount) + " (1 chục và " + unitCount + " đơn vị)";
+      d2Sol.sil.classList.toggle("hi", true);
+      read.textContent = `Domino: 10 + ${unitCount} = ${10 + unitCount}`;
     }
 
     function aim(pt) {
@@ -122,15 +102,12 @@ export default {
         reg.wake();
         return;
       }
-      const s2 = P(25, 0, 5)[0];
-      const near = Math.abs(pt[0] - s2) < 35;
+      const [wx, wy] = HL.unproj(C, pt[0], pt[1], 5.0);
+      const near = wx > 0;
       d2Lift.t = near ? 3.0 : 0;
-
       if (near) {
-        const topY = P(25, -16, 5)[1];
-        const botY = P(25, 16, 5)[1];
-        const norm = HL.clamp((pt[1] - topY) / (botY - topY), 0, 1);
-        unitCount = Math.min(5, Math.max(1, Math.round(1 + norm * 4)));
+        const norm = HL.clamp((wy + 16) / 32, 0, 1);
+        unitCount = HL.clamp(Math.round(1 + norm * 4), 1, 5);
       }
       reg.wake();
     }

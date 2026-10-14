@@ -1,8 +1,6 @@
 /*
  * 2. Math Balance Scale (Cân Thăng Bằng Số Học)
  * Pedagogical Goal: Number comparison (lớn hơn, bé hơn, bằng nhau)
- * Simplified Geometry: Clean balance beam, center fulcrum mast, two hanging pans
- * Meaningful Interaction: Moving pointer left/right tilts scale with needle indicating =, >, <
  */
 
 export default {
@@ -14,8 +12,9 @@ export default {
   range: [-1, 0, 1],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.8);
-    HL.fit(C, [[-54, -18, 0], [54, 18, 56]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.1);
+    HL.fit(C, [[-48, -14, 0], [48, 14, 42]], 200, 165);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Clean Base Plinth (Z: 0 to 4)
@@ -30,8 +29,14 @@ export default {
 
     // Center pivot pin
     const pinScr = P(0, 3.5, 38);
-    HL.mk("circle", { cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]), r: 2.0, fill: "#ffffff", stroke: "#232327", "stroke-width": 1.2 }, svg);
-    HL.mk("circle", { cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]), r: 1.0, fill: "#232327" }, svg);
+    HL.mk("ellipse", {
+      cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]),
+      rx: 3.2, ry: 3.2, class: "sil"
+    }, svg);
+    HL.mk("ellipse", {
+      cx: HL.r2(pinScr[0]), cy: HL.r2(pinScr[1]),
+      rx: 1.5, ry: 1.5, class: "dot"
+    }, svg);
 
     // 3. Simple 3-tick indicator scale (-1, 0, +1)
     const tickMid = P(0, 3.4, 25);
@@ -39,7 +44,7 @@ export default {
     HL.mk("line", {
       x1: HL.r2(tickMid[0]), y1: HL.r2(tickMid[1]),
       x2: HL.r2(tickMidTop[0]), y2: HL.r2(tickMidTop[1]),
-      stroke: "#111113", "stroke-width": 1.4, class: "hi"
+      class: "hi"
     }, svg);
 
     for (const sx of [-6, 6]) {
@@ -48,50 +53,52 @@ export default {
       HL.mk("line", {
         x1: HL.r2(p1[0]), y1: HL.r2(p1[1]),
         x2: HL.r2(p2[0]), y2: HL.r2(p2[1]),
-        stroke: "#6f6f78", "stroke-width": 0.8, class: "lo"
+        class: "lo"
       }, svg);
     }
 
     // 4. Moving Balance Elements
     const beamSol = HL.solid(svg);
-    const needleLine = HL.mk("line", { stroke: "#111113", "stroke-width": 1.4, "stroke-linecap": "round" }, svg);
-    const needleTip = HL.mk("circle", { r: 1.2, fill: "#232327" }, svg);
+    const needleLine = HL.mk("line", { class: "hi" }, svg);
+    const needleTip = HL.mk("ellipse", { rx: 1.8, ry: 1.8, class: "dot" }, svg);
 
     const leftPanSol = HL.solid(svg);
     const rightPanSol = HL.solid(svg);
-    const cords = HL.mk("path", { class: "lo", "stroke-width": 1.0 }, svg);
+    const cords = HL.mk("path", { class: "nf lo" }, svg);
 
-    // Weights: 3 weights on left pan, 3 weights on right pan
     const leftWeights = Array.from({ length: 3 }, () => HL.solid(svg));
     const rightWeights = Array.from({ length: 3 }, () => HL.solid(svg));
 
-    const tiltSpring = HL.spring(0, { k: 120, c: 13 });
+    const initAngle = initialV != null ? HL.clamp(initialV * 0.16, -0.16, 0.16) : 0;
+    const tiltSpring = HL.spring(initAngle, { k: 120, c: 13 });
     const beamLen = 38;
     const fulcrumZ = 38;
     const cordLen = 22;
+    let lastKey = "";
 
     function draw() {
-      const angle = tiltSpring.x; // Angle in radians
+      const angle = tiltSpring.x;
+      const key = String(HL.r2(angle));
+      if (key === lastKey) return;
+      lastKey = key;
+
       const sinA = Math.sin(angle);
       const cosA = Math.cos(angle);
 
-      // Beam ends
       const lx = -beamLen * cosA;
       const lz = fulcrumZ - beamLen * sinA;
       const rx = beamLen * cosA;
       const rz = fulcrumZ + beamLen * sinA;
 
-      // Diamond tapered beam prism
       const topPts = [
-        P(-beamLen * cosA, 0, fulcrumZ - beamLen * sinA),
+        P(lx, 0, lz),
         P(0, 0, fulcrumZ + 2.5),
-        P(beamLen * cosA, 0, fulcrumZ + beamLen * sinA),
+        P(rx, 0, rz),
         P(0, 0, fulcrumZ - 2.5)
       ];
-      const botPts = topPts.map(p => [p[0], p[1] + 1.2]);
+      const botPts = topPts.map(p => [p[0], p[1] + 2.0]);
       HL.put(beamSol, { sil: HL.poly(HL.hull([...topPts, ...botPts])), crease: HL.poly(topPts) });
 
-      // Indicator needle pointing downwards
       const nTipX = -14 * sinA;
       const nTipZ = fulcrumZ - 14 * cosA;
       const nBaseScr = P(0, 3.6, fulcrumZ);
@@ -100,23 +107,18 @@ export default {
       needleLine.setAttribute("y1", HL.r2(nBaseScr[1]));
       needleLine.setAttribute("x2", HL.r2(nTipScr[0]));
       needleLine.setAttribute("y2", HL.r2(nTipScr[1]));
-      needleTip.setAttribute("cx", HL.r2(nTipScr[0]));
-      needleTip.setAttribute("cy", HL.r2(nTipScr[1]));
+      HL.place(needleTip, nTipScr);
 
-      // Pans hanging plumb
       const panRadius = 11;
       const lPanZ = lz - cordLen;
       const rPanZ = rz - cordLen;
 
-      // Left pan prism
       const [lpO, lpI] = HL.rings(lx - panRadius, -panRadius, lx + panRadius, panRadius, panRadius, 0.8);
       HL.put(leftPanSol, HL.prism(P, front, lpO, lpI, lPanZ, lPanZ + 1.8));
 
-      // Right pan prism
       const [rpO, rpI] = HL.rings(rx - panRadius, -panRadius, rx + panRadius, panRadius, panRadius, 0.8);
       HL.put(rightPanSol, HL.prism(P, front, rpO, rpI, rPanZ, rPanZ + 1.8));
 
-      // 3 Suspension Cords per pan
       let cordD = "";
       for (const ang of [0, (2 * Math.PI) / 3, (4 * Math.PI) / 3]) {
         const pxL = lx + (panRadius - 1.2) * Math.cos(ang);
@@ -129,7 +131,6 @@ export default {
       }
       cords.setAttribute("d", cordD);
 
-      // Clean cylindrical weights
       const wOffsets = [[-3.5, -2], [3.5, -2], [0, 3.5]];
       wOffsets.forEach(([ox, oy], i) => {
         const [wlO, wlI] = HL.rings(lx + ox - 2.6, oy - 2.6, lx + ox + 2.6, oy + 2.6, 2.6, 0.5);
@@ -139,16 +140,17 @@ export default {
         HL.put(rightWeights[i], HL.prism(P, front, wrO, wrI, rPanZ + 1.8, rPanZ + 8.5));
       });
 
-      // Semantic highlight
       const isBalanced = Math.abs(angle) < 0.03;
       beamSol.sil.classList.toggle("hi", isBalanced);
+      leftPanSol.sil.classList.toggle("hi", angle < -0.03);
+      rightPanSol.sil.classList.toggle("hi", angle > 0.03);
 
       if (isBalanced) {
-        read.textContent = "Thăng bằng: Hai vế bằng nhau (3 = 3)";
+        read.textContent = "Cân bằng: 3 = 3";
       } else if (angle < -0.03) {
-        read.textContent = "Nghiêng trái: Vế trái nặng hơn (> )";
+        read.textContent = "Nghiêng trái: 4 > 2";
       } else {
-        read.textContent = "Nghiêng phải: Vế phải nặng hơn (< )";
+        read.textContent = "Nghiêng phải: 2 < 4";
       }
     }
 
@@ -158,10 +160,9 @@ export default {
         reg.wake();
         return;
       }
-      const midX = P(0, 0, 38)[0];
-      const diffX = pt[0] - midX;
-      // Clamp tilt between -0.16 and +0.16 radians
-      tiltSpring.t = HL.clamp(diffX * 0.003, -0.16, 0.16);
+      const [wx, wy] = HL.unproj(C, pt[0], pt[1], fulcrumZ);
+      const axis = (wx - wy) * Math.SQRT1_2;
+      tiltSpring.t = HL.clamp(axis * 0.0045, -0.16, 0.16);
       reg.wake();
     }
 

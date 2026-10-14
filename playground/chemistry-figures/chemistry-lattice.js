@@ -1,14 +1,6 @@
 /*
  * 3. Crystal Lattice Structure (Mạng Tinh Thể Lập Phương NaCl)
- * Chemical Concept: Mạng tinh thể ion lập phương tâm mặt (FCC - Face-Centered Cubic):
- *   - Xen kẽ giữa cation Na⁺ (bán kính nhỏ r = 102 pm) và anion Cl⁻ (bán kính lớn r = 181 pm).
- *   - Lực liên kết ion: Cân bằng giữa lực hút tĩnh điện Coulomb F_hút ~ 1/r²
- *     và lực đẩy tương tác đám mây electron F_đẩy ~ 1/r¹² (Hố thế Born-Mayer).
- *   - Khoảng cách cân bằng bền: r₀ = 282 pm; Năng lượng mạng tinh thể: U = -786 kJ/mol.
- * Geometry: Bệ đỡ tiêu bản tròn/chữ nhật, 27 nút mạng ion đặc xen kẽ (Na⁺ & Cl⁻),
- *   các thanh liên kết tinh thể trực giao theo 3 trục không gian X, Y, Z.
- * Kinematics: Di chuột để kéo dãn hoặc nén mạng tinh thể; các liên kết co giãn đàn hồi theo HL.spring.
- *   Khi mạng đạt đúng khoảng cách cân bằng r₀, toàn bộ liên kết tâm kích hoạt trạng thái bền .hi.
+ * Face-Centered Cubic (FCC) rock-salt lattice: Na⁺ (r = 102 pm) & Cl⁻ (r = 181 pm), r₀ = 282 pm, CN = 6.
  */
 
 export default {
@@ -20,147 +12,122 @@ export default {
   range: [220, 282, 340],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 1.85);
-    HL.fit(C, [[-50, -22, 0], [50, 22, 42]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.65);
+    HL.fit(C, [[-32, -18, 0], [32, 18, 38]], 200, 160);
     const P = HL.proj(C), front = HL.facing(C);
 
     // 1. Showcase Pedestal Base (Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
+    const [baseO, baseI] = HL.rings(-30, -16, 30, 16, 2.5, 0.8);
     const baseSol = HL.solid(svg);
     HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
 
-    // Base coordinate grid lines
-    HL.mk("line", {
-      x1: HL.r2(P(-24, 0, 2.6)[0]), y1: HL.r2(P(-24, 0, 2.6)[1]),
-      x2: HL.r2(P(24, 0, 2.6)[0]), y2: HL.r2(P(24, 0, 2.6)[1]),
-      class: "lo", "stroke-width": 0.8, "stroke-dasharray": "3 2"
+    HL.mk("path", {
+      class: "nf dash",
+      d: HL.seg(P(-22, 0, 2.6), P(22, 0, 2.6)) + HL.seg(P(0, -12, 2.6), P(0, 12, 2.6))
     }, svg);
 
-    // 2. Crystal Lattice Nodes & Bonds
-    // We construct a 3x3x3 cubic lattice centered at (0, 0, 22)
-    // Indices i, j, k in [-1, 0, 1]
-    const centerZ = 22.0;
-    const bondGroup = HL.mk("g", {}, svg);
+    // 2. 3x3x3 Cubic Lattice Centered at (0, 0, 20.5)
+    const centerZ = 20.5;
+    const outerBondPath = HL.mk("path", { class: "nf lo" }, svg);
+    const octaCagePath = HL.mk("path", { class: "nf dash" }, svg);
+    const focalBondPath = HL.mk("path", { class: "nf hi" }, svg);
     const ionGroup = HL.mk("g", {}, svg);
 
-    // Kinematics Springs
-    const initialR = initialV != null ? initialV : 282;
-    const spR = HL.spring(initialR, { k: 130, c: 14 });
+    const spR = HL.spring(initialV != null ? initialV : 282, { k: 130, c: 15 });
+    let hoveredIdx = -1;
+    let lastKey = "";
 
-    // Pre-create SVG elements for bonds and ions
-    // Bonds: (3*3*2) * 3 = 54 bonds
-    const bonds = [];
-    for (let axis = 0; axis < 3; axis++) {
-      for (let a = -1; a <= 1; a++) {
-        for (let b = -1; b <= 1; b++) {
-          for (let c = -1; c <= 0; c++) {
-            const line = HL.mk("line", { class: "sil", "stroke-width": 1.2, stroke: "var(--hl-edge)" }, bondGroup);
-            bonds.push({ line, axis, a, b, c });
-          }
-        }
-      }
-    }
-
-    // 27 Ion Spheres
-    // Sort order for isometric rendering: back-to-front in projection
-    // For Cam(az=45), depth increases with (-X + Y)
+    // 27 Ion Spheres sorted back-to-front in 2:1 axonometric depth (ix + iy + iz)
     const ions = [];
     for (let ix = -1; ix <= 1; ix++) {
       for (let iy = -1; iy <= 1; iy++) {
         for (let iz = -1; iz <= 1; iz++) {
-          const isNa = (ix + iy + iz) % 2 === 0;
-          const radius = isNa ? 2.2 : 3.4; // Na+ is smaller, Cl- is larger
-          const group = HL.mk("g", {}, ionGroup);
-          const circle = HL.mk("path", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)" }, group);
-          const detail = HL.mk("circle", { r: isNa ? 0.8 : 1.2, class: isNa ? "dot" : "lo" }, group);
-          ions.push({ group, circle, detail, ix, iy, iz, isNa, radius });
+          const isCl = (Math.abs(ix + iy + iz) % 2) === 1;
+          const radius = isCl ? 4.2 : 2.6;
+          const isCenter = ix === 0 && iy === 0 && iz === 0;
+          ions.push({ ix, iy, iz, isCl, isCenter, radius });
         }
       }
     }
 
-    // Sort ions back-to-front
-    ions.sort((a, b) => {
-      const depthA = a.ix * Math.sin(Math.PI / 4) + a.iy * Math.cos(Math.PI / 4) + a.iz * 0.5;
-      const depthB = b.ix * Math.sin(Math.PI / 4) + b.iy * Math.cos(Math.PI / 4) + b.iz * 0.5;
-      return depthA - depthB;
+    ions.sort((a, b) => (a.ix + a.iy + a.iz * 0.85) - (b.ix + b.iy + b.iz * 0.85));
+
+    ions.forEach((ion, idx) => {
+      ion.idx = idx;
+      const g = HL.mk("g", {}, ionGroup);
+      ion.disc = HL.mk("path", { class: ion.isCenter ? "sil hi" : (ion.isCl ? "sil" : "lo") }, g);
+      ion.latRing = HL.mk("path", { class: "nf lo" }, g);
     });
 
     function draw() {
-      const r = spR.x; // pm (220 to 340)
-      // Visual spacing: 282 pm maps to 10.5 units
-      const d = (r / 282.0) * 10.5;
-      const isEquil = Math.abs(r - 282) < 4.0;
+      const r = spR.x;
+      const key = `${HL.r2(r)}:${hoveredIdx}`;
+      if (key === lastKey) return;
+      lastKey = key;
 
-      // Update Bonds
-      bonds.forEach(b => {
-        let p0, p1;
-        if (b.axis === 0) {
-          // X-axis
-          p0 = P(b.c * d, b.a * d, centerZ + b.b * d);
-          p1 = P((b.c + 1) * d, b.a * d, centerZ + b.b * d);
-        } else if (b.axis === 1) {
-          // Y-axis
-          p0 = P(b.a * d, b.c * d, centerZ + b.b * d);
-          p1 = P(b.a * d, (b.c + 1) * d, centerZ + b.b * d);
-        } else {
-          // Z-axis
-          p0 = P(b.a * d, b.b * d, centerZ + b.c * d);
-          p1 = P(b.a * d, b.b * d, centerZ + (b.c + 1) * d);
+      const d = (r / 282.0) * 9.6;
+      const isEquil = Math.abs(r - 282) < 4.5;
+
+      // Build lattice bonds: separate 6 central octahedral coordination bonds from outer lattice bonds
+      let outD = "", focD = "";
+      for (let axis = 0; axis < 3; axis++) {
+        for (let a = -1; a <= 1; a++) {
+          for (let b = -1; b <= 1; b++) {
+            for (let c = -1; c <= 0; c++) {
+              const p0 = axis === 0 ? P(c * d, a * d, centerZ + b * d)
+                : axis === 1 ? P(a * d, c * d, centerZ + b * d)
+                : P(a * d, b * d, centerZ + c * d);
+              const p1 = axis === 0 ? P((c + 1) * d, a * d, centerZ + b * d)
+                : axis === 1 ? P(a * d, (c + 1) * d, centerZ + b * d)
+                : P(a * d, b * d, centerZ + (c + 1) * d);
+              if (a === 0 && b === 0) {
+                focD += HL.seg(p0, p1);
+              } else {
+                outD += HL.seg(p0, p1);
+              }
+            }
+          }
         }
-        b.line.setAttribute("x1", HL.r2(p0[0]));
-        b.line.setAttribute("y1", HL.r2(p0[1]));
-        b.line.setAttribute("x2", HL.r2(p1[0]));
-        b.line.setAttribute("y2", HL.r2(p1[1]));
-        b.line.classList.toggle("hi", isEquil);
-      });
+      }
+      outerBondPath.setAttribute("d", outD);
+      focalBondPath.setAttribute("d", focD);
 
-      // Update Ions
+      // Coordination Octahedron Cage connecting the 6 nearest neighbors of (0,0,0)
+      const oct = [
+        P(d, 0, centerZ), P(0, d, centerZ), P(-d, 0, centerZ), P(0, -d, centerZ),
+        P(0, 0, centerZ + d), P(0, 0, centerZ - d)
+      ];
+      let cageD = HL.poly([oct[0], oct[1], oct[2], oct[3]]);
+      for (let k = 0; k < 4; k++) {
+        cageD += HL.seg(oct[4], oct[k]) + HL.seg(oct[5], oct[k]);
+      }
+      octaCagePath.setAttribute("d", cageD);
+      octaCagePath.classList.toggle("hi", isEquil);
+
+      // Update 27 Ion Spheres (Cl⁻: sil + nf lo latitude ring; Na⁺: lo; central/hovered: hi)
       ions.forEach(ion => {
         const pt = P(ion.ix * d, ion.iy * d, centerZ + ion.iz * d);
-        const rVisual = ion.radius;
-
-        // Draw solid circle disc for sphere in projection
-        const discPts = [];
-        for (let a = 0; a < 20; a++) {
-          const ang = (a * 2 * Math.PI) / 20;
-          discPts.push([pt[0] + rVisual * Math.cos(ang), pt[1] + rVisual * Math.sin(ang)]);
+        const rv = ion.radius;
+        const discPts = [], latPts = [];
+        for (let a = 0; a < 18; a++) {
+          const ang = (a * 2 * Math.PI) / 18;
+          const ca = Math.cos(ang), sa = Math.sin(ang);
+          discPts.push([pt[0] + rv * ca, pt[1] + rv * sa]);
+          latPts.push([pt[0] + rv * 0.72 * ca, pt[1] + rv * 0.34 * sa]);
         }
-        ion.circle.setAttribute("d", HL.poly(discPts));
+        ion.disc.setAttribute("d", HL.poly(discPts));
+        ion.latRing.setAttribute("d", ion.isCl ? HL.poly(latPts) : HL.seg([pt[0] - 0.9, pt[1]], [pt[0] + 0.9, pt[1]]));
 
-        // Center dot / equator detail
-        ion.detail.setAttribute("cx", HL.r2(pt[0]));
-        ion.detail.setAttribute("cy", HL.r2(pt[1]));
-
-        // Focal highlight: highlight ONLY the central ion (0,0,0) and its 6 nearest neighbors
-        const isCenter = ion.i === 0 && ion.j === 0 && ion.k === 0;
-        const isCoordNeighbor = Math.abs(ion.i) + Math.abs(ion.j) + Math.abs(ion.k) === 1;
-        const isFocalGroup = isCenter || isCoordNeighbor;
-
-        if (isEquil && isFocalGroup) {
-          ion.circle.classList.add("hi");
-          ion.circle.classList.remove("lo");
-        } else {
-          ion.circle.classList.remove("hi");
-          ion.circle.classList.add("lo");
-        }
+        const isFoc = ion.isCenter || ion.idx === hoveredIdx;
+        ion.disc.classList.toggle("hi", isFoc);
       });
 
-      // Header Readout: True Born-Landé Potential Energy U(r) with minimum at r0 = 282 pm
-      const rStr = HL.r2(r);
       const ratio = 282.0 / r;
-      const nBorn = 8;
-      // U(r) = -898.3 * [ (r0/r) - (1/n) * (r0/r)^n ] (kJ/mol)
-      const uLattice = HL.r2(-898.3 * (ratio - (1 / nBorn) * Math.pow(ratio, nBorn)));
-      // Restoring force F = -dU/dr
-      const forceRel = HL.r2((Math.pow(ratio, 2) - Math.pow(ratio, nBorn + 1)) * 100);
-
-      if (isEquil) {
-        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm (Cực tiểu r₀ = 282 pm) · U_min = ${uLattice} kJ/mol · [CÂN BẰNG BỀN] F_hút = F_đẩy (Số phối trí CN = 6) (.hi)`;
-      } else if (r < 282) {
-        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm < 282 pm · U = ${uLattice} kJ/mol · Lực đẩy Born áp đảo (F_đẩy = +${Math.abs(forceRel)} N·rel, mạng bị nén)`;
-      } else {
-        read.textContent = `Mạng tinh thể NaCl: r = ${rStr} pm > 282 pm · U = ${uLattice} kJ/mol · Lực hút Coulomb áp đảo (F_hút = -${Math.abs(forceRel)} N·rel, kéo về cân bằng)`;
-      }
+      const uLat = Math.round(-898.3 * (ratio - (1 / 8) * Math.pow(ratio, 8)));
+      read.textContent = isEquil
+        ? `r=${Math.round(r)}pm · U=${uLat}kJ [BỀN]`
+        : `r=${Math.round(r)}pm · U=${uLat}kJ/mol`;
     }
 
     function setDistance(val) {
@@ -170,12 +137,22 @@ export default {
 
     function aim(pt) {
       if (!pt) {
-        setDistance(282.0); // Reset to equilibrium
+        hoveredIdx = -1;
+        setDistance(282.0);
         return;
       }
-      const minX = 60, maxX = 340;
-      const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
+      const w = HL.unproj(C, pt[0], pt[1], centerZ);
+      const norm = HL.clamp((w[0] - w[1] + 24) / 48, 0, 1);
       setDistance(220 + norm * 120.0);
+
+      const d = (spR.x / 282.0) * 9.6;
+      let best = -1, bestDist = 14;
+      ions.forEach(ion => {
+        const p = P(ion.ix * d, ion.iy * d, centerZ + ion.iz * d);
+        const dist = Math.hypot(pt[0] - p[0], pt[1] - p[1]);
+        if (dist < bestDist) { bestDist = dist; best = ion.idx; }
+      });
+      hoveredIdx = best;
     }
 
     const reg = HL.register(stage, dt => {
@@ -185,16 +162,10 @@ export default {
     });
 
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: aim, down: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
-
     draw();
 
-    return {
-      set(v) {
-        setDistance(Number(v));
-      },
-      destroy: bag.dispose
-    };
+    return { set(v) { setDistance(Number(v)); }, destroy: bag.dispose, dispose: bag.dispose };
   }
 };

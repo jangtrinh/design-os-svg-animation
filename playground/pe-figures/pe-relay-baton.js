@@ -1,14 +1,6 @@
 /*
  * 3. 4x100m Relay Baton & Exchange Zone (Gậy Tiếp Sức & Làn Chạy Điền Kinh)
- * Physical Concept: Kỹ thuật trao nhận gậy tiếp sức tốc độ cao (Blind Pass):
- *   - Vùng trao gậy tiêu chuẩn World Athletics (WA Rule 24.19): Chiều dài 30m (từ -15m đến +15m quanh vạch chuẩn).
- *   - Trao gậy trong vùng: Hợp lệ ([VALID] - kích hoạt trạng thái .hi).
- *   - Trao gậy ngoài vùng: Phạm quy tức thì ([DISQUALIFIED - DQ]).
- *   - Đồng bộ vận tốc: VĐV số 1 và số 2 phải đạt vận tốc tiệm cận v ≈ 11.2 m/s tại thời điểm trao gậy.
- * Geometry: Đoạn đường chạy điền kinh tartan đặc, vạch phân làn trắng, vạch vàng giới hạn vùng 30m,
- *   mũi tên chevron tâm vùng; gậy tiếp sức bằng hợp kim nhôm dạng trụ tròn đặc 3D 100% opaque.
- * Kinematics: Di chuột kéo vị trí trao gậy dọc làn chạy (-25m -> +25m); gậy trượt êm ái,
- *   nhún nhẹ theo quán tính bước chạy, bóng đổ trên mặt đường, hiển thị trạng thái hợp lệ/phạm quy.
+ * Physical Concept: Vùng trao gậy 30m chuẩn World Athletics (WA Rule 24.19) từ -15m đến +15m.
  */
 
 export default {
@@ -20,166 +12,114 @@ export default {
   range: [-20, 0, 20],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    const C = HL.Cam(45, 0.5, 2.0);
-    HL.fit(C, [[-48, -20, 0], [48, 20, 32]], 200, 160);
+    HL.cam = HL.Cam;
+    const C = HL.cam(45, 0.5, 3.35);
+    HL.fit(C, [[-45, -20, 0], [45, 20, 24]], 200, 165);
     const P = HL.proj(C), front = HL.facing(C);
 
-    // 1. Running Track Platform (Bề mặt đường chạy điền kinh Z: 0 to 2.5)
-    const [baseO, baseI] = HL.rings(-45, -16, 45, 16, 2.5, 0.8);
+    // 1. Running Track Platform (Z: 0 to 2.5)
+    const [baseO, baseI] = HL.rings(-45, -20, 45, 20, 2.5, 0.8);
     const baseSol = HL.solid(svg);
     HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
 
-    // Running lane lines (Làn chạy số 4 tiêu chuẩn)
-    const laneY1 = -9.0;
-    const laneY2 = 9.0;
-    const laneMidY = 0.0;
-
-    // Outer white lane border lines at Z = 2.6
-    HL.mk("line", {
-      x1: HL.r2(P(-44, laneY1, 2.6)[0]), y1: HL.r2(P(-44, laneY1, 2.6)[1]),
-      x2: HL.r2(P(44, laneY1, 2.6)[0]), y2: HL.r2(P(44, laneY1, 2.6)[1]),
-      class: "lo", "stroke-width": 1.2, stroke: "var(--hl-edge)"
+    const laneY1 = -9.0, laneY2 = 9.0;
+    HL.mk("path", {
+      d: HL.seg(P(-44, laneY1, 2.6), P(44, laneY1, 2.6)) + HL.seg(P(-44, laneY2, 2.6), P(44, laneY2, 2.6)),
+      class: "nf lo"
+    }, svg);
+    HL.mk("path", {
+      d: HL.seg(P(-44, 0, 2.6), P(44, 0, 2.6)),
+      class: "nf dash"
     }, svg);
 
-    HL.mk("line", {
-      x1: HL.r2(P(-44, laneY2, 2.6)[0]), y1: HL.r2(P(-44, laneY2, 2.6)[1]),
-      x2: HL.r2(P(44, laneY2, 2.6)[0]), y2: HL.r2(P(44, laneY2, 2.6)[1]),
-      class: "lo", "stroke-width": 1.2, stroke: "var(--hl-edge)"
-    }, svg);
-
-    // Center dash line along lane
-    HL.mk("line", {
-      x1: HL.r2(P(-44, laneMidY, 2.6)[0]), y1: HL.r2(P(-44, laneMidY, 2.6)[1]),
-      x2: HL.r2(P(44, laneMidY, 2.6)[0]), y2: HL.r2(P(44, laneMidY, 2.6)[1]),
-      class: "lo", "stroke-width": 0.8, stroke: "var(--hl-edge)",
-      "stroke-dasharray": "3,3"
-    }, svg);
-
-    // 2. Takeover Zone Markings (from X = -15 to +15, representing 30m zone per WA Rule 24.19)
-    const zoneEntryX = -15.0;
-    const zoneExitX = 15.0;
-    const zoneGroup = HL.mk("g", {}, svg);
-
-    // Entry hook mark (Vạch vào vùng)
+    // 2. Takeover Zone Markings (X = -15 to +15, 30m zone per WA Rule 24.19)
+    const zoneEntryX = -15.0, zoneExitX = 15.0;
     const entryLine = HL.mk("line", {
       x1: HL.r2(P(zoneEntryX, laneY1, 2.6)[0]), y1: HL.r2(P(zoneEntryX, laneY1, 2.6)[1]),
       x2: HL.r2(P(zoneEntryX, laneY2, 2.6)[0]), y2: HL.r2(P(zoneEntryX, laneY2, 2.6)[1]),
-      class: "sil", "stroke-width": 2.2, stroke: "var(--hl-edge)"
-    }, zoneGroup);
-
-    // Exit hook mark (Vạch ra vùng)
+      class: "sil"
+    }, svg);
     const exitLine = HL.mk("line", {
       x1: HL.r2(P(zoneExitX, laneY1, 2.6)[0]), y1: HL.r2(P(zoneExitX, laneY1, 2.6)[1]),
       x2: HL.r2(P(zoneExitX, laneY2, 2.6)[0]), y2: HL.r2(P(zoneExitX, laneY2, 2.6)[1]),
-      class: "sil", "stroke-width": 2.2, stroke: "var(--hl-edge)"
-    }, zoneGroup);
-
-    // Central takeover point Chevron mark at X = 0
-    const chevA = P(-3.5, -2.5, 2.6);
-    const chevTip = P(0.0, 0.0, 2.6);
-    const chevB = P(-3.5, 2.5, 2.6);
-    const chevronMark = HL.mk("path", {
-      d: `M ${HL.r2(chevA[0])} ${HL.r2(chevA[1])} L ${HL.r2(chevTip[0])} ${HL.r2(chevTip[1])} L ${HL.r2(chevB[0])} ${HL.r2(chevB[1])}`,
-      class: "lo", "stroke-width": 1.6, fill: "none"
-    }, zoneGroup);
-
-    // 3. Ground Shadow of Baton
-    const shadowLine = HL.mk("line", {
-      class: "lo",
-      stroke: "var(--hl-edge)",
-      "stroke-width": 3.0,
-      "stroke-linecap": "round",
-      opacity: 0.35
+      class: "sil"
     }, svg);
 
-    // 4. 3D Cylindrical Relay Baton (Hero Scale, 3D perpendicular cross-section caps)
-    const batonGroup = HL.mk("g", {}, svg);
-    const batonBody = HL.mk("polygon", { class: "sil", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
-    const batonBand = HL.mk("polygon", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.0 }, batonGroup);
-    const batonCapTop = HL.mk("path", { class: "hi", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
-    const batonCapBot = HL.mk("path", { class: "lo", fill: "var(--hl-plate)", stroke: "var(--hl-edge)", "stroke-width": 1.4 }, batonGroup);
+    const chevronMark = HL.mk("path", {
+      d: HL.open([P(-3.5, -2.5, 2.6), P(0, 0, 2.6), P(-3.5, 2.5, 2.6)]),
+      class: "nf lo"
+    }, svg);
 
-    // Kinematics Springs
+    // 3. Ground Shadow, Motion Arc & 3D Cylindrical Relay Baton
+    const shadowLine = HL.mk("line", { class: "lo" }, svg);
+    const arcArrow = HL.mk("path", { class: "nf dash" }, svg);
+
+    const batonGroup = HL.mk("g", {}, svg);
+    const batonBody = HL.mk("polygon", { class: "sil" }, batonGroup);
+    const batonBand = HL.mk("polygon", { class: "lo" }, batonGroup);
+    const batonCapBot = HL.mk("path", { class: "lo" }, batonGroup);
+    const batonCapTop = HL.mk("path", { class: "hi" }, batonGroup);
+
     const initialPos = initialV != null ? initialV : 0;
     const spPos = HL.spring(initialPos, { k: 130, c: 14 });
+    let lastKey = "";
 
     function draw() {
-      const x = spPos.x; // -25 to +25
+      const x = spPos.x;
+      const key = `${HL.r2(x)}`;
+      if (key === lastKey) return;
+      lastKey = key;
+
       const isInZone = x >= zoneEntryX && x <= zoneExitX;
-
-      // Baton Geometry in 3D:
-      // Tilted forward in running direction: length 30, radius 3.2, center at (x, 0, 13.0)
-      const bLen = 30.0;
-      const bRad = 3.2;
-      const bAng = (28 * Math.PI) / 180; // Slanted 28 deg forward in X-Z plane
-      const bCenter = [x, 0.0, 13.0];
-
+      const bLen = 28.0, bRad = 3.2;
+      const bAng = (28 * Math.PI) / 180;
       const cosB = Math.cos(bAng), sinB = Math.sin(bAng);
-      const e0_3D = [bCenter[0] - (bLen / 2) * cosB, bCenter[1], bCenter[2] - (bLen / 2) * sinB]; // Lower end
-      const e1_3D = [bCenter[0] + (bLen / 2) * cosB, bCenter[1], bCenter[2] + (bLen / 2) * sinB]; // Upper end
+      const bCenter = [x, 0.0, 12.5];
 
-      // Unit normal vectors perpendicular to baton axis in 3D
-      // Axis is along (cosB, 0, sinB)
-      // Perpendicular 1: (0, 1, 0)
-      // Perpendicular 2: (-sinB, 0, cosB)
-      const capBotPts = [], capTopPts = [];
-      const numCapPts = 24;
-      for (let i = 0; i < numCapPts; i++) {
-        const phi = (i / numCapPts) * Math.PI * 2;
+      const e0 = [bCenter[0] - (bLen / 2) * cosB, 0, bCenter[2] - (bLen / 2) * sinB];
+      const e1 = [bCenter[0] + (bLen / 2) * cosB, 0, bCenter[2] + (bLen / 2) * sinB];
+
+      const capBotPts = [], capTopPts = [], bandPts0 = [], bandPts1 = [];
+      const b0 = [bCenter[0] - 3.5 * cosB, 0, bCenter[2] - 3.5 * sinB];
+      const b1 = [bCenter[0] + 3.5 * cosB, 0, bCenter[2] + 3.5 * sinB];
+      const N = 20;
+      for (let i = 0; i < N; i++) {
+        const phi = (i / N) * Math.PI * 2;
         const cp = Math.cos(phi), sp = Math.sin(phi);
-        const dx = bRad * sp * (-sinB);
-        const dy = bRad * cp;
-        const dz = bRad * sp * cosB;
-        capBotPts.push(P(e0_3D[0] + dx, e0_3D[1] + dy, e0_3D[2] + dz));
-        capTopPts.push(P(e1_3D[0] + dx, e1_3D[1] + dy, e1_3D[2] + dz));
+        const dx = bRad * sp * (-sinB), dy = bRad * cp, dz = bRad * sp * cosB;
+        capBotPts.push(P(e0[0] + dx, dy, e0[2] + dz));
+        capTopPts.push(P(e1[0] + dx, dy, e1[2] + dz));
+        bandPts0.push(P(b0[0] + dx * 1.04, dy * 1.04, b0[2] + dz * 1.04));
+        bandPts1.push(P(b1[0] + dx * 1.04, dy * 1.04, b1[2] + dz * 1.04));
       }
 
       batonCapBot.setAttribute("d", HL.poly(capBotPts));
       batonCapTop.setAttribute("d", HL.poly(capTopPts));
 
-      // Baton cylinder body: convex hull of two 3D end rings
-      const allPts = capBotPts.concat(capTopPts);
-      const bodyHull = HL.hull(allPts);
+      const bodyHull = HL.hull(capBotPts.concat(capTopPts));
       batonBody.setAttribute("points", bodyHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // Center grip band (middle 25% of cylinder)
-      const band0_3D = [bCenter[0] - 3.5 * cosB, bCenter[1], bCenter[2] - 3.5 * sinB];
-      const band1_3D = [bCenter[0] + 3.5 * cosB, bCenter[1], bCenter[2] + 3.5 * sinB];
-      const bandPts0 = [], bandPts1 = [];
-      for (let i = 0; i < numCapPts; i++) {
-        const phi = (i / numCapPts) * Math.PI * 2;
-        const cp = Math.cos(phi), sp = Math.sin(phi);
-        const dx = (bRad + 0.15) * sp * (-sinB);
-        const dy = (bRad + 0.15) * cp;
-        const dz = (bRad + 0.15) * sp * cosB;
-        bandPts0.push(P(band0_3D[0] + dx, band0_3D[1] + dy, band0_3D[2] + dz));
-        bandPts1.push(P(band1_3D[0] + dx, band1_3D[1] + dy, band1_3D[2] + dz));
-      }
       const bandHull = HL.hull(bandPts0.concat(bandPts1));
       batonBand.setAttribute("points", bandHull.map(p => `${HL.r2(p[0])},${HL.r2(p[1])}`).join(" "));
 
-      // Ground shadow
-      const s0 = P(e0_3D[0], e0_3D[1], 2.6);
-      const s1 = P(e1_3D[0], e1_3D[1], 2.6);
+      const s0 = P(e0[0], 0, 2.6), s1 = P(e1[0], 0, 2.6);
       shadowLine.setAttribute("x1", HL.r2(s0[0])); shadowLine.setAttribute("y1", HL.r2(s0[1]));
       shadowLine.setAttribute("x2", HL.r2(s1[0])); shadowLine.setAttribute("y2", HL.r2(s1[1]));
 
-      // Highlight activation
-      batonCapTop.classList.toggle("hi", isInZone);
+      const arcPts = [];
+      for (let k = -8; k <= 8; k += 2) {
+        arcPts.push(P(x + k, 0, 18.5 - (k * k) * 0.04));
+      }
+      arcArrow.setAttribute("d", HL.open(arcPts));
+
+      batonCapTop.classList.toggle("hi", true);
       batonBody.classList.toggle("hi", isInZone);
       entryLine.classList.toggle("hi", isInZone);
       exitLine.classList.toggle("hi", isInZone);
       chevronMark.classList.toggle("hi", isInZone);
 
-      // Header Readout
-      const mStr = HL.r2(x); // In meters (-22m to +22m, zone is -15m to +15m = 30m)
-      if (isInZone) {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [HỢP LỆ] Đang trong vùng trao gậy 30m (WA Rule 24.19) · v ≈ 11.2 m/s`;
-      } else if (x < zoneEntryX) {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [CHƯA VÀO VÙNG] Cự ly tiếp cận, người nhận tăng tốc`;
-      } else {
-        read.textContent = `Tiếp sức 4x100m: Vị trí gậy X = ${mStr}m · [PHẠM QUY - DQ] Vượt quá giới hạn vùng trao gậy 30m!`;
-      }
+      const tag = isInZone ? "VALID" : x < zoneEntryX ? "EARLY" : "DQ";
+      read.textContent = `x=${HL.r2(x)}m · ${tag} (30m)`;
     }
 
     function setPos(val) {
@@ -188,13 +128,9 @@ export default {
     }
 
     function aim(pt) {
-      if (!pt) {
-        setPos(0);
-        return;
-      }
-      const minX = 60, maxX = 340;
-      const norm = HL.clamp((pt[0] - minX) / (maxX - minX), 0, 1);
-      setPos(-22 + norm * 44.0);
+      if (!pt) { setPos(0); return; }
+      const [wx] = HL.unproj(C, pt[0], pt[1], 12.5);
+      setPos(wx);
     }
 
     const reg = HL.register(stage, dt => {
@@ -206,15 +142,11 @@ export default {
     bag.add(reg.unregister);
     bag.add(HL.pointer(stage, { move: aim, leave: () => aim(null) }));
     bag.add(() => svg.replaceChildren());
-
     draw();
 
     return {
-      set(v) {
-        setPos(Number(v));
-      },
-      destroy: bag.dispose,
-      dispose: bag.dispose
+      set(v) { setPos(Number(v)); },
+      destroy: bag.dispose
     };
   }
 };
