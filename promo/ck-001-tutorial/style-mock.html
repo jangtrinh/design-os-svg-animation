@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>CK-001 tutorial — style mock</title>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=block" rel="stylesheet">
+<style>
+  :root { --canvas:#e9e7e3; --ink:#111; --ink-2:#5b5a57; --ink-3:#9a9893; --hair:rgba(17,17,17,.1);
+    --sans:'Geist',system-ui,sans-serif; --mono:'Geist Mono',ui-monospace,monospace; }
+  * { box-sizing:border-box; margin:0; }
+  body { width:1920px; height:1080px; background:var(--canvas); font-family:var(--sans); color:var(--ink); overflow:hidden; -webkit-font-smoothing:antialiased; }
+  .frame { position:absolute; inset:0; display:none; }
+  body[data-f=a] #a, body[data-f=b] #b, body[data-f=c] #c { display:block; }
+  .mono { font-family:var(--mono); }
+  /* persistent chrome: chapter rail + bilingual caption */
+  .rail { position:absolute; left:72px; right:72px; top:56px; display:flex; gap:10px; align-items:center; }
+  .rail i { flex:1; height:4px; border-radius:2px; background:rgba(17,17,17,.12); }
+  .rail i.on { background:var(--ink); } .rail i.half { background:linear-gradient(90deg,var(--ink) 45%,rgba(17,17,17,.12) 45%); }
+  .rail span { font:500 16px var(--mono); color:var(--ink-2); margin-right:14px; white-space:nowrap; }
+  .cap { position:absolute; left:72px; right:72px; bottom:64px; }
+  .cap .vi { font-size:46px; font-weight:600; letter-spacing:-0.02em; }
+  .cap .en { margin-top:10px; font:400 22px var(--mono); color:var(--ink-2); }
+  .card { background:#fff; border-radius:24px; box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 18px -6px rgba(0,0,0,.08),0 30px 50px -18px rgba(0,0,0,.14); overflow:hidden; }
+  /* A: chapter card */
+  #a .num { position:absolute; left:72px; top:260px; font:500 26px var(--mono); color:var(--ink-2); }
+  #a h1 { position:absolute; left:72px; top:310px; font-size:132px; font-weight:600; letter-spacing:-0.04em; line-height:1; }
+  #a h2 { position:absolute; left:76px; top:470px; font:400 34px var(--mono); color:var(--ink-2); }
+  #a .src { position:absolute; left:76px; top:560px; display:flex; gap:12px; }
+  #a .src b { font:400 18px var(--mono); padding:10px 16px; border-radius:20px; border:1px solid rgba(17,17,17,.16); color:var(--ink-2); font-weight:400; }
+  #a .peek { position:absolute; right:-40px; top:200px; width:860px; height:560px; }
+  #a .peek img { width:100%; height:100%; object-fit:cover; }
+  /* B: evidence */
+  #b .hero { position:absolute; left:72px; top:120px; width:960px; height:720px; }
+  #b .hero img { width:100%; height:100%; object-fit:cover; }
+  #b .tag { position:absolute; left:20px; top:20px; font:500 16px var(--mono); background:var(--ink); color:#fff; padding:8px 14px; border-radius:16px; }
+  #b .tag.ghost { background:rgba(255,255,255,.9); color:var(--ink); box-shadow:0 0 0 1px var(--hair); }
+  #b .sheet { position:absolute; width:500px; height:340px; }
+  #b .sheet img { width:100%; height:100%; object-fit:cover; }
+  #b .s1 { left:1090px; top:120px; transform:rotate(-2deg); } #b .s2 { left:1300px; top:330px; transform:rotate(1.5deg); } #b .s3 { left:1110px; top:560px; transform:rotate(-1deg); }
+  #b .call { position:absolute; left:1380px; top:620px; width:420px; padding:18px 22px; font:400 18px/1.5 var(--mono); }
+  #b .call em { font-style:normal; background:#111; color:#fff; padding:1px 6px; border-radius:4px; }
+  /* C: terminal + file excerpt */
+  #c .term { position:absolute; left:72px; top:120px; width:1010px; height:720px; background:#111; color:#e9e7e3; padding:34px 38px; font:400 21px/1.62 var(--mono); }
+  #c .term .p { color:#8f8d88; } #c .term .ok { color:#fff; background:rgba(255,255,255,.1); border-radius:6px; padding:2px 6px; }
+  #c .file { position:absolute; left:1130px; top:120px; width:718px; height:720px; padding:30px 34px; font:400 19px/1.65 var(--mono); }
+  #c .file .path { font-size:15px; color:var(--ink-3); padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid var(--hair); }
+  #c .file .hl { background:#f1f0ed; margin:0 -14px; padding:0 14px; border-left:3px solid var(--ink); }
+  #c .file .k { color:var(--ink-2); }
+</style>
+</head>
+<body data-f="a">
+<!-- A: chapter card -->
+<section class="frame" id="a">
+  <div class="rail"><span>CK-001 · A → Z</span><i class="half"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="num">01 / 10</div>
+  <h1>Input</h1>
+  <h2>Tài liệu đầu vào · References</h2>
+  <div class="src"><b>1 ảnh chụp · 1 photo</b><b>360° · gen</b><b>parts catalog · gen</b><b>blueprint · gen</b></div>
+  <div class="card peek"><img src="ref/original-work-louder.png"></div>
+</section>
+<!-- B: evidence -->
+<section class="frame" id="b">
+  <div class="rail"><span>01 Input</span><i class="half"></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="card hero"><img src="ref/original-work-louder.png"><span class="tag">ảnh gốc · visual authority</span></div>
+  <div class="card sheet s1"><img src="ref/360-product-view.png"><span class="tag ghost">gen · 360°</span></div>
+  <div class="card sheet s2"><img src="ref/parts-catalog-rev01.png"><span class="tag ghost">gen · parts catalog</span></div>
+  <div class="card sheet s3"><img src="ref/blueprint-rev01.png"><span class="tag ghost">gen · blueprint</span></div>
+  <div class="card call">blueprint tự mâu thuẫn:<br>cao <em>32 mm</em> mặt trước · <em>41 mm</em> mặt bên<br>→ contract ghi lại, không giấu</div>
+  <div class="cap"><div class="vi">Từ 1 ảnh, gen thêm 360°, catalog, blueprint làm tham khảo.</div>
+    <div class="en">From one photo, we generated 360° views, a parts catalog and a blueprint as references.</div></div>
+</section>
+<!-- C: terminal + excerpt -->
+<section class="frame" id="c">
+  <div class="rail"><span>05 Form gate</span><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="half"></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="card term"><div class="p">$ python3 scripts/native-pipeline.py run \</div><div class="p">&nbsp;&nbsp;builds/reference-keyboard/geometry-pipeline-B01.json</div><br>
+    <div>gate · RK_BASE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;wall 1.9957 mm ≥ 1.2&nbsp;&nbsp;PASS</div><div>gate · RK_KEY_00&nbsp;&nbsp;&nbsp;shells 1 · manifold&nbsp;&nbsp;&nbsp;PASS</div><div>gate · RK_KNOB_1&nbsp;&nbsp;&nbsp;D receiver · dims&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PASS</div><div class="p">…</div><br>
+    <div class="ok">AGENT_OK {"failed_parts": 0, "part_families": 8, "stl_files": 8}</div></div>
+  <div class="card file"><div class="path">docs/reviews/ck-001/r02 · gate-report.json</div>
+    <div><span class="k">"failed":</span> [],</div><div><span class="k">"required_checks_missing":</span> [],</div>
+    <div class="hl"><span class="k">"RK_BASE":</span> { "bbox_mm": [284, 92, 4],</div><div class="hl">&nbsp;&nbsp;"wall_min_mm": 1.9957, "limit": 1.2 },</div>
+    <div><span class="k">"non_manifold_edges":</span> 0,</div><div><span class="k">"load capacity":</span> "not evaluated"</div></div>
+  <div class="cap"><div class="vi">Cổng hình dạng: 8 họ chi tiết, 0 lỗi, đọc lại STL.</div>
+    <div class="en">Form gate: 8 part families, 0 failures, STL re-imported.</div></div>
+</section>
+</body>
+</html>
