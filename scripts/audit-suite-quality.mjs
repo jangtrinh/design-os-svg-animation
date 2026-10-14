@@ -7,9 +7,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import puppeteer from "puppeteer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const CHROME_BIN = process.env.CHROME_BIN || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const ROOT = path.resolve(__dirname, "..");
 
 const SUITES = {
@@ -293,7 +293,9 @@ async function main() {
   }
 
   if (!staticOnly) {
-    const browser = await puppeteer.launch({ headless: "new" });
+    // Loaded only for the live audit so --static-only runs without a browser dependency.
+    const { default: puppeteer } = await import("puppeteer-core");
+    const browser = await puppeteer.launch({ headless: true, executablePath: CHROME_BIN });
     try {
       for (const key of suiteKeys) {
         const cfg = SUITES[key];
