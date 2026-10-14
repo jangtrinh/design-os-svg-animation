@@ -9,14 +9,16 @@
 
   // 1 · input: the registry pins five images whose bytes never reached this machine
   // the owner's reference image (sent 2026-10-15) leads; its hash was checked against REF01 the same day
-  el({ type: 'img', t0: bar(10), t1: bar(14.4), rect: [72, 132, 860, 640], kb: true, src: 'assets/ref/owner-reference-2026-10-15.jpg', tag: 'ảnh tham khảo · owner reference' });
-  el({ type: 'callout', t0: bar(11), t1: bar(14.4), rect: [980, 132, 868, 400], title: 'sha256 check · 2026-10-15',
-       lines: ['owner image: 2000×2000 WEBP · 452a414d9eedcca7…', 'registry REF01: 335×597 PNG · 647e22964fd2f490…', 'không trùng hash · not the registered bytes'] });
-  el({ type: 'file', t0: bar(14.5), t1: bar(24), rect: R.LW, ...ex('reg_rows'), hl: [0, 1, 2, 3, 4] });
-  el({ type: 'file', t0: bar(15.5), t1: bar(24), rect: [1290, 132, 558, 300], ...ex('reg_context'), hl: [0] });
+  el({ type: 'img', t0: bar(10), t1: bar(15.4), rect: [72, 132, 860, 640], kb: true, src: 'assets/ref/owner-reference-2026-10-15.jpg', tag: 'ảnh tham khảo · owner · ≠ REF01 sha256' });
+  // the registered sheets never reached this Mac, so these were regenerated from the reference image (Antigravity, 2026-10-15)
+  ['turnaround-360', 'parts-catalog', 'blueprint'].forEach((n, i) => el({ type: 'img', t0: bar(11) + i * 2 * D.B, t1: bar(15.4), src: `assets/gen/${n}.jpg`,
+    keys: [[bar(11) + i * 2 * D.B, 980 + i * 174, 150 + i * 190, 520, 290]], p: [[bar(11) + i * 2 * D.B, 48 + i * 170, 920 + i * 120, 644, 360]],
+    tag: ['gen lại · 360°', 'gen lại · parts catalog', 'gen lại · blueprint'][i], ghost: true, tilt: [-2, 1.5, -1][i] }));
+  el({ type: 'file', t0: bar(15.5), t1: bar(24), rect: R.LW, ...ex('reg_rows'), hl: [0, 1, 2, 3, 4] });
+  el({ type: 'file', t0: bar(16.3), t1: bar(24), rect: [1290, 132, 558, 300], ...ex('reg_context'), hl: [0] });
   el({ type: 'file', t0: bar(18.5), t1: bar(24), rect: [1290, 462, 558, 310], ...ex('reg_disagree'), hl: [0] });
-  cap(10, 14.5, 'Đầu vào: 1 ảnh chụp và 4 tấm gen, mỗi tấm có SHA256.', 'Input: one photo and four generated sheets, each pinned by SHA256.');
-  cap(14.5, 18.5, 'Nhưng file chưa từng được chép về máy này: tên file không phải bằng chứng.', 'But the bytes never reached this Mac: a filename is not evidence.');
+  cap(10, 15.5, 'Đầu vào: 1 ảnh chụp, gen thêm 360°, catalog, blueprint (bản gen lại hôm nay).', 'Input: one photo plus generated 360°, catalog and blueprint sheets (regenerated today).');
+  cap(15.5, 18.5, 'Nhưng file chưa từng được chép về máy này: tên file không phải bằng chứng.', 'But the bytes never reached this Mac: a filename is not evidence.');
   cap(18.5, 24, 'Các tấm gen mâu thuẫn nhau, nên BOM cơ khí thật mới là chuẩn.', 'The generated sheets disagree, so the native BOM is authoritative.');
 
   // 2 · contract
