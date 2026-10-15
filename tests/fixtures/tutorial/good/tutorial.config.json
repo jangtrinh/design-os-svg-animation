@@ -1,0 +1,13 @@
+{
+  "slug": "fixture",
+  "title": "Fixture — How we built it",
+  "lang": "en",
+  "output": "fixture-tutorial",
+  "duration": 20,
+  "grid": { "bpm": 120, "db0": 0, "measuredBy": "fixture: synthetic 120 BPM grid" },
+  "music": { "credit": "Music: none (fixture)", "file": "audio/music.mp3", "bed": "audio/music-bed.wav", "gain": 0.2 },
+  "evidence": "data/evidence.js",
+  "timeline": ["tutorial-timeline.js"],
+  "voiceover": { "script": "voiceover/script-vi.json", "clips": "voiceover/clips" },
+  "approvals": { "storyboard": "fixture", "script": "fixture" }
+}

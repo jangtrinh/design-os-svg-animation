@@ -1,0 +1,6 @@
+{
+  "voice_id": null,
+  "model_id": null,
+  "note": "fixture script: one segment, chapter 'input' has an 8 s window",
+  "segments": [{ "id": "input", "text": "Một câu ngắn.", "window_s": 8 }]
+}
