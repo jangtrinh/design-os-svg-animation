@@ -123,8 +123,9 @@ if (want('display-block')) {
 }
 if (want('no-home-path')) {
   const needle = Buffer.from('/Users/');
-  const targets = [path.join(dir, kit.CONFIG_FILE), ...[cfg.evidence, ...cfg.timeline, cfg.voiceover.script].map((f) => path.join(dir, f)),
-    ...['assets', 'data', 'ref'].flatMap((d) => walk(path.join(dir, d))), ...walk(path.join(dir, 'out')).filter((f) => /\.(mp4|jpe?g|png)$/i.test(f) && !/[\\/](beats-|shards)/.test(f))];
+  // a Set: data/evidence.js is both the configured evidence file and part of the data/ walk
+  const targets = new Set([path.join(dir, kit.CONFIG_FILE), ...[cfg.evidence, ...cfg.timeline, cfg.voiceover.script].map((f) => path.join(dir, f)),
+    ...['assets', 'data', 'ref'].flatMap((d) => walk(path.join(dir, d))), ...walk(path.join(dir, 'out')).filter((f) => /\.(mp4|jpe?g|png)$/i.test(f) && !/[\\/](beats-|shards)/.test(f))]);
   for (const f of targets) if (fs.existsSync(f) && fs.readFileSync(f).includes(needle)) fail('no-home-path', `${rel(f)} contains "/Users/"; strip the metadata (mogrify -strip) or fix the extractor, then re-check`);
 }
 if (want('gitignore-music')) {
