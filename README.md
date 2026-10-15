@@ -91,6 +91,11 @@ Every deliverable produced by `design-os-svg-animation` is backed by a determini
 ### Featured Showreel & Interactive Suites
 
 <p align="center">
+  <a href="docs/promo/dc-01-tutorial/dc-01-tutorial-landscape.mp4"><img src="docs/assets/example-9-dc-01-tutorial.gif" alt="DC-01 A-to-Z tutorial" width="840"></a><br>
+  <sub><b>Tutorials built with the engine:</b> <a href="docs/promo/dc-01-tutorial/dc-01-tutorial-landscape.mp4">DC-01 desk robot, 5:34</a> (<a href="docs/promo/dc-01-tutorial/dc-01-tutorial-portrait.mp4">9:16</a>) · <a href="docs/promo/ck-001-tutorial/ck-001-tutorial-landscape.mp4">CK-001 keyboard, 2:57</a> (<a href="docs/promo/ck-001-tutorial/ck-001-tutorial-portrait.mp4">9:16</a>) · <a href="docs/promo/design-os-3d-blender/design-os-3d-blender-promo-landscape.mp4">DESIGN:OS 3D Blender promo, 30 s</a> (<a href="docs/promo/design-os-3d-blender/design-os-3d-blender-promo-portrait.mp4">9:16</a>) · workflow: <a href="docs/tutorial-video-workflow.md">docs/tutorial-video-workflow.md</a></sub>
+</p>
+
+<p align="center">
   <a href="docs/promo/origami-cad/origami-cad-promo.mp4"><img src="docs/assets/example-5-origami-cad-promo.gif" alt="DESIGN:OS Origami CAD — 15s 120BPM Monochrome Showreel" width="840"></a><br>
   <sub><b>DESIGN:OS Origami CAD (15s · 120 BPM · 60fps 3x <code>tmix</code> · B&amp;W + 50 Shades of Gray · SF Pro Display)</b> — <a href="docs/promo/origami-cad/origami-cad-promo.mp4">Download 1080p 60fps MP4</a> · <a href="docs/promo/origami-cad/origami-cad-promo.html">Open Pure-Time <code>window.seek(t)</code> HTML</a></sub>
 </p>
