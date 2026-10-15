@@ -1,0 +1,191 @@
+1
+00:00:01,154 --> 00:00:02,914
+Hi, I'm Jang.
+
+2
+00:00:03,214 --> 00:00:07,854
+This is the third video about the DESIGN:OS 3D Blender repo.
+
+3
+00:00:08,154 --> 00:00:11,914
+This time: a six-servo robot arm you can 3D print.
+
+4
+00:00:13,598 --> 00:00:16,718
+Before we start, six words you will hear again.
+
+5
+00:00:17,018 --> 00:00:20,698
+A servo is a small motor that turns to the angle it is told.
+
+6
+00:00:20,998 --> 00:00:24,118
+A joint is where two parts of the arm rotate around each other.
+
+7
+00:00:24,418 --> 00:00:29,058
+A collision is two parts taking the same space, measured in cubic millimetres.
+
+8
+00:00:29,358 --> 00:00:32,718
+A gate is a script that answers pass or fail.
+
+9
+00:00:33,018 --> 00:00:37,578
+A plate is the printer bed where parts are laid out to print in one go.
+
+10
+00:00:37,878 --> 00:00:42,518
+And a frame is one picture of the film; this film runs at twenty-four frames per second.
+
+11
+00:00:47,376 --> 00:00:52,016
+This time the input is not a photo but a fifty-eight-second assembly video.
+
+12
+00:00:52,316 --> 00:00:57,276
+I chose it as the baseline and changed one thing: remove the separate black power box.
+
+13
+00:01:05,154 --> 00:01:12,354
+Thirty-eight parts on five plates: thirty-two in PETG, six in flexible TPU.
+
+14
+00:01:12,654 --> 00:01:15,134
+The print bed is two hundred and twenty millimetres.
+
+15
+00:01:15,434 --> 00:01:20,394
+And one requirement that is not lowered: the arm must lift two hundred and fifty grams for several minutes.
+
+16
+00:01:30,043 --> 00:01:36,123
+Each part is turned to the orientation that needs the least support, then laid on the bed eight millimetres apart.
+
+17
+00:01:36,423 --> 00:01:40,263
+The gate runs eight hundred and thirty-six checks and none fail.
+
+18
+00:01:47,821 --> 00:01:53,021
+Try to recall: what was the input, how many parts, and which requirement is not lowered?
+
+19
+00:01:58,021 --> 00:02:02,501
+An assembly video, thirty-eight parts, and the two-hundred-fifty-gram load.
+
+20
+00:02:10,932 --> 00:02:15,492
+The assembly film has two hundred and fifty-two units and one hundred and twenty-one steps.
+
+21
+00:02:15,792 --> 00:02:20,192
+Parts on the same joint are grouped so they move as one block.
+
+22
+00:02:28,710 --> 00:02:34,310
+The first version had a bug: the shoulder and elbow outputs arrived up to one hundred and ten millimetres off.
+
+23
+00:02:34,610 --> 00:02:38,530
+Guess: rebuild the model, or only fix the motion path?
+
+24
+00:02:42,530 --> 00:02:46,850
+Only the motion path, on thirty-seven frames. The model stays the same.
+
+25
+00:02:55,376 --> 00:03:00,656
+Later I watched the draft myself and saw two parts overlap at second twenty-four.
+
+26
+00:03:00,956 --> 00:03:06,076
+A frame-by-frame check confirmed it: at frame five hundred and eighty-eight, two surfaces cut into each other.
+
+27
+00:03:06,376 --> 00:03:10,456
+The running render was stopped, and the frames already rendered were thrown away.
+
+28
+00:03:18,487 --> 00:03:21,687
+With the waiting spot fixed, the part flew straight to its target.
+
+29
+00:03:21,987 --> 00:03:24,547
+Guess: is the straight path safe?
+
+30
+00:03:28,547 --> 00:03:31,107
+No. It cut across the real servo cases.
+
+31
+00:03:31,407 --> 00:03:36,767
+The fix: lift one hundred and twenty millimetres, move across, then lower straight down.
+
+32
+00:03:45,154 --> 00:03:48,514
+Then all three thousand and thirty-one frames were checked again.
+
+33
+00:03:48,814 --> 00:03:51,214
+No collision with the real servo cases remains.
+
+34
+00:04:01,154 --> 00:04:04,834
+The last bug is smaller: a fingertip was cut out of the frame.
+
+35
+00:04:05,134 --> 00:04:11,454
+Widen the shot eight percent, keep two thousand nine hundred and thirty-one old frames, re-render only eighty-nine.
+
+36
+00:04:18,932 --> 00:04:23,252
+Try to recall: why the straight path fails, and what is safe?
+
+37
+00:04:28,252 --> 00:04:33,532
+Because it cuts through a servo case. Safe is lift, move across, then lower.
+
+38
+00:04:42,043 --> 00:04:48,123
+The final film runs two minutes six seconds, three thousand and twenty frames, and decodes fully without errors.
+
+39
+00:05:10,487 --> 00:05:13,447
+The gate reports all eight hundred and thirty-six checks passing.
+
+40
+00:05:13,747 --> 00:05:16,627
+Guess: so can it be printed and used now?
+
+41
+00:05:20,627 --> 00:05:26,547
+Not yet. That gate ran with a sample spec, not the arm's own, so wall thickness was not checked.
+
+42
+00:05:26,847 --> 00:05:30,767
+The two-hundred-fifty-gram load is untested. Manufacture stays blocked.
+
+43
+00:05:38,932 --> 00:05:40,372
+Three things to remember.
+
+44
+00:05:44,972 --> 00:05:49,212
+One, fix what is broken: the motion path, not the model.
+
+45
+00:05:49,512 --> 00:05:53,992
+Two, a straight path is not safe: lift, move across, lower.
+
+46
+00:05:54,292 --> 00:05:58,212
+Three, a pass only means something within the spec it checked.
+
+47
+00:06:05,598 --> 00:06:11,358
+This whole arm lives in the open-source DESIGN:OS 3D Blender repo.
+
+48
+00:06:11,658 --> 00:06:13,578
+I'm Jang, see you next time.
