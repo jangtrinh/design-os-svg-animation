@@ -89,6 +89,7 @@ Nguồn: `wheresryan22/anatomy` (MIT) — `SKILL.md`, `references/craft.md`. Bá
 3. **Đường nét phải kết thúc**: mọi tick, seam, rãnh, kim chỉ đều phải kết thúc trên một stroke, một dot hoặc một outline. Tick treo từ mép một dải thước (ruler strip), không nằm trôi trên mặt đế. Gate: `npm run audit:line-ends` (vendored `vendor/anatomy/scripts/lines.mjs`) in ra `line ends: 0` cho từng figure.
 4. **Soi 4×**: trước khi xong, phóng to 4× phần subject và cơ cấu; mặt trống hay góc trống là việc chưa xong, không phải sự tĩnh lặng.
 5. **Bố cục**: figure chiếm khoảng 55–65% card và vẫn đọc được ở bề rộng 390px.
+6. **Checklist khi giao figure**: tỉ lệ vật lý hiển thị đúng mô hình (ví dụ số đĩa = tỉ lệ lực), thứ tự vẽ đúng ở mọi pose (không chỉ rest), pointer ánh xạ đúng trục điều khiển, ảnh cận cảnh 3× ở pose nghỉ và pose lệch. Gate xanh chưa phải xong.
 
 ### 7. Quyết định owner khi adopt (2026-10-14)
 - **Budget nguồn**: ≤200 dòng code riêng cho mỗi figure (tổng các file của figure, mỗi dòng ≤110 ký tự, không nén nhiều lệnh một dòng); kit vendor (`vendor/anatomy/`) là thư viện dùng chung, nằm ngoài budget. (Nới từ 150 lên 200 sau pilot physics-lever, owner 2026-10-14.)
