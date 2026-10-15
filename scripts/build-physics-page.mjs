@@ -1,9 +1,10 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { hairlineKernelPath } from './hairline-skill-location.mjs';
 import { ISO_CSS } from '../vendor/anatomy/kit/iso-kit.mjs';
 
 const ROOT = process.cwd();
-const kernelPath = process.env.HAIRLINE_KERNEL || path.join(ROOT, '../.agents/skills/hairline-create/kernel.js');
+const kernelPath = hairlineKernelPath();
 const kernel = readFileSync(kernelPath, 'utf8');
 const appJs = readFileSync(path.join(ROOT, 'playground/physics-app.js'), 'utf8');
 const kitJs = 'globalThis.AK = (function () {\n'

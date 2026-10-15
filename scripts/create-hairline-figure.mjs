@@ -15,9 +15,10 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { hairlineSkillDir } from './hairline-skill-location.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SKILL_DIR = path.resolve(ROOT, '../.agents/skills/hairline-create');
+const SKILL_DIR = hairlineSkillDir();
 
 const [,, command, target, output] = process.argv;
 

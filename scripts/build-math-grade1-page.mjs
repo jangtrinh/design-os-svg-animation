@@ -1,8 +1,9 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { hairlineKernelPath } from './hairline-skill-location.mjs';
 
 const ROOT = process.cwd();
-const kernel = readFileSync(path.join(ROOT, '../.agents/skills/hairline-create/kernel.js'), 'utf8');
+const kernel = readFileSync(hairlineKernelPath(), 'utf8');
 const appJs = readFileSync(path.join(ROOT, 'playground/math-grade1-app.js'), 'utf8');
 
 const html = `<!doctype html>
