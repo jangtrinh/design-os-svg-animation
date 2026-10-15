@@ -122,6 +122,8 @@ export default {
         const a = baseDialAngle - (i / steps) * secNorm * 2 * Math.PI;
         arcPts.push(P(21.6 * Math.cos(a), 21.6 * Math.sin(a), 11.35));
       }
+      // The sector starts on the inner dial ring (r=21.0) so its first end lands on a stroke.
+      arcPts.unshift(P(21.0 * Math.cos(baseDialAngle), 21.0 * Math.sin(baseDialAngle), 11.3));
       splitSector.setAttribute("d", HL.open(arcPts));
 
       const minRad = baseDialAngle - minNorm * 2 * Math.PI;

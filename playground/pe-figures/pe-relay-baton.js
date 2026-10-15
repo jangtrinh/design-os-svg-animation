@@ -24,7 +24,7 @@ export default {
 
     const laneY1 = -9.0, laneY2 = 9.0;
     HL.mk("path", {
-      d: HL.seg(P(-44, laneY1, 2.6), P(44, laneY1, 2.6)) + HL.seg(P(-44, laneY2, 2.6), P(44, laneY2, 2.6)),
+      d: HL.seg(P(-44.5, laneY1, 2.6), P(44.5, laneY1, 2.6)) + HL.seg(P(-44.5, laneY2, 2.6), P(44.5, laneY2, 2.6)),
       class: "nf lo"
     }, svg);
     HL.mk("path", {
