@@ -60,7 +60,7 @@
       if (v > cv) { cv = v; cap.firstChild.textContent = c.vi; cap.lastChild.textContent = c.en; }
     }
     D.applyVis(cap, cv, 10);
-    D.applyVis(credit, Math.max(D.vis(t, 0.2, D.CH[0].t1 - 0.4, 0.5, 0.4), D.vis(t, D.CH[D.CH.length - 1].t0 + 0.4, null, 0.5)), 0);
+    D.applyVis(credit, Math.max(D.vis(t, 0.2, D.CH[0].t1 - 0.4, 0.5, 0.4), D.vis(t, D.CREDIT_IN != null ? D.CREDIT_IN : D.CH[D.CH.length - 1].t0 + 0.4, null, 0.5)), 0);
 
     for (const e of els) {
       const v = D.vis(t, e.spec.t0, e.spec.t1 - 0.3, 0.32, 0.26);

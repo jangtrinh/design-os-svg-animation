@@ -246,6 +246,7 @@ User Prompt / CLI Invocation
 | `skills/line-art-motion/SKILL.md` | Always (~100–150 lines) — routing rules, triggers, and execution workflow |
 | `docs/cookbook.md` | When selecting multi-step prompt recipes or domain patterns |
 | `docs/tutorial-video-workflow.md` | When producing an A-to-Z tutorial video for a DESIGN:OS build (7 steps, owner gates, style v1) |
+| `skills/es-tutorial-video/SKILL.md` | When turning a finished build folder into a tutorial video: shared kit `promo/_tutorial-kit/`, `validate.mjs`, `look.mjs`, two owner gates |
 | `commands/doctor.md` / `prompts/doctor.md` | Only when running `/doctor` diagnostics |
 | `llms.txt` | When indexed by AI answer engines, RAG pipelines, or repo crawlers |
 

@@ -4,7 +4,7 @@
  * Every excerpt comes verbatim from data/evidence.js (extract-evidence.py), never typed by hand. */
 (function (root) {
   const D = root.DOS, E = root.EVIDENCE;
-  const BAR = 4 * 60 / 135, DB0 = 0.654, B = BAR / 4;
+  const C = D.CONFIG, BAR = 240 / C.grid.bpm, DB0 = C.grid.db0, B = BAR / 4;   // grid: tutorial.config.json
   // Story bars (as authored in the act files) warp onto music bars so each chapter fits its voiceover clip.
   // Measured clips (voiceover/clips): the title gains 2 bars and the trap 1 bar, both taken from the ladder,
   // which had 11.7 s of slack. Knots are integer bars, so every chapter boundary stays on a downbeat.
@@ -16,7 +16,7 @@
     return m0 + (n - s0) * (m1 - m0) / (s1 - s0);
   };
   const bar = (n) => DB0 + warp(n) * BAR;      // absolute time of a (story) bar's downbeat
-  const T = 334.269;                            // length of audio/music-bed.wav (21 phrases)
+  const T = C.duration;                         // length of the music bed (21 phrases)
 
   // chapters: [id, start bar, end bar, number, title, sub, card image]
   const CH = [
@@ -45,6 +45,6 @@
   const R = { L: [72, 132, 1010, 640], R: [1120, 132, 728, 640], F: [72, 132, 1776, 640], LW: [72, 132, 1180, 640], RN: [1290, 132, 558, 640] };
   const ladder = (rev, pass = 'clay') => `assets/ladder/${rev}/${pass}/o000.jpg`;
 
-  Object.assign(D, { BAR, DB0, B, T, bar, CH, EL, CAP, CREDIT: 'Music: "Technology" by The_Mountain · Pixabay',
+  Object.assign(D, { BAR, DB0, B, T, bar, CH, EL, CAP, CREDIT: C.music.credit,
     tl: { el, cap, ex, val, line, R, ladder, E } });
 })(window);
