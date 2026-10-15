@@ -3,6 +3,14 @@
 > (`promo/ck-001-tutorial/`, 2:57, 16:9 + 9:16, voice tiếng Việt). Style hiện tại là style duy nhất;
 > style khác sẽ thêm vào §8 sau, không sửa các bước 1–7.
 
+> **Công cụ.** Engine dùng chung nằm ở `promo/_tutorial-kit/` (render, mix, join shard, đồng hồ `seek(t)`, style v1); thủ tục, luật,
+> `validate.mjs` và `look.mjs` nằm ở skill `skills/es-tutorial-video/` (`SKILL.md`, `rules.md`, `look.md`). Mỗi dự án
+> (`promo/<slug>-tutorial/`) chỉ giữ dữ liệu của mình, cấu hình trong `tutorial.config.json`. Tạo dự án mới bằng
+> `node skills/es-tutorial-video/build.mjs scaffold <thư-mục-build> <slug>`. Hai cổng owner (storyboard + script, rồi merge/publish)
+> được build thực thi: `mix` và `render --full` từ chối chạy khi `approvals` trong config còn `null`.
+> Host dùng plugin (Claude Code, Codex, Factory) đọc thẳng `skills/`. Host chỉ nhận thư mục skill: `node scripts/sync-tutorial-skill-hosts.mjs --host claude|codex|gemini|agents`
+> sinh bản kèm kit; không sửa tay, `--check` báo lệch.
+
 Nguyên tắc gốc: **video kể lại bằng chứng có thật, không minh hoạ.** Mỗi lệnh, mỗi dòng code, mỗi con số
 trên màn hình phải đọc nguyên văn từ chính build (receipt, `state.md`, gate report). Không gõ tay, không
 "làm cho đẹp", và có một chương nói thẳng về giới hạn.
@@ -27,20 +35,22 @@ Câu hỏi mặc định ở bước 1 (đề xuất ghi đầu tiên):
 - **Nội dung:** quy trình kèm bằng chứng thật, có chương giới hạn ngắn.
 - **Khổ:** 16:9 trước, 9:16 sau.
 
-## 2. Cấu trúc thư mục (`promo/<slug>-tutorial/`)
+## 2. Cấu trúc thư mục
 
-| File | Vai trò | Dùng lại hay viết mới |
+Engine ở kit dùng chung `promo/_tutorial-kit/`; dự án chỉ giữ dữ liệu. Kit đọc dự án qua `--project <thư mục>`.
+
+| File | Ở đâu | Vai trò |
 |---|---|---|
-| `motion-core.js` | spring, track, vis, applyVis: hàm thuần của t | dùng lại nguyên văn |
-| `tutorial-scene.js` | rail chương, thẻ chương, caption, vòng đời phần tử | dùng lại |
-| `tutorial-elements.js` | renderer: img, wipe, seq, grid, file, json, term, callout, scroll, hero, repo | dùng lại, thêm renderer nếu cần |
-| `tutorial-portrait-layout.js` | đổi rect 1920×1080 sang 1080×1920 | dùng lại |
-| `tutorial.css` | token style v1 và khối `.portrait` | dùng lại |
-| `render-tutorial.mjs` | Puppeteer: `--beats` / `--full`, 4 subframe, tmix, 60 fps | dùng lại |
-| `voiceover/mix-voiceover.mjs` | đặt clip theo chương, duck nhạc, loudnorm | dùng lại |
-| `extract-evidence.py` | trích excerpt từ build sang `data/evidence.js` | **viết mới theo build** |
-| `tutorial-timeline.js` | lưới bar, chương, phần tử, caption | **viết mới theo build** |
-| `voiceover/script-vi.json` | lời đọc từng chương | **viết mới** |
+| `motion-core.js`, `gh-mark.js`, `tutorial-scene.js`, `tutorial-elements.js`, `tutorial-portrait-layout.js`, `tutorial.css` | kit | spring, rail chương, caption, renderer (img, wipe, seq, grid, file, json, term, callout, scroll, hero, repo), layout dọc, token style v1 |
+| `tutorial.template.html`, `tutorial-project.mjs` | kit | dựng trang từ config; nạp, kiểm config, chạy timeline trong vm |
+| `render-tutorial.mjs`, `join-shards.mjs` | kit | Puppeteer: `--beats` / `--full` / `--shard i/n` (4 subframe, tmix, 60 fps), ghép shard |
+| `voiceover/mix-voiceover.mjs`, `build-music-bed.py`, `capture-review-page.mjs` | kit | đặt clip theo chương và duck nhạc; lặp nhạc theo cụm 8 bar; chụp trang review |
+| `tutorial.config.json` | dự án | slug, tiêu đề, T, lưới (`bpm`, `db0`, cách đo), nhạc, danh sách timeline, `approvals` |
+| `extract-evidence.py`, `data/evidence.js` | dự án, **viết mới theo build** | trích excerpt nguyên văn |
+| `tutorial-timeline*.js` | dự án, **viết mới theo build** | lưới bar, chương, phần tử, caption |
+| `voiceover/script-vi.json`, `voiceover/clips*/` | dự án, **viết mới** | lời đọc từng chương và clip |
+
+Đổi engine thì sửa kit, chạy `node scripts/build-tutorial-contract.mjs` và so từng khung beat với bản render cũ (khung nào khác phải giải thích được).
 
 ## 3. Bằng chứng (bước 3)
 
@@ -65,7 +75,7 @@ Câu hỏi mặc định ở bước 1 (đề xuất ghi đầu tiên):
 - **Caption không chồng nhau.** Mỗi cửa sổ caption thoát ra trước khi cửa sổ sau vào.
 - **Ẩn phần tử bằng `display:none` và hiện lại bằng `display=''`.** Không gán cứng `block`, vì nó đè mất `display:grid`.
 - **Render chờ font:** `__framesReady` phải chờ `document.fonts.ready`. Glyph tiếng Việt tải lười, chụp sớm sẽ mất chữ.
-- **Kiểm bằng beat sheet** (`node render-tutorial.mjs --aspect <a> --beats`). Beat sheet chỉ lấy một khung mỗi bar,
+- **Kiểm bằng beat sheet** (`node skills/es-tutorial-video/build.mjs render <dự án> --aspect <a> --beats`). Beat sheet chỉ lấy một khung mỗi bar,
   nên đoạn nào chuyển cảnh giữa hai bar thì phải chụp thêm khung ngay trong đoạn đó.
 
 ## 5. Voice (bước 5)
@@ -84,11 +94,11 @@ Câu hỏi mặc định ở bước 1 (đề xuất ghi đầu tiên):
 
 ## 6. Ghép, render, kiểm (bước 6)
 
-1. `node voiceover/mix-voiceover.mjs` đọc thời điểm chương **từ chính timeline** (`vm`), nên tiếng và hình không lệch nhau được.
+1. `node skills/es-tutorial-video/build.mjs mix <dự án>` (chạy `promo/_tutorial-kit/voiceover/mix-voiceover.mjs`) đọc thời điểm chương **từ chính timeline** (`vm`), nên tiếng và hình không lệch nhau được.
    - Đặt mỗi clip vào lúc chương mở + 0,5 s. Đoạn nào còn dư dưới 0,3 s so với cuối chương thì script báo lỗi.
    - Nhạc đi qua `sidechaincompress` với voice làm key, voice được `apad` tới hết bài, cuối cùng `loudnorm` về −16 LUFS, true peak −1,5 dBFS.
-2. `node render-tutorial.mjs --aspect landscape --full`: khoảng 30 phút cho 3 phút video. Hai khổ render song song được, vì mỗi khổ ghi qua pipe riêng.
-   Nhanh hơn: chia shard (bản DC-01 có `--shard i/n` và `join-shards.mjs`). 6 shard (3 cho mỗi khổ) chạy song song mỗi shard vẫn
+2. `node skills/es-tutorial-video/build.mjs render <dự án> --aspect landscape --full`: khoảng 30 phút cho 3 phút video. Hai khổ render song song được, vì mỗi khổ ghi qua pipe riêng.
+   Nhanh hơn: chia shard (kit có `--shard i/n` và `join-shards.mjs`; `build.mjs render <dự án> --full --shards N` chạy cả hai). 6 shard (3 cho mỗi khổ) chạy song song mỗi shard vẫn
    ~24 subframe/s, nên 5:34 phim render xong cả 2 khổ trong ~19 phút thay vì ~55 phút. Mối ghép chỉ ghép (concat `-c copy`), không encode lại;
    kiểm khung ở đúng mỗi mối ghép. Script render phải tự thoát (`browser.close()` có hạn chờ rồi `process.exit`), vì Chrome headless có lúc treo khi đóng.
 3. Kiểm trên file thật, đủ cả 4 mục mới gọi là xong:
