@@ -3,7 +3,7 @@
  * clips are produced elsewhere, after the owner approves the script, and only read here.
  *   node build.mjs scaffold <build-dir> <slug> [--into <promo-dir>]   create <promo-dir>/<slug>-tutorial/ from templates/
  *   node build.mjs render <project> [--aspect landscape|portrait] --beats [--out-dir <dir>]
- *   node build.mjs mix <project>                                       voice + music bed -> out/tutorial-audio.wav (owner gate 1)
+ *   node build.mjs mix <project>                                       voice + music bed -> out/tutorial-audio.wav (owner gate 1); pedagogy v2 also writes the .srt/.vtt
  *   node build.mjs render <project> [--aspect a] --full [--shards N]   60 fps MP4 (owner gate 1), shards render in parallel
  * Prints the output path(s). Exit 0 ok, 1 refused or failed, 2 cannot run. */
 import fs from 'node:fs';
@@ -59,7 +59,10 @@ async function loadGuarded(needScript) {
 
 async function mix() {
   const project = await loadGuarded(true);
-  process.exit(await run([path.join(kitDir(), 'voiceover', 'mix-voiceover.mjs'), '--project', project.dir]));
+  const code = await run([path.join(kitDir(), 'voiceover', 'mix-voiceover.mjs'), '--project', project.dir]);
+  // pedagogy v2: the sentence timings are final once the mix passes, so the .srt/.vtt sidecars are written with it
+  if (code === 0 && project.cfg.pedagogy === 'v2') process.exit(await run([path.join(kitDir(), 'make-subtitles.mjs'), '--project', project.dir]));
+  process.exit(code);
 }
 
 async function render() {

@@ -17,10 +17,19 @@ Open the sheet and answer each one in your hand-over; "checked" without a frame 
 7. **Seam frames.** The two frame pairs at the end of the sheet are the frames either side of a shard seam; they must look like
    consecutive frames of one shot (same card, same scroll position, no flash).
 
+8. **Predict card (pedagogy v2).** The `p-predict` shot: the question reads in two lines or less, the hairline is part-way run, nothing else competes with the card,
+   and the card is the only thing on screen that asks for attention. (R20)
+9. **Signaling.** The `p-signal` shot: exactly the cited line is highlighted and slightly larger, the other lines are visibly quieter but still legible, and the
+   keyword line (if any) names the same number the highlight points at. (R22)
+10. **Recap.** `p-recap-blank` shows cues and empty answer slots, `p-recap-done` the same card with all answers in place; the answers do not shift the cues. (R21)
+11. **Glossary.** The `p-glossary` shot: 4 to 6 terms, term heavier than its one-line definition, no clipping at the card edge in either aspect. (R19)
+
+(Machine items L6 and L7 of `look.mjs` check the focus dimming and the recap reveal for pedagogy v2 projects; 8 to 11 are yours.)
+
 ## Without a browser
 
 `look.mjs` exits 2 and prints `cannot run: ...` when there is no Chrome, no `puppeteer-core` next to the skill, or no ImageMagick
 `montage`. In that case do not claim a visual check. Do this instead:
 1. Run `validate.mjs` (it needs only node, ffprobe and git).
 2. Ask the owner to run `look.mjs` on a machine with Chrome, or to open `out/beat-sheet-*.jpg` from a machine that has one.
-3. In the hand-over, write "NOT verified: items 1 to 7 of look.md (no browser)" as the first line.
+3. In the hand-over, write "NOT verified: items 1 to 7 (and 8 to 11 for pedagogy v2) of look.md (no browser)" as the first line.
