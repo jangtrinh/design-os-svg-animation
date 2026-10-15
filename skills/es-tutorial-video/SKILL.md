@@ -75,7 +75,7 @@ The owner's note names a chapter or a frame: change the timeline or the evidence
 ## What goes wrong
 | Symptom | Do this instead | Rule |
 |---|---|---|
-| `/Users/jang/...` visible in a terminal card or in image metadata | fix the extractor, `mogrify -strip` the stills, Blender metadata stamps off | R2 |
+| `/Users/<you>/...` visible in a terminal card or in image metadata | fix the extractor, `mogrify -strip` the stills, Blender metadata stamps off | R2 |
 | Music file or a mix shows up in `git status` | add `audio/` and `out/*.wav` to the project `.gitignore` | R3 |
 | Voice clip is cut off at the chapter end | widen the chapter with `WARP` knots on integer bars | R4 |
 | Beats drift from the music after a loop | measure the grid on the bed with numpy, never from the title's BPM | R5 |
