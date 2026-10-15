@@ -1,0 +1,30 @@
+{
+  "slug": "dc-01",
+  "title": "DC-01 — How we built it",
+  "lang": "vi",
+  "output": "dc-01-tutorial",
+  "duration": 334.269,
+  "grid": {
+    "bpm": 135,
+    "db0": 0.654,
+    "measuredBy": "numpy onset comb on audio/the_mountain-technology-562622.mp3: 135.00 BPM, first downbeat 0.654 s, 0 ms drift over 100 s (build-music-bed.py)"
+  },
+  "music": {
+    "credit": "Music: \"Technology\" by The_Mountain · Pixabay",
+    "file": "audio/the_mountain-technology-562622.mp3",
+    "bed": "audio/music-bed.wav",
+    "gain": 0.17,
+    "bedParams": { "introBars": 12, "bodyStart": 12, "bodyEnd": 68, "outroBar": 69, "phrases": 21 }
+  },
+  "evidence": "data/evidence.js",
+  "timeline": ["tutorial-timeline-core.js", "tutorial-timeline-act1.js", "tutorial-timeline-act2.js"],
+  "voiceover": { "script": "voiceover/script-vi.json", "clips": "voiceover/clips" },
+  "reviewCapture": {
+    "page": "~/Products/design-os-3d-blender/builds/desktop-companion/delivery/R03/index.html",
+    "out": "assets/review/review-page-full.jpg"
+  },
+  "approvals": {
+    "storyboard": "legacy: published before the owner gates existed",
+    "script": "legacy: published before the owner gates existed"
+  }
+}

@@ -19,3 +19,5 @@ out/contact-tutorial.jpg
 out/portrait-zoom-*.jpg
 out/portrait-input-check.jpg
 out/landscape-committed-*.jpg
+# look.mjs sheet and shots (regenerable)
+out/look/

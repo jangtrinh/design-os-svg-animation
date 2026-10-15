@@ -1,22 +1,25 @@
 #!/usr/bin/env node
-/* Render the DESIGN:OS 3D Blender promo from its pure seek(t) page.
- *   node render-promo.mjs --aspect landscape|portrait --beats      one frame per beat -> contact sheet
- *   node render-promo.mjs --aspect landscape|portrait --full       4 subframes/frame, tmix motion blur, 60 fps
- *   node render-promo.mjs --events                                 UI sound events JSON for the audio mix */
+/* Render a tutorial project from its pure seek(t) page (the page is built from <project>/tutorial.config.json).
+ *   node render-tutorial.mjs --project <dir> --aspect landscape|portrait --beats      one frame per bar -> beat sheet
+ *   node render-tutorial.mjs --project <dir> --aspect landscape|portrait --full       4 subframes/frame, tmix motion blur, 60 fps
+ *   node render-tutorial.mjs --project <dir> --aspect <a> --full --shard i/n          frames [i*F/n, (i+1)*F/n) -> out/shards/ (video only)
+ *   (add --out-dir <dir> to write somewhere other than <project>/out)
+ *   node render-tutorial.mjs --project <dir> --events                                 UI sound events JSON for the audio mix */
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
-import { fileURLToPath, pathToFileURL } from 'node:url';
 import puppeteer from 'puppeteer-core';
+import { flag, loadProject, writePage } from './tutorial-project.mjs';
 
-const HERE = path.dirname(fileURLToPath(import.meta.url));
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const FFMPEG = '/opt/homebrew/bin/ffmpeg';
 const args = process.argv.slice(2);
-const aspect = args.includes('--aspect') ? args[args.indexOf('--aspect') + 1] : 'landscape';
+const project = loadProject(flag(args, '--project'));
+const HERE = project.dir;
+const aspect = flag(args, '--aspect', 'landscape');
 const portrait = aspect === 'portrait';
 const [W, H] = portrait ? [1080, 1920] : [1920, 1080];
-const OUT = path.join(HERE, 'out');
+const OUT = path.resolve(flag(args, '--out-dir', path.join(HERE, 'out')));   // --out-dir keeps a scratch render away from the project's tracked out/
 fs.mkdirSync(OUT, { recursive: true });
 
 function run(bin, a, input) {
@@ -34,8 +37,8 @@ const browser = await puppeteer.launch({
   defaultViewport: { width: W, height: H, deviceScaleFactor: 1 },
 });
 const page = await browser.newPage();
-const url = pathToFileURL(path.join(HERE, 'tutorial.html')).href + `?render=1${portrait ? '&aspect=portrait' : ''}`;
-await page.goto(url, { waitUntil: 'networkidle0' });
+const built = writePage(project, aspect);
+await page.goto(built.url, { waitUntil: 'networkidle0', timeout: 120000 });   // the page loads Geist from Google Fonts; a loaded machine needs more than the 30 s default
 await page.evaluate(async () => {
   await document.fonts.ready;
   await Promise.all([...document.images].map((i) => (i.complete ? i.decode().catch(() => {}) : new Promise((r) => (i.onload = r)))));
@@ -77,7 +80,7 @@ if (args.includes('--full')) {
   const [f0, f1] = sh ? [Math.floor(frames * sh[0] / sh[1]), Math.floor(frames * (sh[0] + 1) / sh[1])] : [0, frames];
   const audio = sh ? '' : path.join(OUT, 'tutorial-audio.wav');
   if (sh) fs.mkdirSync(path.join(OUT, 'shards'), { recursive: true });
-  const out = sh ? path.join(OUT, 'shards', `${aspect}-${sh[0]}.mp4`) : path.join(OUT, `dc-01-tutorial-${aspect}.mp4`);
+  const out = sh ? path.join(OUT, 'shards', `${aspect}-${sh[0]}.mp4`) : path.join(OUT, `${project.cfg.output}-${aspect}.mp4`);
   const t0 = Date.now();
   await run(FFMPEG, ['-y', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-r', String(fps * sub), '-i', '-',
     ...(audio && fs.existsSync(audio) ? ['-i', audio] : []),
@@ -97,4 +100,5 @@ if (args.includes('--full')) {
 }
 // a headless Chrome can hang on close; the video is already written, so bound the wait and exit explicitly
 await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 10000))]);
+built.cleanup();
 process.exit(0);

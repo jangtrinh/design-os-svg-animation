@@ -11,3 +11,5 @@ out/*.png
 out/check-*.jpg
 out/shards/
 out/render-shard-*.log
+# look.mjs sheet and shots (regenerable)
+out/look/

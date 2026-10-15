@@ -1,0 +1,25 @@
+{
+  "slug": "ck-001",
+  "title": "CK-001 — How we built it",
+  "lang": "vi",
+  "output": "ck-001-tutorial",
+  "duration": 177.08,
+  "grid": {
+    "bpm": 120,
+    "db0": 1.559,
+    "measuredBy": "numpy comb filter on audio/dawn.wav: 119.99 BPM, first downbeat 1.559 s; the timeline uses bar = 2.000 s (docs/tutorial-video-workflow.md section 4)"
+  },
+  "music": {
+    "credit": "Music: Dawn by Alegend · freetouse.com/music",
+    "file": "audio/dawn.wav",
+    "bed": "audio/dawn.wav",
+    "gain": 0.42
+  },
+  "evidence": "data/evidence.js",
+  "timeline": ["tutorial-timeline.js"],
+  "voiceover": { "script": "voiceover/script-vi.json", "clips": "voiceover/clips-v4" },
+  "approvals": {
+    "storyboard": "legacy: published before the owner gates existed",
+    "script": "legacy: published before the owner gates existed"
+  }
+}

@@ -3,7 +3,7 @@
  * Every excerpt comes verbatim from data/evidence.js (extract-evidence.py), never typed by hand. */
 (function (root) {
   const D = root.DOS, E = root.EVIDENCE;
-  const BAR = 2.0, DB0 = 1.559, B = BAR / 4;
+  const C = D.CONFIG, BAR = 240 / C.grid.bpm, DB0 = C.grid.db0, B = BAR / 4;   // grid: tutorial.config.json
   // Story bars (as authored below) warp onto music bars so each chapter fits its voiceover clip:
   // the title gains one bar from layout, the outro one bar from lessons. Knots are integer bars, so
   // every chapter boundary still lands on a downbeat. Pairs: [story bar, music bar].
@@ -15,7 +15,7 @@
     return m0 + (n - s0) * (m1 - m0) / (s1 - s0);
   };
   const bar = (n) => DB0 + warp(n) * BAR;      // absolute time of a (story) bar's downbeat
-  const T = 177.08;
+  const T = C.duration;
   const ex = (k, pick, more) => ({ path: E[k].path, from: E[k].from, lines: pick ? pick.map((i) => E[k].lines[i]) : E[k].lines, more: !!more });
   const ok = (k) => E[k].lines[E[k].lines.length - 1];
   const R = { L: [72, 132, 1010, 640], R: [1120, 132, 728, 640], F: [72, 132, 1776, 640], LW: [72, 132, 1180, 640], RN: [1290, 132, 558, 640] };
@@ -141,8 +141,9 @@
   cap(80.6, 84, 'Mọi check đã viết ra đều phải được chạy.', 'Every check you write must actually run.');
 
   // outro
-  el({ type: 'repo', t0: bar(84.2), t1: T + 1, rect: [220, 200, 1480, 560], p: [48, 470, 984, 820] });
+  el({ type: 'repo', t0: bar(84.2), t1: T + 1, rect: [220, 200, 1480, 560], p: [48, 470, 984, 820],
+    cmd: 'python3 scripts/native-pipeline.py run builds/reference-keyboard/geometry-pipeline-B01.json --run-dir <new dir>' });
   cap(84.6, 87.6, 'Tự chạy lại toàn bộ trong repo.', 'Re-run the whole build yourself from the repo.');
 
-  Object.assign(D, { BAR, DB0, B, T, bar, CH, EL, CAP });
+  Object.assign(D, { BAR, DB0, B, T, bar, CH, EL, CAP, CREDIT: C.music.credit, CREDIT_IN: bar(84.2) });
 })(window);
