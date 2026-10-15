@@ -77,6 +77,18 @@ test('resolve: predict gets its hold window, an unknown sentence throws', () => 
   assert.throws(() => P.resolve([{ type: 'predict', at: 'sent:r' }], SENT), /needs hold_s/);
 });
 
+test('resolve: until chapter, a recap that stays up while the voice reads it, and focus that waits for a delayed card', () => {
+  const P = loadPedagogy();
+  const SENT = { a: { id: 'a', t0: 10, t1: 12, hold: 5, holdKind: 'pause', limit: 30 }, b: { id: 'b', t0: 17, t1: 20, hold: 0, holdKind: null, limit: 30 } };
+  const EL = [{ type: 'img', at: 'sent:a', until: 'chapter' }, { type: 'recap', at: 'sent:a', until: 'sent:b', cues: [] },
+    { type: 'recap', at: 'sent:a', cues: [] }, { type: 'file', at: 'sent:a', delay: 1.2, focus: [0] }];
+  P.resolve(EL, SENT);
+  assert.equal(EL[0].t1, 30 - P.BUDGETS.tailS);                      // up to the chapter's end, not the sentence's
+  assert.equal(EL[1].t1, 20 + P.BUDGETS.tailS);                      // stays through the sentence that reads the answers
+  assert.equal(EL[2].t1, 12 + 5 + 0.3);                              // without until: only the silent hold
+  assert.deepEqual([EL[3].t0, EL[3].f0], [11.2, 11.2]);              // no highlight before the card lands
+});
+
 // ---------- validate: the v2 fixture and one broken fixture per new check
 test('validate: the v2 fixture passes all 20 checks', { skip: !HAS_FFMPEG && 'ffprobe missing' }, () => {
   const r = validate(v2Project());

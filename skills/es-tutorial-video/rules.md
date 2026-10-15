@@ -157,6 +157,6 @@ Checked by: validate:chapter-length, review
 ## R24 Each element appears when its sentence starts
 Statement: a picture shown while its narration plays (contiguity) beats one placed on a music bar.
 Keep it: `voiceover/script-vi.json` segments carry `sentences: [{id, text, text_en, hold_s?}]`, one clip `voiceover/clips/<sentence id>.mp3` each (ids unique across the script);
-elements take `at: 'sent:<id>'` (optional `until`, `delay`, `dur`); times come from `pedagogy-core.js`, never typed in.
+elements take `at: 'sent:<id>'` (optional `until: 'sent:<id>'` or `until: 'chapter'` to stay up to the chapter's end, `delay`, `dur`; a recap with `until` stays up while the voice reads its answers); times come from `pedagogy-core.js`, never typed in.
 Rejected when: a v2 segment has no `sentences`, a sentence has no clip or repeats an id, a sentence ends less than 0.3 s before its chapter does, or an element names a sentence that does not exist.
 Checked by: validate:script-clips, validate:timeline-eval

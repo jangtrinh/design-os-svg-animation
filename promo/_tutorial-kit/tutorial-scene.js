@@ -45,7 +45,7 @@
     t = D.clamp(t, 0, D.T);
     const ci = chapters.findIndex((c) => t >= c.t0 && t < c.t1);
     const cur = chapters[ci];
-    lbl.textContent = cur ? `${String(cur.num).padStart(2, '0')} ${cur.title}` : 'CK-001 · A → Z';
+    lbl.textContent = cur ? `${String(cur.num).padStart(2, '0')} ${cur.title}` : (D.RAIL_LABEL || 'CK-001 · A → Z');
     segs.forEach((s, i) => { const c = chapters[i]; s.style.width = `${(100 * D.clamp((t - c.t0) / (c.t1 - c.t0))).toFixed(3)}%`; });
     D.applyVis(rail, D.vis(t, chapters[0].t0 - 0.4, chapters[chapters.length - 1].t1 - 0.2, 0.4, 0.4), 0);
 

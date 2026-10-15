@@ -90,10 +90,10 @@ try {
         if (kindIn === 'focus') {
           const hl = [...document.querySelectorAll('.file .ln.hl')].filter((n) => n.closest('.el').style.display !== 'none');
           if (!hl.length) out.focus.push('no highlighted line');
-          hl.forEach((n) => { if (op(n) < 0.95) out.focus.push(`cited line at opacity ${op(n).toFixed(2)}`); const kids = [...n.parentElement.querySelectorAll('.ln')].filter((x) => x !== n); kids.forEach((x) => { if (op(x) > 0.5) out.focus.push(`other line "${x.textContent.slice(0, 20)}" at opacity ${op(x).toFixed(2)}`); }); });
+          hl.forEach((n) => { if (op(n) < 0.95) out.focus.push(`cited line at opacity ${op(n).toFixed(2)}`); const kids = [...n.parentElement.querySelectorAll('.ln')].filter((x) => !x.classList.contains('hl')); kids.forEach((x) => { if (op(x) > 0.5) out.focus.push(`other line "${x.textContent.slice(0, 20)}" at opacity ${op(x).toFixed(2)}`); }); });
         }
         if (kindIn === 'recap-blank' || kindIn === 'recap-done') {
-          const spans = [...document.querySelectorAll('.recap .ans span')];
+          const spans = [...document.querySelectorAll('.recap .ans span')].filter((x) => getComputedStyle(x.closest('.el')).display !== 'none');
           if (!spans.length) out.reveal.push('no recap answers on screen');
           spans.forEach((x) => { const o = op(x); if (kindIn === 'recap-blank' ? o >= 0.05 : o < 0.95) out.reveal.push(`answer "${x.textContent.slice(0, 20)}" at opacity ${o.toFixed(2)}`); });
         }
