@@ -15,3 +15,6 @@ export function kitDir() {
 
 /** Import the kit's shared module (config schema, project loader, timeline evaluator). */
 export const kitModule = () => import(pathToFileURL(path.join(kitDir(), 'tutorial-project.mjs')).href);
+
+/** Import any other ES module of the kit by file name (e.g. make-subtitles.mjs). */
+export const kitFile = (name) => import(pathToFileURL(path.join(kitDir(), name)).href);
