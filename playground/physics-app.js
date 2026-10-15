@@ -1,3 +1,155 @@
+globalThis.LEVER = (function () {
+// Lever on the anatomy kit: one moment model tilts a beam that rests on a wedge riding two rails.
+const F1 = 20, F2 = 10, X1 = -24, X2 = 24, REST = -8, LIM = 0.16, TOL = 0.03;
+const TOP = 4.8, DECK = 9.5, ZB = 18.6, BH = 3.6, DY = 4.2, DISC = 2.15, CAP = 1.2, DISC_R = 3.8;
+const RAILS = [-11.5, 8.5];
+const STACKS = [[X1, 4], [X2, 2]]; // x, equal discs: F1 = 2 * F2, so d2 = 2 * d1 balances
+// Painter's order: a part sits above earlier layers; depth only orders parts inside one layer.
+const LAYER = { foot: 0, plate: 1, fitting: 2, screw: 3, bush: 4, deck: 5, upper: 6, beam: 7, load: 8 };
+function model(xf) {
+  const d1 = xf - X1, d2 = X2 - xf;
+  const M1 = F1 * d1 * 0.01, M2 = F2 * d2 * 0.01, net = M1 - M2;
+  return { d1, d2, M1, M2, net, theta: LIM * Math.tanh(net / 3.5), balanced: Math.abs(net) < TOL };
+}
+function readout(m) {
+  const a = m.M1.toFixed(1), b = m.M2.toFixed(1);
+  if (m.balanced) return `M₁=${a} == M₂=${b} N·m`;
+  return m.theta > 0 ? `Lệch trái · M₁=${a}>${b}` : `Lệch phải · M₁=${a}<${b}`;
+}
+const turn = (x, z, xf, th) => [ // rotates (x, z) about the fulcrum apex (xf, ZB) in the x-z plane
+  xf + (x - xf) * Math.cos(th) - (z - ZB) * Math.sin(th),
+  ZB + (x - xf) * Math.sin(th) + (z - ZB) * Math.cos(th)
+];
+const beamPoly = (xf, th) =>
+  [[-40, ZB], [40, ZB], [40, ZB + BH], [-40, ZB + BH]].map(([x, z]) => turn(x, z, xf, th));
+const frameOf = (half) => ({ o: [0, half, 0], a: [0, -1, 0], u: [1, 0, 0], v: [0, 0, 1] }); // along y
+const mean = (poly, axis) => poly.reduce((sum, p) => sum + p[axis], 0) / poly.length;
+const box = (name, x, y, w, d, z, h, tone, layer, r = 0.3) =>
+  ({ name, plan: { x, y, w, d, r }, z, h, tone, layer, at: [x + w / 2, y + d / 2, z + h / 2] });
+const cyl = (name, x, y, r, z, h, tone, layer) =>
+  ({ name, cyl: [x, y, r, z, h], tone, layer, at: [x, y, z + h / 2] });
+const prism = (name, poly, half, tone, layer) =>
+  ({ name, poly, half, tone, layer, at: [mean(poly, 0), 0, mean(poly, 1)] });
+
+function loadParts({ xf, theta: th }) { // discs ride the beam: axis = beam normal, seated on its top
+  const n = [-Math.sin(th), 0, Math.cos(th)], u = [Math.cos(th), 0, Math.sin(th)];
+  return STACKS.flatMap(([x, count], s) => {
+    const [sx, sz] = turn(x, ZB + BH, xf, th);
+    const F = { o: [sx, 0, sz], a: n, u, v: [0, 1, 0] };
+    const slice = (name, s0, s1, r, tone, m = (s0 + s1) / 2) => ({
+      name, disc: [s0, s1, r, F], tone, layer: "load", at: [sx + n[0] * m, 0, sz + n[2] * m]
+    });
+    const discs = Array.from({ length: count }, (_, i) =>
+      slice(`lever.mass.${s}${i + 1}`, i * DISC, (i + 1) * DISC, DISC_R, "mid"));
+    return [...discs, slice(`lever.cap.${s}`, count * DISC, count * DISC + CAP, 1.3, "hi")];
+  });
+}
+
+function baseParts() {
+  return [
+    box("base.plate", -76, -26, 152, 52, 1.8, 3, "mid", "plate", 2.4),
+    box("base.ruler", -66, 20.4, 132, 5.2, TOP, 1.8, "mid", "fitting"),
+    box("base.label", -18, -22.5, 36, 8, TOP, 0.7, "mid", "fitting"),
+    ...[-14, 14].map((x, i) =>
+      cyl(`base.label-screw.${i + 1}`, x, -18.5, 0.65, TOP + 0.7, 0.55, "hi", "screw")),
+    ...[[-1, -1], [1, -1], [-1, 1], [1, 1]].flatMap(([sx, sy], i) => [ // foot, washer, screw per corner
+      box(`stand.foot.${i + 1}`, sx * 60 - 6, sy * 14 - 4, 12, 8, 0, 1.8, "lo", "foot", 0.4),
+      cyl(`base.washer.${i + 1}`, sx * 64, sy * 16, 2.05, TOP, 0.55, "mid", "fitting"),
+      cyl(`base.screw.${i + 1}`, sx * 64, sy * 16, 1.2, TOP + 0.55, 0.9, "hi", "screw")
+    ]),
+    ...RAILS.flatMap((y, i) => [
+      box(`base.rail.${i + 1}`, -62, y, 124, 3, TOP, 1.4, "mid", "fitting", 0.2),
+      ...[-66, 62].flatMap((x) => [
+        box(`base.stop.${i}${x}`, x, y, 4, 3, TOP, 2.6, "mid", "fitting", 0.15),
+        cyl(`base.stop-screw.${i}${x}`, x + 2, y + 1.5, 0.7, TOP + 2.6, 0.7, "hi", "screw")
+      ])
+    ])
+  ];
+}
+
+function carriageParts({ xf, theta: th }) {
+  return [
+    ...RAILS.map((y, i) => box(`lever.bush.${i + 1}`, xf - 7, y, 14, 3, TOP + 1.4, 1.5, "mid", "bush", 0.15)),
+    box("lever.deck", xf - 8, -12, 16, 24, DECK - 1.8, 1.8, "mid", "deck"),
+    box("lever.knob-neck", xf - 1.4, 12, 2.8, 2, DECK - 1.8, 1.8, "mid", "upper", 0.4),
+    cyl("lever.knob", xf, 16.6, 2.6, DECK - 1.8, 4, "mid", "upper"),
+    ...[-6.5, 6.5].map((dx, i) => cyl(`lever.bolt.${i + 1}`, xf + dx, -9, 1, DECK, 0.8, "hi", "upper")),
+    prism("lever.wedge", [[xf - 8, DECK], [xf + 8, DECK], [xf, ZB]], 5, "hi", "upper"),
+    prism("lever.beam", beamPoly(xf, th), DY, "hi", "beam")
+  ];
+}
+const partsOf = (state) => [...baseParts(), ...carriageParts(state), ...loadParts(state)];
+const rankOf = (k, P, part) => LAYER[part.layer] * 1e4 + k.depthOf(part.at, P); // the painter's key
+const nf = (tone) => ({ tone, className: "nf" });
+const INSET = { x: -68, y: -16, w: 136, d: 32, r: 1.4 };
+const pair = (k, minor, major) => k.lineSvg(minor, nf("lo")) + k.lineSvg(major, nf("mid"));
+function ticks(k, P, { xf, theta }) {
+  const ruler = k.sideTicks(-60, 60, 4, 4, 25.6, TOP + 1.8, [1.15, 1.9], P), beam = { lo: [], hi: [] };
+  for (let x = -36; x <= 36; x += 4) {
+    const major = x % 8 === 0, [bx, bz] = turn(x, ZB + BH, xf, theta); // from the beam's near edge
+    beam[major ? "hi" : "lo"].push(k.segment([bx, DY - (major ? 1.45 : 0.85), bz], [bx, DY, bz], P));
+  }
+  return { ruler: pair(k, ruler.minor, ruler.major), beam: pair(k, beam.lo.join(""), beam.hi.join("")) };
+}
+function detail(k, P, part, state, mark) {
+  const at = (x, y, z) => k.iso([x, y, z], P);
+  if (part.name === "base.plate") return k.lineSvg(k.planOutline(INSET, TOP + 0.02, P, 4), nf("faint"));
+  if (part.name === "base.ruler")
+    return mark.ruler + k.dotsSvg([-62, 62].map((x) => at(x, 25.6, TOP + 1.8)), { size: 0.7, tone: "hi" });
+  if (part.name === "lever.beam") return mark.beam;
+  if (part.name === "lever.deck") {
+    const holes = [-9.5, 9.5].flatMap((y) => [-5, 5].map((x) => at(state.xf + x, y, DECK)));
+    return k.dotsSvg(holes, { size: 0.55, tone: "mid" });
+  }
+  if (part.name !== "base.label") return "";
+  const rules = [-12, -4, 4].map((x) => k.lineOnTop([x, -19.2], [x + 5, -19.2], TOP + 0.78, P)).join("");
+  const text = k.faceTextSvg(k.topMatrix([0, -18.6], TOP + 0.78, P), "1:2",
+    { size: 2.4, tone: "mid", anchor: "middle" });
+  return k.lineSvg(rules, { ...nf("faint"), free: true }) + text;
+}
+function draw(k, P, part, state, mark) {
+  const paths = part.poly ? k.prismOf(frameOf(part.half), part.poly, 0, 2 * part.half, P)
+    : part.disc ? k.disc(...part.disc, P)
+    : part.cyl ? k.cylinder(...part.cyl, P, 18)
+    : k.slabOf(part.plan, part.z, part.h, P, 4);
+  const solid = { lit: part.name === `lever.${state.accent}`, tone: part.tone,
+    halo: part.name === "base.plate", inner: detail(k, P, part, state, mark) };
+  return k.groupSvg(k.solidSvg(paths, solid), { "data-name": part.name });
+}
+function frame(k) {
+  const pts = [[-78, -28, 0], [78, 28, 0], [-78, 28, 30], [78, -28, 30]];
+  for (const xf of [-20, REST, 15]) {
+    const state = { xf, theta: model(xf).theta };
+    beamPoly(xf, state.theta).forEach(([x, z]) => pts.push([x, -DY, z], [x, DY, z]));
+    loadParts(state).forEach(({ at, disc: [, , r] }) =>
+      pts.push(at.map((c) => c - r), at.map((c) => c + r))); // a cube per disc sizes the view
+  }
+  const P = k.fitProjection(pts, 400, 320, { pad: 42, azimuth: 45, elevation: 30 });
+  return { P, pts, S: P.scale * Math.sqrt(1.6) };
+}
+const drawn = (k, P, state) => {
+  const mark = ticks(k, P, state);
+  return partsOf(state).map((part) =>
+    ({ part, svg: draw(k, P, part, state, mark), key: rankOf(k, P, part) }));
+};
+const markup = (k, P, state) =>
+  drawn(k, P, state).sort((a, b) => a.key - b.key).map((d) => d.svg).join("");
+const shapeOf = (A, part, meta) =>
+  part.poly ? A.prism(frameOf(part.half), part.poly, 0, 2 * part.half, meta)
+    : part.disc ? A.disc(part.disc[3], part.disc[0], part.disc[1], part.disc[2], meta)
+    : part.cyl ? A.cylinder(...part.cyl, meta)
+    : A.slab(part.plan, part.z, part.h, meta, 4);
+function contribute(R, k, A, P, state) { // records each part under markup()'s own sort key
+  for (const { part, svg, key } of drawn(k, P, state)) {
+    const shapes = [R.solid(shapeOf(A, part, { name: part.name }))];
+    R.put({ name: part.name, at: part.at, key, svg, shapes });
+  }
+}
+const restFulcrum = REST, deckZ = DECK;
+
+return { model, readout, frame, markup, contribute, restFulcrum, deckZ };
+})();
+
 /*
  * 5 Physics Figures Definitions (Hairline 2:1 Axonometric Standard)
  * Modularized Architecture - Auto-bundled
@@ -8,183 +160,57 @@ if (typeof HL !== "undefined" && HL.inject) {
 }
 
 const PHYSICS_FIGURES = [
-/*
- * 1. Lever & Fulcrum (Đòn Bẩy & Điểm Tựa - Định Luật Đòn Bẩy Acsimet)
- * Physical Concept: Cân bằng mô-men lực: M₁ = F₁ · d₁ = M₂ = F₂ · d₂
- */
-
 {
   id: "physics-lever",
   title: "1. Đòn Bẩy & Điểm Tựa (Lever & Fulcrum)",
   concept: "Quy tắc đòn bẩy: F₁ · d₁ = F₂ · d₂ (Cân bằng mô-men lực)",
-  means: "Di chuột ngang để dịch chuyển vị trí điểm tựa nêm: thanh đòn nghiêng mượt mà theo độ lệch mô-men. Khi cánh tay đòn đạt đúng tỉ lệ 2:1 (d₂ = 2d₁), đòn bẩy thăng bằng tuyệt đối, kim chỉ tâm kích hoạt trạng thái cân bằng.",
+  means:
+    "Di chuột ngang để dịch điểm tựa nêm: thanh đòn nghiêng theo độ lệch mô-men. "
+    + "Khi d₂ = 2d₁ (tải trái nặng gấp đôi tải phải), thanh đòn nằm ngang, "
+    + "hai mô-men bằng nhau và chính thanh đòn sáng lên báo cân bằng.",
   rules: [1, 2, 4, 6, 9],
-  range: [-20, -8.0, 15],
+  range: [-20, -8, 15],
   mount({ stage, svg, read }, initialV) {
     const bag = HL.disposer();
-    HL.cam = HL.Cam;
-    const C = HL.cam(45, 0.5, 3.45);
-    HL.fit(C, [[-42, -14, 0], [42, 14, 28]], 200, 156);
-    const P = HL.proj(C), front = HL.facing(C);
-
-    function circAt(cx, cy, R, n = 20) {
-      const out = [];
-      for (let k = 0; k < n; k++) {
-        const a = (k / n) * Math.PI * 2;
-        const ca = Math.cos(a), sa = Math.sin(a);
-        out.push({ u: cx + R * ca, v: cy + R * sa, nu: ca, nv: sa });
-      }
-      return out;
-    }
-
-    // 1. Cast-Iron Laboratory Balance Bed (Z: 0 to 2.6)
-    const bedSol = HL.solid(svg);
-    const [bedO, bedI] = HL.rings(-42, -13, 42, 13, 2.4, 0.6);
-    HL.put(bedSol, HL.prism(P, front, bedO, bedI, 0, 2.6));
-
-    // Longitudinal guide rail & graduation ticks on bed (Z = 2.65)
-    let bedLoD = HL.seg(P(-36, 0, 2.65), P(36, 0, 2.65));
-    let bedHiD = "";
-    for (let gx = -24; gx <= 24; gx += 4) {
-      const s = HL.seg(P(gx, -2.6, 2.65), P(gx, 2.6, 2.65));
-      if (gx === -8 || gx === 0) bedHiD += s;
-      else bedLoD += s;
-    }
-    HL.mk("path", { d: bedLoD, class: "lo nf" }, svg);
-    HL.mk("path", { d: bedHiD, class: "hi nf" }, svg);
-
-    // 2. Stepped 3D Pedestal + Knife-Edge Prism Fulcrum
-    const pedSol = HL.solid(svg);
-    const fulcrumGroup = HL.mk("g", {}, svg);
-    const fulcrumHull = HL.mk("path", { class: "sil" }, fulcrumGroup);
-    const fulcrumCr = HL.mk("path", { class: "lo nf" }, fulcrumGroup);
-    const fulcrumZeroMark = HL.mk("path", { class: "hi nf" }, fulcrumGroup);
-
-    // 3. Hanging Brass Calibration Weights & Suspension Hooks (hooks drawn AFTER weights so wire connects to top center)
-    const load1Sol = HL.solid(svg);
-    const load2Sol = HL.solid(svg);
-    const hooksPath = HL.mk("path", { class: "sil nf" }, svg);
-    const hook1Dot = HL.mk("circle", { r: 1.5, class: "dot m" }, svg);
-    const hook2Dot = HL.mk("circle", { r: 1.5, class: "dot m" }, svg);
-
-    // 4. Tilting Balance Beam & Plumb Needle
-    const beamHalfL = 36.0, beamW = 5.2, beamH = 2.6;
-    const beamGroup = HL.mk("g", {}, svg);
-    const beamSide = HL.mk("path", { class: "sil" }, beamGroup);
-    const beamTop = HL.mk("path", { class: "sil" }, beamGroup);
-    const beamTicks = HL.mk("path", { class: "lo nf" }, beamGroup);
-    const plumbNeedle = HL.mk("path", { class: "lo nf" }, beamGroup);
-    const plumbBob = HL.mk("circle", { r: 1.6, class: "dot" }, beamGroup);
-
-    const spXf = HL.spring(initialV != null ? initialV : -8.0, { k: 140, c: 15 });
-    const spTheta = HL.spring(0, { k: 90, c: 14 });
-    let lastKey = "";
-
-    function draw() {
-      const xf = spXf.x, th = spTheta.x;
-      const key = `${HL.r2(xf)}:${HL.r2(th)}`;
-      if (key === lastKey) return;
-      lastKey = key;
-
-      // A. Stepped Pedestal Base (Z: 2.6 to 8.0) + 3D Knife-Edge Prism (Z: 8.0 to 18.2)
-      const [pedO, pedI] = HL.rings(xf - 5.0, -5.8, xf + 5.0, 5.8, 1.2, 0.4);
-      HL.put(pedSol, HL.prism(P, front, pedO, pedI, 2.6, 8.0));
-
-      const apexZ = 18.2;
-      const fBL0 = P(xf - 3.8, -4.8, 8.0), fBL1 = P(xf - 3.8, 4.8, 8.0);
-      const fBR0 = P(xf + 3.8, -4.8, 8.0), fBR1 = P(xf + 3.8, 4.8, 8.0);
-      const fAp0 = P(xf, -4.8, apexZ), fAp1 = P(xf, 4.8, apexZ);
-      fulcrumHull.setAttribute("d", HL.poly(HL.hull([fBL0, fBR0, fBR1, fBL1, fAp0, fAp1])));
-      fulcrumCr.setAttribute("d", HL.seg(fBL1, fAp1) + HL.seg(fBR1, fAp1) + HL.seg(fAp0, fAp1));
-      fulcrumZeroMark.setAttribute("d", HL.seg(P(xf, 4.8, 12.5), fAp1));
-
-      // B. Tilting Beam around (xf, 0, apexZ + beamH/2)
-      const cosT = Math.cos(th), sinT = Math.sin(th);
-      const sMin = -beamHalfL - xf, sMax = beamHalfL - xf;
-      const beamWorld = (s, y, zRel) => [
-        xf + s * cosT - zRel * sinT,
-        y,
-        apexZ + beamH / 2 + s * sinT + zRel * cosT
-      ];
-      const beamPt = (s, y, zRel) => P(...beamWorld(s, y, zRel));
-
-      const b0 = beamPt(sMin, -beamW / 2, -beamH / 2), b1 = beamPt(sMax, -beamW / 2, -beamH / 2);
-      const b2 = beamPt(sMax, beamW / 2, -beamH / 2), b3 = beamPt(sMin, beamW / 2, -beamH / 2);
-      const t0 = beamPt(sMin, -beamW / 2, beamH / 2), t1 = beamPt(sMax, -beamW / 2, beamH / 2);
-      const t2 = beamPt(sMax, beamW / 2, beamH / 2), t3 = beamPt(sMin, beamW / 2, beamH / 2);
-
-      const endFace = th < 0 ? HL.poly([b2, b1, t1, t2]) : HL.poly([b3, b0, t0, t3]);
-      beamSide.setAttribute("d", HL.poly([b3, b2, t2, t3]) + endFace);
-      beamTop.setAttribute("d", HL.poly([t0, t1, t2, t3]));
-
-      let tickD = "";
-      for (let s = -32; s <= 32; s += 4) {
-        tickD += HL.seg(beamPt(s - xf, -beamW / 2 + 0.6, beamH / 2), beamPt(s - xf, beamW / 2 - 0.6, beamH / 2));
-      }
-      beamTicks.setAttribute("d", tickD);
-
-      const plumbBase = beamPt(0, 0, beamH / 2);
-      const plumbTip = beamPt(0, 0, beamH / 2 + 6.8);
-      plumbNeedle.setAttribute("d", HL.seg(plumbBase, plumbTip));
-      HL.place(plumbBob, plumbTip);
-
-      // C. Hanging Brass Weights suspended by visible vertical hooks below the beam
-      const s1 = -24.0 - xf, s2 = 24.0 - xf;
-      const w1Top = beamWorld(s1, 0, -beamH / 2);
-      const w2Top = beamWorld(s2, 0, -beamH / 2);
-      const z1Top = w1Top[2] - 4.8, z2Top = w2Top[2] - 4.8;
-
-      HL.put(load1Sol, HL.prism(P, front, circAt(w1Top[0], 0, 4.4, 20), circAt(w1Top[0], 0, 3.8, 20), z1Top - 6.6, z1Top));
-      HL.put(load2Sol, HL.prism(P, front, circAt(w2Top[0], 0, 3.8, 20), circAt(w2Top[0], 0, 3.2, 20), z2Top - 4.4, z2Top));
-
-      const p1Top = P(...w1Top), p1Bot = P(w1Top[0], 0, z1Top);
-      const p2Top = P(...w2Top), p2Bot = P(w2Top[0], 0, z2Top);
-      hooksPath.setAttribute("d", HL.seg(p1Top, p1Bot) + HL.seg(p2Top, p2Bot));
-      HL.place(hook1Dot, p1Bot);
-      HL.place(hook2Dot, p2Bot);
-
-      // D. Balance & Readout
-      const m1Torque = 20.0 * Math.abs(-24.0 - xf) * 0.01;
-      const m2Torque = 10.0 * Math.abs(24.0 - xf) * 0.01;
-      const isBalanced = Math.abs(m1Torque - m2Torque) < 0.08;
-
-      beamTop.classList.toggle("hi", isBalanced);
-      plumbNeedle.classList.toggle("hi", isBalanced);
-
-      const t1Str = m1Torque.toFixed(1), t2Str = m2Torque.toFixed(1);
-      if (isBalanced) read.textContent = `M₁=${t1Str} == M₂=${t2Str} N·m`;
-      else if (th > 0) read.textContent = `Lệch trái · M₁=${t1Str}>${t2Str}`;
-      else read.textContent = `Lệch phải · M₁=${t1Str}<${t2Str}`;
-    }
-
-    function setFulcrumX(targetX) {
-      const clampedX = HL.clamp(targetX, -20, 15);
-      spXf.t = clampedX;
-      const netTorque = 20.0 * (clampedX + 24) * 0.01 - 10.0 * (24 - clampedX) * 0.01;
-      const targetAngle = HL.clamp((netTorque / 1.8) * 0.16, -0.16, 0.16);
-      spTheta.t = Math.abs(netTorque) < 0.08 ? 0.0 : targetAngle;
+    const k = globalThis.AK;
+    const L = globalThis.LEVER;
+    svg.setAttribute("class", "iso iso-svg");
+    svg.setAttribute("data-theme", "light");
+    const view = L.frame(k);
+    const C = HL.cam(45, 0.5, view.S); // the drawing's camera: pointer and picture share one projection
+    HL.fit(C, view.pts, 200, 160);
+    const root = HL.mk("g", {}, svg);
+    const sp = HL.spring(initialV != null ? initialV : L.restFulcrum, { k: 140, c: 15 });
+    let last = "";
+    const paint = () => {
+      const posed = L.model(sp.x);
+      read.textContent = L.readout(posed);
+      const accent = posed.balanced ? "beam" : "wedge"; // lit: the beam at balance, else the wedge
+      const key = `${HL.r2(sp.x)}:${accent}`;
+      if (key === last) return;
+      last = key;
+      root.innerHTML = L.markup(k, view.P, { xf: sp.x, theta: posed.theta, accent });
+    };
+    const aim = (target) => {
+      sp.t = HL.clamp(Number(target), -20, 15);
       reg.wake();
-    }
-
-    function aim(pt) {
-      if (!pt) { setFulcrumX(-8.0); return; }
-      const [wx, wy] = HL.unproj(C, pt[0], pt[1], 14);
-      setFulcrumX((wx - wy) * 0.65);
-    }
-
-    const reg = HL.register(stage, dt => {
-      const m1 = HL.stepS(spXf, dt);
-      const m2 = HL.stepS(spTheta, dt);
-      draw();
-      return m1 || m2;
+    };
+    // Pointer column -> fulcrum on the rail (y = 0, deck height); the screen's vertical axis is ignored.
+    const onRail = (sx) => {
+      const a = HL.unproj(C, sx, 0, L.deckZ), b = HL.unproj(C, sx, 1, L.deckZ);
+      return a[0] + ((b[0] - a[0]) * -a[1]) / (b[1] - a[1]);
+    };
+    const point = (pt) => aim(pt ? onRail(pt[0]) : L.restFulcrum);
+    const reg = HL.register(stage, (dt) => {
+      const moving = HL.stepS(sp, dt);
+      paint();
+      return moving;
     });
-
     bag.add(reg.unregister);
-    bag.add(HL.pointer(stage, { move: aim, down: aim, leave: () => aim(null) }));
+    bag.add(HL.pointer(stage, { move: point, down: point, leave: () => point(null) }));
     bag.add(() => svg.replaceChildren());
-    draw();
-
-    return { set(v) { setFulcrumX(Number(v)); }, destroy: bag.dispose };
+    paint();
+    return { set: aim, destroy: bag.dispose };
   }
 },
 /*

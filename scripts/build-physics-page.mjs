@@ -1,9 +1,18 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
+import { ISO_CSS } from '../vendor/anatomy/kit/iso-kit.mjs';
 
 const ROOT = process.cwd();
-const kernel = readFileSync(path.join(ROOT, '../.agents/skills/hairline-create/kernel.js'), 'utf8');
+const kernelPath = process.env.HAIRLINE_KERNEL || path.join(ROOT, '../.agents/skills/hairline-create/kernel.js');
+const kernel = readFileSync(kernelPath, 'utf8');
 const appJs = readFileSync(path.join(ROOT, 'playground/physics-app.js'), 'utf8');
+const kitJs = 'globalThis.AK = (function () {\n'
+  + readFileSync(path.join(ROOT, 'vendor/anatomy/kit/iso-kit.mjs'), 'utf8').replace(/^export /gm, '').replace(/<\/script/gi, '<\\/script')
+  + '\nreturn { fitProjection, slabOf, cylinder, solidSvg, lineSvg, dotsSvg, sideTicks, planOutline, segment, iso, cameraOf, depthOf, faceTextSvg, topMatrix, groupSvg, pathOf, lineOnTop };\n})();\n'
+  // lathe.mjs reuses names the kit declares, so it gets its own scope and only prismOf and disc join AK.
+  + 'Object.assign(globalThis.AK, (function () {\nconst { cameraOf, iso, pathOf } = globalThis.AK;\n'
+  + readFileSync(path.join(ROOT, 'vendor/anatomy/kit/lathe.mjs'), 'utf8').replace(/^import .*$/gm, '').replace(/^export /gm, '').replace(/<\/script/gi, '<\\/script')
+  + '\nreturn { prismOf, disc };\n})());\n';
 
 const html = `<!doctype html>
 <html lang="en">
@@ -77,6 +86,7 @@ const html = `<!doctype html>
   }
   .nav-btn:hover { color: var(--ink); border-color: var(--muted); }
   .nav-btn.active { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+` + ISO_CSS + `
 </style>
 </head>
 <body>
@@ -108,6 +118,9 @@ const html = `<!doctype html>
   <p id="rules" class="label"></p>
   <p id="error" role="alert" hidden></p>
 </main>
+<script id="anatomy-kit">
+` + kitJs + `
+</script>
 <script id="hl-kernel">
 ` + kernel + `
 </script>

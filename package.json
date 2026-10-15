@@ -22,7 +22,8 @@
     "sync:astra-pages": "node scripts/sync-astra-law-pages.mjs --write",
     "verify:astra-pages": "node scripts/sync-astra-law-pages.mjs --check",
     "analyze:ref": "node scripts/detect-scene-cuts.mjs && node scripts/extract-audio-waveform.mjs",
-    "export:video:60fps": "node scripts/export-60fps-video.mjs"
+    "export:video:60fps": "node scripts/export-60fps-video.mjs",
+    "audit:line-ends": "node scripts/check-hairline-line-ends.mjs"
   },
   "dependencies": {
     "@phosphor-icons/core": "^2.1.1",
