@@ -88,6 +88,9 @@ Câu hỏi mặc định ở bước 1 (đề xuất ghi đầu tiên):
    - Đặt mỗi clip vào lúc chương mở + 0,5 s. Đoạn nào còn dư dưới 0,3 s so với cuối chương thì script báo lỗi.
    - Nhạc đi qua `sidechaincompress` với voice làm key, voice được `apad` tới hết bài, cuối cùng `loudnorm` về −16 LUFS, true peak −1,5 dBFS.
 2. `node render-tutorial.mjs --aspect landscape --full`: khoảng 30 phút cho 3 phút video. Hai khổ render song song được, vì mỗi khổ ghi qua pipe riêng.
+   Nhanh hơn: chia shard (bản DC-01 có `--shard i/n` và `join-shards.mjs`). 6 shard (3 cho mỗi khổ) chạy song song mỗi shard vẫn
+   ~24 subframe/s, nên 5:34 phim render xong cả 2 khổ trong ~19 phút thay vì ~55 phút. Mối ghép chỉ ghép (concat `-c copy`), không encode lại;
+   kiểm khung ở đúng mỗi mối ghép. Script render phải tự thoát (`browser.close()` có hạn chờ rồi `process.exit`), vì Chrome headless có lúc treo khi đóng.
 3. Kiểm trên file thật, đủ cả 4 mục mới gọi là xong:
    - `ffmpeg -v error -i <mp4> -f null -` không in ra gì;
    - độ dài hình và tiếng khớp nhau;

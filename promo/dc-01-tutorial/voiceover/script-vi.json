@@ -1,0 +1,77 @@
+{
+ "voice_id": "ZsjEJaLQy3sgvwxicmDx",
+ "model_id": "eleven_v4",
+ "note": "One clip per chapter, read verbatim; text copied from plans/reports/dc01-tutorial-storyboard.md. Same voice and model as CK-001 (owner A/B 2026-10-14). window_s is filled from the warped timeline once the clips exist; a clip must be <= window_s - 0.8 s.",
+ "segments": [
+  {
+   "id": "title",
+   "text": "Xin chào, tôi là Jang. Đây là video thứ hai về repo DESIGN:OS 3D Blender. Lần này là DC-01, một robot để bàn có màn hình, nút bấm, pin và mạch điện. Video đi chi tiết hơn: hai mươi chín bản cơ khí, bốn lần chạy KiCad, và cả những chỗ chúng tôi đã sai.",
+   "window_s": 19.99
+  },
+  {
+   "id": "input",
+   "text": "Đầu vào là một tấm ảnh chụp và bốn tấm gen thêm: ba trăm sáu mươi độ, blueprint, exploded và catalog. Repo ghi mã hash của từng ảnh, nhưng chính file registry thừa nhận: các file đó chưa từng được chép về máy này. Một cái tên file không phải là bằng chứng. Các tấm gen còn mâu thuẫn nhau về số mảnh vỏ, số chân và dung lượng pin, nên danh sách chi tiết cơ khí thật mới là chuẩn.",
+   "window_s": 26.67
+  },
+  {
+   "id": "contract",
+   "text": "Hợp đồng viết trước: vỏ tám mươi nhân sáu mươi tư nhân chín mươi tư mi-li-mét, tường danh định hai phẩy bốn, tối thiểu hai mi-li-mét, mục đích vừa render vừa in. Và ghi rõ: đây là kích thước đề xuất, không phải đo từ ảnh. Tải thiết kế ba trăm năm mươi gam, hai tay không có động cơ.",
+   "window_s": 21.33
+  },
+  {
+   "id": "blockout",
+   "text": "Pass đầu tiên là blockout: mười hai mesh, thân cao chín mươi tư mi-li-mét, không có cạnh hở. Phải chạy ba lần thì khối mới đủ đúng để đi tiếp.",
+   "window_s": 14.22
+  },
+  {
+   "id": "ladder",
+   "text": "Rồi đến cơ khí. Cùng một camera, đây là bậc thang từ M02 đến M29. M02 trượt cổng ngay: tường vỏ trên chỉ còn bốn mươi sáu phần nghìn mi-li-mét. M19 có tai, có tay, nhưng trượt cả hình dạng lẫn lắp ghép: vỏ dưới đâm vào trụ đỡ bên hai phẩy sáu mi-li-mét khối. Từ M25 đến M27, vỏ trên mỏng ở đúng một chỗ: không phẩy bảy chín, một phẩy sáu ba, một phẩy bảy chín, vẫn dưới mức hai mi-li-mét. Chúng tôi không hạ tiêu chuẩn tường, mà sửa hình. M28 qua cổng hình dạng, nhưng bu lông mạch sạc chạm vào linh kiện. M29: hình dạng đạt, lắp ghép đạt, một nghìn chín trăm sáu mươi sáu cặp, không một va chạm.",
+   "window_s": 48
+  },
+  {
+   "id": "trap",
+   "text": "Có một cái bẫy đáng nhớ. Log chạy M19 kết thúc bằng agent OK, nhưng log kiểm tra lắp ghép của chính M19 là agent fail. Một bước chạy xong không có nghĩa là cổng đã qua. Phải đọc báo cáo của cổng.",
+   "window_s": 16
+  },
+  {
+   "id": "controls",
+   "text": "Nút bấm cũng vậy: lần chạy đầu thất bại ở miếng giữ phía sau nút, lần hai mới qua, với bốn chi tiết in.",
+   "window_s": 10.67
+  },
+  {
+   "id": "electronics",
+   "text": "Mạch điện làm bằng KiCad thật, phiên bản mười. Lần một, file schematic không mở được. Lần hai, tám mươi tư lỗi ERC. Lần ba, ERC sạch. Lần bốn, ERC không, DRC không, không đường nào chưa nối, không lệch giữa schematic và PCB. Năm lỗi được cố tình cài vào, và cả năm đều bị bắt. Nhưng chưa có mẫu thật nào, nên chế tạo và chạy bằng pin vẫn bị chặn.",
+   "window_s": 33.78
+  },
+  {
+   "id": "integration",
+   "text": "Ghép cơ khí và mạch: bản I06 qua hình dạng cả mười tám chi tiết, qua lắp ghép trong phạm vi khai báo, và qua tháo lắp ở mức lấy mẫu. Dây nối là đường cong thật trong Blender: hai mươi sáu kết nối, năm mươi tư đường cong, hai trăm năm mươi hai vật cản. Có một lần cổng báo PASS sai: bộ lấy mẫu bỏ sót một phía của khớp nối, khoảng cách thật là hai phẩy chín chín sáu mi-li-mét, dưới mức ba. Một kiểm tra độc lập đã bắt được.",
+   "window_s": 33.78
+  },
+  {
+   "id": "print",
+   "text": "Bộ kit in: lần đầu trượt ở khung mạch sạc và màng nút bấm. Lần ba, cả mười tám chi tiết qua cổng cuối: mười bảy chi tiết PETG và một màng TPU. Nhưng chưa có slicer, chưa có G-code, chưa in thật.",
+   "window_s": 21.33
+  },
+  {
+   "id": "present",
+   "text": "Đến phim. Bản D05 qua mọi cổng số, nhưng bị chê không mượt: một trăm hai mươi tư thế, năm tư thế một giây, rồi nhân khung lên ba mươi. D06 render lại một nghìn một trăm bảy mươi khung, năm trăm tám mươi chín trạng thái khác nhau. Render bằng GPU nhanh gấp ba nhưng có vệt sọc quanh kính mặt, nên bị loại.",
+   "window_s": 26.67
+  },
+  {
+   "id": "deliver",
+   "text": "Gói giao là một trang review chạy offline, sáu mươi lăm đường dẫn đều mở được. Trạng thái: demo số đã giao. Gia công: bị chặn. Mẫu vật lý: không có. Và độ giống ảnh gốc cũng chưa được chấp nhận.",
+   "window_s": 19.56
+  },
+  {
+   "id": "lessons",
+   "text": "Bài học từ DC-01. Một: agent OK của một bước không phải là kết quả của cổng. Hai: cổng cũng có thể sai, nên cần kiểm tra độc lập. Ba: một bước dọn dẹp tuỳ chọn đã làm hỏng mesh mạch sạc, may mà có checkpoint. Bốn: phim phải đếm số trạng thái khác nhau, không chỉ số khung hình.",
+   "window_s": 23.11
+  },
+  {
+   "id": "outro",
+   "text": "Toàn bộ DC-01 nằm trong repo DESIGN:OS 3D Blender, mã nguồn mở. Tôi là Jang, hẹn gặp lại ở bản build tiếp theo.",
+   "window_s": 18.95
+  }
+ ]
+}

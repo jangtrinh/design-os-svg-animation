@@ -35,6 +35,8 @@ def place(i):  # rotate the hero camera about the vertical axis through the mode
 
 r = sc.render; r.resolution_x, r.resolution_y = A['res']; r.resolution_percentage = 100
 r.image_settings.file_format = 'JPEG'; r.image_settings.quality = 92; r.film_transparent = False
+# Blender stamps render metadata (incl. the absolute .blend path) into every image; these files get published
+for k in [k for k in dir(r) if k.startswith('use_stamp')]: setattr(r, k, False)
 times = {}
 VT = (sc.view_settings.view_transform, sc.view_settings.look)
 for p in A['passes']:
