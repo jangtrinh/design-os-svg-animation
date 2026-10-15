@@ -1,0 +1,46 @@
+{
+ "slug": "robot-arm",
+ "title": "Robot arm — How we built it",
+ "lang": "vi",
+ "output": "robot-arm-tutorial",
+ "duration": 376,
+ "grid": {
+  "bpm": 135.0,
+  "db0": 0.654,
+  "measuredBy": "numpy onset comb on the_mountain-technology-562622.mp3 (DC-01, 2026-10-14): 135.00 BPM, 0 ms drift; same track"
+ },
+ "music": {
+  "credit": "Music: \"Technology\" by The_Mountain · Pixabay",
+  "file": "audio/the_mountain-technology-562622.mp3",
+  "bed": "audio/music-bed.wav",
+  "gain": 0.17,
+  "bedParams": {
+   "introBars": 12,
+   "bodyStart": 12,
+   "bodyEnd": 68,
+   "outroBar": 69,
+   "phrases": 25
+  }
+ },
+ "evidence": "data/evidence.js",
+ "timeline": [
+  "tutorial-timeline.js"
+ ],
+ "voiceover": {
+  "script": "voiceover/script-vi.json",
+  "clips": "voiceover/clips"
+ },
+ "approvals": {
+  "storyboard": "owner 2026-10-15: \"Ổn, gen voice\" (gate 1, AskUserQuestion)",
+  "script": "owner 2026-10-15: \"Ổn, gen voice\"; ch.7 keep first person \"chính tôi\""
+ },
+ "pedagogy": "v2",
+ "glossary": [
+  "servo",
+  "khớp",
+  "va chạm",
+  "cổng",
+  "bàn in",
+  "khung"
+ ]
+}

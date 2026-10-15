@@ -82,16 +82,18 @@
   const resolve = (EL, SENT) => {
     for (const spec of EL) {
       if (spec.at == null) continue;
-      const s = ref(SENT, spec.at, spec, 'at'), until = spec.until != null ? ref(SENT, spec.until, spec, 'until') : s;
+      const s = ref(SENT, spec.at, spec, 'at'), toEnd = spec.until === 'chapter';
+      const until = spec.until != null && !toEnd ? ref(SENT, spec.until, spec, 'until') : s;
       spec.t0 = s.t0 + (spec.delay || 0);
       if (spec.type === 'predict') {
         if (s.holdKind !== 'predict') throw new Error(`predict bound to "${s.id}" needs hold_s on the predict element`);
         spec.h0 = s.t1; spec.h1 = s.t1 + s.hold; spec.t1 = spec.h1 + 0.3;
       } else if (spec.type === 'recap') {
         if (!(s.hold > 0)) throw new Error(`recap bound to "${s.id}" needs a silent hold: set hold_s on that sentence in the script`);
-        spec.base = s.t1; spec.t1 = s.t1 + s.hold + 0.3;
-      } else spec.t1 = spec.dur != null ? spec.t0 + spec.dur : until.t1 + BUDGETS.tailS;
-      if (spec.focus) { spec.f0 = s.t0; spec.f1 = s.t1; }
+        // the card stays up while the voice reads the answers when `until` names that sentence
+        spec.base = s.t1; spec.t1 = Math.max(s.t1 + s.hold + 0.3, toEnd ? s.limit - BUDGETS.tailS : until !== s ? until.t1 + BUDGETS.tailS : 0);
+      } else spec.t1 = toEnd ? Math.max(s.limit - BUDGETS.tailS, s.t1) : spec.dur != null ? spec.t0 + spec.dur : until.t1 + BUDGETS.tailS;   // until: 'chapter' keeps the card up to the chapter's end
+      if (spec.focus) { spec.f0 = Math.max(s.t0, spec.t0); spec.f1 = Math.max(s.t1, spec.f0); }  // a delayed card cannot highlight before it lands
       if (spec.type === 'glossary') spec.itemT = spec.items.map((it) => (it[2] ? ref(SENT, it[2], spec, 'item at').t0 : null));
     }
     return EL;

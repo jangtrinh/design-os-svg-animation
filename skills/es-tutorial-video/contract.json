@@ -1,17 +1,17 @@
 {
-  "_sha256": "51d84803154cdc2452f715d7a96a3fcc3e88387efd4abb0fa5c4869a0a8363fe",
+  "_sha256": "6056c537c579cde530826ff8a53d5606b46058bc322dbc62f0545b732e9c7eb5",
   "generated_by": "scripts/build-tutorial-contract.mjs",
   "sources": {
     "promo/_tutorial-kit/capture-review-page.mjs": "a329167a70eed0c4",
     "promo/_tutorial-kit/join-shards.mjs": "096fbeaf5507cfc6",
     "promo/_tutorial-kit/make-subtitles.mjs": "0f85bcf476602b88",
-    "promo/_tutorial-kit/pedagogy-core.js": "c489ab0f1709446d",
+    "promo/_tutorial-kit/pedagogy-core.js": "eac26c0e2e84c149",
     "promo/_tutorial-kit/pedagogy-elements.js": "8334408c82d5ab6b",
     "promo/_tutorial-kit/render-tutorial.mjs": "bd38f9d4981b8a62",
     "promo/_tutorial-kit/tutorial-elements.js": "8e310166df4e1b9f",
     "promo/_tutorial-kit/tutorial-portrait-layout.js": "8bc0721da8ad9219",
     "promo/_tutorial-kit/tutorial-project.mjs": "5ceef3bf21cc210f",
-    "promo/_tutorial-kit/tutorial-scene.js": "a8222ecd082024f6",
+    "promo/_tutorial-kit/tutorial-scene.js": "fbd0b6d9ee1d1c61",
     "promo/_tutorial-kit/voiceover/mix-voiceover.mjs": "f9b1cc60673e9dca"
   },
   "config_file": "tutorial.config.json",

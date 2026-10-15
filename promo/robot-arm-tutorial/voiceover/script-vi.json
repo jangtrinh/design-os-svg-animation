@@ -1,0 +1,337 @@
+{
+ "voice_id": "ZsjEJaLQy3sgvwxicmDx",
+ "model_id": "eleven_v4",
+ "note": "Robot arm, pedagogy v2: one clip per sentence (voiceover/clips/<sentence id>.mp3). Text approved at owner gate 1 on 2026-10-15; storyboard.md has the chapter plan.",
+ "segments": [
+  {
+   "id": "title",
+   "sentences": [
+    {
+     "id": "ti1",
+     "text": "Xin chào, tôi là Jang.",
+     "text_en": "Hi, I'm Jang."
+    },
+    {
+     "id": "ti2",
+     "text": "Đây là video thứ ba về repo DESIGN:OS 3D Blender.",
+     "text_en": "This is the third video about the DESIGN:OS 3D Blender repo."
+    },
+    {
+     "id": "ti3",
+     "text": "Lần này là một cánh tay robot sáu servo, in 3D được.",
+     "text_en": "This time: a six-servo robot arm you can 3D print."
+    }
+   ]
+  },
+  {
+   "id": "glossary",
+   "sentences": [
+    {
+     "id": "g0",
+     "text": "Trước khi bắt đầu, sáu từ sẽ gặp lại nhiều lần.",
+     "text_en": "Before we start, six words you will hear again."
+    },
+    {
+     "id": "g1",
+     "text": "Servo là động cơ nhỏ quay tới đúng một góc được ra lệnh.",
+     "text_en": "A servo is a small motor that turns to the angle it is told."
+    },
+    {
+     "id": "g2",
+     "text": "Khớp là chỗ hai phần của cánh tay xoay quanh nhau.",
+     "text_en": "A joint is where two parts of the arm rotate around each other."
+    },
+    {
+     "id": "g3",
+     "text": "Va chạm là khi hai chi tiết chiếm cùng một chỗ, đo bằng mi-li-mét khối.",
+     "text_en": "A collision is two parts taking the same space, measured in cubic millimetres."
+    },
+    {
+     "id": "g4",
+     "text": "Cổng kiểm là một script tự động trả lời qua hoặc trượt.",
+     "text_en": "A gate is a script that answers pass or fail."
+    },
+    {
+     "id": "g5",
+     "text": "Bàn in là mặt bàn máy in 3D, nơi xếp các chi tiết để in một lượt.",
+     "text_en": "A plate is the printer bed where parts are laid out to print in one go."
+    },
+    {
+     "id": "g6",
+     "text": "Và khung hình là một tấm ảnh của phim; phim này chạy hai mươi tư khung mỗi giây.",
+     "text_en": "And a frame is one picture of the film; this film runs at twenty-four frames per second.",
+     "hold_s": 1.0
+    }
+   ]
+  },
+  {
+   "id": "input",
+   "sentences": [
+    {
+     "id": "in1",
+     "text": "Đầu vào lần này không phải ảnh, mà là một video lắp ráp dài năm mươi tám giây.",
+     "text_en": "This time the input is not a photo but a fifty-eight-second assembly video."
+    },
+    {
+     "id": "in2",
+     "text": "Tôi chọn nó làm bản gốc, và chỉ sửa một điều: bỏ hộp nguồn màu đen nằm riêng.",
+     "text_en": "I chose it as the baseline and changed one thing: remove the separate black power box."
+    }
+   ]
+  },
+  {
+   "id": "contract",
+   "sentences": [
+    {
+     "id": "co1",
+     "text": "Ba mươi tám chi tiết, trên năm bàn in: ba mươi hai bằng PETG, sáu bằng TPU dẻo.",
+     "text_en": "Thirty-eight parts on five plates: thirty-two in PETG, six in flexible TPU."
+    },
+    {
+     "id": "co2",
+     "text": "Bàn in hai trăm hai mươi mi-li-mét.",
+     "text_en": "The print bed is two hundred and twenty millimetres."
+    },
+    {
+     "id": "co3",
+     "text": "Và một yêu cầu không được hạ: cánh tay phải nâng hai trăm năm mươi gam trong nhiều phút.",
+     "text_en": "And one requirement that is not lowered: the arm must lift two hundred and fifty grams for several minutes.",
+     "hold_s": 1.0
+    }
+   ]
+  },
+  {
+   "id": "print",
+   "sentences": [
+    {
+     "id": "pr1",
+     "text": "Mỗi chi tiết được xoay sang hướng in ít phải chống đỡ nhất, rồi xếp lên bàn, cách nhau tám mi-li-mét.",
+     "text_en": "Each part is turned to the orientation that needs the least support, then laid on the bed eight millimetres apart."
+    },
+    {
+     "id": "pr2",
+     "text": "Cổng kiểm chạy tám trăm ba mươi sáu bước và không bước nào thất bại.",
+     "text_en": "The gate runs eight hundred and thirty-six checks and none fail."
+    }
+   ]
+  },
+  {
+   "id": "recap1",
+   "sentences": [
+    {
+     "id": "r1a",
+     "text": "Thử nhớ lại: đầu vào là gì, bao nhiêu chi tiết, và yêu cầu nào không được hạ?",
+     "text_en": "Try to recall: what was the input, how many parts, and which requirement is not lowered?",
+     "hold_s": 5
+    },
+    {
+     "id": "r1b",
+     "text": "Một video lắp ráp, ba mươi tám chi tiết, và tải hai trăm năm mươi gam.",
+     "text_en": "An assembly video, thirty-eight parts, and the two-hundred-fifty-gram load."
+    }
+   ]
+  },
+  {
+   "id": "motion",
+   "sentences": [
+    {
+     "id": "mo1",
+     "text": "Phim lắp ráp có hai trăm năm mươi hai cụm chi tiết và một trăm hai mươi mốt bước.",
+     "text_en": "The assembly film has two hundred and fifty-two units and one hundred and twenty-one steps."
+    },
+    {
+     "id": "mo2",
+     "text": "Các chi tiết gắn cùng một khớp được nhóm lại, để chúng di chuyển như một khối.",
+     "text_en": "Parts on the same joint are grouped so they move as one block."
+    }
+   ]
+  },
+  {
+   "id": "bug1",
+   "sentences": [
+    {
+     "id": "b1a",
+     "text": "Bản đầu có lỗi: đầu ra của khớp vai và khuỷu tới đích lệch tới một trăm mười mi-li-mét.",
+     "text_en": "The first version had a bug: the shoulder and elbow outputs arrived up to one hundred and ten millimetres off."
+    },
+    {
+     "id": "b1q",
+     "text": "Đoán xem: phải dựng lại mô hình, hay chỉ sửa đường chuyển động?",
+     "text_en": "Guess: rebuild the model, or only fix the motion path?"
+    },
+    {
+     "id": "b1b",
+     "text": "Chỉ sửa đường chuyển động, trên ba mươi bảy khung hình. Mô hình giữ nguyên.",
+     "text_en": "Only the motion path, on thirty-seven frames. The model stays the same."
+    }
+   ]
+  },
+  {
+   "id": "bug2",
+   "sentences": [
+    {
+     "id": "b2a",
+     "text": "Lần sau, chính tôi xem bản nháp và thấy hai chi tiết chồng lên nhau ở giây hai mươi tư.",
+     "text_en": "Later I watched the draft myself and saw two parts overlap at second twenty-four."
+    },
+    {
+     "id": "b2b",
+     "text": "Kiểm tra từng khung xác nhận: khung năm trăm tám mươi tám, hai mặt đâm vào nhau.",
+     "text_en": "A frame-by-frame check confirmed it: at frame five hundred and eighty-eight, two surfaces cut into each other."
+    },
+    {
+     "id": "b2c",
+     "text": "Bản render đang chạy bị dừng, và những khung đã render bị bỏ.",
+     "text_en": "The running render was stopped, and the frames already rendered were thrown away."
+    }
+   ]
+  },
+  {
+   "id": "bug3",
+   "sentences": [
+    {
+     "id": "b3a",
+     "text": "Sửa xong chỗ chờ, chi tiết được cho bay thẳng tới đích.",
+     "text_en": "With the waiting spot fixed, the part flew straight to its target."
+    },
+    {
+     "id": "b3q",
+     "text": "Đoán xem: đường thẳng có an toàn không?",
+     "text_en": "Guess: is the straight path safe?"
+    },
+    {
+     "id": "b3b",
+     "text": "Không. Nó cắt ngang vỏ servo thật.",
+     "text_en": "No. It cut across the real servo cases."
+    },
+    {
+     "id": "b3c",
+     "text": "Cách sửa: nhấc lên một trăm hai mươi mi-li-mét, đi ngang, rồi hạ thẳng xuống.",
+     "text_en": "The fix: lift one hundred and twenty millimetres, move across, then lower straight down."
+    }
+   ]
+  },
+  {
+   "id": "checks",
+   "sentences": [
+    {
+     "id": "ch1",
+     "text": "Rồi kiểm lại toàn bộ ba nghìn không trăm ba mươi mốt khung.",
+     "text_en": "Then all three thousand and thirty-one frames were checked again."
+    },
+    {
+     "id": "ch2",
+     "text": "Không còn va chạm nào với vỏ servo thật.",
+     "text_en": "No collision with the real servo cases remains."
+    }
+   ]
+  },
+  {
+   "id": "bug4",
+   "sentences": [
+    {
+     "id": "b4a",
+     "text": "Lỗi cuối nhỏ hơn: đầu ngón tay bị cắt khỏi khung hình.",
+     "text_en": "The last bug is smaller: a fingertip was cut out of the frame."
+    },
+    {
+     "id": "b4b",
+     "text": "Mở rộng khung tám phần trăm, giữ lại hai nghìn chín trăm ba mươi mốt khung cũ, chỉ render lại tám mươi chín khung.",
+     "text_en": "Widen the shot eight percent, keep two thousand nine hundred and thirty-one old frames, re-render only eighty-nine."
+    }
+   ]
+  },
+  {
+   "id": "recap2",
+   "sentences": [
+    {
+     "id": "r2a",
+     "text": "Thử nhớ lại: vì sao đi thẳng không được, và cách nào an toàn?",
+     "text_en": "Try to recall: why the straight path fails, and what is safe?",
+     "hold_s": 5
+    },
+    {
+     "id": "r2b",
+     "text": "Vì nó cắt qua vỏ servo. An toàn là nhấc lên, đi ngang, rồi hạ xuống.",
+     "text_en": "Because it cuts through a servo case. Safe is lift, move across, then lower."
+    }
+   ]
+  },
+  {
+   "id": "film",
+   "sentences": [
+    {
+     "id": "fi1",
+     "text": "Phim cuối dài hai phút sáu giây, ba nghìn không trăm hai mươi khung, giải mã trọn vẹn không lỗi.",
+     "text_en": "The final film runs two minutes six seconds, three thousand and twenty frames, and decodes fully without errors."
+    }
+   ]
+  },
+  {
+   "id": "limits",
+   "sentences": [
+    {
+     "id": "li1",
+     "text": "Cổng kiểm báo tám trăm ba mươi sáu bước đều qua.",
+     "text_en": "The gate reports all eight hundred and thirty-six checks passing."
+    },
+    {
+     "id": "liq",
+     "text": "Đoán xem: vậy đã in và dùng được chưa?",
+     "text_en": "Guess: so can it be printed and used now?"
+    },
+    {
+     "id": "li2",
+     "text": "Chưa. Cổng đó chạy với một spec mẫu, chưa phải spec của cánh tay, nên chưa kiểm độ dày tường.",
+     "text_en": "Not yet. That gate ran with a sample spec, not the arm's own, so wall thickness was not checked."
+    },
+    {
+     "id": "li3",
+     "text": "Tải hai trăm năm mươi gam chưa thử thật. Gia công vẫn bị chặn.",
+     "text_en": "The two-hundred-fifty-gram load is untested. Manufacture stays blocked."
+    }
+   ]
+  },
+  {
+   "id": "recap3",
+   "sentences": [
+    {
+     "id": "r3a",
+     "text": "Ba điều đáng nhớ.",
+     "text_en": "Three things to remember.",
+     "hold_s": 4.6
+    },
+    {
+     "id": "r3b",
+     "text": "Một, sửa đúng chỗ hỏng: đường chuyển động, không phải mô hình.",
+     "text_en": "One, fix what is broken: the motion path, not the model."
+    },
+    {
+     "id": "r3c",
+     "text": "Hai, đường thẳng không an toàn: nhấc, đi ngang, hạ.",
+     "text_en": "Two, a straight path is not safe: lift, move across, lower."
+    },
+    {
+     "id": "r3d",
+     "text": "Ba, qua chỉ có nghĩa trong phạm vi spec mà nó kiểm.",
+     "text_en": "Three, a pass only means something within the spec it checked."
+    }
+   ]
+  },
+  {
+   "id": "outro",
+   "sentences": [
+    {
+     "id": "ou1",
+     "text": "Toàn bộ cánh tay này nằm trong repo DESIGN:OS 3D Blender, mã nguồn mở.",
+     "text_en": "This whole arm lives in the open-source DESIGN:OS 3D Blender repo."
+    },
+    {
+     "id": "ou2",
+     "text": "Tôi là Jang, hẹn gặp lại.",
+     "text_en": "I'm Jang, see you next time."
+    }
+   ]
+  }
+ ]
+}
