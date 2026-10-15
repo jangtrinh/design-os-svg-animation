@@ -9,3 +9,5 @@ out/contact-*/
 out/*.log
 out/*.png
 out/check-*.jpg
+out/shards/
+out/render-shard-*.log

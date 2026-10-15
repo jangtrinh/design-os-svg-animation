@@ -70,17 +70,22 @@ if (args.includes('--beats')) {
 }
 
 if (args.includes('--full')) {
-  const sub = 4, fps = 60, total = Math.round(meta.T * fps) * sub;
-  const audio = path.join(OUT, 'tutorial-audio.wav');
-  const out = path.join(OUT, `dc-01-tutorial-${aspect}.mp4`);
+  const sub = 4, fps = 60, frames = Math.round(meta.T * fps), total = frames * sub;
+  // --shard i/n renders output frames [i*frames/n, (i+1)*frames/n) into out/shards/ (video only);
+  // join-shards.mjs concatenates them and muxes the audio. seek(t) is pure, so shards are independent.
+  const sh = args.includes('--shard') ? args[args.indexOf('--shard') + 1].split('/').map(Number) : null;
+  const [f0, f1] = sh ? [Math.floor(frames * sh[0] / sh[1]), Math.floor(frames * (sh[0] + 1) / sh[1])] : [0, frames];
+  const audio = sh ? '' : path.join(OUT, 'tutorial-audio.wav');
+  if (sh) fs.mkdirSync(path.join(OUT, 'shards'), { recursive: true });
+  const out = sh ? path.join(OUT, 'shards', `${aspect}-${sh[0]}.mp4`) : path.join(OUT, `dc-01-tutorial-${aspect}.mp4`);
   const t0 = Date.now();
   await run(FFMPEG, ['-y', '-f', 'image2pipe', '-vcodec', 'mjpeg', '-r', String(fps * sub), '-i', '-',
-    ...(fs.existsSync(audio) ? ['-i', audio] : []),
+    ...(audio && fs.existsSync(audio) ? ['-i', audio] : []),
     '-vf', `tmix=frames=${sub}:weights='1 1 1 1',fps=${fps}`, '-c:v', 'libx264', '-preset', 'slow', '-crf', '16',
     '-pix_fmt', 'yuv420p', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-colorspace', 'bt709',
-    ...(fs.existsSync(audio) ? ['-c:a', 'aac', '-b:a', '256k', '-shortest'] : []), '-movflags', '+faststart', out],
+    ...(audio && fs.existsSync(audio) ? ['-c:a', 'aac', '-b:a', '256k', '-shortest'] : []), '-movflags', '+faststart', out],
   async (p) => {
-    for (let i = 0; i < total; i++) {
+    for (let i = f0 * sub; i < f1 * sub; i++) {
       // subframes sample the shutter interval centred on each output frame
       const buf = await shot(Math.min(meta.T, (i + 0.5) / (fps * sub)));
       if (!p.stdin.write(buf)) await new Promise((r) => p.stdin.once('drain', r));
@@ -90,4 +95,6 @@ if (args.includes('--full')) {
   });
   console.log(`video -> ${out} in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
 }
-await browser.close();
+// a headless Chrome can hang on close; the video is already written, so bound the wait and exit explicitly
+await Promise.race([browser.close(), new Promise((r) => setTimeout(r, 10000))]);
+process.exit(0);
