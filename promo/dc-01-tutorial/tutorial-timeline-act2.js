@@ -65,5 +65,5 @@
   // outro
   el({ type: 'repo', t0: bar(177.3), t1: T + 1, rect: [220, 200, 1480, 560], p: [48, 470, 984, 820],
        cmd: 'python3 scripts/native-pipeline.py run builds/desktop-companion/blockout-pipeline.json --run-dir <new dir>' });
-  cap(177.6, 186, 'Toàn bộ DC-01 nằm trong repo, mã nguồn mở.', 'All of DC-01 lives in the open-source repo.');
+  cap(177.6, 186, 'Toàn bộ DC-01 nằm trong repo, mã nguồn công khai.', 'All of DC-01 lives in the source-available repo.');
 })(window);

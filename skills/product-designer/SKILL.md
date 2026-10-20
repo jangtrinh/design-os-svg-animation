@@ -5,7 +5,7 @@ user-invocable: true
 when_to_use: "MANDATORY / MUST-CALL before and during the implementation of ANY animation, UI mockup, motion video scene, or layout in this repo. Use to audit, refine, and elevate visual elements to world-class digital craft."
 category: design
 keywords: [product-designer, ease-ui, tactile-depth, linear-design, stripe-caliber, gestalt-layout, anti-flop, typography, svgl, phosphor]
-license: MIT
+license: PolyForm Shield 1.0.0 (see LICENSE)
 metadata:
   author: design-os
   version: "1.0.0"

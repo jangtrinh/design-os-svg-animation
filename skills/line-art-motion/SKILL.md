@@ -5,7 +5,7 @@ user-invocable: true
 when_to_use: "Use when the owner supplies a still drawing/image to animate (404 pages, hero illustrations, mascots, logo reveals) and wants it faithful to the reference. Not for recreating a reference video (use motion-video-recreation)."
 category: frontend
 keywords: [line-art, centerline-trace, svg-animation, draw-on, flight-controller, physics-motion, occlusion, hover-interaction, virtual-clock]
-license: MIT
+license: PolyForm Shield 1.0.0 (see LICENSE)
 metadata:
   author: design-os
   version: "1.0.0"

@@ -5,7 +5,7 @@ user-invocable: true
 when_to_use: "Use when the owner wants a how-we-built-it video from a build's own receipts, gate reports and renders. Not for a launch promo or a reference-video recreation."
 category: video
 keywords: [tutorial-video, evidence-paper, seek-t, puppeteer, voiceover, beat-sheet, owner-gate]
-license: MIT
+license: PolyForm Shield 1.0.0 (see LICENSE)
 metadata:
   author: design-os
   version: "1.0.0"

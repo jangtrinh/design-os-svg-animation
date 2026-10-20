@@ -5,7 +5,7 @@ user-invocable: true
 when_to_use: "Use for analyzing and recreating a UI/product promo from a reference video, from source frames through reviewed final export."
 category: frontend
 keywords: [video-recreation, motion-design, promo-video, hyperframes, motion-ir, virtual-clock, ffmpeg]
-license: MIT
+license: PolyForm Shield 1.0.0 (see LICENSE)
 metadata:
   author: design-os
   version: "2.1.0"
