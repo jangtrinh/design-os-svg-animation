@@ -924,7 +924,7 @@ const html = `<!DOCTYPE html>
             <g transform="translate(960, 540) scale(1, \${ghSlabScaleY.toFixed(4)})">
               <rect x="-580" y="-220" width="1160" height="220" fill="#161616" stroke="#FFFFFF" stroke-width="3" />
               <text x="-530" y="-152" text-anchor="start" fill="#8E8E8E"
-                font-family="\${FONT_STACK}" font-weight="700" font-size="24" letter-spacing="0.18em">GITHUB REPOSITORY · MIT · PYTHON ≥ 3.10</text>
+                font-family="\${FONT_STACK}" font-weight="700" font-size="24" letter-spacing="0.18em">GITHUB REPOSITORY · POLYFORM SHIELD · PYTHON ≥ 3.10</text>
               <text x="-530" y="-62" text-anchor="start" fill="#FFFFFF"
                 font-family="\${FONT_STACK}" font-weight="800" font-size="56" letter-spacing="-0.03em">github.com/jangtrinh/design-os-origami</text>
             </g>
