@@ -18,12 +18,19 @@ export default {
 
     let courtD = HL.seg(P(-26, -12, 0.1), P(22, -12, 0.1));
     const keyArcPts = [];
-    for (let a = -65; a <= 115; a += 15) {
-      const rad = (a * Math.PI) / 180;
+    // The key arc starts exactly where it crosses the baseline (y=-12) so it lands on that stroke.
+    const arcA0 = Math.asin(-12 / 15), arcA1 = (115 * Math.PI) / 180;
+    for (let i = 0; i <= 12; i++) {
+      const rad = arcA0 + ((arcA1 - arcA0) * i) / 12;
       keyArcPts.push(P(15 * Math.cos(rad), 15 * Math.sin(rad), 0.1));
     }
     courtD += HL.open(keyArcPts);
     HL.mk("path", { d: courtD, class: "nf lo" }, svg);
+    // Court markings that stop in open floor end on terminal dots.
+    for (const [x, y] of [[-26, -12], [22, -12], [15 * Math.cos(arcA1), 15 * Math.sin(arcA1)]]) {
+      const pd = P(x, y, 0.1);
+      HL.mk("circle", { cx: HL.r2(pd[0]), cy: HL.r2(pd[1]), r: 1.1, class: "dot m" }, svg);
+    }
 
     const [stO, stI] = HL.rings(-10, -26, 10, -18, 2.0, 0.8);
     const stSol = HL.solid(svg);
