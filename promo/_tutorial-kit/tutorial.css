@@ -104,3 +104,30 @@ body { font-family:var(--sans); color:var(--ink); -webkit-font-smoothing:antiali
 .portrait .repo .r-title { flex-wrap:wrap; font-size:46px; white-space:normal; gap:18px; }
 .portrait .repo .r-url { font-size:26px; word-break:break-all; }
 .portrait .repo .r-cmd { font-size:20px; word-break:break-all; }
+
+/* pedagogy v2: keyword caption, predict card, recap, glossary (style v1 tokens only: paper, ink, white cards, no accent) */
+.kw { position:absolute; inset:0; display:flex; align-items:flex-end; font-size:46px; font-weight:600; letter-spacing:-0.02em; line-height:1.2; }
+.pred { padding:0 64px; display:flex; flex-direction:column; justify-content:center; }
+.pred .q { font-size:62px; font-weight:600; letter-spacing:-0.03em; line-height:1.12; margin-top:24px; }
+.pred .bar { position:absolute; left:64px; right:64px; bottom:48px; height:4px; border-radius:2px; background:rgba(17,17,17,.12); overflow:hidden; }
+.pred .bar b { position:absolute; left:0; top:0; bottom:0; background:var(--ink); }
+.recap { padding:96px 56px 40px; }
+.recap .row { display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; padding:20px 0; border-bottom:1px solid var(--hair); }
+.recap .cue { font-size:32px; font-weight:500; letter-spacing:-0.01em; }
+.recap .ans { min-height:44px; padding-bottom:6px; border-bottom:2px solid var(--hair-2); font:500 26px/1.35 var(--mono); }
+.recap .ans span { display:inline-block; }
+.gloss { padding:96px 56px 40px; }
+.gloss .terms { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:34px 64px; align-content:start; }
+.gloss .g { border-top:1px solid var(--hair-2); padding-top:18px; }
+.gloss .t { font-size:36px; font-weight:600; letter-spacing:-0.02em; }
+.gloss .d { margin-top:8px; font-size:24px; line-height:1.4; color:var(--ink-2); }
+.portrait .kw { font-size:44px; line-height:1.22; }
+.portrait .pred { padding:0 48px; }
+.portrait .pred .q { font-size:64px; }
+.portrait .pred .bar { left:48px; right:48px; }
+.portrait .recap .row { grid-template-columns:1fr; gap:10px; }
+.portrait .recap .cue { font-size:36px; }
+.portrait .recap .ans { font-size:30px; }
+.portrait .gloss .terms { grid-template-columns:1fr; gap:26px; }
+.portrait .gloss .t { font-size:40px; }
+.portrait .gloss .d { font-size:28px; }
