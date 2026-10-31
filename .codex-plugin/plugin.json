@@ -36,6 +36,7 @@
       "Verify that all cursor click hotspots align within <= 1.0px of target interactive bounds across 16:9 and 9:16 safe zones."
     ],
     "brandColor": "#202020",
+    "composerIcon": "./docs/images/composer-icon.svg",
     "logo": "./docs/images/cover.png"
   }
 }
