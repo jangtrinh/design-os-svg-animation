@@ -4,6 +4,8 @@
 
 Author frame-exact UI walkthroughs, decoupled camera/pointer choreography, and 2:1 axonometric vector animations governed by a 10-gate Anti-Flop verification suite.
 
+**design-os-svg-animation is free** to use and modify. Source-available under PolyForm Shield 1.0.0. Works with Claude Code, Codex, Gemini CLI and Antigravity.
+
 <p align="center">
   <img src="docs/images/cover.png" alt="DESIGN:OS SVG Animation Engine — 2:1 Axonometric Technical Architecture" width="840">
 </p>
