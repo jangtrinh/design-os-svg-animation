@@ -56,14 +56,23 @@
     const card = mk('div', 'card file', node); card.style.cssText = 'position:absolute;inset:0;';
     mk('div', 'path', card, `${esc(s.path)} <em>· L${s.from}${s.lines.length > 1 ? '–' + (s.from + s.lines.length - 1) : ''}</em>`);
     if (s.tag) mk('span', 'ftag', card, esc(s.tag));
-    // prose (.md) wraps; code and JSON keep their line structure
-    const prose = /\.md$/.test(s.path) && !s.lines[0].trim().startsWith('|');
-    // prose is one paragraph (the file's hard wraps are not sentence breaks); code keeps its lines
-    const texts = prose ? [s.lines.map((l) => l.trim()).join(' ')] : s.lines;
+    // prose (.md) wraps; code and JSON keep their line structure (the row rule lives in pedagogy-core.js, shared with validate)
+    const { prose, texts } = D.pedagogy.fileTexts(s);
     const hlIdx = prose ? ((s.hl || []).length ? [0] : []) : (s.hl || []);
     const rows = texts.map((l, i) => mk('div', `ln${prose ? ' prose' : ''}`, card, (s.lead && i === 0 ? '… ' : '') + esc(l) + (s.more && i === texts.length - 1 ? ' …' : '')));
+    // signaling (pedagogy v2): while the cited sentence plays, the cited line is highlighted and zoomed, the others dim; it stays marked after
+    const foc = new Set(s.focus || []), dimTo = D.pedagogy.BUDGETS.focusDim;
     return (t) => rows.forEach((r, i) => {
       const v = D.vis(t, s.t0 + 0.2 + i * D.B * 0.5, null, 0.2);
+      if (foc.size) {
+        const f0 = s.f0 != null ? s.f0 : s.t0, f1 = s.f1 != null ? s.f1 : f0, on = D.smooth(D.ramp(t, f0, f0 + 0.3)), zoom = on * (1 - D.smooth(D.ramp(t, f1, f1 + 0.4)));
+        const me = foc.has(i);
+        r.style.opacity = (v * (me ? 1 : 1 - (1 - dimTo) * on)).toFixed(3);
+        r.style.transformOrigin = '0 50%'; r.style.transform = me ? `scale(${(1 + 0.04 * zoom).toFixed(4)})` : '';
+        r.style.background = me && on > 0 ? `rgba(17,17,17,${(0.08 * on).toFixed(4)})` : 'transparent';
+        r.classList.toggle('hl', me && on > 0.5); r.classList.toggle('dim', !me && on > 0.5);
+        return;
+      }
       r.style.opacity = v.toFixed(3);
       const hl = hlIdx.includes(i) ? D.smooth(D.ramp(t, s.t0 + D.BAR * 0.75, s.t0 + D.BAR * 0.75 + 0.3)) : 0;
       r.classList.toggle('hl', hl > 0.5); r.style.background = hl ? `rgba(17,17,17,${(0.055 * hl).toFixed(4)})` : 'transparent';
@@ -71,7 +80,7 @@
   } };
 
   R.json = { build(node, s) {
-    const lines = JSON.stringify(s.value, null, 1).split('\n').concat(s.extra || []);
+    const lines = D.pedagogy.jsonLines(s);
     return R.file.build(node, { ...s, from: 1, lines, path: s.path, hl: [lines.length - 2, lines.length - 1] });
   } };
 

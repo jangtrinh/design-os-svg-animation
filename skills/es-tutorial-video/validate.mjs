@@ -18,14 +18,23 @@
  *   display-block       no project script hard-codes display:block (it overrides display:grid)
  *   no-home-path        no /Users/ in evidence, scripts, assets, data, ref or staged MP4 metadata
  *   gitignore-music     music source, bed and out/tutorial-audio.wav are git-ignored
- *   beat-names          out/beats-*\/ frames are first.jpg or bNNN.jpg (3 digits) */
+ *   beat-names          out/beats-*\/ frames are first.jpg or bNNN.jpg (3 digits)
+ * Pedagogy v2 only (config pedagogy: "v2"; a legacy project skips them; bodies in validate-pedagogy.mjs):
+ *   card-budget         focus line <= 12 tokens, text card >= 4 s, <= 20 non-focus tokens at once, recap 3-4 cues that fit their hold
+ *   one-text-channel    no burned-in caption; keyword caption <= 6 words, bound to a sentence, never two at once
+ *   predict-count       >= 3 predict beats, each hold 3-5 s with no voice inside, question <= 14 words
+ *   chapter-length      every numbered chapter runs 15-35 s
+ *   glossary-present    a glossary element with 4-6 terms, each definition <= 12 words
+ *   subtitles-present   every sentence has text_en; after a render the .srt/.vtt exist, are monotonic, equal the sentences
+ *   terms-defined       every config glossary term is defined in the glossary before its first use */
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { SKILL_DIR, kitModule } from './kit-path.mjs';
+import { PEDAGOGY_CHECKS, pedagogyProblems } from './validate-pedagogy.mjs';
 
 const CHECKS = ['contract-intact', 'config-schema', 'timeline-eval', 'timeline-authored', 'evidence-shape', 'assets-exist', 'script-authored',
-  'script-clips', 'captions-overlap', 'display-block', 'no-home-path', 'gitignore-music', 'beat-names'];
+  'script-clips', 'captions-overlap', 'display-block', 'no-home-path', 'gitignore-music', 'beat-names', ...PEDAGOGY_CHECKS];
 const args = process.argv.slice(2);
 if (args.includes('--help') || args.includes('-h')) {
   console.log(fs.readFileSync(new URL(import.meta.url), 'utf8').split('*/')[0].replace(/^#!.*\n/, '').replace(/^\/\* ?/, '').replace(/^ \* ?/gm, ''));
@@ -105,13 +114,20 @@ if (want('script-authored') || want('script-clips')) {
   if (want('script-authored') && segments.length === 0) fail('script-authored', `${cfg.voiceover.script} has no segments yet; write one segment per chapter after the owner approves the storyboard`);
   if (want('script-clips') && tl && segments.length) {
     if (spawnSync('ffprobe', ['-version']).error) cannotRun('ffprobe not found (needed to measure clip lengths)');
+    if (cfg.pedagogy === 'v2') {
+      for (const p of tl.sentenceProblems) fail('script-clips', p);
+      for (const seg of segments.filter((x) => !Array.isArray(x.sentences))) fail('script-clips', `segment "${seg.id}" has no sentences; a pedagogy v2 script is one clip per sentence (sentences: [{id, text, text_en}])`);
+    }
     for (const r of kit.placementTable(project, tl)) {
       if (!r.chapter) fail('script-clips', `segment "${r.id}" has no chapter with that id in the timeline`);
-      else if (!r.clip) fail('script-clips', `segment "${r.id}" has no clip at ${rel(r.file)}; render it only after the owner approves the script`);
+      else if (!r.clip) fail('script-clips', `${r.sentence ? 'sentence' : 'segment'} "${r.id}" has no clip at ${rel(r.file)}; render it only after the owner approves the script`);
       else if (r.overrun) fail('script-clips', `clip "${r.id}" ends ${r.end.toFixed(2)} s but its chapter ends ${r.limit.toFixed(2)} s (needs ${kit.GAP} s clearance); widen the chapter in the timeline WARP`);
     }
   }
 }
+
+// ---- pedagogy v2 (the seven checks; none runs for a legacy project)
+for (const [check, msg] of await pedagogyProblems({ dir, cfg, tl, want })) fail(check, msg);
 
 // ---- source hygiene
 if (want('display-block')) {
@@ -142,4 +158,5 @@ if (want('beat-names')) {
 }
 
 if (lines.length) { for (const l of lines) console.log(l); process.exit(1); }
-console.log(`ok: ${only ? only : `${CHECKS.length} checks`} passed for ${rel(dir) === '.' ? dir : rel(dir)}`);
+const ran = cfg.pedagogy === 'v2' ? CHECKS.length : CHECKS.length - PEDAGOGY_CHECKS.length;
+console.log(`ok: ${only ? only : `${ran} checks`} passed for ${rel(dir) === '.' ? dir : rel(dir)}`);

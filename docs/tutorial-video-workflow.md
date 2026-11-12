@@ -41,6 +41,7 @@ Engine ở kit dùng chung `promo/_tutorial-kit/`; dự án chỉ giữ dữ li�
 
 | File | Ở đâu | Vai trò |
 |---|---|---|
+| `pedagogy-core.js`, `pedagogy-elements.js`, `make-subtitles.mjs` | kit | pedagogy v2 (§9): đặt câu thoại theo thời gian, gắn phần tử vào câu, ngân sách thẻ; renderer `kw`, `predict`, `recap`, `glossary`; file `.srt`/`.vtt` |
 | `motion-core.js`, `gh-mark.js`, `tutorial-scene.js`, `tutorial-elements.js`, `tutorial-portrait-layout.js`, `tutorial.css` | kit | spring, rail chương, caption, renderer (img, wipe, seq, grid, file, json, term, callout, scroll, hero, repo), layout dọc, token style v1 |
 | `tutorial.template.html`, `tutorial-project.mjs` | kit | dựng trang từ config; nạp, kiểm config, chạy timeline trong vm |
 | `render-tutorial.mjs`, `join-shards.mjs` | kit | Puppeteer: `--beats` / `--full` / `--shard i/n` (4 subframe, tmix, 60 fps), ghép shard |
@@ -133,3 +134,17 @@ Engine ở kit dùng chung `promo/_tutorial-kit/`; dự án chỉ giữ dữ li�
 
 ### Style sau này
 Thêm một mục `### v2 · <tên>` ở đây: token CSS, renderer mới, quy tắc nhịp. Các bước 1–7 không đổi; style chỉ thay `tutorial.css` và có thể thêm renderer.
+
+## 9. Pedagogy v2 (mọi video mới)
+
+Quyết định của owner 2026-10-15; bằng chứng và độ tin cậy trong `plans/reports/pedagogy-tutorial-video-research.md`. Bật bằng `"pedagogy": "v2"` trong
+`tutorial.config.json`. CK-001 và DC-01 giữ nguyên (legacy), không chịu các luật này. Mọi con số dưới đây là **tạm thời** (nghiên cứu ghi rõ là giả định), hiệu chỉnh sau lần xem đầu.
+
+- **Người xem là người mới tò mò.** Mở đầu bằng thanh từ khoá (`glossary`, 4–6 từ, ~15 s); mỗi thuật ngữ được định nghĩa trước lần dùng đầu tiên (config `glossary` liệt kê các từ, `validate` kiểm).
+- **Một kênh chữ.** Trên màn hình chỉ một dòng từ khoá (`kw`, tối đa 6 từ, một ngôn ngữ). Phụ đề đầy đủ VI và EN nằm ở `out/<output>-vi|en.srt|.vtt`, đúng nguyên văn lời đọc, không đốt vào hình.
+- **Giọng theo từng câu.** `script-vi.json`: mỗi chương có `sentences: [{id, text, text_en, hold_s?}]`, mỗi câu một clip `voiceover/clips/<id câu>.mp3`. Phần tử gắn vào câu bằng `at: 'sent:<id>'`, thẻ hiện đúng lúc câu bắt đầu. `build.mjs mix` đặt từng clip và ghi phụ đề.
+- **Đánh dấu.** Thẻ `file`/`json` có `focus: [chỉ số dòng]` + `at`: dòng được dẫn được làm nổi và phóng nhẹ trong lúc câu đó phát, các dòng khác mờ còn 40%.
+- **Đoán trước khi xem đáp án.** `predict`: thẻ câu hỏi (≤14 từ) và đường kẻ đếm ngược `hold_s` 3–5 s; không lời, nhạc nền tắt hẳn (fade 0,3 s); câu kế tiếp là đáp án. Mỗi video 3 lần (phim dưới 60 s đặt `predictMin`).
+- **Nhắc lại.** `recap`: 3–4 dòng gợi nhớ, đáp án để trống rồi hiện từng cái trong khoảng lặng `hold_s` của câu dẫn; thay cho chương "Bài học" đọc to.
+- **Nhịp.** Chương 15–35 s; sau đoạn có hơn 4 đại lượng mới thì dừng im (`hold_s`). Robot arm: ~7 phút, 3 hồi.
+- **Kiểm.** `validate` có thêm 7 check (`card-budget`, `one-text-channel`, `predict-count`, `chapter-length`, `glossary-present`, `subtitles-present`, `terms-defined`), `look` có thêm khung và mục L6, L7. Luật R18–R24 trong `skills/es-tutorial-video/rules.md`.

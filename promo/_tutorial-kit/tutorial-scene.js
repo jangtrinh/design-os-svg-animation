@@ -24,6 +24,7 @@
   const cap = mk('div', '', stage, '<div class="vi"></div><div class="en"></div>'); cap.id = 'cap';
   const credit = mk('div', 'mono', stage, D.CREDIT); credit.id = 'credit';
 
+  if (D.SENT) D.pedagogy.resolve(D.EL, D.SENT);  // pedagogy v2: elements bound to a sentence take its times (injected by the page writer)
   const els = D.EL.map((spec) => {
     const node = mk('div', 'el');
     const r = D.renderers[spec.type];
