@@ -38,7 +38,8 @@ export default {
       const tx = -28 + ((ph - 1) / 13) * 56;
       const isAnchor = ph === 1 || ph === 7 || ph === 14;
       const tLen = isAnchor ? 2.6 : 1.3;
-      const seg = HL.seg(P(tx, trackY - tLen / 2, trackZ), P(tx, trackY + tLen / 2, trackZ));
+      // every graduation hangs from the track rule so one end always lands on a stroke
+      const seg = HL.seg(P(tx, trackY, trackZ), P(tx, trackY + tLen, trackZ));
       if (isAnchor) tickHiD += seg;
       else tickLoD += seg;
     }
