@@ -108,3 +108,55 @@ Statement: a project with no chapter, no element or no voice segment is unfinish
 Keep it: author the timeline from the approved storyboard and the script from the approved text before validating for hand-over.
 Rejected when: the timeline has no chapter or no element, or the voice script has no segment.
 Checked by: validate:timeline-authored, validate:script-authored
+
+**Pedagogy v2 (R18 to R24)** applies when `tutorial.config.json` has `pedagogy: "v2"`. A legacy project (CK-001, DC-01) keeps R1 to R17 only and is never checked by these.
+Owner decisions 2026-10-15: the viewer is a curious newcomer; one keyword line on screen; three predict prompts; blank-then-reveal recaps; chapters 15 to 35 s.
+Evidence and grades: `plans/reports/pedagogy-tutorial-video-research.md`. **Every number below is provisional** (the research labels the reading-speed budgets as
+assumptions): calibrate them after the first viewing and change them in `promo/_tutorial-kit/pedagogy-core.js` BUDGETS, which `contract.json` and `validate` both read.
+
+## R18 One text channel: a keyword on screen, the full text in the sidecars
+Statement: the voice is one channel and the screen text a second; a third (a burned-in sentence) makes the viewer read instead of watch (redundancy).
+Keep it: `tl.cap` stays empty; use element `kw` (`at: 'sent:<id>'`, `text` of at most 6 words, one language) for the number or term the voice is saying; the exact voice text
+ships as `out/<output>-vi.srt/.vtt` and `-en.srt/.vtt` (`make-subtitles.mjs`, run by `build.mjs mix`), written from the script sentences and never from the timeline.
+Rejected when: a caption is burned in, a `kw` has more than 6 words, repeats a whole sentence, has no `at`, overlaps another `kw`, or a sentence lacks `text_en`; after a render, a sidecar is missing, not monotonic or differs from the sentences.
+Checked by: validate:one-text-channel, validate:subtitles-present
+
+## R19 The viewer is a newcomer: a glossary first, every term defined before use
+Statement: undefined jargon is carried through the whole film.
+Keep it: one `glossary` element (4 to 6 terms, a one-line definition of at most 12 words each, shown about 15 s at the start, each term tied to the sentence that explains it);
+list the terms the film introduces in config `glossary`; no sentence, card or keyword uses a listed term before the glossary shows it.
+Rejected when: there is no glossary element, it has fewer than 4 or more than 6 terms, or a listed term is used earlier than its entry appears.
+Checked by: validate:glossary-present, validate:terms-defined
+
+## R20 Predict before reveal, with real silence
+Statement: committing to an answer first is retrieval practice (grade A in the research); a video can only approximate it, so the beat must be real: no voice, no music.
+Keep it: three `predict` elements per film (a film shorter than 60 s may set config `predictMin`), each bound to the sentence that asks (`at`), `hold_s` 3 to 5 s on the element,
+a question of at most 14 words; the next sentence of the chapter is the reveal. `mix-voiceover.mjs` mutes the music bed to silence inside each hold (0.3 s fades).
+Rejected when: fewer predict beats than required, a hold outside 3 to 5 s, a sentence playing inside a hold, no sentence after it to reveal the answer, or music in the hold (`ffmpeg volumedetect` on that window must read below -60 dB).
+Checked by: validate:predict-count, review
+
+## R21 A blank-then-reveal recap replaces the read-aloud lessons
+Statement: reading four lessons aloud re-exposes what was just seen; recall with feedback is what sticks.
+Keep it: one `recap` per act, bound to a sentence that has `hold_s` in the script: 3 or 4 cues with blank answers, revealed one by one (`lead_s`, `step_s`) inside that silent hold.
+Rejected when: a recap has fewer than 3 or more than 4 cues, its reveals do not fit the hold, or its answers are visible before the reveal.
+Checked by: validate:card-budget, look:L7
+
+## R22 Card budget: a card shows what the voice cites
+Statement: a card is read while it is heard, so the cited number must be findable.
+Keep it: on a `file` or `json` card give `focus: [lineIndex]` and bind it with `at`: while that sentence plays the cited line is highlighted and zoomed and the other lines dim to 40%;
+a focus line has at most 12 tokens (cite the number, not the whole object); a text card stays at least 4 s; at most 20 tokens of non-focus text are on screen at once across cards.
+Rejected when: a focus line is longer than 12 tokens or out of range, `focus` has no `at`, a text card stays under 4 s, or more than 20 non-focus tokens are visible at one time.
+Checked by: validate:card-budget, look:L6
+
+## R23 Chapters are 15 to 35 s, and a dense passage ends in a silence
+Statement: more than 4 new quantities in one passage overloads working memory.
+Keep it: split a chapter before it passes 35 s; after a passage with more than 4 new quantities put `hold_s` on its last sentence (a silent pause, music kept).
+Rejected when: a numbered chapter (not the title or outro) runs under 15 s or over 35 s, or a passage with more than 4 new quantities has no hold.
+Checked by: validate:chapter-length, review
+
+## R24 Each element appears when its sentence starts
+Statement: a picture shown while its narration plays (contiguity) beats one placed on a music bar.
+Keep it: `voiceover/script-vi.json` segments carry `sentences: [{id, text, text_en, hold_s?}]`, one clip `voiceover/clips/<sentence id>.mp3` each (ids unique across the script);
+elements take `at: 'sent:<id>'` (optional `until`, `delay`, `dur`); times come from `pedagogy-core.js`, never typed in.
+Rejected when: a v2 segment has no `sentences`, a sentence has no clip or repeats an id, a sentence ends less than 0.3 s before its chapter does, or an element names a sentence that does not exist.
+Checked by: validate:script-clips, validate:timeline-eval

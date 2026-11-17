@@ -1,0 +1,21 @@
+{
+  "voice_id": null,
+  "model_id": null,
+  "note": "fixture script, pedagogy v2: one clip per sentence (voiceover/clips/<sentence id>.mp3, placeholder tones made by make-v2-fixture-audio.mjs). hold_s is a silent pause after a sentence; a predict hold lives on the predict element instead.",
+  "segments": [
+    { "id": "title", "window_s": 16, "sentences": [
+      { "id": "t1", "text": "Bốn từ cần biết trước.", "text_en": "Four words to know first." },
+      { "id": "t2", "text": "Cổng là một phép kiểm tra phải qua.", "text_en": "A gate is a check that must pass." },
+      { "id": "t3", "text": "Dấu cuối là dòng cuối cùng mà lần chạy in ra.", "text_en": "The sentinel is the last line a run prints." },
+      { "id": "t4", "text": "Bản sửa là một bước đã lưu của bộ phận.", "text_en": "A revision is one saved step of the part." },
+      { "id": "t5", "text": "Biên nhận là tệp chứng minh kết quả.", "text_en": "A receipt is the file that proves the result.", "hold_s": 1.5 }
+    ] },
+    { "id": "check", "window_s": 22, "sentences": [
+      { "id": "i0", "text": "Bây giờ nhìn một biên nhận thật.", "text_en": "Now look at a real receipt." },
+      { "id": "c1", "text": "Cổng độ dày thành đạt hai phẩy sáu milimét.", "text_en": "The wall gate reads two point six millimetres." },
+      { "id": "c2", "text": "Dòng cuối ghi AGENT_OK. Cổng khớp qua hay trượt?", "text_en": "The last line says AGENT_OK. Does the fit gate pass or fail?" },
+      { "id": "c3", "text": "Trượt. Một dấu chạy xong không có nghĩa là cổng đã qua.", "text_en": "Fail. A run that finishes does not mean the gate passed." },
+      { "id": "c4", "text": "Nhắc lại nhé.", "text_en": "Recall time.", "hold_s": 4.5 }
+    ] }
+  ]
+}

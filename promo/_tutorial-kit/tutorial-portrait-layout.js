@@ -7,6 +7,11 @@
   const portrait = /aspect=portrait/.test(location.search);
   D.PORTRAIT = portrait;
   D.W = portrait ? 1080 : 1920; D.H = portrait ? 1920 : 1080;
+  // pedagogy v2 elements (kw, predict, recap, glossary) have a default rect for each aspect; an own rect, keys or `p` still wins
+  for (const s of D.EL) {
+    const def = !s.rect && !s.keys && !(portrait && s.p) && D.pedagogy.defaultRect(s.type, portrait);
+    if (def) { s.rect = def; s.defaultRect = true; }
+  }
   if (!portrait) return;
   document.documentElement.classList.add('portrait');
 
@@ -24,6 +29,7 @@
   };
 
   for (const s of D.EL) {
+    if (s.defaultRect) continue;
     if (s.p) {
       if (Array.isArray(s.p[0])) { s.keys = s.p; delete s.rect; } else { s.rect = s.p; delete s.keys; }
     } else if (s.keys) {

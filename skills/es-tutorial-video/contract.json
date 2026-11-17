@@ -1,15 +1,18 @@
 {
-  "_sha256": "7a6135adbe09aceedf60613de123762acf20ed99c5af6240548cbecf5cc91326",
+  "_sha256": "51d84803154cdc2452f715d7a96a3fcc3e88387efd4abb0fa5c4869a0a8363fe",
   "generated_by": "scripts/build-tutorial-contract.mjs",
   "sources": {
     "promo/_tutorial-kit/capture-review-page.mjs": "a329167a70eed0c4",
     "promo/_tutorial-kit/join-shards.mjs": "096fbeaf5507cfc6",
+    "promo/_tutorial-kit/make-subtitles.mjs": "0f85bcf476602b88",
+    "promo/_tutorial-kit/pedagogy-core.js": "c489ab0f1709446d",
+    "promo/_tutorial-kit/pedagogy-elements.js": "8334408c82d5ab6b",
     "promo/_tutorial-kit/render-tutorial.mjs": "bd38f9d4981b8a62",
-    "promo/_tutorial-kit/tutorial-elements.js": "0850da5d816af53e",
-    "promo/_tutorial-kit/tutorial-portrait-layout.js": "d3a6b7c46cfbde9e",
-    "promo/_tutorial-kit/tutorial-project.mjs": "cd1b81a45b5abc77",
-    "promo/_tutorial-kit/tutorial-scene.js": "8a3d9eaa3274d621",
-    "promo/_tutorial-kit/voiceover/mix-voiceover.mjs": "11dadcbd7310ebb1"
+    "promo/_tutorial-kit/tutorial-elements.js": "8e310166df4e1b9f",
+    "promo/_tutorial-kit/tutorial-portrait-layout.js": "8bc0721da8ad9219",
+    "promo/_tutorial-kit/tutorial-project.mjs": "5ceef3bf21cc210f",
+    "promo/_tutorial-kit/tutorial-scene.js": "a8222ecd082024f6",
+    "promo/_tutorial-kit/voiceover/mix-voiceover.mjs": "f9b1cc60673e9dca"
   },
   "config_file": "tutorial.config.json",
   "config": [
@@ -152,6 +155,24 @@
       "doc": "owner gate 1b: who/when approved the voice script (null until approved)"
     },
     {
+      "key": "pedagogy",
+      "type": "string",
+      "required": false,
+      "doc": "\"v2\" turns on per-sentence voice, keyword captions, predict/recap/glossary and the 7 pedagogy validate checks; absent = legacy (CK-001, DC-01)"
+    },
+    {
+      "key": "glossary",
+      "type": "string[]",
+      "required": false,
+      "doc": "pedagogy v2: terms the video introduces; each must be defined in the glossary element before its first use"
+    },
+    {
+      "key": "predictMin",
+      "type": "number",
+      "required": false,
+      "doc": "pedagogy v2: minimum predict beats (default 3); only a film shorter than 60 s may lower it"
+    },
+    {
       "key": "reviewCapture.page",
       "type": "string",
       "required": false,
@@ -165,11 +186,27 @@
     }
   ],
   "element_common_fields": [
+    "at",
+    "base",
+    "delay",
+    "dur",
+    "extra",
+    "f0",
+    "f1",
+    "focus",
+    "h0",
+    "h1",
+    "itemT",
+    "items",
     "keys",
+    "lines",
+    "path",
     "rect",
     "t0",
     "t1",
-    "type"
+    "type",
+    "until",
+    "value"
   ],
   "element_types": {
     "img": [
@@ -198,6 +235,9 @@
       "t0"
     ],
     "file": [
+      "f0",
+      "f1",
+      "focus",
       "from",
       "hl",
       "lead",
@@ -208,9 +248,7 @@
       "tag"
     ],
     "json": [
-      "extra",
-      "path",
-      "value"
+      "path"
     ],
     "term": [
       "lines"
@@ -236,7 +274,72 @@
     "repo": [
       "cmd",
       "t0"
+    ],
+    "kw": [
+      "text"
+    ],
+    "predict": [
+      "h0",
+      "h1",
+      "label",
+      "question",
+      "t0",
+      "t1"
+    ],
+    "recap": [
+      "base",
+      "cues",
+      "label",
+      "lead_s",
+      "step_s",
+      "t0"
+    ],
+    "glossary": [
+      "itemT",
+      "items",
+      "label",
+      "t0"
     ]
+  },
+  "pedagogy_v2": {
+    "config_value": "v2",
+    "budgets": {
+      "focusTokensPerLine": 12,
+      "cardDwellS": 4,
+      "nonFocusTokens": 20,
+      "kwWords": 6,
+      "predictQuestionWords": 14,
+      "predictHoldS": [
+        3,
+        5
+      ],
+      "predictMin": 3,
+      "predictMinFilmS": 60,
+      "chapterS": [
+        15,
+        35
+      ],
+      "glossaryTerms": [
+        4,
+        6
+      ],
+      "glossaryDefWords": 12,
+      "recapCues": [
+        3,
+        4
+      ],
+      "leadS": 0.5,
+      "gapS": 0.3,
+      "tailS": 0.4,
+      "focusDim": 0.4
+    },
+    "script_sentence_fields": [
+      "id",
+      "text",
+      "text_en",
+      "hold_s"
+    ],
+    "binding": "element.at = 'sent:<id>' (until, delay, dur); predict.hold_s; recap lead_s/step_s"
   },
   "cli": {
     "render-tutorial.mjs": [
@@ -254,6 +357,9 @@
     "capture-review-page.mjs": [
       "--out",
       "--page",
+      "--project"
+    ],
+    "make-subtitles.mjs": [
       "--project"
     ],
     "voiceover/mix-voiceover.mjs": [

@@ -9,7 +9,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CONFIG_SCHEMA, contractDigest } from '../promo/_tutorial-kit/tutorial-project.mjs';
+import { CONFIG_SCHEMA, contractDigest, loadPedagogy } from '../promo/_tutorial-kit/tutorial-project.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const KIT = path.join(ROOT, 'promo', '_tutorial-kit');
@@ -28,19 +28,20 @@ export function elementTypes(src) {
   return out;
 }
 
-const KIT_SCRIPTS = ['render-tutorial.mjs', 'join-shards.mjs', 'capture-review-page.mjs', 'voiceover/mix-voiceover.mjs'];
+const KIT_SCRIPTS = ['render-tutorial.mjs', 'join-shards.mjs', 'capture-review-page.mjs', 'make-subtitles.mjs', 'voiceover/mix-voiceover.mjs'];
 export const cliFlags = (src) => uniq([...src.matchAll(/(?:args\.includes\(|flag\(args, |argv\.includes\()'(--[a-z-]+)'/g)].map((m) => m[1]));
 
 export function buildContract() {
-  const common = uniq([...(read('tutorial-scene.js') + read('tutorial-portrait-layout.js')).matchAll(/\bspec\.(\w+)/g)].map((m) => m[1]));
+  const common = uniq([...(read('tutorial-scene.js') + read('tutorial-portrait-layout.js') + read('pedagogy-core.js')).matchAll(/\bspec\.(\w+)/g)].map((m) => m[1]));
   const body = {
     generated_by: 'scripts/build-tutorial-contract.mjs',
-    sources: Object.fromEntries(['tutorial-project.mjs', 'tutorial-elements.js', 'tutorial-scene.js', 'tutorial-portrait-layout.js', ...KIT_SCRIPTS]
+    sources: Object.fromEntries(['tutorial-project.mjs', 'tutorial-elements.js', 'pedagogy-elements.js', 'pedagogy-core.js', 'tutorial-scene.js', 'tutorial-portrait-layout.js', ...KIT_SCRIPTS]
       .sort().map((f) => [`promo/_tutorial-kit/${f}`, crypto.createHash('sha256').update(read(f)).digest('hex').slice(0, 16)])),
     config_file: 'tutorial.config.json',
     config: CONFIG_SCHEMA.map(([key, type, required, doc]) => ({ key, type, required, doc })),
     element_common_fields: common,
-    element_types: elementTypes(read('tutorial-elements.js')),
+    element_types: elementTypes(read('tutorial-elements.js') + '\n' + read('pedagogy-elements.js')),
+    pedagogy_v2: { config_value: 'v2', budgets: loadPedagogy().BUDGETS, script_sentence_fields: ['id', 'text', 'text_en', 'hold_s'], binding: "element.at = 'sent:<id>' (until, delay, dur); predict.hold_s; recap lead_s/step_s" },
     cli: Object.fromEntries(KIT_SCRIPTS.map((f) => [f, cliFlags(read(f))])),
   };
   return { _sha256: contractDigest(body), ...body };

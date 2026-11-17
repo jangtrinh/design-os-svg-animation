@@ -40,6 +40,9 @@ export const CONFIG_SCHEMA = [
   ['voiceover.clips', 'string', true, 'folder with one <segment id>.mp3 per segment'],
   ['approvals.storyboard', 'string|null', true, 'owner gate 1a: who/when approved the storyboard (null until approved)'],
   ['approvals.script', 'string|null', true, 'owner gate 1b: who/when approved the voice script (null until approved)'],
+  ['pedagogy', 'string', false, '"v2" turns on per-sentence voice, keyword captions, predict/recap/glossary and the 7 pedagogy validate checks; absent = legacy (CK-001, DC-01)'],
+  ['glossary', 'string[]', false, 'pedagogy v2: terms the video introduces; each must be defined in the glossary element before its first use'],
+  ['predictMin', 'number', false, 'pedagogy v2: minimum predict beats (default 3); only a film shorter than 60 s may lower it'],
   ['reviewCapture.page', 'string', false, 'capture-review-page.mjs: html page to capture (~ allowed)'],
   ['reviewCapture.out', 'string', false, 'capture-review-page.mjs: output jpg, relative to the project'],
 ];
@@ -57,6 +60,8 @@ export function configProblems(cfg) {
     if (!typeOk(v, type)) out.push(`${key} must be ${type}`);
   }
   if (typeof cfg.slug === 'string' && !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(cfg.slug)) out.push('slug must be kebab-case');
+  if (cfg.pedagogy !== undefined && cfg.pedagogy !== 'v2') out.push('pedagogy must be "v2" (or absent for a legacy project)');
+  if (cfg.predictMin !== undefined && !(Number.isInteger(cfg.predictMin) && cfg.predictMin >= 1)) out.push('predictMin must be an integer >= 1');
   if (cfg.grid && !(cfg.grid.bpm > 0)) out.push('grid.bpm must be > 0');
   if (cfg.duration !== undefined && !(cfg.duration > 0)) out.push('duration must be > 0');
   if (Array.isArray(cfg.timeline) && cfg.timeline.length === 0) out.push('timeline must list at least one file');
@@ -76,33 +81,66 @@ export function loadProject(dirArg) {
   return { dir, cfg, file, bar: 240 / cfg.grid.bpm };
 }
 
-/** Evaluate the project's evidence + timeline files in a vm (what the page does, minus the DOM). */
+const readKit = (f) => fs.readFileSync(path.join(KIT, f), 'utf8');
+const readScript = (project) => { try { return JSON.parse(fs.readFileSync(path.join(project.dir, project.cfg.voiceover.script), 'utf8')); } catch { return { segments: [] }; } };
+export const scriptSegments = (project) => readScript(project).segments || [];
+
+/** The pedagogy core (budgets, sentence placement, binding) evaluated in a vm: the same file the page loads. */
+export function loadPedagogy() {
+  const win = { DOS: {} }; win.window = win; vm.createContext(win);
+  vm.runInContext(readKit('pedagogy-core.js'), win, { filename: 'pedagogy-core.js' });
+  return win.DOS.pedagogy;
+}
+
+/** Evaluate the project's evidence + timeline files in a vm (what the page does, minus the DOM). A pedagogy v2 project also gets
+ *  its sentence table (SENT: film times of every script sentence; a sentence without a clip is estimated) and its elements bound to it. */
 export function loadTimeline(project) {
   const win = { DOS: { CONFIG: project.cfg } }; win.window = win;
   vm.createContext(win);
+  vm.runInContext(readKit('pedagogy-core.js'), win, { filename: 'pedagogy-core.js' });
   for (const f of [project.cfg.evidence, ...project.cfg.timeline]) {
     vm.runInContext(fs.readFileSync(path.join(project.dir, f), 'utf8'), win, { filename: f });
   }
   const D = win.DOS;
-  return { CH: D.CH || [], EL: D.EL || [], CAP: D.CAP || [], T: D.T, DOS: D, evidence: win.EVIDENCE || {} };
+  const tl = { CH: D.CH || [], EL: D.EL || [], CAP: D.CAP || [], T: D.T, DOS: D, evidence: win.EVIDENCE || {}, SENT: null, sentenceProblems: [] };
+  if (project.cfg.pedagogy === 'v2') {
+    const dur = (id) => { const f = path.join(project.dir, project.cfg.voiceover.clips, `${id}.mp3`); return fs.existsSync(f) ? clipSeconds(f) : null; };
+    const { table, problems } = D.pedagogy.placeSentences({ chapters: tl.CH, segments: scriptSegments(project), dur, holds: D.pedagogy.holdsFromElements(tl.EL), T: tl.T });
+    tl.SENT = table; tl.sentenceProblems = problems;
+    D.pedagogy.resolve(tl.EL, table);
+  }
+  return tl;
 }
 
 export const clipSeconds = (file) => parseFloat(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', file], { encoding: 'utf8' }));
 
-/** One row per voiceover segment: where it starts, where it ends, when its chapter ends, slack. */
+/** One row per voiceover clip: where it starts, where it ends, when its chapter ends, slack. A legacy segment is one clip for its
+ *  chapter; a pedagogy v2 segment (`sentences`) is one row per sentence, placed by pedagogy-core placeSentences. */
 export function placementTable(project, tl = loadTimeline(project)) {
-  const script = JSON.parse(fs.readFileSync(path.join(project.dir, project.cfg.voiceover.script), 'utf8'));
-  return (script.segments || []).map((s) => {
+  const clipsDir = path.join(project.dir, project.cfg.voiceover.clips);
+  return scriptSegments(project).flatMap((s) => {
     const c = tl.CH.find((x) => x.id === s.id);
-    const file = path.join(project.dir, project.cfg.voiceover.clips, `${s.id}.mp3`);
+    if (Array.isArray(s.sentences)) {
+      if (!c) return [{ id: s.id, file: path.join(clipsDir, `${s.id}.mp3`), chapter: false, clip: false }];
+      return s.sentences.filter((se) => se && tl.SENT && tl.SENT[se.id]).map((se) => {
+        const t = tl.SENT[se.id], file = path.join(clipsDir, `${se.id}.mp3`);
+        const row = { id: se.id, seg: s.id, sentence: true, file, chapter: true, clip: fs.existsSync(file) };
+        if (!row.clip) return row;
+        Object.assign(row, { start: t.t0, end: t.t1, hold: t.hold, limit: t.limit });
+        row.slack = t.limit - (t.t1 + Math.max(t.hold, 0));
+        row.overrun = row.slack < GAP;
+        return row;
+      });
+    }
+    const file = path.join(clipsDir, `${s.id}.mp3`);
     const row = { id: s.id, file, chapter: !!c, clip: fs.existsSync(file) };
-    if (!c || !row.clip) return row;
+    if (!c || !row.clip) return [row];
     row.start = Math.max(c.t0, 0) + LEAD;
     row.end = row.start + clipSeconds(file);
     row.limit = Math.min(c.t1, tl.T);
     row.slack = row.limit - row.end;
     row.overrun = row.slack < GAP;
-    return row;
+    return [row];
   });
 }
 
@@ -114,8 +152,9 @@ export function writePage(project, aspect) {
   const base = pathToFileURL(project.dir + path.sep).href;
   const scripts = project.cfg.timeline.map((f) => `<script src="${f}"></script>`).join('\n');
   const cfgJson = JSON.stringify(project.cfg).replace(/</g, '\\u003c');
+  const sentJson = project.cfg.pedagogy === 'v2' ? JSON.stringify(loadTimeline(project).SENT).replace(/</g, '\\u003c') : 'null';
   const html = tpl.replaceAll('{{LANG}}', project.cfg.lang).replaceAll('{{TITLE}}', project.cfg.title)
-    .replaceAll('{{BASE}}', base).replaceAll('{{KIT}}', kit).replaceAll('{{CONFIG}}', cfgJson)
+    .replaceAll('{{BASE}}', base).replaceAll('{{KIT}}', kit).replaceAll('{{CONFIG}}', cfgJson).replaceAll('{{SENT}}', sentJson)
     .replaceAll('{{EVIDENCE}}', project.cfg.evidence).replaceAll('{{TIMELINE}}', scripts);
   const tmp = fs.mkdtempSync(path.join(os.tmpdir(), `tutorial-page-${project.cfg.slug}-`));
   const file = path.join(tmp, 'tutorial.html');

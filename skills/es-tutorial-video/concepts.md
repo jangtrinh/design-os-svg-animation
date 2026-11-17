@@ -37,3 +37,19 @@ A build with a failed gate or a discarded run gets that failure as a chapter bea
 - One long chapter (more than ~30 s of voice) with no element change: split it.
 - A claim of manufacture, strength or load the build never measured.
 - Re-rendering a published MP4 to "refresh" it without the owner asking.
+
+## Newcomer template (pedagogy v2)
+The audience is a curious newcomer (owner decision 2026-10-15). One film is 2 or 3 acts; one act is the loop below, repeated. Chapters run 15 to 35 s (R23);
+the table above still decides which evidence backs each chapter.
+
+| Step | Element | Voice | Silence |
+|------|---------|-------|---------|
+| Glossary (first, once) | `glossary`: 4 to 6 terms, about 15 s | one short sentence per term | a hold after the last term |
+| Problem | evidence card with `focus` on the cited line, plus a `kw` | the sentence that names the number | none |
+| Predict | `predict`: question of at most 14 words, hairline over `hold_s` 3 to 5 s | the question, then nothing | the hold, music muted |
+| Reveal | the next evidence card, `focus` on the answering line | the answer sentence | none |
+| Recap (end of the act) | `recap`: 3 or 4 cues, answers blank then revealed | one short lead-in sentence | the reveal hold |
+
+Pick the predict prompts where the build has a real misconception (a sentinel that says OK while a gate fails, a limit that must never be lowered): the viewer commits, then the
+evidence corrects. Define a term in the glossary, then use it; a chapter with more than 4 new quantities ends in a `hold_s` pause. Weak: a predict whose answer is a yes/no
+the voice already gave, a glossary of words the viewer knows, a recap that repeats the lessons in the same words.

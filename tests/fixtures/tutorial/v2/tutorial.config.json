@@ -1,0 +1,16 @@
+{
+  "slug": "fixture-v2",
+  "title": "Fixture v2 — pedagogy demo",
+  "lang": "vi",
+  "output": "fixture-v2-tutorial",
+  "pedagogy": "v2",
+  "predictMin": 1,
+  "glossary": ["cổng", "dấu cuối", "bản sửa", "biên nhận"],
+  "duration": 40,
+  "grid": { "bpm": 120, "db0": 0, "measuredBy": "fixture: synthetic 120 BPM bed made by make-v2-fixture-audio.mjs" },
+  "music": { "credit": "Music: synthetic test bed (fixture, not a recording)", "file": "audio/music.mp3", "bed": "audio/music-bed.wav", "gain": 0.5 },
+  "evidence": "data/evidence.js",
+  "timeline": ["tutorial-timeline.js"],
+  "voiceover": { "script": "voiceover/script-vi.json", "clips": "voiceover/clips" },
+  "approvals": { "storyboard": "fixture", "script": "fixture" }
+}
