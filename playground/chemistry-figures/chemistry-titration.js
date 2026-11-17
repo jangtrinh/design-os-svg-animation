@@ -90,6 +90,8 @@ export default {
     const scHousingSol = HL.solid(svg);
     HL.put(scHousingSol, HL.prism(P, front, circAt(0, 0, 2.3, 16), circAt(0, 0, 1.8, 16), 15.0, 16.3));
     const stopcockHandle = HL.mk("path", { class: "nf hi" }, svg);
+    // the handle ends on a dot at each tip so neither end floats
+    const handleTips = [0, 1].map(() => HL.mk("circle", { r: 1.6, class: "dot m" }, svg));
 
     const tipSol = HL.solid(svg);
     HL.put(tipSol, HL.prism(P, front, circAt(0, 0, 0.85, 14), circAt(0, 0, 0.5, 14), 13.4, 15.0));
@@ -119,10 +121,11 @@ export default {
       const flow = HL.clamp(vel * 0.15 + (vol > 0 ? 0.35 : 0), 0, 1);
       const ang = flow * (Math.PI / 2);
       const scLen = 3.8;
-      stopcockHandle.setAttribute("d", HL.seg(
-        P(-scLen * Math.cos(ang), 1.2, 15.65 + scLen * Math.sin(ang)),
-        P(scLen * Math.cos(ang), 1.2, 15.65 - scLen * Math.sin(ang))
-      ));
+      const tipA = P(-scLen * Math.cos(ang), 1.2, 15.65 + scLen * Math.sin(ang));
+      const tipB = P(scLen * Math.cos(ang), 1.2, 15.65 - scLen * Math.sin(ang));
+      stopcockHandle.setAttribute("d", HL.seg(tipA, tipB));
+      HL.place(handleTips[0], tipA);
+      HL.place(handleTips[1], tipB);
 
       const menZ = 39.2 - (vol / 25.0) * 19.5;
       buretMeniscus.setAttribute("d", HL.poly(HL.ringAt(P, circAt(0, 0, buretR - 0.25, 18), menZ)));

@@ -44,6 +44,8 @@ export default {
     HL.put(flaskNeckSol, HL.prism(P, front, circAt(bX, bY, 1.85, 18), circAt(bX, bY, 1.4, 18), 16.5, 24.5));
     HL.mk("path", { class: "nf hi", d: HL.seg(P(bX, bY, 28.5), P(bX, bY, 18.0)) }, svg);
     HL.mk("circle", { cx: HL.r2(P(bX, bY, 18.0)[0]), cy: HL.r2(P(bX, bY, 18.0)[1]), r: 1.8, class: "dot" }, svg);
+    // the stem top ends on a cap dot instead of floating above the neck
+    HL.mk("circle", { cx: HL.r2(P(bX, bY, 28.5)[0]), cy: HL.r2(P(bX, bY, 28.5)[1]), r: 1.4, class: "dot m" }, svg);
 
     // 2. Right Retort Stand & Receiving Erlenmeyer Flask at (-14, 7)
     const rX = -14.0, rY = 7.0;
@@ -82,11 +84,13 @@ export default {
     // Coolant inlet (bottom-right) & outlet (top-left) nozzles
     const nozIn = [j1[0] - nx * jW, j1[1] - ny * jW];
     const nozOut = [j0[0] + nx * jW, j0[1] + ny * jW];
-    HL.mk("path", {
-      class: "nf hi",
-      d: HL.seg(nozIn, [nozIn[0] - nx * 8, nozIn[1] - ny * 8]) +
-         HL.seg(nozOut, [nozOut[0] + nx * 8, nozOut[1] + ny * 8])
-    }, svg);
+    const nozInTip = [nozIn[0] - nx * 8, nozIn[1] - ny * 8];
+    const nozOutTip = [nozOut[0] + nx * 8, nozOut[1] + ny * 8];
+    HL.mk("path", { class: "nf hi", d: HL.seg(nozIn, nozInTip) + HL.seg(nozOut, nozOutTip) }, svg);
+    // hose barb dots close both nozzle tips
+    for (const tip of [nozInTip, nozOutTip]) {
+      HL.mk("circle", { cx: HL.r2(tip[0]), cy: HL.r2(tip[1]), r: 1.4, class: "dot m" }, svg);
+    }
 
     // Inner vapor tube & curved distillate adapter to receiving flask
     HL.mk("path", { class: "nf lo", d: HL.seg(pCA, pCB) }, svg);
@@ -108,6 +112,8 @@ export default {
     const recLiquid = HL.mk("path", { class: "lo" }, svg);
     const vaporArrows = HL.mk("path", { class: "nf dash" }, svg);
     const dripPath = HL.mk("path", { class: "nf hi" }, svg);
+    // each falling drip ends on a drop-head dot at its lower tip
+    const dripHeads = [0, 1].map(() => HL.mk("circle", { r: 1.2, class: "dot m" }, svg));
 
     const spTemp = HL.spring(initialV != null ? initialV : 78.3, { k: 120, c: 15 });
     let lastKey = "";
@@ -131,6 +137,7 @@ export default {
       recLiquid.classList.toggle("hi", isBoiling);
 
       let vapD = "", drpD = "";
+      const headAt = [];
       for (let k = 0; k < 4; k++) {
         const s = 0.1 + ((tempNorm * 1.6 + k * 0.2) % 0.75);
         const vx0 = pCA[0] + s * sDx, vy0 = pCA[1] + s * sDy;
@@ -142,12 +149,18 @@ export default {
           const frac = ((tempNorm * 3.0 + d * 0.5) % 1);
           const dz = adaptTipWorld[2] - frac * (adaptTipWorld[2] - recZ - 0.4);
           drpD += HL.seg(P(rX, rY, dz + 0.45), P(rX, rY, dz - 0.35));
+          headAt.push(P(rX, rY, dz - 0.35));
         }
       } else {
         drpD = HL.seg(P(rX, rY, adaptTipWorld[2]), P(rX, rY, adaptTipWorld[2] - 0.5));
+        headAt.push(P(rX, rY, adaptTipWorld[2] - 0.5));
       }
       vaporArrows.setAttribute("d", vapD);
       dripPath.setAttribute("d", drpD);
+      dripHeads.forEach((head, i) => {
+        head.setAttribute("display", headAt[i] ? "inline" : "none");
+        if (headAt[i]) HL.place(head, headAt[i]);
+      });
       clamp1Arm.classList.toggle("sil", true);
 
       const volRec = (boilNorm * 18.5).toFixed(1);
