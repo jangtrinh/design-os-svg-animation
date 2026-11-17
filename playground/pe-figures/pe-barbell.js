@@ -23,7 +23,7 @@ export default {
     HL.put(baseSol, HL.prism(P, front, baseO, baseI, 0, 2.5));
 
     HL.mk("path", {
-      d: HL.seg(P(-36, -12, 2.6), P(36, -12, 2.6)) + HL.seg(P(-36, 12, 2.6), P(36, 12, 2.6)),
+      d: HL.seg(P(-47.8, -12, 2.6), P(47.8, -12, 2.6)) + HL.seg(P(-47.8, 12, 2.6), P(47.8, 12, 2.6)),
       class: "nf lo"
     }, svg);
 
